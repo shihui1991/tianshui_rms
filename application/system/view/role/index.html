@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>权限与角色|后台管理系统</title>
+    {include file="public/head" /}
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/system/css/jquery.treetable.theme.default.css"/>
+    <script src="__STATIC__/system/js/jquery.treetable.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<h4>角色管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('all')}">
+                <img src="__STATIC__/system/img/web_disk.png"/>
+                所有角色</a>
+        </li>
+        <li class="fgf">
+            <a href="{:url('index')}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                重置</a>
+        </li>
+        <li class="fgf" onclick="layerIfWindow('添加角色','{:url('add')}','','500')">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
+            <img src="__STATIC__/system/img/checked.png"/>
+            启用
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">
+            <img src="__STATIC__/system/img/disabled.png"/>
+            禁用
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+    </ul>
+</div>
+<form action="{:url('status')}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table id="example-advanced" class="table treetable" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>ID</th>
+                <th>名称</th>
+                <th>类型</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            {$table_roles}
+            </tbody>
+        </table>
+    </div>
+</form>
+<script src="__STATIC__/system/js/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    $("#example-advanced").treetable({
+        expandable : true
+    });
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+    });
+
+</script>
+</body>
+</html>

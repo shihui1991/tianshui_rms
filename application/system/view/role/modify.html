@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>权限与角色|后台管理系统</title>
+    {include file="public/head" /}
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/system/css/jquery.treetable.theme.default.css"/>
+    <script src="__STATIC__/system/js/jquery.treetable.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="name">角色名称：</label></td>
+                <td>
+                    <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入唯一名称"/>
+                </td>
+                <td><label for="parent_id">上级角色：</label></td>
+                <td>
+                    <select name="parent_id" id="parent_id">
+                        <option value="0">--作为一级角色--</option>
+                        {$options_roles}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="infos">角色描述：</label></td>
+                <td colspan="3">
+                    <textarea id="infos" name="infos">{:isset($infos)?$infos->infos:''}</textarea>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>类型：</td>
+                <td>
+                    {volist name="model->is_admin" id="is_admin"}
+                    <label><input class="va_m" name="is_admin" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->is_admin eq $is_admin)"}checked{/if}>{$is_admin}</label>
+                    {/volist}
+                </td>
+                <td>状态：</td>
+                <td>
+                    {volist name="model->status" id="status"}
+                    <label><input class="va_m" name="status" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $status)"}checked{/if}>{$status}</label>
+                    {/volist}
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>权限设置：</td>
+                <td colspan="3">
+                    <table class="table treetable" border="0" id="example-advanced">
+                        <tbody>
+                        <tr class="noSelect">
+                            <td style="width: inherit !important;">
+                                <input class="va_m" type="checkbox" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                                <span>全选/取消</span>
+                            </td>
+                            <td><span>功能与菜单</span></td>
+                        </tr>
+                        {$tree_menus}
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            {if condition="isset($infos)"}
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td colspan="3">
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<script src="__STATIC__/system/js/ajax-submit.js"></script>
+<script>
+    $("#example-advanced").treetable({
+        expandable : true
+    });
+
+    $('input.priv_detail').on('change',function () {
+        checkbox_change($(this));
+    }) ;
+</script>
+</body>
+</html>

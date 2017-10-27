@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>后台管理系统</title>
+    {include file="public/head" /}
+</head>
+<body style="min-width: 1000px;">
+<!--头部-->
+<div class="header w_100 bg_black">
+    <img class="h50 mt10 ml10" src="__STATIC__/system/img/logo.png"/>
+    <ul class="fr f12 nav">
+        <li>
+            <a onclick="delcache();">
+                <img src="__STATIC__/system/img/del.png" style="height: 30px;"/>
+                清除缓存
+            </a>
+        </li>
+
+        <li>
+            <a data-tit="个人中心" data-src="{:url('User/info')}" onclick="leftSubNavManage(this,event)">
+                <img src="__STATIC__/system/img/n5.png"/>
+                个人中心
+            </a>
+        </li>
+        <li>
+            <a href="{:url('Index/logout')}">
+                <img src="__STATIC__/system/img/n4.png"/>
+                安全退出
+            </a>
+        </li>
+    </ul>
+</div>
+<!--tab导航-->
+<div class="tabHeader ov bg_f5">
+    <div class="fl left f12 tc" id="timeshow"></div>
+    <div class="ov h_100">
+        <ul class="tabNav h30 mt5 f12 fl">
+            <li class="on" data-tit="控制台" onmousedown="tabManage(this,event)">
+                <img src="__STATIC__/system/img/house.png"/>
+                控制台
+            </li>
+        </ul>
+        <ul class="clickRight bg_f">
+            <li onclick="refreshIframe()">刷新当前</li>
+            <li onclick="closeIframe()">关闭当前</li>
+            <li onclick="closeIframeAll()">全部关闭</li>
+            <li onclick="closeIframeAllOne()">除此之外全部关闭</li>
+            <li onclick="close_clickRight()">退出</li>
+        </ul>
+    </div>
+</div>
+<!--主体内容-->
+<div class="content bg_f5" id="content">
+    <!--左边导航-->
+    <div class="leftNav ov" id="leftnav">
+        <!--一级导航-->
+        {$nav_menus}
+    </div>
+    <!--iframe-->
+    <div class="rightIframe" id="rightiframe">
+        <div class="rightIframeCon">
+            <iframe src="{:url('console')}" class="iframe homeIframe on"></iframe>
+        </div>
+    </div>
+</div>
+<!--底部-->
+<div class="footer f12 cr_f h25 lh25 w_100 bg_black ov">
+    <div class="pd0_5">技术支持：步联科技有限公司</div>
+    <div class="tc">CopyRight © 2010 - {:date('Y')} By Bulian</div>
+    <div class="ov right">
+        <a href="javascript:void(0)">
+            <img src="__STATIC__/system/img/bottom_icon_usergroup.png"/>
+        </a>
+        <a href="javascript:void(0)">
+            <img src="__STATIC__/system/img/youjian.png"/>
+        </a>
+        <a href="javascript:void(0)">
+            <img src="__STATIC__/system/img/bottom_icon_message.png"/>
+        </a>
+        <a href="javascript:void(0)">
+            <img src="__STATIC__/system/img/bottom_icon_userinfo.png"/>
+        </a>
+    </div>
+</div>
+</body>
+<script language="javascript">
+    var t = null;
+    t = setTimeout(timeshow,1000);//开始执行
+    function timeshow()
+    {
+        clearTimeout(t);//清除定时器
+        dt = new Date();
+        var year=dt.getFullYear(),
+            month=dt.getMonth()+1,
+            day= dt.getDate(),
+            hour=dt.getHours(),
+            min=dt.getMinutes(),
+            second=dt.getSeconds();
+        String(month).length<2?(month='0'+month):month;
+        String(day).length<2?(day='0'+day):day;
+        String(hour).length<2?(hour='0'+hour):hour;
+        String(min).length<2?(min='0'+min):min;
+        String(second).length<2?(second='0'+second):second;
+
+        document.getElementById("timeshow").innerHTML =  year+"年"+month+'月'+day+'日 '+hour+":"+min+":"+second;
+        t = setTimeout(timeshow,1000); //设定定时器，循环执行
+    }
+
+    function delcache() {
+        $.get("{:url('delete_cache')}",function (e) {
+            if(e.code){
+                layer.msg(e.msg,function () {});
+            }
+        },'json');
+    }
+</script>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>功能与菜单|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<h4>菜单管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index')}">
+                <img src="__STATIC__/system/img/email_trace.png"/>
+                树形列表</a>
+        </li>
+        <li  class="fgf">
+            <a href="{:url('all')}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                重置</a>
+        </li>
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','300')" >
+            <img src="__STATIC__/system/img/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf" onclick="layerIfWindow('添加菜单','{:url('add')}','','335')">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form">
+            <img src="__STATIC__/system/img/text_list_numbers.png"/>
+            排序
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('show',array('display'=>'1'))}">
+            <img src="__STATIC__/system/img/monitor_window_3d.png"/>
+            显示
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('show',array('display'=>'0'))}">
+            <img src="__STATIC__/system/img/insert_element.png"/>
+            隐藏
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
+            <img src="__STATIC__/system/img/checked.png"/>
+            启用
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">
+            <img src="__STATIC__/system/img/disabled.png"/>
+            禁用
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+            <img src="__STATIC__/system/img/recycle.png"/>
+            恢复
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+            <img src="__STATIC__/system/img/destroy.png"/>
+            销毁
+        </li>
+    </ul>
+</div>
+<form action="{:url('sort')}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>排序</th>
+                <th>ID</th>
+                <th>菜单名称</th>
+                <th>应用URL</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            {volist name="menus" id="menu"}
+            <tr data-tt-id="{$menu->id}" data-tt-parent-id="{$menu->parent_id}" >
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$menu->id}" onclick="checkBoxOp(this)" id="check-{$menu->id}"/>
+                </td>
+                <td><input style="width: 50px;" type="text" name="sorts[{$menu->id}]" value="{$menu->sort}" id="input-{$menu->id}" data-id="{$menu->id}"></td>
+                <td>{$menu->id}</td>
+                <td>{$menu->icon}{if condition="$menu->deleted_at"} <del>{$menu->name}</del>{else /}{$menu->name}{/if}</td>
+                <td>{if condition="$menu->deleted_at"} <del>{$menu->url}</del>{else /}{$menu->url}{/if}</td>
+                <td>{$menu->display} | {$menu->status}</td>
+                <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('添加菜单','{:url('add',['id'=>$menu->id])}','','335')" >添加子菜单</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('菜单信息',	'{:url('detail',['id'=>$menu->id])}','','400')" >菜单信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$menu->id])}" class="btn js-ajax-form-btn">删除</button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+<div class="pageCon">
+    {$menus->render()}
+</div>
+<!-- 查询 -->
+<div id="search" class="layerCon bg_f hide">
+    <form action="{:url('all')}" method="post" id="search-form">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>名称：</td>
+                <td><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入菜单名称"/></td>
+                <td>路由地址：</td>
+                <td><input type="text" name="url" id="url" value="{$url?:''}" placeholder="请输入路由地址"/></td>
+            </tr>
+            <tr class="h50">
+                <td>显示状态：</td>
+                <td>
+                    <select name="display" id="display">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($display) and $display==1"}selected{/if}>--显示--</option>
+                        <option value="0" {if condition="isset($display) and $display==0"}selected{/if}>--隐藏--</option>
+                    </select>
+                </td>
+                <td>状态：</td>
+                <td>
+                    <select name="status" id="status">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($status) and $status==1"}selected{/if}>--启用--</option>
+                        <option value="0" {if condition="isset($status) and $status==0"}selected{/if}>--禁用--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>是否删除：</td>
+                <td>
+                    <select name="deleted" id="deleted">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($deleted) and $deleted==1"}selected{/if}>--是--</option>
+                        <option value="0" {if condition="isset($deleted) and $deleted==0"}selected{/if}>--否--</option>
+                    </select>
+                </td>
+                <td>每页条数：</td>
+                <td>
+                    <select name="display_num" id="display_num">
+                        {volist name="nums" id="num"}
+                        <option value="{$num}" {if condition="isset($display_num) and $display_num==$num"}selected{/if}>--{$num}--</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>排序：</td>
+                <td>
+                    <select name="ordername" id="ordername">
+                        <option value="sort">--默认--</option>
+                        <option value="id" {if condition="isset($ordername) and $ordername=='id'"}selected{/if}>--ID--</option>
+                        <option value="level" {if condition="isset($ordername) and $ordername=='level'"}selected{/if}>--层级--</option>
+                        <option value="created_at" {if condition="isset($ordername) and $ordername=='created_at'"}selected{/if}>--创建时间--</option>
+                        <option value="updated_at" {if condition="isset($ordername) and $ordername=='updated_at'"}selected{/if}>--更新时间--</option>
+                        <option value="deleted_at" {if condition="isset($ordername) and $ordername=='deleted_at'"}selected{/if}>--删除时间--</option>
+                    </select>
+                </td>
+                <td>方式：</td>
+                <td>
+                    <select name="orderby" id="orderby">
+                        <option value="asc">--升序--</option>
+                        <option value="desc" {if condition="isset($orderby) and $orderby=='desc'"}selected{/if}>--降序--</option>
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">查询</button>
+        </div>
+    </form>
+</div>
+<script src="__STATIC__/system/js/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>

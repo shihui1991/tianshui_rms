@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>功能与菜单|后台管理系统</title>
+    {include file="public/head" /}
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="name">菜单名称：</label></td>
+                <td>
+                    <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入唯一名称"/>
+                </td>
+                <td><label for="parent_id">上级菜单：</label></td>
+                <td>
+                    <select name="parent_id" id="parent_id">
+                        <option value="0">--作为一级菜单--</option>
+                        {$options_menus}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="url">路由地址：</label></td>
+                <td>
+                    <input id="url" class="must" type="text" name="url" value="{:isset($infos)?$infos->url:''}" required/>
+                </td>
+                <td><label for="sort">显示排序：</label></td>
+                <td>
+                    <input id="sort" type="number" name="sort" value="{:isset($infos)?$infos->sort:''}" />
+                </td>
+            </tr>
+            <tr class="h50">
+                <td rowspan="2"><label for="icon">菜单图标：</label></td>
+                <td colspan="3">
+                    <textarea id="icon" name="icon">{:isset($infos)?$infos->icon:''}</textarea>
+                </td>
+            </tr>
+            <tr class="h25">
+                {if condition="isset($infos)"}
+                <td colspan="3" style="text-align: left;">当前图标：{$infos->icon}，代码：{$infos->icon|htmlspecialchars}</td>
+                {else /}
+                <td colspan="3" style="text-align: left;">填图标代码，如<img src="__STATIC__/system/img/house.png"/>填入&lt;img src=&quot;/static/system/img/house.png&quot;/&gt;</td>
+                {/if}
+            </tr>
+            <tr class="h50">
+                <td><label for="infos">菜单描述：</label></td>
+                <td colspan="3">
+                    <textarea id="infos" name="infos">{:isset($infos)?$infos->infos:''}</textarea>
+                </td>
+            </tr>
+            <tr class="h30">
+                <td>显示状态：</td>
+                <td>
+                    {volist name="model->display" id="display"}
+                    <label><input class="va_m" name="display" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->display eq $display)"}checked{/if}>{$display}</label>
+                    {/volist}
+                </td>
+                <td>状态：</td>
+                <td>
+                    {volist name="model->status" id="status"}
+                    <label><input class="va_m" name="status" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $status)"}checked{/if}>{$status}</label>
+                    {/volist}
+                </td>
+            </tr>
+            {if condition="isset($infos)"}
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td colspan="3">
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<script src="__STATIC__/system/js/ajax-submit.js"></script>
+</body>
+</html>
