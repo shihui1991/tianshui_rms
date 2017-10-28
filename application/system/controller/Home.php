@@ -25,11 +25,11 @@ class Home extends Auth
         $userinfo=Session::get('userinfo');
         $menus_ids=json_decode($userinfo['menu_ids'],true);
         $menus=[];
-        $field=['id','parent_id','name','icon','url','display','status'];
+        $field=['id','parent_id','name','icon','url','display','status','sort'];
         if($userinfo['is_admin']){
-            $menus=model('Menus')->field($field)->where('display',1)->select();
+            $menus=model('Menus')->field($field)->where('display',1)->order('sort asc')->select();
         }elseif($menus_ids){
-            $menus=model('Menus')->field($field)->where('display',1)->whereIn('id',$menus_ids)->select();
+            $menus=model('Menus')->field($field)->where('display',1)->whereIn('id',$menus_ids)->order('sort asc')->select();
         }
         $nav_menus='';
         if($menus){
