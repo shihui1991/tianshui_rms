@@ -95,11 +95,11 @@ function layerIfWindow(tit,url){
 //图片放大
 function bigimg(obj){
     var width,
-		height,
-		imgsrc=obj.src,
-		dom='<img style="width:100%;height:99%;" src="'+imgsrc+'"/>',
-		imgobj=document.createElement('img');
-    	imgobj.src=imgsrc;
+        height,
+        imgsrc=obj.src,
+        dom='<img style="width:100%;height:99%;" src="'+imgsrc+'"/>',
+        imgobj=document.createElement('img');
+    imgobj.src=imgsrc;
 
     width=document.body.clientWidth<imgobj.width?parseInt(document.body.clientWidth/1.05):imgobj.width;
     height=document.body.clientHeight<imgobj.height+42?parseInt(document.body.clientHeight/1.05):imgobj.height+42;
@@ -109,8 +109,8 @@ function bigimg(obj){
         area:[width+'px',height+'px'],//宽高
         fix:false,
         shadeClose:true,
-        maxmin: false, //开启最大化最小化按钮
-        title:false,
+        maxmin: true, //开启最大化最小化按钮
+        title:imgobj.src,
         resize:true,
         content:dom
     });

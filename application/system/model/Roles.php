@@ -55,10 +55,22 @@ class Roles extends Model
             $data['level']=1;
         }
 
-        if($input['is_admin']){
-            $data['menu_ids']=[];
+        /* ++++++++++ 类型 ++++++++++ */
+        if(session('userinfo.is_admin') && $input['is_admin']){
+            $data['is_admin']=1;
         }else{
-            $data['menu_ids']=isset($input['menuids'])?$input['menuids']:[];
+            $data['is_admin']=0;
+        }
+
+        /* ++++++++++ 权限菜单 ++++++++++ */
+        if(session('userinfo.is_admin')){
+            if($data['is_admin']){
+                $data['menus_ids']=[];
+            }else{
+                $data['menus_ids']=isset($input['menuids'])?$input['menuids']:[];
+            }
+        }else{
+            $data['menus_ids']=isset($input['menuids'])?array_intersect(session('userinfo.menu_ids'),$input['menuids']) : [];
         }
 
         return $data;

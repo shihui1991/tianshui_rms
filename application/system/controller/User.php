@@ -16,6 +16,7 @@
  * */
 namespace app\system\controller;
 
+use app\system\model\Depts;
 use app\system\model\Roles;
 use app\system\model\Users;
 use think\Db;
@@ -52,6 +53,22 @@ class User extends Auth
             $options_roles=get_tree($array);
         }
         $datas['roles']=$options_roles;
+        /* ++++++++++ 部门 ++++++++++ */
+        $dept_id=input('dept_id');
+        if(is_numeric($dept_id)){
+            $where['dept_id']=$dept_id;
+        }
+        $depts=Depts::field(['id','parent_id','name','status'])->where('status',1)->select();
+        $options_depts='';
+        if($depts){
+            $array=[];
+            foreach ($depts as $dept){
+                $dept->selected=$dept->id==$dept_id?'selected':'';
+                $array[]=$dept;
+            }
+            $options_depts=get_tree($array);
+        }
+        $datas['depts']=$options_depts;
         /* ++++++++++ 姓名 ++++++++++ */
         $name=trim(input('name'));
         if($name){
@@ -96,10 +113,11 @@ class User extends Auth
             $user_model=$user_model->withTrashed();
         }
 
-        $field=['u.id','role_id','u.name','phone','email','username','secret_key','u.status','u.deleted_at','r.name as role_name'];
+        $field=['u.id','dept_id','role_id','u.name','phone','email','username','secret_key','u.status','u.deleted_at','r.name as role_name','r.status as r_status','d.name as dept_name','d.status as d_status'];
         $users=$user_model
             ->alias('u')
             ->field($field)
+            ->join('dept d','u.dept_id = d.id','left')
             ->join('role r','u.role_id = r.id','left')
             ->where($where)
             ->order([$ordername=>$orderby])
@@ -155,6 +173,13 @@ class User extends Auth
                 return $this->error('保存失败');
             }
         }else{
+            /* ++++++++++ 部门列表 ++++++++++ */
+            $depts=Depts::field(['id','parent_id','name','status'])->where('status',1)->select();
+            $options_depts='';
+            if($depts){
+                $options_depts=get_tree($depts,"<option value='\$id'>\$space \$name</option>");
+            }
+            /* ++++++++++ 角色列表 ++++++++++ */
             $roles=Roles::field(['id','parent_id','name','status'])->where('status',1)->select();
             $options_roles='';
             if($roles){
@@ -162,6 +187,7 @@ class User extends Auth
             }
             return view('modify',[
                 'model'=>$model,
+                'options_depts'=>$options_depts,
                 'options_roles'=>$options_roles,
             ]);
         }
@@ -177,7 +203,18 @@ class User extends Auth
         if(!$infos){
             return $this->error('选择项目不存在');
         }
-
+        /* ++++++++++ 部门列表 ++++++++++ */
+        $depts=Depts::field(['id','parent_id','name','status'])->where('status',1)->select();
+        $options_depts='';
+        if($depts){
+            $array=[];
+            foreach ($depts as $dept){
+                $dept->selected=$dept->id==$infos->dept_id?'selected':'';
+                $array[]=$dept;
+            }
+            $options_depts=get_tree($array);
+        }
+        /* ++++++++++ 角色列表 ++++++++++ */
         $roles=Roles::field(['id','parent_id','name','status'])->where('status',1)->select();
         $options_roles='';
         if($roles){
@@ -191,6 +228,7 @@ class User extends Auth
         return view('modify',[
             'infos'=>$infos,
             'model'=>$model,
+            'options_depts'=>$options_depts,
             'options_roles'=>$options_roles,
         ]);
     }
@@ -291,7 +329,7 @@ class User extends Auth
     public function status(){
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
-        $status=$inputs['status'];
+        $status=input('status');
 
         if(empty($ids)){
             return $this->error('至少选择一项');
@@ -384,15 +422,20 @@ class User extends Auth
             $user_model=new Users();
             $other_datas=$user_model->other_data(input());
             $datas=array_merge(input(),$other_datas);
-            $user_model->isUpdate(true)->save($datas);
+            $user_model
+                ->isUpdate(true)
+                ->allowField(['name','signature','phone','office_phone','email','infos','username','secret_key','updated_at'])
+                ->save($datas);
+            
             if($user_model !== false){
                 return $this->success('修改成功','');
             }else{
                 return $this->error('修改失败');
             }
         }else{
-            $infos=Users::field(['u.*','is_admin','r.name as role_name'])
+            $infos=Users::field(['u.*','is_admin','r.name as role_name','d.name as dept_name'])
                 ->alias('u')
+                ->join('dept d','d.id = u.dept_id','left')
                 ->join('role r','r.id = u.role_id','left')
                 ->where(['u.id'=>Session::get('userinfo.user_id')])
                 ->find();

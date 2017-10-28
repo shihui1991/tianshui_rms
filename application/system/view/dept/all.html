@@ -2,25 +2,30 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>系统用户|后台管理系统</title>
+    <title>组织与部门|后台管理系统</title>
     {include file="public/head" /}
 
 </head>
 <body>
-<h4>用户管理</h4>
+<h4>部门管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
         <li>
             <a href="{:url('index')}">
+                <img src="__STATIC__/system/img/email_trace.png"/>
+                树形列表</a>
+        </li>
+        <li  class="fgf">
+            <a href="{:url('all')}">
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
                 重置</a>
         </li>
-        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','350')" >
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','250')" >
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加用户','{:url('add')}','','520')">
+        <li class="fgf" onclick="layerIfWindow('添加部门','{:url('add')}','','500')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
@@ -56,29 +61,24 @@
                     <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
                 </th>
                 <th>ID</th>
-                <th>姓名</th>
-                <th>部门</th>
-                <th>角色</th>
-                <th>用户名</th>
-                <th>电话</th>
+                <th>名称</th>
+                <th>负责人</th>
                 <th>状态</th>
                 <th>操作</th>
             </tr>
-            {volist name="users" id="user"}
-            <tr>
+            {volist name="depts" id="dept"}
+            <tr data-tt-id="{$dept->id}" data-tt-parent-id="{$dept->parent_id}" >
                 <td>
-                    <input class="va_m" type="checkbox" name="ids[]" value="{$user->id}" onclick="checkBoxOp(this)" id="check-{$user->id}"/>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$dept->id}" onclick="checkBoxOp(this)" id="check-{$dept->id}"/>
                 </td>
-                <td>{$user->id}</td>
-                <td>{if condition="$user->deleted_at"} <del>{$user->name}</del>{else /}{$user->name}{/if}</td>
-                <td>{if condition="$user->d_status"}{$user->dept_name} {else /}<del>{$user->dept_name}</del>{/if}</td>
-                <td>{if condition="$user->r_status"}{$user->role_name} {else /}<del>{$user->role_name}</del>{/if}</td>
-                <td>{if condition="$user->deleted_at"} <del>{$user->username}</del>{else /}{$user->username}{/if}</td>
-                <td>{if condition="$user->deleted_at"} <del>{$user->phone}</del>{else /}{$user->phone}{/if}</td>
-                <td>{$user->status}</td>
+                <td>{$dept->id}</td>
+                <td>{if condition="$dept->deleted_at"} <del>{$dept->name}</del>{else /}{$dept->name}{/if}</td>
+                <td>{if condition="$dept->deleted_at"} <del>{$dept->user_name}</del>{else /}{$dept->user_name}{/if}</td>
+                <td>{$dept->status}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('用户信息',	'{:url('detail',['id'=>$user->id])}','','550')" >用户信息</button>
-                    <button type="button" data-action="{:url('delete',['ids'=>$user->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('添加部门','{:url('add',['id'=>$dept->id])}','600','310')" >添加下级</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('部门信息',	'{:url('detail',['id'=>$dept->id])}','600','380')" >部门信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$dept->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}
@@ -87,37 +87,17 @@
     </div>
 </form>
 <div class="pageCon">
-    {$users->render()}
+    {$depts->render()}
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
-    <form action="{:url('index')}" method="post" id="search-form">
+    <form action="{:url('all')}" method="post" id="search-form">
         <table class="layerTable">
             <tr class="h50">
-                <td>姓名：</td>
-                <td><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入姓名"/></td>
-                <td>用户名：</td>
-                <td><input type="text" name="username" id="username" value="{$username?:''}" placeholder="请输入用户名"/></td>
-            </tr>
-            <tr class="h50">
-                <td>部门：</td>
-                <td>
-                    <select name="dept_id" id="dept_id">
-                        <option value="">--全部--</option>
-                        {$depts}
-                    </select>
-                </td>
-                <td>角色：</td>
-                <td>
-                    <select name="role_id" id="role_id">
-                        <option value="">--全部--</option>
-                        {$roles}
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
+                <td>名称：</td>
+                <td><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入部门名称"/></td>
                 <td>状态：</td>
-                <td colspan="3">
+                <td>
                     <select name="status" id="status">
                         <option value="">--全部--</option>
                         <option value="1" {if condition="isset($status) and $status==1"}selected{/if}>--启用--</option>
@@ -125,6 +105,7 @@
                     </select>
                 </td>
             </tr>
+
             <tr class="h50">
                 <td>是否删除：</td>
                 <td>
@@ -148,7 +129,7 @@
                 <td>
                     <select name="ordername" id="ordername">
                         <option value="id">--默认--</option>
-                        <option value="login_at" {if condition="isset($ordername) and $ordername=='login_at'"}selected{/if}>--登录时间--</option>
+                        <option value="level" {if condition="isset($ordername) and $ordername=='level'"}selected{/if}>--层级--</option>
                         <option value="created_at" {if condition="isset($ordername) and $ordername=='created_at'"}selected{/if}>--创建时间--</option>
                         <option value="updated_at" {if condition="isset($ordername) and $ordername=='updated_at'"}selected{/if}>--更新时间--</option>
                         <option value="deleted_at" {if condition="isset($ordername) and $ordername=='deleted_at'"}selected{/if}>--删除时间--</option>

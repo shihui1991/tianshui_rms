@@ -14,9 +14,12 @@
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
         <table class="layerTable" border="0">
             <tr class="h50">
-                <td><label for="name">姓名：</label></td>
+                <td><label for="dept_id">所在部门：</label></td>
                 <td>
-                    <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入用户姓名"/>
+                    <select name="dept_id" id="dept_id">
+                        <option value="">--选择部门--</option>
+                        {$options_depts}
+                    </select>
                 </td>
                 <td><label for="role_id">用户角色：</label></td>
                 <td>
@@ -52,13 +55,39 @@
             </tr>
             {/if}
             <tr class="h50">
+                <td><label for="name">姓名：</label></td>
+                <td>
+                    <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入用户姓名"/>
+                </td>
                 <td><label for="phone">电话：</label></td>
                 <td>
                     <input id="phone" type="text" name="phone" value="{:isset($infos)?$infos->phone:''}" />
                 </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="office_phone">办公电话：</label></td>
+                <td>
+                    <input id="office_phone" type="text" name="office_phone" value="{:isset($infos)?$infos->office_phone:''}" />
+                </td>
                 <td><label for="email">邮箱：</label></td>
                 <td>
                     <input id="email" type="email" name="email" value="{:isset($infos)?$infos->email:''}" />
+                </td>
+            </tr>
+            <tr class="h70">
+                <td>电子签名：</td>
+                <td class="imgCon" colspan="3">
+                    {if condition="isset($infos) and $infos->signature"}
+                    <div class="img">
+                        <img src="{$infos->signature}" class="w_100 h_100" onclick="bigimg(this)">
+                        <p><span onclick="picremove(this);">删除</span></p>
+                        <input type="hidden" name="signature" value="{$infos->signature}"/>
+                    </div>
+                    {/if}
+                    <div class="img upload-btn">
+                        <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="signature" data-url="{:url('Tools/upl')}">
+                        <a>+</a>
+                    </div>
                 </td>
             </tr>
             <tr class="h50">
@@ -101,6 +130,7 @@
 </form>
 
 <script src="__STATIC__/system/js/ajax-submit.js"></script>
+<script src="__STATIC__/system/js/upload.js"></script>
 <script>
     $("#example-advanced").treetable({
         expandable : true

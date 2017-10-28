@@ -244,8 +244,8 @@ class Menu extends Auth
     public function sort(){
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
-        $sorts=$inputs['sorts'];
-        if(empty($ids)){
+        $sorts=isset($inputs['sorts'])?$inputs['sorts']:[];
+        if(empty($ids)||empty($sorts)){
             return $this->error('至少选择一项');
         }
         $datas=[];
@@ -275,7 +275,7 @@ class Menu extends Auth
     public function show(){
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
-        $display=$inputs['display'];
+        $display=input('display');
 
         if(empty($ids)){
             return $this->error('至少选择一项');
@@ -295,7 +295,7 @@ class Menu extends Auth
     public function status(){
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
-        $status=$inputs['status'];
+        $status=input('status');
 
         if(empty($ids)){
             return $this->error('至少选择一项');
