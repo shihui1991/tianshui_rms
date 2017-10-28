@@ -77,7 +77,7 @@
                 <td>{$role->status}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('添加角色','{:url('add',['id'=>$role->id])}','','500')" >添加下级</button>
-                    <button type="button" class="btn" onclick="layerIfWindow('角色信息',	'{:url('detail',['id'=>$role->id])}','','600')" >角色信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('角色信息',	'{:url('detail',['id'=>$role->id])}','','600')" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$role->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>

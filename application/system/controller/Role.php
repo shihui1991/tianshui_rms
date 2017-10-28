@@ -52,7 +52,7 @@ class Role extends Auth
                         <td>\$status</td>
                         <td>
                             <button type='button' class='btn' onclick='layerIfWindow(&apos;添加角色&apos;,&apos;\$add_url&apos;,&apos;&apos;,&apos;500&apos;)' >添加下级</button>
-                            <button type='button' class='btn' onclick='layerIfWindow(&apos;角色信息&apos;,	&apos;\$detail_url&apos;,&apos;&apos;,&apos;600&apos;)' >角色信息</button>
+                            <button type='button' class='btn' onclick='layerIfWindow(&apos;角色信息&apos;,	&apos;\$detail_url&apos;,&apos;&apos;,&apos;600&apos;)' >详细信息</button>
                             <button type='button' data-action='\$delete_url' class='btn js-ajax-form-btn'>删除</button>
                         </td>
                     </tr>
@@ -286,7 +286,8 @@ class Role extends Auth
         if(!in_array($status,[0,1])){
             return $this->error('错误操作');
         }
-        $res=model('Roles')->save(['status'=>$status],['id'=>['in',$ids]]);
+        $model=new Roles();
+        $res=$model->save(['status'=>$status],['id'=>['in',$ids]]);
         if($res){
             return $this->success('修改成功','');
         }else{

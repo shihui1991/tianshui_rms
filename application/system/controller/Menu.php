@@ -54,7 +54,7 @@ class Menu extends Auth
                         <td>\$display | \$status</td>
                         <td>
                             <button type='button' class='btn' onclick='layerIfWindow(&apos;添加菜单&apos;,&apos;\$add_url&apos;,&apos;&apos;,&apos;335&apos;)' >添加子菜单</button>
-                            <button type='button' class='btn' onclick='layerIfWindow(&apos;菜单信息&apos;,	&apos;\$detail_url&apos;,&apos;&apos;,&apos;400&apos;)' >菜单信息</button>
+                            <button type='button' class='btn' onclick='layerIfWindow(&apos;菜单信息&apos;,	&apos;\$detail_url&apos;,&apos;&apos;,&apos;400&apos;)' >详细信息</button>
                             <button type='button' data-action='\$delete_url' class='btn js-ajax-form-btn'>删除</button>
                         </td>
                     </tr>
@@ -283,7 +283,8 @@ class Menu extends Auth
         if(!in_array($display,[0,1])){
             return $this->error('错误操作');
         }
-        $res=model('Menus')->save(['display'=>$display],['id'=>['in',$ids]]);
+        $model=new Menus();
+        $res=$model->save(['display'=>$display],['id'=>['in',$ids]]);
         if($res){
             return $this->success('修改成功','');
         }else{
@@ -303,7 +304,8 @@ class Menu extends Auth
         if(!in_array($status,[0,1])){
             return $this->error('错误操作');
         }
-        $res=model('Menus')->save(['status'=>$status],['id'=>['in',$ids]]);
+        $model=new Menus();
+        $res=$model->save(['status'=>$status],['id'=>['in',$ids]]);
         if($res){
             return $this->success('修改成功','');
         }else{

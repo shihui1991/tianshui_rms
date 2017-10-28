@@ -337,7 +337,8 @@ class User extends Auth
         if(!in_array($status,[0,1])){
             return $this->error('错误操作');
         }
-        $res=model('Users')->save(['status'=>$status],['id'=>['in',$ids]]);
+        $model=new Users();
+        $res=$model->save(['status'=>$status],['id'=>['in',$ids]]);
         if($res){
             return $this->success('修改成功','');
         }else{

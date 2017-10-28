@@ -91,7 +91,7 @@
                 <td>{$menu->display} | {$menu->status}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('添加菜单','{:url('add',['id'=>$menu->id])}','','335')" >添加子菜单</button>
-                    <button type="button" class="btn" onclick="layerIfWindow('菜单信息',	'{:url('detail',['id'=>$menu->id])}','','400')" >菜单信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('菜单信息',	'{:url('detail',['id'=>$menu->id])}','','400')" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$menu->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>

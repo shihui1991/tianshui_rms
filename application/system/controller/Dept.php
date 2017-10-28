@@ -55,7 +55,7 @@ class Dept extends Auth
                         <td>\$status</td>
                         <td>
                             <button type='button' class='btn' onclick='layerIfWindow(&apos;添加部门&apos;,&apos;\$add_url&apos;,&apos;600&apos;,&apos;310&apos;)' >添加下级</button>
-                            <button type='button' class='btn' onclick='layerIfWindow(&apos;部门信息&apos;,	&apos;\$detail_url&apos;,&apos;600&apos;,&apos;380&apos;)' >部门信息</button>
+                            <button type='button' class='btn' onclick='layerIfWindow(&apos;部门信息&apos;,	&apos;\$detail_url&apos;,&apos;600&apos;,&apos;380&apos;)' >详细信息</button>
                             <button type='button' data-action='\$delete_url' class='btn js-ajax-form-btn'>删除</button>
                         </td>
                     </tr>
@@ -252,7 +252,8 @@ class Dept extends Auth
         if(!in_array($status,[0,1])){
             return $this->error('错误操作');
         }
-        $res=model('Depts')->save(['status'=>$status],['id'=>['in',$ids]]);
+        $model=new Depts();
+        $res=$model->save(['status'=>$status],['id'=>['in',$ids]]);
         if($res){
             return $this->success('修改成功','');
         }else{
