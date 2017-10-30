@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-10-28 18:21:57
+Date: 2017-10-30 18:40:52
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -166,6 +166,108 @@ CREATE TABLE `dept` (
 INSERT INTO `dept` VALUES ('1', '0', '管理层', '0', '1', '', '1', '1509152121', '1509171143', null);
 
 -- ----------------------------
+-- Table structure for house
+-- ----------------------------
+DROP TABLE IF EXISTS `house`;
+CREATE TABLE `house` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `community_id` int(11) DEFAULT NULL COMMENT '区域 ID',
+  `building` int(11) DEFAULT NULL COMMENT ' 几栋',
+  `unit` int(11) DEFAULT NULL COMMENT ' 几单元',
+  `floor` int(11) DEFAULT NULL COMMENT ' 几楼',
+  `number` int(11) DEFAULT NULL COMMENT ' 几号',
+  `layout_id` int(11) DEFAULT NULL COMMENT ' 户型 ID',
+  `layout_pic_id` int(11) DEFAULT NULL COMMENT '户型图 ID',
+  `area` float DEFAULT NULL COMMENT '面积 （平米）',
+  `total_floor` int(11) DEFAULT NULL COMMENT '总楼层',
+  `has_lift` tinyint(1) DEFAULT '0' COMMENT '是否配电梯，0否，1是',
+  `property_manage_fee` float DEFAULT NULL COMMENT '物业管理费单价 (元/平米/月）',
+  `public_fee` float DEFAULT NULL COMMENT '公摊费单价 （元/月）',
+  `is_real` tinyint(1) DEFAULT '0' COMMENT '0期房，1现房',
+  `is_buy` tinyint(1) DEFAULT '0' COMMENT '0非购置房，1购置房',
+  `is_transit` tinyint(1) DEFAULT '0' COMMENT '0不可用作临时安置房，1可作临时安置房',
+  `is_public` tinyint(1) DEFAULT '0' COMMENT '0项目专用房，1项目共用房',
+  `picture` text COMMENT '房源图片',
+  `deliver_at` int(11) DEFAULT NULL COMMENT '交付时间',
+  `status` tinyint(1) DEFAULT '0' COMMENT '状态，0闲置，1临时安置，2安置，3失效',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='安置房源';
+
+-- ----------------------------
+-- Records of house
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for house_community
+-- ----------------------------
+DROP TABLE IF EXISTS `house_community`;
+CREATE TABLE `house_community` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `address` text COMMENT '地址',
+  `name` varchar(255) DEFAULT NULL COMMENT ' 名称',
+  `infos` text COMMENT ' 说明',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='安置房源小区';
+
+-- ----------------------------
+-- Records of house_community
+-- ----------------------------
+INSERT INTO `house_community` VALUES ('1', '渝北区杨柳北路9号', '力华科谷', '', '1', '1509333835', '1509333849', null);
+INSERT INTO `house_community` VALUES ('2', '渝北区杨柳北路10号', '联通大厦', '', '1', '1509333921', '1509333921', null);
+
+-- ----------------------------
+-- Table structure for house_layout_pic
+-- ----------------------------
+DROP TABLE IF EXISTS `house_layout_pic`;
+CREATE TABLE `house_layout_pic` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `community_id` int(11) DEFAULT NULL COMMENT '房源小区 ID',
+  `layout_id` int(11) DEFAULT NULL COMMENT '户型 ID',
+  `remark` varchar(255) DEFAULT NULL COMMENT '户型标记',
+  `picture` text COMMENT '户型图',
+  `infos` text COMMENT '描述',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='安置房源户型图';
+
+-- ----------------------------
+-- Records of house_layout_pic
+-- ----------------------------
+INSERT INTO `house_layout_pic` VALUES ('1', '1', '1', 'A', '/uploads/20171030/a8495ab434c95f1953dc34f0a249df09.png', '', '1', '1509345081', '1509345389', null);
+INSERT INTO `house_layout_pic` VALUES ('2', '1', '1', 'B', null, '', '1', '1509345103', '1509345364', null);
+INSERT INTO `house_layout_pic` VALUES ('3', '2', '1', 'A', null, '', '1', '1509345280', '1509345364', null);
+
+-- ----------------------------
+-- Table structure for layout
+-- ----------------------------
+DROP TABLE IF EXISTS `layout`;
+CREATE TABLE `layout` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT '名称',
+  `infos` text COMMENT '说明',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='房屋户型';
+
+-- ----------------------------
+-- Records of layout
+-- ----------------------------
+INSERT INTO `layout` VALUES ('1', '一室一厅', '', '1', '1509332132', '1509332149', null);
+
+-- ----------------------------
 -- Table structure for menu
 -- ----------------------------
 DROP TABLE IF EXISTS `menu`;
@@ -184,7 +286,7 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
 -- ----------------------------
 -- Records of menu
@@ -280,6 +382,46 @@ INSERT INTO `menu` VALUES ('88', '15', '删除特殊人群分类', '3', '<img sr
 INSERT INTO `menu` VALUES ('89', '15', '特殊人群分类恢复', '3', '<img src=\"/static/system/img/recycle.png\" />', '0', '/system/crowd/restore', '', '0', '1', '1508894998', '1509185223', null);
 INSERT INTO `menu` VALUES ('90', '15', '特殊人群分类销毁', '3', '<img src=\"/static/system/img/destroy.png\" />', '0', '/system/crowd/destroy', '', '0', '1', '1508894998', '1509185223', null);
 INSERT INTO `menu` VALUES ('91', '9', '常用银行管理', '2', '<img src=\"/static/system/img/email_trace.png\"/>', '0', '/system/bank/index', '', '1', '1', '1508898200', '1509185506', null);
+INSERT INTO `menu` VALUES ('92', '91', '添加常用银行', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/bank/add', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('93', '91', '常用银行详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/bank/detail', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('94', '91', '常用银行修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/bank/edit', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('95', '91', '常用银行状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/bank/status', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('96', '91', '删除常用银行', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/bank/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('97', '91', '常用银行恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/bank/restore', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('98', '91', '常用银行销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/bank/destroy', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('99', '9', '房屋户型', '2', '<img src=\"/static/system/img/bricks.png\"/>', '0', '/system/layout/index', '', '1', '1', '1509331742', '1509346080', null);
+INSERT INTO `menu` VALUES ('100', '99', '添加房屋户型', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/layout/add', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('101', '99', '房屋户型详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/layout/detail', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('102', '99', '房屋户型修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/layout/edit', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('103', '99', '房屋户型状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/layout/status', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('104', '99', '删除房屋户型', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/layout/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('105', '99', '房屋户型恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/layout/restore', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('106', '99', '房屋户型销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/layout/destroy', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('107', '0', '安置房管理', '1', '<img src=\"/static/system/img/house.png\"/>', '0', '/system/house#', '', '1', '1', '1509332337', '1509332337', null);
+INSERT INTO `menu` VALUES ('108', '107', '安置房源', '2', '<img src=\"/static/system/img/books.png\"/>', '0', '/system/house/index', '', '1', '1', '1509332381', '1509332381', null);
+INSERT INTO `menu` VALUES ('109', '107', '房源小区', '2', '<img src=\"/static/system/img/chart_organisation_add.png\"/>', '0', '/system/housecommunity/index', '', '1', '1', '1509332513', '1509332513', null);
+INSERT INTO `menu` VALUES ('110', '107', '房源户型图', '2', '<img src=\"/static/system/img/navigation.png\"/>', '0', '/system/houselayoutpic/index', '', '1', '1', '1509332583', '1509332583', null);
+INSERT INTO `menu` VALUES ('111', '109', '添加房源小区', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/housecommunity/add', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('112', '109', '房源小区详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/housecommunity/detail', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('113', '109', '房源小区修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/housecommunity/edit', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('114', '109', '房源小区状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/housecommunity/status', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('115', '109', '删除房源小区', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/housecommunity/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('116', '109', '房源小区恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/housecommunity/restore', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('117', '109', '房源小区销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/housecommunity/destroy', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('118', '110', '添加户型图', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/houselayoutpic/add', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('119', '110', '户型图详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/houselayoutpic/detail', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('120', '110', '户型图修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/houselayoutpic/edit', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('121', '110', '户型图状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/houselayoutpic/status', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('122', '110', '删除户型图', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/houselayoutpic/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('123', '110', '户型图恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/houselayoutpic/restore', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('124', '110', '户型图销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/houselayoutpic/destroy', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('125', '108', '添加房源', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/house/add', '', '0', '1', '1509348295', '1509348295', null);
+INSERT INTO `menu` VALUES ('126', '108', '房源详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/house/detail', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('127', '108', '房源修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/house/edit', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('128', '108', '房源状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/house/status', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('129', '108', '删除房源', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/house/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('130', '108', '房源恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/house/restore', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('131', '108', '房源销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/house/destroy', null, '0', '1', '1508146326', '1508146326', null);
 
 -- ----------------------------
 -- Table structure for nation
@@ -374,4 +516,4 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '0', '1', '开发者', null, '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', '351cee86fba9ce77563462adc31ba200', '1509155539', '127.0.0.1', '1', '1509096250', '1509171148', null);
+INSERT INTO `user` VALUES ('1', '0', '1', '开发者', null, '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', '351cee86fba9ce77563462adc31ba200', '1509358459', '127.0.0.1', '1', '1509096250', '1509171148', null);
