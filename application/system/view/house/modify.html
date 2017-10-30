@@ -31,6 +31,21 @@
                     </select>
                 </td>
             </tr>
+            <tr class="h70">
+                <td>户型图：</td>
+                <td class="imgCon" colspan="7">
+                    {if condition="isset($infos) and $infos->l_pic"}
+                    <div class="img">
+                        <img src="{$infos->l_pic}" class="w_100 h_100" onclick="bigimg(this)">
+                        <p><span onclick="picremove(this);">删除</span></p>
+                        <input type="hidden" name="layout_pic_id" value="{$infos->layout_pic_id}"/>
+                    </div>
+                    {/if}
+                    <div class="img" id="view-layout-pic">
+                        <a>+</a>
+                    </div>
+                </td>
+            </tr>
             <tr class="h50">
                 <td>几栋：</td>
                 <td><input type="number" name="building" id="building" value="{:isset($infos)?$infos->building:''}" min="1"></td>
@@ -41,6 +56,7 @@
                 <td>几号：</td>
                 <td><input type="number" name="number" id="number" value="{:isset($infos)?$infos->number:''}" min="1"></td>
             </tr>
+
             <tr class="h50">
 
                 <td>状态：</td>
@@ -70,9 +86,88 @@
     </div>
 </form>
 
-<script src="__STATIC__/system/js/ajax-submit.js"></script>
-<script>
+    <div class="layerCon bg_f hide" id="view-layout-pic-box">
+    <table class="layerTable" border="0">
+        <tr class="h70">
+            <td class="imgCon" style="text-align: left;"></td>
+        </tr>
+    </table>
+    <div class="layerBtns">
+        <button class="btn" type="button" id="btn-choose">确定</button>
+    </div>
+    </div>
 
+<script src="__STATIC__/system/js/ajax-submit.js"></script>
+<script src="__STATIC__/system/js/upload.js"></script>
+<script>
+$('#view-layout-pic').click(function () {
+    var btn=$(this);
+    var community_id=$('#community_id').find('option:checked').val();
+    var layout_id=$('#layout_id').find('option:checked').val();
+    if(!community_id){
+        layer.msg('请选择小区',function () {});
+    }else if(!layout_id){
+        layer.msg('请选择户型',function () {});
+    }else{
+        $.ajax({
+            url:"{:url('Tools/houselayoutpic')}",
+            data:{"community_id":community_id,"layout_id":layout_id},
+            dataType:'json',
+            type:'get',
+            success:function (resp) {
+                if(resp.code){
+                    if(resp.data.length){
+                        var imgs='';
+                        $.each(resp.data,function (index,info) {
+                            imgs +='<input class="va_m" type="radio" name="layout-picture" value="'+info.id+'" data-pic="'+info.picture+'" id="pic-'+info.id+'" style="display: inline-block;">' +
+                                '<label for="pic-'+info.id+'" style="display: inline-block"><div class="img">' +
+                                '<img title="'+info.l_name+'('+info.remark+')" src="'+info.picture+'" class="w_100 h_100" id="'+info.l_name+'-'+info.id+'"/>' +
+                                '<p><span onclick="bigimg(document.getElementById(\''+info.l_name+'-'+info.id+'\'))">点击放大</span></p></div></label>'
+                        });
+                        var dom=$('#view-layout-pic-box');
+                        dom.find('td.imgCon').html(imgs);
+
+                        var width=500;
+                        var height=400;
+
+                        layer_index=layer.open({
+                            type: 1,
+                            skin: 'new-layer',
+                            title: '选择户型图',
+                            shadeClose: true,
+                            maxmin: true, //开启最大化最小化按钮
+                            area: [width+'px', height+'px'],
+                            content: dom
+                        });
+
+                    }else{
+                        layer.msg('暂无数据',function () {});
+                    }
+                }else{
+                    layer.msg(resp.msg,function () {});
+                }
+            }
+        });
+    }
+});
+
+$('#btn-choose').click(function () {
+    var layout_obj=$('#view-layout-pic-box').find('input[name=layout-picture]:checked');
+    var layout_pic_id=layout_obj.val();
+    var layout_pic=layout_obj.data('pic');
+    if(!layout_pic_id){
+        layer.msg('请选择户型图',function () {});
+    }else{
+        layer.close(layer_index);
+        var view_pic=$('#view-layout-pic');
+        var img='<div class="img"><img src="'+layout_pic+'" class="w_100 h_100" onclick="bigimg(this)">\n' +
+            '<p><span onclick="picremove(this);">删除</span></p>\n' +
+            '<input type="hidden" name="layout_pic_id" value="'+layout_pic_id+'"/></div>';
+
+        view_pic.siblings().remove();
+        view_pic.before(img);
+    }
+});
 </script>
 </body>
 </html>

@@ -219,7 +219,12 @@ class House extends Auth
         if(!$id){
             return $this->error('至少选择一项');
         }
-        $infos=Houses::withTrashed()->find($id);
+        $infos=Houses::withTrashed()
+            ->alias('h')
+            ->field(['h.*','p.picture as l_pic'])
+            ->join('house_layout_pic p','p.id=h.layout_pic_id','left')
+            ->where('h.id',$id)
+            ->find();
         if(!$infos){
             return $this->error('选择项目不存在');
         }

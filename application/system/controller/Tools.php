@@ -5,6 +5,7 @@
  * | 默认上传
  * | kindeditor 上传
  * | kindeditor 文件管理
+ * | 房源户型图
  * */
 namespace app\system\controller;
 
@@ -117,5 +118,28 @@ class Tools extends Auth
 
         //输出JSON字符串
         exit(json_encode($result));
+    }
+
+    /* ========== 房源户型图 ========== */
+    public function houselayoutpic(){
+        $community_id=input('community_id');
+        $layout_id=input('layout_id');
+        if(!$community_id){
+            return $this->error('请选择小区');
+        }
+        if(!$layout_id){
+            return $this->error('请选择户型');
+        }
+        $houselayoutpics=model('Houselayoutpics')
+            ->alias('p')
+            ->field(['p.id','community_id','layout_id','remark','picture','p.status','p.deleted_at','l.name as l_name'])
+            ->join('layout l','l.id=p.layout_id','left')
+            ->where('community_id',$community_id)
+            ->where('layout_id',$layout_id)
+            ->where('p.status',1)
+            ->select();
+
+        $data=$houselayoutpics?$houselayoutpics:[];
+        return $this->success('获取成功','',$data);
     }
 }
