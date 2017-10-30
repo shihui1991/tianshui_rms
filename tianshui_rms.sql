@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost_phpwamp
+Source Server         : localhost
 Source Server Version : 50554
 Source Host           : 127.0.0.1:3306
 Source Database       : tianshui_rms
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-10-30 18:40:52
+Date: 2017-10-30 23:06:50
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -18,6 +18,30 @@ CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_g
 USE `tianshui_rms`;
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for api
+-- ----------------------------
+DROP TABLE IF EXISTS `api`;
+CREATE TABLE `api` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `parent_id` int(11) DEFAULT NULL COMMENT '上级ID',
+  `level` int(11) DEFAULT NULL COMMENT '层级',
+  `name` varchar(255) DEFAULT NULL COMMENT ' 接口名称',
+  `url` text COMMENT '接口地址',
+  `infos` text COMMENT ' 接口描述',
+  `params` text COMMENT '参数',
+  `sort` int(11) DEFAULT NULL COMMENT ' 排序',
+  `status` tinyint(1) DEFAULT '1' COMMENT ' 状态，0禁用，1启用',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='接口文档';
+
+-- ----------------------------
+-- Records of api
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for bank
@@ -238,14 +262,15 @@ CREATE TABLE `house_layout_pic` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='安置房源户型图';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='安置房源户型图';
 
 -- ----------------------------
 -- Records of house_layout_pic
 -- ----------------------------
-INSERT INTO `house_layout_pic` VALUES ('1', '1', '1', 'A', '/uploads/20171030/a8495ab434c95f1953dc34f0a249df09.png', '', '1', '1509345081', '1509345389', null);
-INSERT INTO `house_layout_pic` VALUES ('2', '1', '1', 'B', null, '', '1', '1509345103', '1509345364', null);
-INSERT INTO `house_layout_pic` VALUES ('3', '2', '1', 'A', null, '', '1', '1509345280', '1509345364', null);
+INSERT INTO `house_layout_pic` VALUES ('1', '1', '1', 'A', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', '1', '1509345081', '1509373005', null);
+INSERT INTO `house_layout_pic` VALUES ('2', '1', '1', 'B', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', '1', '1509345103', '1509374240', null);
+INSERT INTO `house_layout_pic` VALUES ('3', '2', '1', 'A', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', '1', '1509345280', '1509345364', null);
+INSERT INTO `house_layout_pic` VALUES ('4', '2', '2', 'A', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', '1', '1509367040', '1509367040', null);
 
 -- ----------------------------
 -- Table structure for layout
@@ -260,12 +285,16 @@ CREATE TABLE `layout` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='房屋户型';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='房屋户型';
 
 -- ----------------------------
 -- Records of layout
 -- ----------------------------
 INSERT INTO `layout` VALUES ('1', '一室一厅', '', '1', '1509332132', '1509332149', null);
+INSERT INTO `layout` VALUES ('2', '两室一厅', '', '1', '1509366966', '1509366966', null);
+INSERT INTO `layout` VALUES ('3', '三室一厅', '', '1', '1509366976', '1509366976', null);
+INSERT INTO `layout` VALUES ('4', '四室一厅', '', '1', '1509366986', '1509366986', null);
+INSERT INTO `layout` VALUES ('5', '五室一厅', '', '1', '1509366997', '1509366997', null);
 
 -- ----------------------------
 -- Table structure for menu
@@ -516,4 +545,4 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '0', '1', '开发者', null, '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', '351cee86fba9ce77563462adc31ba200', '1509358459', '127.0.0.1', '1', '1509096250', '1509171148', null);
+INSERT INTO `user` VALUES ('1', '0', '1', '开发者', null, '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', '351cee86fba9ce77563462adc31ba200', '1509365866', '127.0.0.1', '1', '1509096250', '1509171148', null);
