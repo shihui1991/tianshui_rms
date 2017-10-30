@@ -2,12 +2,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>特殊人群分类|后台管理系统</title>
+    <title>接口文档|后台管理系统</title>
     {include file="public/head" /}
 
 </head>
 <body>
-<h4>特殊人群分类管理</h4>
+<h4>接口文档管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
@@ -25,9 +25,13 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加特殊人群分类','{:url('add')}','600','260')">
+        <li class="fgf" onclick="layerIfWindow('添加接口文档','{:url('add')}','600','260')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form">
+            <img src="__STATIC__/system/img/text_list_numbers.png"/>
+            排序
         </li>
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
             <img src="__STATIC__/system/img/checked.png"/>
@@ -51,7 +55,7 @@
         </li>
     </ul>
 </div>
-<form action="{:url('all')}" method="post" id="js-ajax-form">
+<form action="{:url('sort')}" method="post" id="js-ajax-form">
     <div class="tableCon">
         <em class="xian"></em>
         <table class="table" border="0" >
@@ -62,25 +66,27 @@
                 </th>
                 <th>ID</th>
                 <th>名称</th>
+                <th>地址</th>
                 <th>说明</th>
                 <th>状态</th>
                 <th>操作</th>
             </tr>
-            {volist name="crowds" id="crowd"}
+            {volist name="apis" id="api"}
             <tr>
                 <td>
-                    <input class="va_m" type="checkbox" name="ids[]" value="{$crowd->id}" onclick="checkBoxOp(this)" id="check-{$crowd->id}"/>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$api->id}" onclick="checkBoxOp(this)" id="check-{$api->id}"/>
                 </td>
-                <td>{$crowd->id}</td>
-                <td>{if condition="$crowd->deleted_at"} <del>{$crowd->name}</del>{else /}{$crowd->name}{/if}</td>
-                <td>{if condition="$crowd->deleted_at"} <del>{$crowd->infos}</del>{else /}{$crowd->infos}{/if}</td>
-                <td>{$crowd->status}</td>
+                <td>{$api->id}</td>
+                <td>{if condition="$api->deleted_at"} <del>{$api->name}</del>{else /}{$api->name}{/if}</td>
+                <td>{if condition="$api->deleted_at"} <del>{$api->url}</del>{else /}{$api->url}{/if}</td>
+                <td>{if condition="$api->deleted_at"} <del>{$api->infos}</del>{else /}{$api->infos}{/if}</td>
+                <td>{$api->status}</td>
                 <td>
-                    {eq name="crowd->parent_id" value="0"}
-                    <button type="button" class="btn" onclick="layerIfWindow('添加特殊人群分类','{:url('add',['id'=>$crowd->id])}','600','260')" >添加子分类</button>
+                    {eq name="api->parent_id" value="0"}
+                    <button type="button" class="btn" onclick="layerIfWindow('添加接口文档','{:url('add',['id'=>$api->id])}','600','260')" >添加子接口</button>
                     {/eq}
-                    <button type="button" class="btn" onclick="layerIfWindow('特殊人群分类信息',	'{:url('detail',['id'=>$crowd->id])}','600','320')" >详细信息</button>
-                    <button type="button" data-action="{:url('delete',['ids'=>$crowd->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('接口文档信息',	'{:url('detail',['id'=>$api->id])}','600','320')" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$api->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}
@@ -89,7 +95,7 @@
     </div>
 </form>
 <div class="pageCon">
-    {$crowds->render()}
+    {$apis->render()}
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
@@ -97,7 +103,7 @@
         <table class="layerTable">
             <tr class="h50">
                 <td>名称：</td>
-                <td><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入特殊人群分类名称"/></td>
+                <td><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入接口文档名称"/></td>
                 <td>状态：</td>
                 <td>
                     <select name="status" id="status">
