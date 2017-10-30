@@ -39,7 +39,7 @@ class Auth extends Controller
         $controller=strtolower(request()->controller());
         $role_id=$role_id?(int)$role_id:\think\Session::get('userinfo.role_id');
         $url=$url?$url:request()->path();
-        if($controller=='home'){
+        if(in_array($controller,['home','tools'])){
             return true;
         }
         if(!$role_id){

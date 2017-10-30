@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>安置房源|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td>小区：</td>
+                <td colspan="3">
+                    <select name="community_id" id="community_id" class="chosen">
+                        <option value="">--选择小区--</option>
+                        {volist name="communitys" id="community"}
+                        <option value="{$community->id}" {if condition="isset($infos) and $community->id eq $infos->community_id"}selected{/if}>{$community->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>户型：</td>
+                <td colspan="3">
+                    <select name="layout_id" id="layout_id">
+                        <option value="">--选择户型--</option>
+                        {volist name="layouts" id="layout"}
+                        <option value="{$layout->id}" {if condition="isset($infos) and $layout->id eq $infos->layout_id"}selected{/if}>{$layout->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>几栋：</td>
+                <td><input type="number" name="building" id="building" value="{:isset($infos)?$infos->building:''}" min="1"></td>
+                <td>几单元：</td>
+                <td><input type="number" name="unit" id="unit" value="{:isset($infos)?$infos->unit:''}" min="1"></td>
+                <td>几楼：</td>
+                <td><input type="number" name="floor" id="floor" value="{:isset($infos)?$infos->floor:''}"></td>
+                <td>几号：</td>
+                <td><input type="number" name="number" id="number" value="{:isset($infos)?$infos->number:''}" min="1"></td>
+            </tr>
+            <tr class="h50">
+
+                <td>状态：</td>
+                <td>
+                    {volist name="model->status" id="status"}
+                    <label><input class="va_m" name="status" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $status)"}checked{/if}>{$status}</label>
+                    {/volist}
+                </td>
+            </tr>
+            {if condition="isset($infos)"}
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td>
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<script src="__STATIC__/system/js/ajax-submit.js"></script>
+<script>
+
+</script>
+</body>
+</html>
