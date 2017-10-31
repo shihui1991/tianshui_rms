@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>评估师|后台管理系统</title>
+    {include file="public/head" /}
+
+    <link rel="stylesheet" href="__STATIC__/system/css/chosen.css" charset="utf-8">
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td>公司：</td>
+                <td>
+                    <select name="company_id" id="company_id" data-placeholder="请选择评估公司" class="chosen" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择--</option>
+                        {volist name="companys" id="company"}
+                        <option value="{$company->id}" {if condition="isset($infos) and $infos->company_id eq $company->id"}selected{/if}>{$company->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="register_num">注册号：</label></td>
+                <td>
+                    <input id="register_num" class="must" type="text" name="register_num" value="{:isset($infos)?$infos->register_num:''}" required placeholder="输入评估师注册号"/>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="valid_at">有效期：</label></td>
+                <td>
+                    <input id="valid_at" class="laydate-icon" type="text" name="valid_at" value="{:isset($infos)?$infos->valid_at:''}" placeholder="输入有效期" onClick="laydate({istime: true, format: 'YYYY-MM-DD'})"/>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="name">姓名：</label></td>
+                <td>
+                    <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入姓名"/>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="phone">电话：</label></td>
+                <td>
+                    <input id="phone" type="text" name="phone" value="{:isset($infos)?$infos->phone:''}" placeholder="输入联系电话"/>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="infos">描述：</label></td>
+                <td>
+                    <textarea id="infos" name="infos">{:isset($infos)?$infos->infos:''}</textarea>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>状态：</td>
+                <td>
+                    {volist name="model->status" id="status"}
+                    <label><input class="va_m" name="status" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $status)"}checked{/if}>{$status}</label>
+                    {/volist}
+                </td>
+            </tr>
+            {if condition="isset($infos)"}
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td>
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<script src="__STATIC__/system/js/ajax-submit.js"></script>
+<script src="__STATIC__/system/js/chosen.jquery.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/system/js/datejs/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    /*----- 选择框 -----*/
+    $('.chosen').chosen();
+    /*----- 时间控件 -----*/
+    !function(){
+        laydate.skin('molv');//切换皮肤，请查看skins下面皮肤库
+        laydate({elem: '#valid_at'});//绑定元素
+    }();
+</script>
+</body>
+</html>

@@ -115,7 +115,7 @@
             <tr class="h50">
                 <td>地址：</td>
                 <td colspan="7">
-                    <select name="community_ids_a[]" id="address" class="chosen" multiple data-placeholder="请选择地址">
+                    <select name="community_ids_a[]" id="address" class="chosen" multiple data-placeholder="请选择地址" data-no_results_text="没有匹配数据">
                         <option value="">--选择地址--</option>
                         {volist name="communitys" id="community"}
                         <option value="{$community->id}" {if condition="isset($community_ids_a) and in_array($community->id,$community_ids_a)"}selected{/if}>{$community->address}</option>
@@ -126,7 +126,7 @@
             <tr class="h50">
                 <td>小区：</td>
                 <td colspan="3">
-                    <select name="community_ids_c[]" id="c_name" class="chosen" multiple data-placeholder="请选择小区">
+                    <select name="community_ids_c[]" id="c_name" class="chosen" multiple data-placeholder="请选择小区" data-no_results_text="没有匹配数据">
                         <option value="">--选择小区--</option>
                         {volist name="communitys" id="community"}
                         <option value="{$community->id}" {if condition="isset($community_ids_c) and in_array($community->id,$community_ids_c)"}selected{/if}>{$community->name}</option>

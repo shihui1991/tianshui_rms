@@ -132,7 +132,7 @@
                             {if condition="isset($infos)"}
                             <tr class="h50">
                                 <td>操作时间：</td>
-                                <td>
+                                <td colspan="3">
                                     创建于：{$infos->created_at}<br/>
                                     更新于：{$infos->updated_at}<br/>
                                     {if condition="isset($infos) and $infos->deleted_at"}
