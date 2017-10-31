@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>评估公司|后台管理系统</title>
+    {include file="public/head" /}
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/system/kindeditor/themes/default/default.css"/>
+    <script src="__STATIC__/system/kindeditor/kindeditor-all-min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="__STATIC__/system/kindeditor/lang/zh-CN.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        KindEditor.ready(function(K) {
+            window.editor = K.create('#content',{
+                width : '100%',
+                height:'440',
+                uploadJson : "{:url('Tools/uploads')}",
+                fileManagerJson : "{:url('Tools/listobjects')}",
+                allowFileManager : true,
+                items:['source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                    'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                    'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                    'superscript', 'clearhtml', 'quickformat', 'selectall', '/',
+                    'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                    'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                    'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                    'anchor', 'link', 'unlink', '|', 'about'],
+                afterBlur:function () {
+                    editor.sync();
+                }
+            });
+        });
+
+    </script>
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="tabs">
+        <div class="item">
+            <div class="homeTit bg_f5">
+                <div class="fl"><img src="__STATIC__/system/img/bricks.png"/>评估公司</div>
+                <ul class="homeTab">
+                    <li class="on">基本信息</li>
+                    <li>相关图片</li>
+                    <li>详细介绍</li>
+                </ul>
+            </div>
+            <div class="homeCon">
+                <div class="tabPage w_100 on">
+                    <div class="layerCon bg_f">
+                        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                        <table class="layerTable" border="0">
+                            <tr class="h50">
+                                <td><label for="type">类型：</label></td>
+                                <td>
+                                    <select name="type" id="type">
+                                        {volist name="model->type" id="type"}
+                                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('type') eq $key"}selected{/if}>{$type}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td><label for="short_name">简名：</label></td>
+                                <td>
+                                    <input id="short_name" type="text" name="short_name" value="{:isset($infos)?$infos->short_name:''}" required placeholder="输入简名"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="name">名称：</label></td>
+                                <td colspan="3">
+                                    <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入唯一名称"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="address">地址：</label></td>
+                                <td colspan="3">
+                                    <input id="address" type="text" name="address" value="{:isset($infos)?$infos->address:''}"  placeholder="输入地址"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="phone">公司电话：</label></td>
+                                <td>
+                                    <input id="phone" type="text" name="phone" value="{:isset($infos)?$infos->phone:''}"  placeholder="输入公司电话"/>
+                                </td>
+                                <td><label for="fax">公司传真：</label></td>
+                                <td>
+                                    <input id="fax" type="text" name="fax" value="{:isset($infos)?$infos->fax:''}"  placeholder="输入公司传真"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="contact_man">联系人：</label></td>
+                                <td>
+                                    <input id="contact_man" type="text" name="contact_man" value="{:isset($infos)?$infos->contact_man:''}"  placeholder="输入联系人姓名"/>
+                                </td>
+                                <td><label for="contact_phone">联系电话：</label></td>
+                                <td>
+                                    <input id="contact_phone" type="text" name="contact_phone" value="{:isset($infos)?$infos->contact_phone:''}"  placeholder="输入联系电话"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="infos">简介：</label></td>
+                                <td colspan="3">
+                                    <textarea id="infos" name="infos">{:isset($infos)?$infos->infos:''}</textarea>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="username">登录名：</label></td>
+                                <td>
+                                    <input id="username" type="text" name="username" value="{:isset($infos)?$infos->username:''}" required placeholder="输入评估平台登录名"/>
+                                </td>
+                                <td><label for="password">密码：</label></td>
+                                <td>
+                                    <input id="password" type="text" name="password" value="{:isset($infos)?$infos->password:''}" required placeholder="输入评估平台登录密码"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="secret_key">密钥：<button type="button" title="点击获取" id="getkey" data-obj="#secret_key"><img src="__STATIC__/system/img/add.png" alt="点击获取"></button></label></td>
+                                <td colspan="3">
+                                    <input id="secret_key" type="text" name="secret_key" value="{:isset($infos)?$infos->secret_key:''}" required placeholder="输入评估平台密钥"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="sort">显示排序：</label></td>
+                                <td>
+                                    <input id="sort" type="number" name="sort" value="{:isset($infos)?$infos->sort:''}"/>
+                                </td>
+                                <td>状态：</td>
+                                <td>
+                                    {volist name="model->status" id="status"}
+                                    <label><input class="va_m" name="status" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $status)"}checked{/if}>{$status}</label>
+                                    {/volist}
+                                </td>
+                            </tr>
+                            {if condition="isset($infos)"}
+                            <tr class="h50">
+                                <td>操作时间：</td>
+                                <td>
+                                    创建于：{$infos->created_at}<br/>
+                                    更新于：{$infos->updated_at}<br/>
+                                    {if condition="isset($infos) and $infos->deleted_at"}
+                                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+                        </table>
+
+                    </div>
+                </div>
+                <div class="tabPage w_100">
+                    <div class="layerCon bg_f">
+                        <table class="layerTable" border="0" id="picture-table">
+                            <tr class="h70">
+                                <td>LOGO：</td>
+                                <td class="imgCon">
+                                    {if condition="isset($infos) and $infos->logo"}
+                                    <div class="img">
+                                        <img src="{$infos->logo}" class="w_100 h_100" onclick="bigimg(this)">
+                                        <p><span onclick="picremove(this);">删除</span></p>
+                                        <input type="hidden" name="logo" value="{$infos->logo}"/>
+                                    </div>
+                                    {/if}
+                                    <div class="img upload-btn">
+                                        <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="logo" data-url="{:url('Tools/upl')}">
+                                        <a>+</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td>其他分类：</td>
+                                <td>
+                                    <div class="form-inline add-cate-box">
+                                        <div class="form-group">
+                                            <input type="text" name="cate_name" class="form-control" placeholder="请输入类型名称" style="width: inherit; height: 30px; border: 1px solid #ddd;line-height: 30px;padding: 0 2px;">
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn add-cate" type="button">点击添加分类</button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {if condition="isset($infos) and $infos->picture"}
+                            {volist name="$infos->picture" id="pics"}
+                            {php}$name=$key;{/php}
+                            <tr class="h70">
+                                <td><span>{$name}</span>：<br/><br/><button type="button" onclick="picdelete(this)">点击删除</button></td>
+                                <td class="imgCon">
+                                    {volist name="pics" id="pic" key="k"}
+                                    {if condition="$pic"}
+                                    <div class="img">
+                                        <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                        <p><span onclick="picremove(this);">删除</span></p>
+                                        <input type="hidden" name="picture[{$name}][]" value="{$pic}">
+                                    </div>
+                                    {/if}
+                                    {/volist}
+                                    <div class="img upload-btn">
+                                        <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="picture[{$name}][]" multiple data-url="{:url('Tools/upl')}">
+                                        <a>+</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {/volist}
+                            {/if}
+
+                        </table>
+                    </div>
+                </div>
+                <div class="tabPage w_100">
+                    <div class="layerCon bg_f">
+                        <textarea name="content" id="content">{:isset($infos)?$infos->content:''}</textarea>
+                    </div>
+                </div>
+                <div class="layerBtns">
+                    <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+                    <button class="btn" type="reset">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<table style="display: none">
+    <tr class="h70" id="img_tpl">
+        <td><span class="cate-name"></span>：<br/><br/><button type="button" onclick="picdelete(this)">点击删除</button></td>
+        <td class="imgCon">
+            <div class="img upload-btn">
+                <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="" multiple data-url="{:url('Tools/upl')}">
+                <a>+</a>
+            </div>
+        </td>
+    </tr>
+</table>
+<script src="__STATIC__/system/js/ajax-submit.js"></script>
+<script src="__STATIC__/system/js/upload.js"></script>
+<script>
+    /*----- 添加分类 -----*/
+    $('.add-cate').on('click',function () {
+        var add_cate_box=$(this).parents('.add-cate-box'),
+            cate_name=add_cate_box.find('input[name="cate_name"]:first').val().replace(/\s+/g, ''),
+            hiddenname;
+        if(cate_name.length){
+            add_cate_box.find('input[name="cate_name"]:first').val('');
+            var img_tpl=$('#img_tpl').clone(true).attr('id','');
+            img_tpl.find('.cate-name').text(cate_name);
+            img_tpl.find('.upload_files').data('hiddenname','picture['+cate_name+'][]');
+            $('#picture-table').append(img_tpl);
+        }else{
+            layer.msg('请输入分类名称',function () {});
+        }
+    });
+    /*----- 删除图片 -----*/
+    function picdelete(obj) {
+        $(obj).parent().parent().remove();
+    }
+    /*----- 获取密钥 -----*/
+    $('#getkey').click(function () {
+        var obj=$(this).data('obj');
+        $.ajax({
+            url:"{:url('Tools/createkey')}",
+            dataType:'json',
+            type:'get',
+            success:function (resp) {
+                if(resp.code){
+                    $(obj).val(resp.data);
+                }else{
+                    layer.msg('获取失败',function () {});
+                }
+            },
+            error:function () {
+                layer.msg('获取失败',function () {});
+            }
+        });
+    });
+</script>
+</body>
+</html>

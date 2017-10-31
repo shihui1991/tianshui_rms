@@ -6,6 +6,9 @@
  * | kindeditor 上传
  * | kindeditor 文件管理
  * | 房源户型图
+ * | 接口分组公共参数
+ * | 生成GUID
+ * | 生成GUID md5密钥
  * */
 namespace app\system\controller;
 
@@ -54,7 +57,7 @@ class Tools extends Auth
     }
 
     /* ========== kindeditor 文件管理 ========== */
-    public function listObjects()
+    public function listobjects()
     {
         $path=$_GET['path'];
 
@@ -156,5 +159,15 @@ class Tools extends Auth
         }else{
             return $this->success('获取成功','',$params);
         }
+    }
+
+    /* ========== 生成GUID ========== */
+    public function getguid(){
+        return $this->success('获取成功','',create_guid());
+    }
+
+    /* ========== 生成GUID md5密钥 ========== */
+    public function createkey(){
+        return $this->success('获取成功','',md5(create_guid()));
     }
 }
