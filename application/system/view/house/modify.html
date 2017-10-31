@@ -8,85 +8,201 @@
 </head>
 <body>
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
-    <div class="layerCon bg_f">
-        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
-        <table class="layerTable" border="0">
-            <tr class="h50">
-                <td>小区：</td>
-                <td colspan="3">
-                    <select name="community_id" id="community_id" class="chosen">
-                        <option value="">--选择小区--</option>
-                        {volist name="communitys" id="community"}
-                        <option value="{$community->id}" {if condition="isset($infos) and $community->id eq $infos->community_id"}selected{/if}>{$community->name}</option>
-                        {/volist}
-                    </select>
-                </td>
-                <td>户型：</td>
-                <td colspan="3">
-                    <select name="layout_id" id="layout_id">
-                        <option value="">--选择户型--</option>
-                        {volist name="layouts" id="layout"}
-                        <option value="{$layout->id}" {if condition="isset($infos) and $layout->id eq $infos->layout_id"}selected{/if}>{$layout->name}</option>
-                        {/volist}
-                    </select>
-                </td>
-            </tr>
-            <tr class="h70">
-                <td>户型图：</td>
-                <td class="imgCon" colspan="7">
-                    {if condition="isset($infos) and $infos->l_pic"}
-                    <div class="img">
-                        <img src="{$infos->l_pic}" class="w_100 h_100" onclick="bigimg(this)">
-                        <p><span onclick="picremove(this);">删除</span></p>
-                        <input type="hidden" name="layout_pic_id" value="{$infos->layout_pic_id}"/>
+    <div class="tabs">
+        <div class="item">
+            <div class="homeTit bg_f5">
+                <div class="fl"><img src="__STATIC__/system/img/books.png"/>安置房源</div>
+                <ul class="homeTab">
+                    <li class="on">房源信息</li>
+                    <li>房源图片</li>
+                </ul>
+            </div>
+            <div class="homeCon">
+                <div class="tabPage w_100 on">
+                    <div class="layerCon bg_f">
+                        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                        <table class="layerTable" border="0">
+                            <tr class="h50">
+                                <td>小区：</td>
+                                <td colspan="3">
+                                    <select name="community_id" id="community_id" class="chosen">
+                                        <option value="">--选择小区--</option>
+                                        {volist name="communitys" id="community"}
+                                        <option value="{$community->id}" {if condition="isset($infos) and $community->id eq $infos->community_id"}selected{/if}>{$community->name}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td>户型：</td>
+                                <td colspan="3">
+                                    <select name="layout_id" id="layout_id">
+                                        <option value="">--选择户型--</option>
+                                        {volist name="layouts" id="layout"}
+                                        <option value="{$layout->id}" {if condition="isset($infos) and $layout->id eq $infos->layout_id"}selected{/if}>{$layout->name}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="h70">
+                                <td>户型图：</td>
+                                <td class="imgCon" colspan="7">
+                                    {if condition="isset($infos) and $infos->l_pic"}
+                                    <div class="img">
+                                        <img src="{$infos->l_pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                        <p><span onclick="picremove(this);">删除</span></p>
+                                        <input type="hidden" name="layout_pic_id" value="{$infos->layout_pic_id}"/>
+                                    </div>
+                                    {/if}
+                                    <div class="img" id="view-layout-pic">
+                                        <a>+</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td>几栋：</td>
+                                <td><input type="number" name="building" id="building" value="{:isset($infos)?$infos->building:''}" min="1"></td>
+                                <td>几单元：</td>
+                                <td><input type="number" name="unit" id="unit" value="{:isset($infos)?$infos->unit:''}" min="1"></td>
+                                <td>几楼：</td>
+                                <td><input type="number" name="floor" id="floor" value="{:isset($infos)?$infos->floor:''}"></td>
+                                <td>几号：</td>
+                                <td><input type="number" name="number" id="number" value="{:isset($infos)?$infos->number:''}" min="1"></td>
+                            </tr>
+                            <tr class="h50">
+                                <td>面积：</td>
+                                <td><input type="number" name="area" id="area" value="{:isset($infos)?$infos->area:''}" min="1"></td>
+                                <td>总楼层：</td>
+                                <td><input type="number" name="total_floor" id="total_floor" value="{:isset($infos)?$infos->total_floor:''}" min="1"></td>
+                                <td>物业费：</td>
+                                <td><input type="number" name="property_manage_fee" id="property_manage_fee" value="{:isset($infos)?$infos->property_manage_fee:''}" min="0" placeholder="物业管理费单价（元/平米/月）"></td>
+                                <td>公摊费：</td>
+                                <td><input type="number" name="public_fee" id="public_fee" value="{:isset($infos)?$infos->public_fee:''}" min="0" placeholder="公摊费单价（元/月）"></td>
+                            </tr>
+                            <tr class="h50">
+                                <td>类型：</td>
+                                <td>
+                                    <select name="is_real" id="is_real">
+                                        {volist name="model->is_real" id="value"}
+                                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('is_real')==$key"}selected{/if}>{$value}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td>购买：</td>
+                                <td>
+                                    <select name="is_buy" id="is_buy">
+                                        {volist name="model->is_buy" id="value"}
+                                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('is_buy')==$key"}selected{/if}>{$value}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td>过渡：</td>
+                                <td>
+                                    <select name="is_transit" id="is_transit">
+                                        {volist name="model->is_transit" id="value"}
+                                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('is_transit')==$key"}selected{/if}>{$value}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td>共用：</td>
+                                <td>
+                                    <select name="is_public" id="is_public">
+                                        {volist name="model->is_public" id="value"}
+                                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('is_public')==$key"}selected{/if}>{$value}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td>交付时间：</td>
+                                <td colspan="3">
+                                    <input class="laydate-icon" id="deliver_at" name="deliver_at" value="{:isset($infos)?$infos->deliver_at:''}"  onClick="laydate({istime: true, format: 'YYYY-MM-DD'})">
+                                </td>
+                                <td>有无电梯：</td>
+                                <td>
+                                    <select name="has_lift" id="has_lift">
+                                        {volist name="model->has_lift" id="value"}
+                                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('has_lift')==$key"}selected{/if}>{$value}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td>状态：</td>
+                                <td>
+                                    <select name="status" id="status">
+                                        {volist name="model->status" id="value"}
+                                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('status')==$key"}selected{/if}>{$value}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                            </tr>
+                            {if condition="isset($infos)"}
+                            <tr class="h50">
+                                <td>操作时间：</td>
+                                <td colspan="7">
+                                    创建于：{$infos->created_at}<br/>
+                                    更新于：{$infos->updated_at}<br/>
+                                    {if condition="isset($infos) and $infos->deleted_at"}
+                                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+                        </table>
                     </div>
-                    {/if}
-                    <div class="img" id="view-layout-pic">
-                        <a>+</a>
+                </div>
+                <div class="tabPage w_100">
+                    <div class="layerCon bg_f">
+                        <table class="layerTable" border="0" id="picture-table">
+                            <tr class="h50">
+                                <td>分类：</td>
+                                <td>
+                                    <div class="form-inline add-cate-box">
+                                        <div class="form-group">
+                                            <input type="text" name="cate_name" class="form-control" placeholder="请输入类型名称" style="width: inherit; height: 30px; border: 1px solid #ddd;line-height: 30px;padding: 0 2px;">
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn add-cate" type="button">点击添加分类</button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {if condition="isset($infos) and $infos->picture"}
+                            {volist name="$infos->picture" id="pics"}
+                            {php}$name=$key;{/php}
+                            <tr class="h70">
+                                <td><span>{$name}</span>：<br/><br/><button type="button" onclick="picdelete(this)">点击删除</button></td>
+                                <td class="imgCon">
+                                    {volist name="pics" id="pic" key="k"}
+                                    {if condition="$pic"}
+                                    <div class="img">
+                                        <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                        <p><span onclick="picremove(this);">删除</span></p>
+                                        <input type="hidden" name="picture[{$name}][]" value="{$pic}">
+                                    </div>
+                                    {/if}
+                                    {/volist}
+                                    <div class="img upload-btn">
+                                        <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="picture[{$name}][]" multiple data-url="{:url('Tools/upl')}">
+                                        <a>+</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {/volist}
+                            {/if}
+
+                        </table>
                     </div>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td>几栋：</td>
-                <td><input type="number" name="building" id="building" value="{:isset($infos)?$infos->building:''}" min="1"></td>
-                <td>几单元：</td>
-                <td><input type="number" name="unit" id="unit" value="{:isset($infos)?$infos->unit:''}" min="1"></td>
-                <td>几楼：</td>
-                <td><input type="number" name="floor" id="floor" value="{:isset($infos)?$infos->floor:''}"></td>
-                <td>几号：</td>
-                <td><input type="number" name="number" id="number" value="{:isset($infos)?$infos->number:''}" min="1"></td>
-            </tr>
-
-            <tr class="h50">
-
-                <td>状态：</td>
-                <td>
-                    {volist name="model->status" id="status"}
-                    <label><input class="va_m" name="status" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $status)"}checked{/if}>{$status}</label>
-                    {/volist}
-                </td>
-            </tr>
-            {if condition="isset($infos)"}
-            <tr class="h50">
-                <td>操作时间：</td>
-                <td>
-                    创建于：{$infos->created_at}<br/>
-                    更新于：{$infos->updated_at}<br/>
-                    {if condition="isset($infos) and $infos->deleted_at"}
-                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
-                    {/if}
-                </td>
-            </tr>
-            {/if}
-        </table>
-        <div class="layerBtns">
-            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
-            <button class="btn" type="reset">重置</button>
+                </div>
+                <div class="layerBtns">
+                    <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+                    <button class="btn" type="reset">重置</button>
+                </div>
+            </div>
         </div>
     </div>
+
 </form>
 
-    <div class="layerCon bg_f hide" id="view-layout-pic-box">
+<div class="layerCon bg_f hide" id="view-layout-pic-box">
     <table class="layerTable" border="0">
         <tr class="h70">
             <td class="imgCon" style="text-align: left;"></td>
@@ -95,11 +211,24 @@
     <div class="layerBtns">
         <button class="btn" type="button" id="btn-choose">确定</button>
     </div>
-    </div>
+</div>
 
+<table style="display: none">
+    <tr class="h70" id="img_tpl">
+        <td><span class="cate-name"></span>：<br/><br/><button type="button" onclick="picdelete(this)">点击删除</button></td>
+        <td class="imgCon">
+            <div class="img upload-btn">
+                <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="" multiple data-url="{:url('Tools/upl')}">
+                <a>+</a>
+            </div>
+        </td>
+    </tr>
+</table>
 <script src="__STATIC__/system/js/ajax-submit.js"></script>
 <script src="__STATIC__/system/js/upload.js"></script>
+<script src="__STATIC__/system/js/datejs/laydate.js" type="text/javascript" charset="utf-8"></script>
 <script>
+    /*----- 查看户型图 -----*/
 $('#view-layout-pic').click(function () {
     var btn=$(this);
     var community_id=$('#community_id').find('option:checked').val();
@@ -150,7 +279,7 @@ $('#view-layout-pic').click(function () {
         });
     }
 });
-
+    /*----- 选择户型图 -----*/
 $('#btn-choose').click(function () {
     var layout_obj=$('#view-layout-pic-box').find('input[name=layout-picture]:checked');
     var layout_pic_id=layout_obj.val();
@@ -168,6 +297,31 @@ $('#btn-choose').click(function () {
         view_pic.before(img);
     }
 });
+
+/*----- 时间控件 -----*/
+!function(){
+    laydate.skin('molv');//切换皮肤，请查看skins下面皮肤库
+    laydate({elem: '#deliver_at'});//绑定元素
+}();
+    /*----- 添加分类 -----*/
+    $('.add-cate').on('click',function () {
+        var add_cate_box=$(this).parents('.add-cate-box'),
+            cate_name=add_cate_box.find('input[name="cate_name"]:first').val().replace(/\s+/g, ''),
+            hiddenname;
+        if(cate_name.length){
+            add_cate_box.find('input[name="cate_name"]:first').val('');
+            var img_tpl=$('#img_tpl').clone(true).attr('id','');
+            img_tpl.find('.cate-name').text(cate_name);
+            img_tpl.find('.upload_files').data('hiddenname','picture['+cate_name+'][]');
+            $('#picture-table').append(img_tpl);
+        }else{
+            layer.msg('请输入分类名称',function () {});
+        }
+    });
+    /*----- 删除图片 -----*/
+    function picdelete(obj) {
+        $(obj).parent().parent().remove();
+    }
 </script>
 </body>
 </html>

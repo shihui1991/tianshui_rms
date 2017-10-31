@@ -19,6 +19,7 @@ class Houses extends Model
     protected $autoWriteTimestamp = true;
     protected $field=true;
     protected $type = [
+        'picture'=>'array',
         'deliver_at'=>'timestamp:Y-m-d',
     ];
 

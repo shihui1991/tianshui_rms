@@ -35,9 +35,14 @@ class House extends Auth
         $datas=[];
         $where=[];
         $field=['h.*','c.address','c.name as c_name','l.name as l_name'];
-        /* ++++++++++ 小区 ++++++++++ */
         $inputs=input();
-        $community_ids=isset($inputs['community_ids'])?$inputs['community_ids']:[];
+        /* ++++++++++ 地址 ++++++++++ */
+        $community_ids_a=isset($inputs['community_ids_a'])?$inputs['community_ids_a']:[];
+        $datas['community_ids_a']=$community_ids_a;
+        /* ++++++++++ 小区 ++++++++++ */
+        $community_ids_c=isset($inputs['community_ids_c'])?$inputs['community_ids_c']:[];
+        $datas['community_ids_c']=$community_ids_c;
+        $community_ids=array_filter(array_merge($community_ids_a,$community_ids_c));
         if($community_ids){
             $where['community_id']=['in',$community_ids];
             $datas['community_ids']=$community_ids;

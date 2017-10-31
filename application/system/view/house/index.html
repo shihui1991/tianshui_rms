@@ -21,7 +21,7 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加安置房源','{:url('add')}','800','600')">
+        <li class="fgf" onclick="layerIfWindow('添加安置房源','{:url('add')}','800','520')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
@@ -59,6 +59,7 @@
                 <th>ID</th>
                 <th>小区</th>
                 <th>房号</th>
+                <th>交付时间</th>
                 <th>户型</th>
                 <th>面积</th>
                 <th>有无电梯</th>
@@ -72,9 +73,9 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$house->id}" onclick="checkBoxOp(this)" id="check-{$house->id}"/>
                 </td>
                 <td>{$house->id}</td>
-                <td title="{$house->address}">{if condition="$house->deleted_at or $house->getData('status') eq 0"} <del>{$house->c_name}</del>{else /}{$house->c_name}{/if}</td>
+                <td title="{$house->address}">{if condition="$house->deleted_at or $house->getData('status') eq 3"} <del>{$house->c_name}</del>{else /}{$house->c_name}{/if}</td>
                 <td>
-                    {if condition="$house->deleted_at or $house->getData('status') eq 0"}
+                    {if condition="$house->deleted_at or $house->getData('status') eq 3"}
                     <del>
                     {if condition="$house->building"}{$house->building}栋{/if}
                     {if condition="$house->unit"}{$house->unit}单元{/if}
@@ -88,13 +89,14 @@
                     {if condition="$house->number"}{$house->number}号{/if}
                     {/if}
                 </td>
+                <td>{$house->deliver_at}</td>
                 <td>{$house->l_name}</td>
                 <td>{$house->area}</td>
                 <td>{$house->has_lift}</td>
                 <td>{$house->is_real} | {$house->is_buy} | {$house->is_transit} | {$house->is_public}</td>
                 <td>{$house->status}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('安置房源信息',	'{:url('detail',['id'=>$house->id])}','600','300')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('安置房源信息',	'{:url('detail',['id'=>$house->id])}','800','560')" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$house->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
@@ -113,10 +115,10 @@
             <tr class="h50">
                 <td>地址：</td>
                 <td colspan="7">
-                    <select name="community_ids[]" id="address" class="chosen">
+                    <select name="community_ids_a[]" id="address" class="chosen" multiple data-placeholder="请选择地址">
                         <option value="">--选择地址--</option>
                         {volist name="communitys" id="community"}
-                        <option value="{$community->id}" {if condition="isset($community_ids) and in_array($community->id,$community_ids)"}selected{/if}>{$community->address}</option>
+                        <option value="{$community->id}" {if condition="isset($community_ids_a) and in_array($community->id,$community_ids_a)"}selected{/if}>{$community->address}</option>
                         {/volist}
                     </select>
                 </td>
@@ -124,10 +126,10 @@
             <tr class="h50">
                 <td>小区：</td>
                 <td colspan="3">
-                    <select name="community_ids[]" id="c_name" class="chosen">
+                    <select name="community_ids_c[]" id="c_name" class="chosen" multiple data-placeholder="请选择小区">
                         <option value="">--选择小区--</option>
                         {volist name="communitys" id="community"}
-                        <option value="{$community->id}" {if condition="isset($community_ids) and in_array($community->id,$community_ids)"}selected{/if}>{$community->name}</option>
+                        <option value="{$community->id}" {if condition="isset($community_ids_c) and in_array($community->id,$community_ids_c)"}selected{/if}>{$community->name}</option>
                         {/volist}
                     </select>
                 </td>
@@ -168,8 +170,8 @@
                 <td>
                     <select name="status" id="status">
                         <option value="">--全部--</option>
-                        {volist name="model->status" id="value" key="k"}
-                        <option value="{$k}" {if condition="isset($status) and $status==$k"}selected{/if}>{$value}</option>
+                        {volist name="model->status" id="value"}
+                        <option value="{$key}" {if condition="isset($status) and $status==$key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
@@ -179,8 +181,8 @@
                 <td>
                     <select name="is_real" id="is_real">
                         <option value="">--全部--</option>
-                        {volist name="model->is_real" id="value" key="k"}
-                        <option value="{$k}" {if condition="isset($is_real) and $is_real==$k"}selected{/if}>{$value}</option>
+                        {volist name="model->is_real" id="value"}
+                        <option value="{$key}" {if condition="isset($is_real) and $is_real==$key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
@@ -188,8 +190,8 @@
                 <td>
                     <select name="is_buy" id="is_buy">
                         <option value="">--全部--</option>
-                        {volist name="model->is_buy" id="value" key="k"}
-                        <option value="{$k}" {if condition="isset($is_buy) and $is_buy==$k"}selected{/if}>{$value}</option>
+                        {volist name="model->is_buy" id="value"}
+                        <option value="{$key}" {if condition="isset($is_buy) and $is_buy==$key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
@@ -197,8 +199,8 @@
                 <td>
                     <select name="is_transit" id="is_transit">
                         <option value="">--全部--</option>
-                        {volist name="model->is_transit" id="value" key="k"}
-                        <option value="{$k}" {if condition="isset($is_transit) and $is_transit==$k"}selected{/if}>{$value}</option>
+                        {volist name="model->is_transit" id="value"}
+                        <option value="{$key}" {if condition="isset($is_transit) and $is_transit==$key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
@@ -206,8 +208,8 @@
                 <td>
                     <select name="is_public" id="is_public">
                         <option value="">--全部--</option>
-                        {volist name="model->is_public" id="value" key="k"}
-                        <option value="{$k}" {if condition="isset($is_public) and $is_public==$k"}selected{/if}>{$value}</option>
+                        {volist name="model->is_public" id="value"}
+                        <option value="{$key}" {if condition="isset($is_public) and $is_public==$key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
@@ -233,7 +235,7 @@
                 <td>
                     <select name="ordername" id="ordername">
                         <option value="id">--默认--</option>
-                        <option value="deleted_at" {if condition="isset($ordername) and $ordername=='deliver_at'"}selected{/if}>--交付时间--</option>
+                        <option value="deliver_at" {if condition="isset($ordername) and $ordername=='deliver_at'"}selected{/if}>--交付时间--</option>
                         <option value="created_at" {if condition="isset($ordername) and $ordername=='created_at'"}selected{/if}>--创建时间--</option>
                         <option value="updated_at" {if condition="isset($ordername) and $ordername=='updated_at'"}selected{/if}>--更新时间--</option>
                     </select>
