@@ -142,4 +142,19 @@ class Tools extends Auth
         $data=$houselayoutpics?$houselayoutpics:[];
         return $this->success('获取成功','',$data);
     }
+
+    /* ========== 接口分组公共参数 ========== */
+    public function params(){
+        $parent_id=input('parentid');
+        if(empty($parent_id)){
+            return $this->error('请选择接口分组');
+        }
+        $parent_params=model('Apis')->where('id',$parent_id)->where('status',1)->value('params');
+        $params=json_decode($parent_params,true);
+        if(empty($params)){
+            return $this->error('没有设置公共参数');
+        }else{
+            return $this->success('获取成功','',$params);
+        }
+    }
 }

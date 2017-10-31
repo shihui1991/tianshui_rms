@@ -36,7 +36,7 @@ class Api extends Auth
         if($apis){
             $array=[];
             foreach ($apis as $api){
-                $api->add_btn=$api->parent_id?'':"<button type='button' class='btn' onclick='layerIfWindow(&apos;添加接口&apos;,&apos;".url('add',['id'=>$api->id])."&apos;,&apos;600&apos;,&apos;260&apos;)' >添加子接口</button>";
+                $api->add_btn=$api->parent_id?'':"<button type='button' class='btn' onclick='layerIfWindow(&apos;添加接口&apos;,&apos;".url('add',['id'=>$api->id])."&apos;,&apos;800&apos;,&apos;600&apos;)' >添加子接口</button>";
                 $api->detail_url=url('detail',['id'=>$api->id]);
                 $api->delete_url=url('delete',['ids'=>$api->id]);
                 $array[]=$api;
@@ -54,7 +54,7 @@ class Api extends Auth
                         <td>\$status</td>
                         <td>
                             \$add_btn
-                            <button type='button' class='btn' onclick='layerIfWindow(&apos;接口信息&apos;,	&apos;\$detail_url&apos;,&apos;600&apos;,&apos;320&apos;)' >详细信息</button>
+                            <button type='button' class='btn' onclick='layerIfWindow(&apos;接口信息&apos;,	&apos;\$detail_url&apos;,&apos;800&apos;,&apos;600&apos;)' >详细信息</button>
                             <button type='button' data-action='\$delete_url' class='btn js-ajax-form-btn'>删除</button>
                         </td>
                     </tr>

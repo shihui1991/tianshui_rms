@@ -25,7 +25,7 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加接口文档','{:url('add')}','600','260')">
+        <li class="fgf" onclick="layerIfWindow('添加接口文档','{:url('add')}','800','600')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
@@ -64,6 +64,7 @@
                 <th class="tc" width="35px">
                     <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
                 </th>
+                <th>排序</th>
                 <th>ID</th>
                 <th>名称</th>
                 <th>地址</th>
@@ -76,6 +77,7 @@
                 <td>
                     <input class="va_m" type="checkbox" name="ids[]" value="{$api->id}" onclick="checkBoxOp(this)" id="check-{$api->id}"/>
                 </td>
+                <td><input style='width: 50px;' type='text' name='sorts[{$api->id}]' value='{$api->sort}' id='input-{$api->id}' data-id='{$api->id}'></td>
                 <td>{$api->id}</td>
                 <td>{if condition="$api->deleted_at"} <del>{$api->name}</del>{else /}{$api->name}{/if}</td>
                 <td>{if condition="$api->deleted_at"} <del>{$api->url}</del>{else /}{$api->url}{/if}</td>
@@ -83,9 +85,9 @@
                 <td>{$api->status}</td>
                 <td>
                     {eq name="api->parent_id" value="0"}
-                    <button type="button" class="btn" onclick="layerIfWindow('添加接口文档','{:url('add',['id'=>$api->id])}','600','260')" >添加子接口</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('添加接口文档','{:url('add',['id'=>$api->id])}','800','600')" >添加子接口</button>
                     {/eq}
-                    <button type="button" class="btn" onclick="layerIfWindow('接口文档信息',	'{:url('detail',['id'=>$api->id])}','600','320')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('接口文档信息',	'{:url('detail',['id'=>$api->id])}','800','600')" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$api->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>

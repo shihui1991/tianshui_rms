@@ -18,6 +18,10 @@ class Apis extends Model
     protected $deleteTime='deleted_at';
     protected $autoWriteTimestamp = true;
     protected $field=true;
+    protected $type=[
+        'params'=>'array',
+        'response'=>'array',
+    ];
 
     public function setNameAttr($value)
     {
