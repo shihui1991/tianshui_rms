@@ -255,7 +255,7 @@
     $('#getkey').click(function () {
         var obj=$(this).data('obj');
         $.ajax({
-            url:"{:url('Tools/createkey')}",
+            url:"{:url('Tools/getguid')}",
             dataType:'json',
             type:'get',
             success:function (resp) {

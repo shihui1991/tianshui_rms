@@ -100,7 +100,7 @@ class Company extends Auth
                 'name'=>'require|unique:company',
                 'username'=>'require|alphaDash|length:4,20|unique:company',
                 'password'=>'require|length:4,20',
-                'secret_key'=>['regex'=>'/^[0-9a-zA-Z]{32}$/','unique'=>'company'],
+                'secret_key'=>['regex'=>'/^[0-9a-zA-Z\-]{36}$/','unique'=>'company'],
             ];
             $msg=[
                 'name.require'=>'名称不能为空',
@@ -111,7 +111,7 @@ class Company extends Auth
                 'username.unique'=>'登录名已存在',
                 'password.require'=>'密码不能为空',
                 'password.length'=>'密码长度为4-20位',
-                'secret_key.regex'=>'密钥为32位字母和数字',
+                'secret_key.regex'=>'密钥为36位GUID',
                 'secret_key.unique'=>'密钥已存在',
             ];
 
@@ -164,7 +164,7 @@ class Company extends Auth
             'name'=>'require|unique:company,name,'.$id.',id',
             'username'=>'require|alphaDash|length:4,20|unique:company,username,'.$id.',id',
             'password'=>'require|length:4,20',
-            'secret_key'=>['regex'=>'/^[0-9a-zA-Z]{32}$/','unique'=>['company','secret_key',$id,'id']],
+            'secret_key'=>['regex'=>'/^[0-9a-zA-Z\-]{36}$/','unique'=>['company','secret_key',$id,'id']],
         ];
         $msg=[
             'name.require'=>'名称不能为空',
@@ -175,7 +175,7 @@ class Company extends Auth
             'username.unique'=>'登录名已存在',
             'password.require'=>'密码不能为空',
             'password.length'=>'密码长度为4-20位',
-            'secret_key.regex'=>'密钥为32位字母和数字',
+            'secret_key.regex'=>'密钥为36位GUID',
             'secret_key.unique'=>'密钥已存在',
         ];
 

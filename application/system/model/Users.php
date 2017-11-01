@@ -44,9 +44,7 @@ class Users extends Model
 
     public function other_data($input){
         $data=[];
-        if($input['username']){
-            $data['secret_key']=md5($input['username'].time());
-        }
+        $data['secret_key']=create_guid();
         return $data;
     }
 
