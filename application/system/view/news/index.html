@@ -2,12 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>项目管理|后台管理系统</title>
+    <title>新闻公告|后台管理系统</title>
     {include file="public/head" /}
 
+    <link rel="stylesheet" href="__STATIC__/system/css/chosen.css" charset="utf-8">
 </head>
 <body>
-<h4>项目管理管理</h4>
+<h4>新闻公告管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
@@ -16,13 +17,17 @@
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
                 重置</a>
         </li>
-        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','330')" >
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','430')" >
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加项目管理','{:url('add')}','800','580')">
+        <li class="fgf" onclick="layerIfWindow('添加新闻公告','{:url('add')}','800','580')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form">
+            <img src="__STATIC__/system/img/text_list_numbers.png"/>
+            排序
         </li>
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
             <img src="__STATIC__/system/img/checked.png"/>
@@ -42,7 +47,7 @@
         </li>
     </ul>
 </div>
-<form action="{:url('status')}" method="post" id="js-ajax-form">
+<form action="{:url('sort')}" method="post" id="js-ajax-form">
     <div class="tableCon">
         <em class="xian"></em>
         <table class="table" border="0" >
@@ -51,31 +56,35 @@
                 <th class="tc" width="35px">
                     <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
                 </th>
+                <th>排序</th>
                 <th>ID</th>
                 <th>名称</th>
-                <th>档案编号</th>
-                <th>预计户数</th>
-                <th>预算资金</th>
-                <th>安置房</th>
+                <th>分类</th>
+                <th>项目</th>
+                <th>发布时间</th>
+                <th>关键词</th>
+                <th>链接</th>
                 <th>置顶</th>
                 <th>状态</th>
                 <th>操作</th>
             </tr>
-            {volist name="items" id="item"}
+            {volist name="newss" id="news"}
             <tr>
                 <td>
-                    <input class="va_m" type="checkbox" name="ids[]" value="{$item->id}" onclick="checkBoxOp(this)" id="check-{$item->id}"/>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$news->id}" onclick="checkBoxOp(this)" id="check-{$news->id}"/>
                 </td>
-                <td>{$item->id}</td>
-                <td>{if condition="$item->getData('status') eq 0"} <del>{$item->name}</del>{else /}{$item->name}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0"} <del>{$item->record_num}</del>{else /}{$item->record_num}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0"} <del>{$item->household|number_format}</del>{else /}{$item->household|number_format}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0"} <del>{$item->funds|number_format}</del>{else /}{$item->funds|number_format}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0"} <del>{$item->house|number_format}</del>{else /}{$item->house|number_format}{/if}</td>
-                <td>{$item->is_top}</td>
-                <td>{$item->status}</td>
+                <td><input style="width: 50px;" type="text" name="sorts[{$news->id}]" value="{$news->sort}" id="input-{$news->id}" data-id="{$news->id}"></td>
+                <td>{$news->id}</td>
+                <td>{if condition="$news->getData('status') eq 0"} <del>{$news->name}</del>{else /}{$news->name}{/if}</td>
+                <td>{$news->c_name}</td>
+                <td>{$news->i_name}</td>
+                <td>{$news->release_at}</td>
+                <td>{$news->keywords}</td>
+                <td title="{$news->url_name}">{$news->url}</td>
+                <td>{$news->is_top}</td>
+                <td>{$news->status}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('项目基本信息',	'{:url('detail',['id'=>$item->id])}','800','630')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('新闻公告信息',	'{:url('detail',['id'=>$news->id])}','800','630')" >详细信息</button>
                 </td>
             </tr>
             {/volist}
@@ -84,21 +93,43 @@
     </div>
 </form>
 <div class="pageCon">
-    {$items->render()}
+    {$newss->render()}
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
     <form action="{:url('index')}" method="post" id="search-form">
         <table class="layerTable">
             <tr class="h50">
-                <td>名称：</td>
-                <td><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入项目管理名称"/></td>
-                <td>档案编号：</td>
-                <td><input type="text" name="record_num" id="record_num" value="{$record_num?:''}" placeholder="请输入项目管理名称"/></td>
+                <td>项目：</td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if}>{$item->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>分类：</td>
+                <td>
+                    <select name="cate_id" id="cate_id" class="chosen" data-placeholder="请选择分类" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="newscates" id="cate"}
+                        <option value="{$cate->id}" {if condition="isset($cate_id) and $cate_id eq $cate->id"}selected{/if}>{$cate->name}</option>
+                        {/volist}
+                    </select>
+                </td>
             </tr>
             <tr class="h50">
-                <td>征收范围：</td>
-                <td colspan="3"><input type="text" name="area" id="area" value="{$area?:''}" placeholder="请输入项目征收范围"/></td>
+                <td>名称：</td>
+                <td colspan="3"><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入新闻公告名称"/></td>
+            </tr>
+            <tr class="h50">
+                <td>关键词：</td>
+                <td colspan="3"><input type="text" name="keywords" id="keywords" value="{$keywords?:''}" placeholder="请输入新闻公告关键词"/></td>
+            </tr>
+            <tr class="h50">
+                <td>链接：</td>
+                <td colspan="3"><input type="text" name="url" id="url" value="{$url?:''}" placeholder="请输入新闻链接地址"/></td>
             </tr>
             <tr class="h50">
                 <td>置顶：</td>
@@ -132,10 +163,11 @@
                 <td>排序：</td>
                 <td>
                     <select name="ordername" id="ordername">
-                        <option value="id">--默认--</option>
+                        <option value="sort">--默认--</option>
+                        <option value="id" {if condition="isset($ordername) and $ordername=='id'"}selected{/if}>--ID--</option>
+                        <option value="release_at" {if condition="isset($ordername) and $ordername=='release_at'"}selected{/if}>--发布时间--</option>
                         <option value="created_at" {if condition="isset($ordername) and $ordername=='created_at'"}selected{/if}>--创建时间--</option>
                         <option value="updated_at" {if condition="isset($ordername) and $ordername=='updated_at'"}selected{/if}>--更新时间--</option>
-                        <option value="deleted_at" {if condition="isset($ordername) and $ordername=='deleted_at'"}selected{/if}>--删除时间--</option>
                     </select>
                 </td>
                 <td>方式：</td>
@@ -154,9 +186,12 @@
     </form>
 </div>
 <script src="__STATIC__/system/js/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/system/js/chosen.jquery.js" type="text/javascript" charset="utf-8"></script>
 <script>
 
     $(function () {
+        $('.chosen').chosen();
+
         $('input[type=text]').on('change',function () {
             var id=$(this).data('id');
             $('#check-'+id).attr('checked',true);
