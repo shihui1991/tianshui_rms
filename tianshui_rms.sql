@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost_phpwamp
+Source Server         : localhost
 Source Server Version : 50554
 Source Host           : 127.0.0.1:3306
 Source Database       : tianshui_rms
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-01 18:28:02
+Date: 2017-11-01 22:24:12
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -169,8 +169,8 @@ CREATE TABLE `company` (
 -- ----------------------------
 -- Records of company
 -- ----------------------------
-INSERT INTO `company` VALUES ('1', '0', '重庆市步联科技有限公司', '步联科技', null, '重庆市渝北区杨柳北路9号力华科谷A区203', '步联科技', '步联科技', '02363624610', '02363624610', '步联科技', '', null, 'buliankeji', '123456', '8620b96ee66ada6c820df19b2df71517', '0', '1', '1509435208', '1509497326', null);
-INSERT INTO `company` VALUES ('2', '1', '重庆市贤盾科技有限公司', '贤盾科技', '/uploads/20171031/fca9277be78db5eabf5cc6e244a38230.png', '重庆市贤盾科技有限公司', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '', null, 'xiandunkeji', '123456', 'a8e9dea7dcaaeefa5233e5046ca8270c', '0', '1', '1509435817', '1509443023', null);
+INSERT INTO `company` VALUES ('1', '0', '重庆市步联科技有限公司', '步联科技', null, '重庆市渝北区杨柳北路9号力华科谷A区203', '步联科技', '步联科技', '02363624610', '02363624610', '步联科技', '', null, 'buliankeji', '123456', '9600173F-AB5C-3DDD-0EEA-C204D1887295', '0', '1', '1509435208', '1509543210', null);
+INSERT INTO `company` VALUES ('2', '1', '重庆市贤盾科技有限公司', '贤盾科技', '/uploads/20171031/fca9277be78db5eabf5cc6e244a38230.png', '重庆市贤盾科技有限公司', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '', null, 'xiandunkeji', '123456', '24D564C3-7865-774D-9B37-E67CE60E89BD', '0', '1', '1509435817', '1509543206', null);
 
 -- ----------------------------
 -- Table structure for company_valuer
@@ -571,7 +571,7 @@ INSERT INTO `menu` VALUES ('159', '154', '删除评估师', '3', '<img src=\"/st
 INSERT INTO `menu` VALUES ('160', '154', '评估师恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/companyvaluer/restore', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('161', '154', '评估师销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/companyvaluer/destroy', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('162', '0', '项目管理', '1', '<img src=\"/static/system/img/web_disk.png\"/>', '0', '/system/item#', '', '1', '1', '1509445088', '1509445088', null);
-INSERT INTO `menu` VALUES ('163', '162', '项目列表', '2', '<img src=\"/static/system/img/application_view_list.png\"/>', '0', '/system/item/index', '', '1', '1', '1509446298', '1509496760', null);
+INSERT INTO `menu` VALUES ('163', '162', '项目档案', '2', '<img src=\"/static/system/img/application_view_list.png\"/>', '0', '/system/item/index', '', '1', '1', '1509446298', '1509538445', null);
 INSERT INTO `menu` VALUES ('164', '163', '添加项目', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/item/add', '', '0', '1', '1509446352', '1509496790', null);
 INSERT INTO `menu` VALUES ('165', '163', '项目详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/item/detail', '', '0', '1', '1509496863', '1509496863', null);
 INSERT INTO `menu` VALUES ('166', '163', '项目修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/item/edit', '', '0', '1', '1509496907', '1509496907', null);
@@ -709,4 +709,4 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '0', '1', '开发者', null, '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', '351cee86fba9ce77563462adc31ba200', '1509510349', '127.0.0.1', '1', '1509096250', '1509171148', null);
+INSERT INTO `user` VALUES ('1', '0', '1', '', null, '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', 'E2DB6AF6-D1C9-68FF-816D-0D8CDA322FFA', null, null, '1', '1509544403', '1509544403', null);
