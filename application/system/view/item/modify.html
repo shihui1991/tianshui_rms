@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>项目管理|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="tabs">
+        <div class="item">
+            <div class="homeTit bg_f5">
+                <div class="fl"><img src="__STATIC__/system/img/web_disk.png"/>项目管理</div>
+                <ul class="homeTab">
+                    <li class="on">基本信息</li>
+                    <li>审批文件</li>
+                </ul>
+            </div>
+            <div class="homeCon">
+                <div class="tabPage w_100 on">
+                    <div class="layerCon bg_f">
+                        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                        <table class="layerTable" border="0">
+                            <tr class="h50">
+                                <td><label for="name">名称：</label></td>
+                                <td>
+                                    <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入唯一名称"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="record_num">档案编号：</label></td>
+                                <td>
+                                    <input id="record_num" class="must" type="text" name="record_num" value="{:isset($infos)?$infos->record_num:''}" required placeholder="输入档案编号"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="area">征收范围：</label></td>
+                                <td>
+                                    <textarea id="area" name="area" placeholder="输入项目征收范围">{:isset($infos)?$infos->area:''}</textarea>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="household">预计户数：</label></td>
+                                <td>
+                                    <input id="household" type="number" name="household" value="{:isset($infos)?$infos->household:''}" placeholder="输入预计户数" min="1"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="funds">预算资金：</label></td>
+                                <td>
+                                    <input id="funds" type="number" name="funds" value="{:isset($infos)?$infos->funds:''}" placeholder="输入预算资金" min="1"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="house">安置房：</label></td>
+                                <td>
+                                    <input id="house" type="number" name="house" value="{:isset($infos)?$infos->house:''}" placeholder="输入预计安置房数" min="1"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="infos">说明：</label></td>
+                                <td>
+                                    <textarea id="infos" name="infos" placeholder="输入项目说明">{:isset($infos)?$infos->infos:''}</textarea>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td>置顶：</td>
+                                <td>
+                                    {volist name="model->is_top" id="is_top"}
+                                    <label><input class="va_m" name="is_top" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->is_top eq $is_top)"}checked{/if}>{$is_top}</label>
+                                    {/volist}
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td>状态：</td>
+                                <td>
+                                    {volist name="model->status" id="status"}
+                                    <label><input class="va_m" name="status" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $status)"}checked{/if}>{$status}</label>
+                                    {/volist}
+                                </td>
+                            </tr>
+                            {if condition="isset($infos)"}
+                            <tr class="h50">
+                                <td>操作时间：</td>
+                                <td>
+                                    创建于：{$infos->created_at}<br/>
+                                    更新于：{$infos->updated_at}<br/>
+                                </td>
+                            </tr>
+                            {/if}
+                        </table>
+
+                    </div>
+                </div>
+                <div class="tabPage w_100">
+                    <div class="layerCon bg_f">
+                        <table class="layerTable" border="0" id="picture-table">
+                            <tr class="h50">
+                                <td>分类：</td>
+                                <td>
+                                    <div class="form-inline add-cate-box">
+                                        <div class="form-group">
+                                            <input type="text" name="cate_name" class="form-control" placeholder="请输入类型名称" style="width: inherit; height: 30px; border: 1px solid #ddd;line-height: 30px;padding: 0 2px;">
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn add-cate" type="button">点击添加分类</button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {if condition="isset($infos) and $infos->picture"}
+                            {volist name="$infos->picture" id="pics"}
+                            {php}$name=$key;{/php}
+                            <tr class="h70">
+                                <td><span>{$name}</span>：<br/><br/><button type="button" onclick="picdelete(this)">点击删除</button></td>
+                                <td class="imgCon">
+                                    {volist name="pics" id="pic" key="k"}
+                                    {if condition="$pic"}
+                                    <div class="img">
+                                        <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                        <p><span onclick="picremove(this);">删除</span></p>
+                                        <input type="hidden" name="picture[{$name}][]" value="{$pic}">
+                                    </div>
+                                    {/if}
+                                    {/volist}
+                                    <div class="img upload-btn">
+                                        <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="picture[{$name}][]" multiple data-url="{:url('Tools/upl')}">
+                                        <a>+</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {/volist}
+                            {/if}
+
+                        </table>
+                    </div>
+                </div>
+                <div class="layerBtns">
+                    <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+                    <button class="btn" type="reset">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+<table style="display: none">
+    <tr class="h70" id="img_tpl">
+        <td><span class="cate-name"></span>：<br/><br/><button type="button" onclick="picdelete(this)">点击删除</button></td>
+        <td class="imgCon">
+            <div class="img upload-btn">
+                <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="" multiple data-url="{:url('Tools/upl')}">
+                <a>+</a>
+            </div>
+        </td>
+    </tr>
+</table>
+<script src="__STATIC__/system/js/ajax-submit.js"></script>
+<script src="__STATIC__/system/js/upload.js"></script>
+<script>
+    /*----- 添加分类 -----*/
+    $('.add-cate').on('click',function () {
+        var add_cate_box=$(this).parents('.add-cate-box'),
+            cate_name=add_cate_box.find('input[name="cate_name"]:first').val().replace(/\s+/g, ''),
+            hiddenname;
+        if(cate_name.length){
+            add_cate_box.find('input[name="cate_name"]:first').val('');
+            var img_tpl=$('#img_tpl').clone(true).attr('id','');
+            img_tpl.find('.cate-name').text(cate_name);
+            img_tpl.find('.upload_files').data('hiddenname','picture['+cate_name+'][]');
+            $('#picture-table').append(img_tpl);
+        }else{
+            layer.msg('请输入分类名称',function () {});
+        }
+    });
+    /*----- 删除图片 -----*/
+    function picdelete(obj) {
+        $(obj).parent().parent().remove();
+    }
+</script>
+</body>
+</html>
