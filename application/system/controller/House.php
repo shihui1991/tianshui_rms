@@ -295,7 +295,7 @@ class House extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        if(!in_array($status,[0,1])){
+        if(!in_array($status,[0,1,2,3])){
             return $this->error('错误操作');
         }
         $model=new Houses();

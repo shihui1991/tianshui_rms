@@ -25,13 +25,21 @@
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
-            <img src="__STATIC__/system/img/checked.png"/>
-            启用
-        </li>
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">
+            <img src="__STATIC__/system/img/checked.png"/>
+            闲置
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
+            <img src="__STATIC__/system/img/transit.png"/>
+            临时安置
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'2'))}">
+            <img src="__STATIC__/system/img/reset.png"/>
+            安置
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'3'))}">
             <img src="__STATIC__/system/img/disabled.png"/>
-            禁用
+            失效
         </li>
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
             <img src="__STATIC__/system/img/broom.png"/>
