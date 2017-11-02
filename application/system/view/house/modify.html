@@ -5,6 +5,7 @@
     <title>安置房源|后台管理系统</title>
     {include file="public/head" /}
 
+    <link rel="stylesheet" href="__STATIC__/system/css/chosen.css" charset="utf-8">
 </head>
 <body>
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
@@ -227,7 +228,9 @@
 <script src="__STATIC__/system/js/ajax-submit.js"></script>
 <script src="__STATIC__/system/js/upload.js"></script>
 <script src="__STATIC__/system/js/datejs/laydate.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/system/js/chosen.jquery.js" type="text/javascript" charset="utf-8"></script>
 <script>
+    $('.chosen').chosen();
     /*----- 查看户型图 -----*/
     $('#view-layout-pic').click(function () {
         var btn=$(this);
