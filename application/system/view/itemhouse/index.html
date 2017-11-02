@@ -2,13 +2,13 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>安置房源|后台管理系统</title>
+    <title>冻结安置房源|后台管理系统</title>
     {include file="public/head" /}
 
     <link rel="stylesheet" href="__STATIC__/system/css/chosen.css" charset="utf-8">
 </head>
 <body>
-<h4>安置房源管理</h4>
+<h4>冻结安置房源管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
@@ -21,33 +21,18 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加安置房源','{:url('add')}','800','520')">
+        <li class="fgf" onclick="layerIfWindow('添加冻结安置房源','{:url('add')}','800','600',true)">
             <img src="__STATIC__/system/img/add.png"/>
             添加
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">
-            <img src="__STATIC__/system/img/checked.png"/>
-            闲置
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'3'))}">
-            <img src="__STATIC__/system/img/disabled.png"/>
-            失效
         </li>
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
             <img src="__STATIC__/system/img/broom.png"/>
             删除
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
-            <img src="__STATIC__/system/img/recycle.png"/>
-            恢复
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
-            <img src="__STATIC__/system/img/destroy.png"/>
-            销毁
-        </li>
+
     </ul>
 </div>
-<form action="{:url('status')}" method="post" id="js-ajax-form">
+<form action="{:url('delete')}" method="post" id="js-ajax-form">
     <div class="tableCon">
         <em class="xian"></em>
         <table class="table" border="0" >
@@ -57,47 +42,45 @@
                     <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
                 </th>
                 <th>ID</th>
-                <th>小区</th>
-                <th>房号</th>
-                <th>交付时间</th>
+                <th>项目</th>
+                <th>房源</th>
                 <th>户型</th>
                 <th>面积</th>
-                <th>有无电梯</th>
                 <th>类型</th>
                 <th>状态</th>
                 <th>操作</th>
             </tr>
-            {volist name="houses" id="house"}
+            {volist name="itemhouses" id="itemhouse"}
             <tr>
                 <td>
-                    <input class="va_m" type="checkbox" name="ids[]" value="{$house->id}" onclick="checkBoxOp(this)" id="check-{$house->id}"/>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$itemhouse->id}" onclick="checkBoxOp(this)" id="check-{$itemhouse->id}"/>
                 </td>
-                <td>{$house->id}</td>
-                <td title="{$house->address}">{if condition="$house->deleted_at or $house->getData('status') eq 3"} <del>{$house->c_name}</del>{else /}{$house->c_name}{/if}</td>
-                <td>
-                    {if condition="$house->deleted_at or $house->getData('status') eq 3"}
+                <td>{$itemhouse->id}</td>
+                <td>（{$itemhouse->item_id}）{if condition="$itemhouse->i_status"}{$itemhouse->i_name}{else/}<del>{$itemhouse->i_name}</del>{/if}</td>
+                <td title="{$itemhouse->address}">
+                    （{$itemhouse->house_id}）
+                    {if condition="$itemhouse->getData('house_status') eq 3"}
                     <del>
-                    {if condition="$house->building"}{$house->building}栋{/if}
-                    {if condition="$house->unit"}{$house->unit}单元{/if}
-                    {if condition="$house->floor"}{$house->floor}楼{/if}
-                    {if condition="$house->number"}{$house->number}号{/if}
+                        {$itemhouse->c_name}
+                        {if condition="$itemhouse->building"}{$itemhouse->building}栋{/if}
+                        {if condition="$itemhouse->unit"}{$itemhouse->unit}单元{/if}
+                        {if condition="$itemhouse->floor"}{$itemhouse->floor}楼{/if}
+                        {if condition="$itemhouse->number"}{$itemhouse->number}号{/if}
                     </del>
                     {else /}
-                    {if condition="$house->building"}{$house->building}栋{/if}
-                    {if condition="$house->unit"}{$house->unit}单元{/if}
-                    {if condition="$house->floor"}{$house->floor}楼{/if}
-                    {if condition="$house->number"}{$house->number}号{/if}
+                    {$itemhouse->c_name}
+                    {if condition="$itemhouse->building"}{$itemhouse->building}栋{/if}
+                    {if condition="$itemhouse->unit"}{$itemhouse->unit}单元{/if}
+                    {if condition="$itemhouse->floor"}{$itemhouse->floor}楼{/if}
+                    {if condition="$itemhouse->number"}{$itemhouse->number}号{/if}
                     {/if}
                 </td>
-                <td>{$house->deliver_at}</td>
-                <td>{$house->l_name}</td>
-                <td>{$house->area}</td>
-                <td>{$house->has_lift}</td>
-                <td>{$house->is_real} | {$house->is_buy} | {$house->is_transit} | {$house->is_public}</td>
-                <td>{$house->status}</td>
+                <td>{$itemhouse->l_name}</td>
+                <td>{$itemhouse->area}</td>
+                <td>{$itemhouse->is_real} | {$itemhouse->is_buy} | {$itemhouse->is_transit} | {$itemhouse->is_public}</td>
+                <td>{$itemhouse->house_status}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('安置房源信息',	'{:url('detail',['id'=>$house->id])}','800','560')" >详细信息</button>
-                    <button type="button" data-action="{:url('delete',['ids'=>$house->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$itemhouse->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}
@@ -106,15 +89,24 @@
     </div>
 </form>
 <div class="pageCon">
-    {$houses->render()}
+    {$itemhouses->render()}
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
     <form action="{:url('index')}" method="post" id="search-form">
         <table class="layerTable">
             <tr class="h50">
+                <td>项目：</td>
+                <td colspan="3">
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if}>{$item->name}</option>
+                        {/volist}
+                    </select>
+                </td>
                 <td>地址：</td>
-                <td colspan="7">
+                <td colspan="3">
                     <select name="community_ids_a[]" id="address" class="chosen" multiple data-placeholder="请选择地址" data-no_results_text="没有匹配数据">
                         <option value="">--全部--</option>
                         {volist name="communitys" id="community"}
@@ -158,19 +150,11 @@
                 <td><input type="number" name="area_start" id="area_start" value="{$area_start?:''}"></td>
                 <td>面积止：</td>
                 <td><input type="number" name="area_end" id="area_end" value="{$area_end?:''}"></td>
-                <td>有无电梯：</td>
-                <td>
-                    <select name="has_lift" id="has_lift">
-                        <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($has_lift) and $has_lift==1"}selected{/if}>--有电梯--</option>
-                        <option value="0" {if condition="isset($has_lift) and $has_lift==0"}selected{/if}>--无电梯--</option>
-                    </select>
-                </td>
                 <td>状态：</td>
                 <td>
                     <select name="status" id="status">
                         <option value="">--全部--</option>
-                        {volist name="model->status" id="value"}
+                        {volist name="model->house_status" id="value"}
                         <option value="{$key}" {if condition="isset($status) and $status==$key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
@@ -215,14 +199,6 @@
                 </td>
             </tr>
             <tr class="h50">
-                <td>是否删除：</td>
-                <td>
-                    <select name="deleted" id="deleted">
-                        <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($deleted) and $deleted==1"}selected{/if}>--是--</option>
-                        <option value="0" {if condition="isset($deleted) and $deleted==0"}selected{/if}>--否--</option>
-                    </select>
-                </td>
                 <td>每页条数：</td>
                 <td>
                     <select name="display_num" id="display_num">
@@ -235,7 +211,6 @@
                 <td>
                     <select name="ordername" id="ordername">
                         <option value="id">--默认--</option>
-                        <option value="deliver_at" {if condition="isset($ordername) and $ordername=='deliver_at'"}selected{/if}>--交付时间--</option>
                         <option value="created_at" {if condition="isset($ordername) and $ordername=='created_at'"}selected{/if}>--创建时间--</option>
                         <option value="updated_at" {if condition="isset($ordername) and $ordername=='updated_at'"}selected{/if}>--更新时间--</option>
                     </select>

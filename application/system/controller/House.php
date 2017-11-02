@@ -85,7 +85,7 @@ class House extends Auth
         }
         $area_end=input('area_end');
         if($area_end){
-            $where['area']=['>=',$area_end];
+            $where['area']=['<=',$area_end];
             $datas['area_end']=$area_end;
         }
         /* ++++++++++ 是否有电梯 ++++++++++ */

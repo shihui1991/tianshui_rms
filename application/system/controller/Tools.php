@@ -164,4 +164,72 @@ class Tools extends Auth
     public function getguid(){
         return $this->success('获取成功','',create_guid());
     }
+
+    /* ========== 查询房源 ========== */
+    public function findhouse(){
+        /* ********** 查询条件 ********** */
+        $where=[];
+        $field=['h.id','h.community_id','h.building','h.unit','h.floor','h.number','h.layout_id','h.area','h.has_lift','h.is_real',
+            'h.is_buy','h.is_public','h.is_transit','h.deliver_at','h.status','c.address','c.name as c_name','l.name as l_name'];
+        $inputs=input();
+
+        /* ++++++++++ 小区 ++++++++++ */
+        $community_ids=isset($inputs['community_ids'])?$inputs['community_ids']:[];
+        if($community_ids){
+            $where['community_id']=['in',$community_ids];
+        }
+        /* ++++++++++ 户型 ++++++++++ */
+        $layout_ids=isset($inputs['layout_ids'])?$inputs['layout_ids']:[];
+        if($layout_ids){
+            $where['layout_id']=['in',$layout_ids];
+        }
+        /* ++++++++++ 面积 ++++++++++ */
+        $area_start=input('area_start');
+        if($area_start){
+            $where['area']=['>=',$area_start];
+        }
+        $area_end=input('area_end');
+        if($area_end){
+            $where['area']=['<=',$area_end];
+        }
+        /* ++++++++++ 期房、现房 ++++++++++ */
+        $is_real=input('is_real');
+        if(is_numeric($is_real) && in_array($is_real,[0,1])){
+            $where['is_real']=$is_real;
+        }
+        /* ++++++++++ 是否购置房 ++++++++++ */
+        $is_buy=input('is_buy');
+        if(is_numeric($is_buy) && in_array($is_buy,[0,1])){
+            $where['is_buy']=$is_buy;
+        }
+        /* ++++++++++ 是否过渡房 ++++++++++ */
+        $is_transit=input('is_transit');
+        if(is_numeric($is_transit) && in_array($is_transit,[0,1])){
+            $where['is_transit']=$is_transit;
+        }
+        /* ++++++++++ 是否共用 ++++++++++ */
+        $is_public=input('is_public');
+        if(is_numeric($is_public) && in_array($is_public,[0,1])){
+            $where['is_public']=$is_public;
+        }
+        /* ++++++++++ 状态 ++++++++++ */
+        $status=input('status');
+        if(is_numeric($status) && in_array($status,[0,1,2,3])){
+            $where['house.status']=$status;
+        }
+        /* ++++++++++ 查询 ++++++++++ */
+        $houses=model('Houses')
+            ->alias('h')
+            ->field($field)
+            ->join('house_community c','c.id=h.community_id','left')
+            ->join('layout l','l.id=h.layout_id','left')
+            ->where($where)
+            ->select();
+
+        if($houses){
+            return $this->success('获取成功','',$houses);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
 }
