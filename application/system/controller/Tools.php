@@ -20,10 +20,10 @@ class Tools extends Auth
         $key=array_keys($files);
         $file = $files[$key[0]];
         if($file){
-            $info = $file->move( './uploads');
+            $info = $file->move( './uploads/default');
             if($info){
                 $file_name=str_replace('\\','/',$info->getSaveName());
-                $datas = '/uploads/'.$file_name;
+                $datas = '/uploads/default/'.$file_name;
                 return $this->success('','',$datas);
             }else{
                 return $this->error($file->getError(),'');
@@ -37,11 +37,12 @@ class Tools extends Auth
         $files=request()->file();
         $key=array_keys($files);
         $file = $files[$key[0]];
+        $dir=input('dir')?trim(input('dir')):'kindeditor';
         if($file){
-            $info = $file->move('./uploads/kindeditor');
+            $info = $file->move('./uploads/'.$dir);
             if($info){
                 $file_name=str_replace('\\','/',$info->getSaveName());
-                $url = '/uploads/kindeditor/'.$file_name;
+                $url = '/uploads/'.$dir.'/'.$file_name;
                 $data['error']=0;
                 $data['url']=$url;
             }else{
@@ -56,17 +57,15 @@ class Tools extends Auth
     }
 
     /* ========== kindeditor 文件管理 ========== */
-    public function listobjects()
+    public function filelist()
     {
         $path=$_GET['path'];
-
-        $php_path = './uploads/';
-        $php_url = request()->domain();
+        $dir=input('dir')?trim(input('dir')):'';
 
         //根目录路径，可以指定绝对路径，比如 /var/www/attached/
-        $root_path = $php_path;
+        $root_path = $dir?'./uploads/'.$dir.'/':'./uploads/';
         //根目录URL，可以指定绝对路径，比如 http://www.yoursite.com/attached/
-        $root_url = $php_url;
+        $root_url = request()->domain();
         //图片扩展名
         $ext_arr = array('gif', 'jpg', 'jpeg', 'png', 'bmp','ico');
 

@@ -1,54 +1,53 @@
 ;
+KindEditor.ready(function(K) {
+    /* ======== 上传 ======== */
+    var editor_uploads = K.editor({
+        uploadJson : upload_url,
+        fileManagerJson : filemanager_url,
+        allowFileManager : true
+    });
+    $('.imgCon').on('click','.btn-upload',function () {
+        var btn=$(this);
+        var btn_type=btn.data('type');
+        var hidename=btn.data('hidename');
+        var preview='';
 
-$('.upload-btn').on('click',function () {
-    $(this).find('input.upload_files').get(0).click();
-});
-
-$('input.upload_files').on('change',function (e) {
-    var _this=$(this),
-        img_box=_this.parent().siblings(),
-        _multiple=_this.prop('multiple'),
-        upl_url=_this.data('url'),
-        hidden_name=_this.data('hiddenname'),
-        upl_files=this.files,
-        form_data=new FormData(),
-        img_preview,
-        img_url;
-    if(upl_files.length){
-        for(var i=0;i<upl_files.length;i++){
-            form_data.append('picture',upl_files[i]);
-            $.ajax({
-                url:upl_url,
-                data:form_data,
-                type:'POST',
-                dataType:'JSON',
-                processData:false,
-                contentType:false,
-                async: false,
-                success:function (info) {
-                    if(info.code==1){
-                        img_url=info.data;
-                        img_preview ='<div class="img"><img src="'+img_url+'" class="w_100 h_100" onclick="bigimg(this)"><p><span onclick="picremove(this);">删除</span></p>';
-                        img_preview +='<input type="hidden" name="'+hidden_name+'" value="'+img_url+'"/></div>';
-
-                        if(!_multiple){
-                            img_box.remove();
-                        }
-                        _this.parent().before(img_preview);
-                    }else{
-                        alert('【'+upl_files[i].name+'】上传失败');
+        /* ======== 单图 ======== */
+        if(btn_type=='image'){
+            btn.siblings().remove();
+            editor_uploads.loadPlugin('image', function() {
+                editor_uploads.plugin.imageDialog({
+                    clickFn : function(url, title, width, height, border, align) {
+                        preview ='<div class="img"><img title="'+title+'" src="'+url+'" class="w_100 h_100" onclick="bigimg(this)"><p><span onclick="picremove(this);">删除</span></p>';
+                        preview +='<input type="hidden" name="'+hidename+'" value="'+url+'"/></div>';
+                        btn.before(preview);
+                        editor_uploads.hideDialog();
                     }
-                }
+                });
             });
         }
-    }
-    _this.val('');
+        /* ======== 多图 ======== */
+        else if(btn_type=='multiimage'){
+            editor_uploads.loadPlugin('multiimage', function() {
+                editor_uploads.plugin.multiImageDialog({
+                    clickFn : function(urlList) {
+                        K.each(urlList, function(i, data) {
+                            preview ='<div class="img"><img src="'+data.url+'" class="w_100 h_100" onclick="bigimg(this)"><p><span onclick="picremove(this);">删除</span></p>';
+                            preview +='<input type="hidden" name="'+hidename+'" value="'+data.url+'"/></div>';
+                            btn.before(preview);
+                        });
+                        editor_uploads.hideDialog();
+                    }
+                });
+            });
+        }
+
+    });
 });
 
+/* ======== 删除 ======== */
 function picremove(obj) {
-    var img_box=$(obj).parent().parent();
-    img_box.css('display','none');
-    img_box.find('img').attr('src','');
-    img_box.find('input[type=hidden]').attr('value','');
+    $(obj).parent().parent().remove();
 }
+
 
