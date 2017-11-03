@@ -24,7 +24,18 @@
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
-
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+            <img src="__STATIC__/system/img/recycle.png"/>
+            恢复
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+            <img src="__STATIC__/system/img/destroy.png"/>
+            销毁
+        </li>
     </ul>
 </div>
 <form action="{:url('index')}" method="post" id="js-ajax-form">
@@ -48,11 +59,12 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$collectioncommunity->id}" onclick="checkBoxOp(this)" id="check-{$collectioncommunity->id}"/>
                 </td>
                 <td>{$collectioncommunity->id}</td>
-                <td>{$collectioncommunity->address}</td>
-                <td>{$collectioncommunity->name}</td>
-                <td>{$collectioncommunity->infos}</td>
+                <td>{if condition="$collectioncommunity->deleted_at"}<del>{$collectioncommunity->address}</del>{else/}{$collectioncommunity->address}{/if}</td>
+                <td>{if condition="$collectioncommunity->deleted_at"}<del>{$collectioncommunity->name}</del>{else/}{$collectioncommunity->name}{/if}</td>
+                <td>{if condition="$collectioncommunity->deleted_at"}<del>{$collectioncommunity->infos}</del>{else/}{$collectioncommunity->infos}{/if}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('征地片区信息',	'{:url('detail',['id'=>$collectioncommunity->id])}','600','300')" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$collectioncommunity->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}
@@ -68,8 +80,20 @@
     <form action="{:url('index')}" method="post" id="search-form">
         <table class="layerTable">
             <tr class="h50">
+                <td>地址：</td>
+                <td><input type="text" name="address" id="address" value="{$address?:''}" placeholder="请输入征地片区地址"/></td>
                 <td>名称：</td>
                 <td><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入征地片区名称"/></td>
+            </tr>
+            <tr class="h50">
+                <td>是否删除：</td>
+                <td>
+                    <select name="deleted" id="deleted">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                        <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
+                    </select>
+                </td>
                 <td>每页条数：</td>
                 <td>
                     <select name="display_num" id="display_num">
@@ -80,16 +104,13 @@
                 </td>
             </tr>
             <tr class="h50">
-                <td>地址：</td>
-                <td colspan="3"><input type="text" name="address" id="address" value="{$address?:''}" placeholder="请输入征地片区地址"/></td>
-            </tr>
-            <tr class="h50">
                 <td>排序：</td>
                 <td>
                     <select name="ordername" id="ordername">
                         <option value="id">--默认--</option>
                         <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
                         <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                        <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
                     </select>
                 </td>
                 <td>方式：</td>

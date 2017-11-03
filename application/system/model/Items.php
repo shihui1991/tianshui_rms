@@ -6,13 +6,16 @@
 namespace app\system\model;
 
 use think\Model;
+use traits\model\SoftDelete;
 
 class Items extends Model
 {
+    use SoftDelete;
     protected $table='item';
     protected $pk='id';
     protected $createTime='created_at';
     protected $updateTime='updated_at';
+    protected $deleteTime='deleted_at';
     protected $autoWriteTimestamp = true;
     protected $field=true;
     protected $type = [

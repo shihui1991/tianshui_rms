@@ -7,6 +7,9 @@
  * | 添加
  * | 详情
  * | 修改
+ * | 删除
+ * | 恢复
+ * | 销毁
  * */
 namespace app\system\controller;
 
@@ -28,7 +31,7 @@ class Collectioncommunity extends Auth
         /* ********** 查询条件 ********** */
         $datas=[];
         $where=[];
-        $field=['id','address','name','infos'];
+        $field=['id','address','name','infos','deleted_at'];
         /* ++++++++++ 地址 ++++++++++ */
         $address=trim(input('address'));
         if($address){
@@ -57,7 +60,15 @@ class Collectioncommunity extends Auth
         $datas['display_num']=$display_num;
         /* ++++++++++ 查询 ++++++++++ */
         $collectioncommunity_model=new Collectioncommunitys();
-
+        $deleted=input('deleted');
+        if(is_numeric($deleted) && in_array($deleted,[0,1])){
+            $datas['deleted']=$deleted;
+            if($deleted==1){
+                $collectioncommunity_model=$collectioncommunity_model->onlyTrashed();
+            }
+        }else{
+            $collectioncommunity_model=$collectioncommunity_model->withTrashed();
+        }
         $collectioncommunitys=$collectioncommunity_model->where($where)->field($field)->order([$ordername=>$orderby])->paginate($display_num);
 
         $datas['collectioncommunitys']=$collectioncommunitys;
@@ -72,9 +83,11 @@ class Collectioncommunity extends Auth
         $model=new Collectioncommunitys();
         if(request()->isPost()){
             $rules=[
+                'address'=>'require',
                 'name'=>'require|unique:collection_community',
             ];
             $msg=[
+                'address.require'=>'地址不能为空',
                 'name.require'=>'名称不能为空',
                 'name.unique'=>'名称已存在',
             ];
@@ -104,7 +117,7 @@ class Collectioncommunity extends Auth
         if(!$id){
             return $this->error('至少选择一项');
         }
-        $infos=Collectioncommunitys::find($id);
+        $infos=Collectioncommunitys::withTrashed()->find($id);
         if(!$infos){
             return $this->error('选择项目不存在');
         }
@@ -125,9 +138,11 @@ class Collectioncommunity extends Auth
         }
         $datas=input();
         $rules=[
+            'address'=>'require',
             'name'=>'require|unique:collection_community,name,'.$id.',id',
         ];
         $msg=[
+            'address.require'=>'地址不能为空',
             'name.require'=>'名称不能为空',
             'name.unique'=>'名称已存在',
         ];
@@ -145,6 +160,55 @@ class Collectioncommunity extends Auth
             return $this->success('修改成功','');
         }else{
             return $this->error('修改失败');
+        }
+    }
+
+    /* ========== 删除 ========== */
+    public function delete(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $res=Collectioncommunitys::destroy($ids);
+        if($res){
+            return $this->success('删除成功','');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
+    /* ========== 恢复 ========== */
+    public function restore(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+
+        $res=Db::table('collection_community')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+        if($res){
+            return $this->success('恢复成功','');
+        }else{
+            return $this->error('恢复失败');
+        }
+    }
+
+    /* ========== 销毁 ========== */
+    public function destroy(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $res=Collectioncommunitys::onlyTrashed()->whereIn('id',$ids)->delete(true);
+        if($res){
+            return $this->success('销毁成功','');
+        }else{
+            return $this->error('销毁失败，请先删除！');
         }
     }
 }

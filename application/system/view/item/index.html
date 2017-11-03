@@ -40,6 +40,18 @@
             <img src="__STATIC__/system/img/top_no.png"/>
             取消置顶
         </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+            <img src="__STATIC__/system/img/recycle.png"/>
+            恢复
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+            <img src="__STATIC__/system/img/destroy.png"/>
+            销毁
+        </li>
     </ul>
 </div>
 <form action="{:url('status')}" method="post" id="js-ajax-form">
@@ -67,15 +79,16 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$item->id}" onclick="checkBoxOp(this)" id="check-{$item->id}"/>
                 </td>
                 <td>{$item->id}</td>
-                <td>{if condition="$item->getData('status') eq 0"} <del>{$item->name}</del>{else /}{$item->name}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0"} <del>{$item->record_num}</del>{else /}{$item->record_num}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0"} <del>{$item->household|number_format}</del>{else /}{$item->household|number_format}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0"} <del>{$item->funds|number_format}</del>{else /}{$item->funds|number_format}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0"} <del>{$item->house|number_format}</del>{else /}{$item->house|number_format}{/if}</td>
+                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->name}</del>{else /}{$item->name}{/if}</td>
+                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->record_num}</del>{else /}{$item->record_num}{/if}</td>
+                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->household|number_format}</del>{else /}{$item->household|number_format}{/if}</td>
+                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->funds|number_format}</del>{else /}{$item->funds|number_format}{/if}</td>
+                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->house|number_format}</del>{else /}{$item->house|number_format}{/if}</td>
                 <td>{$item->is_top}</td>
                 <td>{$item->status}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('项目基本信息',	'{:url('detail',['id'=>$item->id])}','800','630')" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$item->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}
@@ -119,8 +132,16 @@
                 </td>
             </tr>
             <tr class="h50">
+                <td>是否删除：</td>
+                <td>
+                    <select name="deleted" id="deleted">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                        <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
+                    </select>
+                </td>
                 <td>每页条数：</td>
-                <td colspan="3">
+                <td>
                     <select name="display_num" id="display_num">
                         {volist name="nums" id="num"}
                         <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
@@ -135,6 +156,7 @@
                         <option value="id">--默认--</option>
                         <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
                         <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                        <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
                     </select>
                 </td>
                 <td>方式：</td>

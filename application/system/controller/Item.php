@@ -8,10 +8,15 @@
  * | 详情
  * | 修改
  * | 状态
+ * | 置顶
+ * | 删除
+ * | 恢复
+ * | 销毁
  * */
 namespace app\system\controller;
 
 use app\system\model\Items;
+use think\Db;
 
 class Item extends Auth
 {
@@ -28,7 +33,7 @@ class Item extends Auth
         /* ********** 查询条件 ********** */
         $datas=[];
         $where=[];
-        $field=['id','name','record_num','household','funds','house','is_top','status'];
+        $field=['id','name','record_num','household','funds','house','is_top','status','deleted_at'];
         /* ++++++++++ 名称 ++++++++++ */
         $name=trim(input('name'));
         if($name){
@@ -77,6 +82,14 @@ class Item extends Auth
         $deleted=input('deleted');
         $item_model=new Items();
         $datas['model']=$item_model;
+        if(is_numeric($deleted) && in_array($deleted,[0,1])){
+            $datas['deleted']=$deleted;
+            if($deleted==1){
+                $item_model=$item_model->onlyTrashed();
+            }
+        }else{
+            $item_model=$item_model->withTrashed();
+        }
         $items=$item_model->where($where)->field($field)->order(['is_top'=>'desc',$ordername=>$orderby])->paginate($display_num);
 
         $datas['items']=$items;
@@ -126,7 +139,7 @@ class Item extends Auth
         if(!$id){
             return $this->error('至少选择一项');
         }
-        $infos=Items::find($id);
+        $infos=Items::withTrashed()->find($id);
         if(!$infos){
             return $this->error('选择项目不存在');
         }
@@ -212,6 +225,55 @@ class Item extends Auth
             return $this->success('修改成功','');
         }else{
             return $this->error('修改失败');
+        }
+    }
+
+    /* ========== 删除 ========== */
+    public function delete(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $res=Items::destroy($ids);
+        if($res){
+            return $this->success('删除成功','');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
+    /* ========== 恢复 ========== */
+    public function restore(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+
+        $res=Db::table('item')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+        if($res){
+            return $this->success('恢复成功','');
+        }else{
+            return $this->error('恢复失败');
+        }
+    }
+
+    /* ========== 销毁 ========== */
+    public function destroy(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $res=Items::onlyTrashed()->whereIn('id',$ids)->delete(true);
+        if($res){
+            return $this->success('销毁成功','');
+        }else{
+            return $this->error('销毁失败，请先删除！');
         }
     }
 }

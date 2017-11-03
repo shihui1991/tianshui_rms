@@ -10,12 +10,16 @@
  * | 排序
  * | 状态
  * | 置顶
+ * | 删除
+ * | 恢复
+ * | 销毁
  * */
 namespace app\system\controller;
 
 use app\system\model\Items;
 use app\system\model\Newscates;
 use app\system\model\Newss;
+use think\Db;
 
 class News extends Auth
 {
@@ -32,7 +36,7 @@ class News extends Auth
         /* ********** 查询条件 ********** */
         $datas=[];
         $where=[];
-        $field=['n.id','cate_id','n.name','item_id','release_at','keywords','url','url_name','n.sort','n.is_top','n.status','c.name as c_name','i.name as i_name'];
+        $field=['n.id','cate_id','n.name','item_id','release_at','keywords','url','url_name','n.sort','n.is_top','n.status','n.deleted_at','c.name as c_name','i.name as i_name'];
         /* ++++++++++ 分类 ++++++++++ */
         $cate_id=input('cate_id');
         if(is_numeric($cate_id)){
@@ -92,6 +96,15 @@ class News extends Auth
         /* ++++++++++ 查询 ++++++++++ */
         $news_model=new Newss();
         $datas['model']=$news_model;
+        $deleted=input('deleted');
+        if(is_numeric($deleted) && in_array($deleted,[0,1])){
+            $datas['deleted']=$deleted;
+            if($deleted==1){
+                $news_model=$news_model->onlyTrashed();
+            }
+        }else{
+            $news_model=$news_model->withTrashed();
+        }
         $newss=$news_model
             ->alias('n')
             ->field($field)
@@ -163,7 +176,7 @@ class News extends Auth
         if(!$id){
             return $this->error('至少选择一项');
         }
-        $infos=Newss::find($id);
+        $infos=Newss::withTrashed()->find($id);
         if(!$infos){
             return $this->error('选择项目不存在');
         }
@@ -287,6 +300,55 @@ class News extends Auth
             return $this->success('修改成功','');
         }else{
             return $this->error('修改失败');
+        }
+    }
+
+    /* ========== 删除 ========== */
+    public function delete(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $res=Newss::destroy($ids);
+        if($res){
+            return $this->success('删除成功','');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
+    /* ========== 恢复 ========== */
+    public function restore(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+
+        $res=Db::table('news')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+        if($res){
+            return $this->success('恢复成功','');
+        }else{
+            return $this->error('恢复失败');
+        }
+    }
+
+    /* ========== 销毁 ========== */
+    public function destroy(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $res=Newss::onlyTrashed()->whereIn('id',$ids)->delete(true);
+        if($res){
+            return $this->success('销毁成功','');
+        }else{
+            return $this->error('销毁失败，请先删除！');
         }
     }
 }
