@@ -1,7 +1,7 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost
+Source Server         : localhost_phpwamp
 Source Server Version : 50554
 Source Host           : 127.0.0.1:3306
 Source Database       : tianshui_rms
@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-01 22:24:12
+Date: 2017-11-03 18:05:00
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -43,7 +43,7 @@ CREATE TABLE `api` (
 -- ----------------------------
 -- Records of api
 -- ----------------------------
-INSERT INTO `api` VALUES ('1', '0', '1', '登录', '/api/index/index', '', '[{\"name\":\"p1\",\"value\":\"pv1\",\"infos\":\"\"},{\"name\":\"p2\",\"value\":\"pv2\",\"infos\":\"\"}]', '[{\"name\":\"r1\",\"value\":\"rv1\",\"infos\":\"\"},{\"name\":\"r2\",\"value\":\"rv2\",\"infos\":\"\"}]', '0', '1', '1509419246', '1509420332', null);
+INSERT INTO `api` VALUES ('1', '0', '1', '登录', '/api/index/index', '', '[{\"name\":\"p1\",\"value\":\"pv1\",\"infos\":\"\"},{\"name\":\"p2\",\"value\":\"pv2\",\"infos\":\"\"}]', '[{\"name\":\"r1\",\"value\":\"rv1\",\"infos\":\"\"},{\"name\":\"r2\",\"value\":\"rv2\",\"infos\":\"\"}]', '0', '1', '1509419246', '1509670351', null);
 INSERT INTO `api` VALUES ('2', '1', '2', '注册', '/api/index/signup', '', '[{\"name\":\"p3\",\"value\":\"pv3\",\"infos\":\"\"}]', '[{\"name\":\"r3\",\"value\":\"rv3\",\"infos\":\"\"}]', '0', '1', '1509420423', '1509420423', null);
 
 -- ----------------------------
@@ -64,7 +64,7 @@ CREATE TABLE `bank` (
 -- ----------------------------
 -- Records of bank
 -- ----------------------------
-INSERT INTO `bank` VALUES ('1', '中国工商银行', '', '1', '1509186075', '1509186075', null);
+INSERT INTO `bank` VALUES ('1', '中国工商银行', '', '1', '1509186075', '1509670570', null);
 
 -- ----------------------------
 -- Table structure for building_status
@@ -130,12 +130,74 @@ CREATE TABLE `building_use` (
 -- ----------------------------
 -- Records of building_use
 -- ----------------------------
-INSERT INTO `building_use` VALUES ('1', '住宅', '', '1', '1509172186', '1509172186', null);
+INSERT INTO `building_use` VALUES ('1', '住宅', '', '1', '1509172186', '1509670887', null);
 INSERT INTO `building_use` VALUES ('2', '附属物', '', '1', '1509172208', '1509172208', null);
 INSERT INTO `building_use` VALUES ('3', '公共附属物', '', '1', '1509172224', '1509172224', null);
 INSERT INTO `building_use` VALUES ('4', '办公', '', '1', '1509172253', '1509172253', null);
 INSERT INTO `building_use` VALUES ('5', '商服', '', '1', '1509172263', '1509172263', null);
 INSERT INTO `building_use` VALUES ('6', '生产加工', '', '1', '1509172276', '1509172276', null);
+
+-- ----------------------------
+-- Table structure for collection
+-- ----------------------------
+DROP TABLE IF EXISTS `collection`;
+CREATE TABLE `collection` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT ' 征地片区ID',
+  `building` int(11) DEFAULT NULL COMMENT '几栋',
+  `unit` int(11) DEFAULT NULL COMMENT '几单元',
+  `floor` int(11) DEFAULT NULL COMMENT ' 几楼',
+  `number` int(11) DEFAULT NULL COMMENT ' 几号',
+  `type` tinyint(1) DEFAULT '0' COMMENT '类型，0私产，1公产',
+  `land_prop` tinyint(1) DEFAULT '0' COMMENT '土地性质，0为国有，1为集体',
+  `land_source` tinyint(1) DEFAULT '0' COMMENT '土地来源，0为出让，1为划拨',
+  `land_status` tinyint(1) DEFAULT '0' COMMENT '土地状况，0为转让，1为租赁，2为抵押，3为查封',
+  `default_use` int(11) DEFAULT NULL COMMENT '批准使用性质 ID',
+  `real_use` int(11) DEFAULT NULL COMMENT ' 实际使用性质ID',
+  `has_assets` tinyint(1) DEFAULT '0' COMMENT '是否需要资产评估，0为否，1为是',
+  `is_agree` tinyint(1) DEFAULT '1' COMMENT '拆迁意见，0反对，1同意',
+  `compensate_way` tinyint(1) DEFAULT '0' COMMENT '期望补偿方法，0为货币补偿，1为产权调换',
+  `compensate_price` int(11) DEFAULT NULL COMMENT '期望补偿单价',
+  `rebuild_addr` text COMMENT ' 期望还建地址',
+  `rebuild_layout_id` int(11) DEFAULT NULL COMMENT '还建户型 ID',
+  `rebuild_area` int(11) DEFAULT NULL COMMENT ' 还建面积',
+  `rebuild_price` int(11) DEFAULT NULL COMMENT '还建增加面积的单价',
+  `opinion` text COMMENT ' 其他意见',
+  `receive_addr` text COMMENT ' 收件人地址',
+  `receive_man` varchar(255) DEFAULT NULL COMMENT '收件人',
+  `receive_phone` char(20) DEFAULT NULL COMMENT ' 联系电话',
+  `picture` text COMMENT '土地证件等',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='征地信息';
+
+-- ----------------------------
+-- Records of collection
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for collection_community
+-- ----------------------------
+DROP TABLE IF EXISTS `collection_community`;
+CREATE TABLE `collection_community` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `address` text,
+  `name` varchar(255) DEFAULT NULL,
+  `infos` text,
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='征地片区';
+
+-- ----------------------------
+-- Records of collection_community
+-- ----------------------------
+INSERT INTO `collection_community` VALUES ('1', '渝北区杨柳北路9号', '力华科谷', '', '1509617280', '1509695149', null);
 
 -- ----------------------------
 -- Table structure for company
@@ -169,8 +231,8 @@ CREATE TABLE `company` (
 -- ----------------------------
 -- Records of company
 -- ----------------------------
-INSERT INTO `company` VALUES ('1', '0', '重庆市步联科技有限公司', '步联科技', null, '重庆市渝北区杨柳北路9号力华科谷A区203', '步联科技', '步联科技', '02363624610', '02363624610', '步联科技', '', null, 'buliankeji', '123456', '9600173F-AB5C-3DDD-0EEA-C204D1887295', '0', '1', '1509435208', '1509543210', null);
-INSERT INTO `company` VALUES ('2', '1', '重庆市贤盾科技有限公司', '贤盾科技', '/uploads/20171031/fca9277be78db5eabf5cc6e244a38230.png', '重庆市贤盾科技有限公司', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '', null, 'xiandunkeji', '123456', '24D564C3-7865-774D-9B37-E67CE60E89BD', '0', '1', '1509435817', '1509543206', null);
+INSERT INTO `company` VALUES ('1', '0', '重庆市步联科技有限公司', '步联科技', '', '重庆市渝北区杨柳北路9号力华科谷A区203', '步联科技', '步联科技', '02363624610', '02363624610', '步联科技', '<br />', '[]', 'buliankeji', '123456', '9600173F-AB5C-3DDD-0EEA-C204D1887295', '0', '1', '1509435208', '1509672112', null);
+INSERT INTO `company` VALUES ('2', '1', '重庆市贤盾科技有限公司', '贤盾科技', '/uploads/20171031/fca9277be78db5eabf5cc6e244a38230.png', '重庆市贤盾科技有限公司', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '', '[]', 'xiandunkeji', '123456', '24D564C3-7865-774D-9B37-E67CE60E89BD', '0', '1', '1509435817', '1509671936', null);
 
 -- ----------------------------
 -- Table structure for company_valuer
@@ -252,6 +314,26 @@ CREATE TABLE `dept` (
 INSERT INTO `dept` VALUES ('1', '0', '管理层', '0', '1', '', '1', '1509152121', '1509171143', null);
 
 -- ----------------------------
+-- Table structure for funds_name
+-- ----------------------------
+DROP TABLE IF EXISTS `funds_name`;
+CREATE TABLE `funds_name` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT ' 名称',
+  `infos` text COMMENT ' 描述',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='资金款项';
+
+-- ----------------------------
+-- Records of funds_name
+-- ----------------------------
+INSERT INTO `funds_name` VALUES ('1', '项目预备金', '', '1', '1509186075', '1509613310', null);
+
+-- ----------------------------
 -- Table structure for house
 -- ----------------------------
 DROP TABLE IF EXISTS `house`;
@@ -285,7 +367,7 @@ CREATE TABLE `house` (
 -- ----------------------------
 -- Records of house
 -- ----------------------------
-INSERT INTO `house` VALUES ('1', '1', '0', '0', '0', '0', '1', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '{\"1\":[\"\\/uploads\\/20171031\\/9deecbfb338d8d0a493a576672caa75c.png\",\"\\/uploads\\/20171031\\/1b88ef251bc17d3b6b2ed30d02536791.png\"],\"2\":[\"\\/uploads\\/20171031\\/7b9f505b12b193da9f8413308f7d59e0.png\",\"\\/uploads\\/20171031\\/d3647939037c08130cf80d2b86b81b3d.png\"]}', '1508860800', '0', '1509413843', '1509415819', null);
+INSERT INTO `house` VALUES ('1', '1', '0', '0', '0', '0', '1', '2', '0', '0', '0', '0', '0', '0', '0', '0', '0', '[]', '1508860800', '0', '1509413843', '1509677280', null);
 
 -- ----------------------------
 -- Table structure for house_community
@@ -330,7 +412,7 @@ CREATE TABLE `house_layout_pic` (
 -- ----------------------------
 -- Records of house_layout_pic
 -- ----------------------------
-INSERT INTO `house_layout_pic` VALUES ('1', '1', '1', 'A', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', '1', '1509345081', '1509373005', null);
+INSERT INTO `house_layout_pic` VALUES ('1', '1', '1', 'A', '/uploads/image/20171103/45840845ae0baad45f51372b2395d2c3.jpg', '', '1', '1509345081', '1509679524', null);
 INSERT INTO `house_layout_pic` VALUES ('2', '1', '1', 'B', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', '1', '1509345103', '1509374240', null);
 INSERT INTO `house_layout_pic` VALUES ('3', '2', '1', 'A', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', '1', '1509345280', '1509345364', null);
 INSERT INTO `house_layout_pic` VALUES ('4', '2', '2', 'C', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', '1', '1509367040', '1509526375', null);
@@ -353,13 +435,33 @@ CREATE TABLE `item` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='项目基本信息';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='项目基本信息';
 
 -- ----------------------------
 -- Records of item
 -- ----------------------------
-INSERT INTO `item` VALUES ('1', '西关片区棚户区改造', '0123456', '东至，西至，', '200', '200000', '300', null, '', '0', '1', '1509531788', '1509531788');
+INSERT INTO `item` VALUES ('1', '西关片区棚户区改造', '0123456', '东至，西至，', '200', '200000', '300', null, '', '0', '1', '1509531788', '1509693429', null);
+INSERT INTO `item` VALUES ('2', '永庆路北侧片区土地熟化', '32141654', '东至，西至，北至，南至', '100', '2000000', '200', '[]', '', '1', '1', '1509606705', '1509679639', null);
+
+-- ----------------------------
+-- Table structure for item_house
+-- ----------------------------
+DROP TABLE IF EXISTS `item_house`;
+CREATE TABLE `item_house` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL,
+  `house_id` int(11) DEFAULT NULL,
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='冻结安置房';
+
+-- ----------------------------
+-- Records of item_house
+-- ----------------------------
+INSERT INTO `item_house` VALUES ('1', '2', '1', '1509610556', '1509610591');
 
 -- ----------------------------
 -- Table structure for layout
@@ -404,12 +506,12 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=210 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
 -- ----------------------------
 -- Records of menu
 -- ----------------------------
-INSERT INTO `menu` VALUES ('1', '0', '系统设置', '1', '<img src=\"/static/system/img/setting_tools.png\"/>', '0', '/system/setting#', '', '1', '1', '1507862534', '1509171136', null);
+INSERT INTO `menu` VALUES ('1', '0', '系统设置', '1', '<img src=\"/static/system/img/setting_tools.png\"/>', '0', '/system/setting#', '', '1', '1', '1507862534', '1509684525', null);
 INSERT INTO `menu` VALUES ('2', '1', '功能与菜单', '2', '<img src=\"/static/system/img/monitor_window_3d.png\"/>', '1', '/system/menu/index', '', '1', '1', '1507865210', '1509155756', null);
 INSERT INTO `menu` VALUES ('3', '1', '权限与角色', '2', '<img src=\"/static/system/img/role.png\"/>', '3', '/system/role/index', '', '1', '1', '1507865414', '1509155756', null);
 INSERT INTO `menu` VALUES ('4', '1', '系统用户', '2', '<img src=\"/static/system/img/folder_user.png\"/>', '4', '/system/user/index', '', '1', '1', '1507866165', '1509155756', null);
@@ -424,7 +526,7 @@ INSERT INTO `menu` VALUES ('12', '9', '建筑使用性质', '2', '<img src=\"/st
 INSERT INTO `menu` VALUES ('13', '9', '建筑状况', '2', '<img src=\"/static/system/img/add_on.png\"/>', '0', '/system/buildingstatus/index', '', '1', '1', '1508146326', '1509173243', null);
 INSERT INTO `menu` VALUES ('14', '169', '新闻公告分类', '2', '<img src=\"/static/system/img/sharepoint.png\"/>', '0', '/system/newscate/index', '', '1', '1', '1508146527', '1509526851', null);
 INSERT INTO `menu` VALUES ('15', '9', '特殊人群分类', '2', '<img src=\"/static/system/img/outlook_new_meeting.png\"/>', '0', '/system/crowd/index', '', '1', '1', '1508146593', '1509178461', null);
-INSERT INTO `menu` VALUES ('16', '1', '修改用户密码', '2', '<img src=\"/static/system/img/page_code.png\"/>', '6', '/system/user/password', '', '0', '1', '1508146679', '1509155858', null);
+INSERT INTO `menu` VALUES ('16', '1', '修改用户密码', '2', '<img src=\"/static/system/img/page_code.png\"/>', '6', '/system/user/password', '', '0', '1', '1508146679', '1509693024', '1509693014');
 INSERT INTO `menu` VALUES ('17', '2', '菜单排序', '3', '<img src=\"/static/system/img/text_list_numbers.png\"/>', '0', '/system/menu/sort', '', '0', '1', '1508146897', '1509171136', null);
 INSERT INTO `menu` VALUES ('18', '2', '菜单显示状态', '3', '<img src=\"/static/system/img/monitor_window_3d.png\"/>', '0', '/system/menu/show', '', '0', '1', '1508146986', '1509171136', null);
 INSERT INTO `menu` VALUES ('19', '2', '菜单使用状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/menu/status', '', '0', '1', '1508147023', '1509171136', null);
@@ -585,6 +687,39 @@ INSERT INTO `menu` VALUES ('173', '170', '新闻公告修改', '3', '<img src=\"
 INSERT INTO `menu` VALUES ('174', '170', '新闻公告排序', '3', '<img src=\"/static/system/img/text_list_numbers.png\"/>', '0', '/system/news/sort', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('175', '170', '新闻公告状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/news/status', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('176', '170', '新闻公告置顶', '3', '<img src=\"/static/system/img/top.png\"/>', '0', '/system/istop/status', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('177', '107', '冻结安置房', '2', '<img src=\"/static/system/img/freeze.png\"/>', '0', '/system/itemhouse/index', '', '1', '1', '1509588149', '1509588149', null);
+INSERT INTO `menu` VALUES ('178', '177', '添加冻结房源', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/itemhouse/add', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('179', '177', '冻结房源删除', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/itemhouse/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('180', '141', '资金款项', '2', '<img src=\"/static/system/img/file_extension_log.png\"/>', '0', '/system/fundsname/index', '', '1', '1', '1509610953', '1509610953', null);
+INSERT INTO `menu` VALUES ('181', '180', '添加资金款项', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/fundsname/add', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('182', '180', '资金款项详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/fundsname/detail', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('183', '180', '资金款项修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/fundsname/edit', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('184', '180', '资金款项状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/fundsname/status', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('185', '180', '删除资金款项', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/fundsname/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('186', '180', '资金款项恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/fundsname/restore', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('187', '180', '资金款项销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/fundsname/destroy', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('188', '0', '征地摸底管理', '1', '<img src=\"/static/system/img/butterfly.png\"/>', '0', '/system/collection#', '', '1', '1', '1509616455', '1509616455', null);
+INSERT INTO `menu` VALUES ('189', '188', '征地片区', '2', '<img src=\"/static/system/img/chart_pie.png\"/>', '0', '/system/collectioncommunity/index', '', '1', '1', '1509616556', '1509616696', null);
+INSERT INTO `menu` VALUES ('190', '189', '添加征地片区', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/collectioncommunity/add', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('191', '189', '征地片区详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/collectioncommunity/detail', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('192', '189', '征地片区修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/collectioncommunity/edit', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('193', '163', '删除项目', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/item/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('194', '163', '项目恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/item/restore', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('195', '163', '项目销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/item/destroy', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('196', '170', '删除新闻公告', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/news/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('197', '170', '新闻公告恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/news/restore', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('198', '170', '新闻公告销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/news/destroy', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('199', '189', '删除征地片区', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/collectioncommunity/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('200', '189', '征地片区恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/collectioncommunity/restore', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('201', '189', '征地片区销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/collectioncommunity/destroy', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('202', '188', '入户摸底', '2', '<img src=\"/static/system/img/outlook_new_meeting.png\"/>', '0', '/system/collection/index', '', '1', '1', '1509700423', '1509700423', null);
+INSERT INTO `menu` VALUES ('203', '202', '添加入户摸底', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/collection/add', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('204', '202', '入户摸底详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/collection/detail', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('205', '202', '入户摸底修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/collection/edit', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('206', '202', '入户摸底状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/collection/status', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('207', '202', '删除入户摸底', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/collection/delete', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('208', '202', '入户摸底恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/collection/restore', null, '0', '1', '1508146326', '1508146326', null);
+INSERT INTO `menu` VALUES ('209', '202', '入户摸底销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/collection/destroy', null, '0', '1', '1508146326', '1508146326', null);
 
 -- ----------------------------
 -- Table structure for nation
@@ -628,13 +763,14 @@ CREATE TABLE `news` (
   `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='新闻公告';
 
 -- ----------------------------
 -- Records of news
 -- ----------------------------
-INSERT INTO `news` VALUES ('1', '1', '征收范围的公告', '0', '1509552000', '', '', '', null, '/uploads/20171101/45a8abb8744dc6fbebc0d7b22e4e199b.jpg', '', '', '0', '0', '1', '1509531194', '1509531418');
+INSERT INTO `news` VALUES ('1', '1', '征收范围的公告', '0', '1509552000', '', '', '', '[]', '/uploads/image/20171103/4b46efc8f273e72e169c846ad5c90b54.jpg', '', '', '0', '0', '1', '1509531194', '1509694473', null);
 
 -- ----------------------------
 -- Table structure for news_cate
@@ -709,4 +845,4 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '0', '1', '', null, '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', 'E2DB6AF6-D1C9-68FF-816D-0D8CDA322FFA', null, null, '1', '1509544403', '1509544403', null);
+INSERT INTO `user` VALUES ('1', '0', '1', '', '/uploads/image/20171103/1be724c55dcc9ee0f62fb14b170ab0d1.png', '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', 'E2DB6AF6-D1C9-68FF-816D-0D8CDA322FFA', '1509690111', '127.0.0.1', '1', '1509544403', '1509686694', null);
