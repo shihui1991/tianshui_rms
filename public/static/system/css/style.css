@@ -128,7 +128,7 @@ body .new-layer .layui-layer-btn .layui-layer-btn0{border-color: #999;background
 body .new-layer .layui-layer-btn a{line-height: 26px;margin: 0 8px 0 0;border-color: #999;background-color: #f1f1f1;color: #000;border-radius: 5px;}
 body .new-layer .layui-layer-btn a:hover,.layerBtns .btn:hover{opacity: 1;box-shadow: 0 0 8px #a6a6a6;}
 body .new-layer.layui-layer-dialog .layui-layer-content{padding: 10px;}
-.layerCon{width: 100%;height: 100%; padding: 1px;padding-bottom: 40px;overflow: auto;}
+.layerCon{padding-bottom: 40px;}
 .layerTable{width: 100%;border: 1px solid #ccc;border-spacing: 0;table-layout: fixed;}
 .layerTable tr:not(:last-of-type) td{border-bottom: 1px solid #ccc;}
 .layerTable tr td{position: relative;border-bottom: 1px solid #ccc;border-right:1px solid #ccc ;}
