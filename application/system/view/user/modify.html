@@ -5,8 +5,6 @@
     <title>系统用户|后台管理系统</title>
     {include file="public/head" /}
 
-    <link rel="stylesheet" type="text/css" href="__STATIC__/system/css/jquery.treetable.theme.default.css"/>
-    <script src="__STATIC__/system/js/jquery.treetable.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
@@ -84,10 +82,7 @@
                         <input type="hidden" name="signature" value="{$infos->signature}"/>
                     </div>
                     {/if}
-                    <div class="img upload-btn">
-                        <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="signature" data-url="{:url('Tools/upl')}">
-                        <a>+</a>
-                    </div>
+                    <div class="img btn-upload" data-type="image" data-hidename="signature"><a>+</a></div>
                 </td>
             </tr>
             <tr class="h50">
@@ -129,16 +124,8 @@
     </div>
 </form>
 
-<script src="__STATIC__/system/js/ajax-submit.js"></script>
-<script src="__STATIC__/system/js/upload.js"></script>
 <script>
-    $("#example-advanced").treetable({
-        expandable : true
-    });
 
-    $('input.priv_detail').on('change',function () {
-        checkbox_change($(this));
-    }) ;
 </script>
 </body>
 </html>

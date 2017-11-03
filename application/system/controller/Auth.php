@@ -14,23 +14,23 @@ class Auth extends Controller
     /* ========== 初始化 ========== */
     public function _initialize()
     {
-//        /* ++++++++++ 未登录或操作超时 ++++++++++ */
-//        $userinfo=Session::get('userinfo');
-//        if(!$userinfo || time()-$userinfo['time']>1800){
-//            $this->redirect('system/Index/index');
-//        }else{
-//            Session::set('userinfo.time',time());
-//        }
-//
-//        /* ++++++++++ 检查操作权限 ++++++++++ */
-//        $priv_res=$this->check_priv();
-//        if(!$priv_res){
-//            if(request()->isAjax()){
-//                $this->error('没有权限！');
-//            }else{
-//                die('没有权限！ <a href="javascript:window.history.back();">返回</a>');
-//            }
-//        }
+        /* ++++++++++ 未登录或操作超时 ++++++++++ */
+        $userinfo=Session::get('userinfo');
+        if(!$userinfo || time()-$userinfo['time']>1800){
+            $this->redirect('system/Index/index');
+        }else{
+            Session::set('userinfo.time',time());
+        }
+
+        /* ++++++++++ 检查操作权限 ++++++++++ */
+        $priv_res=$this->check_priv();
+        if(!$priv_res){
+            if(request()->isAjax()){
+                $this->error('没有权限！');
+            }else{
+                die('没有权限！ <a href="javascript:window.history.back();">返回</a>');
+            }
+        }
 
     }
 
