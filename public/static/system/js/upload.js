@@ -14,12 +14,13 @@ KindEditor.ready(function(K) {
 
         /* ======== 单图 ======== */
         if(btn_type=='image'){
-            btn.siblings().remove();
             editor_uploads.loadPlugin('image', function() {
                 editor_uploads.plugin.imageDialog({
                     clickFn : function(url, title, width, height, border, align) {
                         preview ='<div class="img"><img title="'+title+'" src="'+url+'" class="w_100 h_100" onclick="bigimg(this)"><p><span onclick="picremove(this);">删除</span></p>';
                         preview +='<input type="hidden" name="'+hidename+'" value="'+url+'"/></div>';
+
+                        btn.siblings().remove();
                         btn.before(preview);
                         editor_uploads.hideDialog();
                     }

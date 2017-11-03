@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>评估公司|后台管理系统</title>
     {include file="public/head" /}
+    {include file="public/kindeditor" /}
 
 </head>
 <body>
@@ -20,7 +21,7 @@
             </div>
             <div class="homeCon">
                 <div class="tabPage w_100 on">
-                    <div class="layerCon bg_f">
+                    <div class=" bg_f">
                         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
                         <table class="layerTable" border="0">
                             <tr class="h50">
@@ -120,7 +121,7 @@
                     </div>
                 </div>
                 <div class="tabPage w_100">
-                    <div class="layerCon bg_f">
+                    <div class=" bg_f">
                         <table class="layerTable" border="0" id="picture-table">
                             <tr class="h70">
                                 <td>LOGO：</td>
@@ -174,7 +175,7 @@
                     </div>
                 </div>
                 <div class="tabPage w_100">
-                    <div class="layerCon bg_f">
+                    <div class=" bg_f">
                         <textarea name="content" id="content" class="kindeditor">{:isset($infos)?$infos->content:''}</textarea>
                     </div>
                 </div>
@@ -234,6 +235,7 @@
         });
     });
 
+    /*----- 富文本编辑器 -----*/
     KindEditor.ready(function(K) {
         window.editor = K.create('.kindeditor',{
             width : '100%',

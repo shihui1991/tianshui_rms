@@ -264,8 +264,12 @@ class User extends Auth
         }
 
         $user_model=new Users();
+        $other_datas=$user_model->other_data(input());
+        $datas=array_merge(input(),$other_datas);
+        $user_model->allowField(['dept_id','role_id','name','signature','phone','office_phone','email','infos','username','status','updated_at'])
+            ->isUpdate(true)
+            ->save($datas);
 
-        $user_model->isUpdate(true)->save($datas);
         if($user_model !== false){
             return $this->success('修改成功','');
         }else{
@@ -420,7 +424,8 @@ class User extends Auth
             }
 
             $user_model=new Users();
-
+            $other_datas=$user_model->other_data(input());
+            $datas=array_merge(input(),$other_datas);
             $user_model
                 ->isUpdate(true)
                 ->allowField(['name','signature','phone','office_phone','email','infos','username','updated_at'])

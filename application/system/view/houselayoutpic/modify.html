@@ -4,17 +4,18 @@
     <meta charset="utf-8">
     <title>房源户型图|后台管理系统</title>
     {include file="public/head" /}
+    {include file="public/kindeditor" /}
 
 </head>
 <body>
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
-    <div class="layerCon bg_f">
+    <div class=" bg_f">
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td>小区：</td>
                 <td>
-                    <select name="community_id" id="community_id">
+                    <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择小区" data-no_results_text="没有匹配数据">
                         <option value="">--选择小区--</option>
                         {volist name="communitys" id="community"}
                         <option value="{$community->id}" {if condition="isset($infos) and $infos->community_id eq $community->id"}selected{/if}>{$community->name}</option>
@@ -25,7 +26,7 @@
             <tr class="h50">
                 <td>户型：</td>
                 <td>
-                    <select name="layout_id" id="layout_id">
+                    <select name="layout_id" id="layout_id" class="chosen" data-placeholder="请选择户型" data-no_results_text="没有匹配数据">
                         <option value="">--选择户型--</option>
                         {volist name="layouts" id="layout"}
                         <option value="{$layout->id}" {if condition="isset($infos) and $infos->layout_id eq $layout->id"}selected{/if}>{$layout->name}</option>
@@ -49,10 +50,7 @@
                         <input type="hidden" name="picture" value="{$infos->picture}"/>
                     </div>
                     {/if}
-                    <div class="img upload-btn">
-                        <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="picture" data-url="{:url('Tools/upl')}">
-                        <a>+</a>
-                    </div>
+                    <div class="img btn-upload" data-type="image" data-hidename="picture"><a>+</a></div>
                 </td>
             </tr>
             <tr class="h50">
@@ -89,8 +87,6 @@
     </div>
 </form>
 
-<script src="__STATIC__/system/js/ajax-submit.js"></script>
-<script src="__STATIC__/system/js/upload.js"></script>
 <script>
 
 </script>

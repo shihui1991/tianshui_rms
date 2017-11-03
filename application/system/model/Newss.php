@@ -50,7 +50,12 @@ class Newss extends Model
 
     public function other_data($input){
         $data=[];
-
+        if(!isset($input['title_page'])){
+            $data['title_page']='';
+        }
+        if(!isset($input['picture'])){
+            $data['picture']=[];
+        }
         return $data;
     }
 }

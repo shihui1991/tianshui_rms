@@ -4,16 +4,17 @@
     <meta charset="utf-8">
     <title>特殊人群分类|后台管理系统</title>
     {include file="public/head" /}
+
 </head>
 <body>
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
-    <div class="layerCon bg_f">
+    <div class=" bg_f">
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label for="parent_id">上级分类：</label></td>
                 <td>
-                    <select name="parent_id" id="parent_id">
+                    <select name="parent_id" id="parent_id" class="chosen" data-placeholder="请选择上级分类" data-no_results_text="没有匹配数据">
                         <option value="0">--作为一级分类--</option>
                         {$options_crowds}
                     </select>
@@ -59,6 +60,5 @@
     </div>
 </form>
 
-<script src="__STATIC__/system/js/ajax-submit.js"></script>
 </body>
 </html>

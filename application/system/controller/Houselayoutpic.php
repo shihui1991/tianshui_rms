@@ -116,12 +116,14 @@ class Houselayoutpic extends Auth
                 'community_id'=>'require',
                 'layout_id'=>'require',
                 'remark'=>'require|unique:house_layout_pic,community_id='.input('community_id').'&layout_id='.input('layout_id').'&remark='.input('remark'),
+                'picture'=>'require',
             ];
             $msg=[
                 'community_id.require'=>'请选择小区',
                 'layout_id.require'=>'请选择户型',
                 'remark.require'=>'标记不能为空',
                 'remark.unique'=>'标记已存在',
+                'picture.require'=>'请上传户型图',
             ];
 
             $result=$this->validate(input(),$rules,$msg);
@@ -187,12 +189,14 @@ class Houselayoutpic extends Auth
             'community_id'=>'require',
             'layout_id'=>'require',
             'remark'=>'require|unique:house_layout_pic,community_id='.input('community_id').'&layout_id='.input('layout_id').'&remark='.input('remark'),
+            'picture'=>'require',
         ];
         $msg=[
             'community_id.require'=>'请选择小区',
             'layout_id.require'=>'请选择户型',
             'remark.require'=>'标记不能为空',
             'remark.unique'=>'标记已存在',
+            'picture.require'=>'请上传户型图',
         ];
 
         $result=$this->validate($datas,$rules,$msg);

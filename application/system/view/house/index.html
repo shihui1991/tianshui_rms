@@ -5,7 +5,6 @@
     <title>安置房源|后台管理系统</title>
     {include file="public/head" /}
 
-    <link rel="stylesheet" href="__STATIC__/system/css/chosen.css" charset="utf-8">
 </head>
 <body>
 <h4>安置房源管理</h4>
@@ -109,7 +108,7 @@
     {$houses->render()}
 </div>
 <!-- 查询 -->
-<div id="search" class="layerCon bg_f hide">
+<div id="search" class=" bg_f hide">
     <form action="{:url('index')}" method="post" id="search-form">
         <table class="layerTable">
             <tr class="h50">
@@ -135,7 +134,7 @@
                 </td>
                 <td>户型：</td>
                 <td colspan="3">
-                    <select name="layout_id" id="layout_id">
+                    <select name="layout_id" id="layout_id" class="chosen" data-placeholder="请选择户型" data-no_results_text="没有匹配数据">
                         <option value="">--全部--</option>
                         {volist name="layouts" id="layout"}
                         <option value="{$layout->id}" {if condition="isset($layout_id) and $layout->id eq $layout_id"}selected{/if}>{$layout->name}</option>
@@ -162,8 +161,8 @@
                 <td>
                     <select name="has_lift" id="has_lift">
                         <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($has_lift) and $has_lift==1"}selected{/if}>--有电梯--</option>
-                        <option value="0" {if condition="isset($has_lift) and $has_lift==0"}selected{/if}>--无电梯--</option>
+                        <option value="1" {if condition="isset($has_lift) and $has_lift eq 1"}selected{/if}>--有电梯--</option>
+                        <option value="0" {if condition="isset($has_lift) and $has_lift eq 0"}selected{/if}>--无电梯--</option>
                     </select>
                 </td>
                 <td>状态：</td>
@@ -171,7 +170,7 @@
                     <select name="status" id="status">
                         <option value="">--全部--</option>
                         {volist name="model->status" id="value"}
-                        <option value="{$key}" {if condition="isset($status) and $status==$key"}selected{/if}>{$value}</option>
+                        <option value="{$key}" {if condition="isset($status) and $status eq $key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
@@ -182,7 +181,7 @@
                     <select name="is_real" id="is_real">
                         <option value="">--全部--</option>
                         {volist name="model->is_real" id="value"}
-                        <option value="{$key}" {if condition="isset($is_real) and $is_real==$key"}selected{/if}>{$value}</option>
+                        <option value="{$key}" {if condition="isset($is_real) and $is_real eq $key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
@@ -191,7 +190,7 @@
                     <select name="is_buy" id="is_buy">
                         <option value="">--全部--</option>
                         {volist name="model->is_buy" id="value"}
-                        <option value="{$key}" {if condition="isset($is_buy) and $is_buy==$key"}selected{/if}>{$value}</option>
+                        <option value="{$key}" {if condition="isset($is_buy) and $is_buy eq $key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
@@ -200,7 +199,7 @@
                     <select name="is_transit" id="is_transit">
                         <option value="">--全部--</option>
                         {volist name="model->is_transit" id="value"}
-                        <option value="{$key}" {if condition="isset($is_transit) and $is_transit==$key"}selected{/if}>{$value}</option>
+                        <option value="{$key}" {if condition="isset($is_transit) and $is_transit eq $key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
@@ -209,7 +208,7 @@
                     <select name="is_public" id="is_public">
                         <option value="">--全部--</option>
                         {volist name="model->is_public" id="value"}
-                        <option value="{$key}" {if condition="isset($is_public) and $is_public==$key"}selected{/if}>{$value}</option>
+                        <option value="{$key}" {if condition="isset($is_public) and $is_public eq $key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
@@ -219,15 +218,15 @@
                 <td>
                     <select name="deleted" id="deleted">
                         <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($deleted) and $deleted==1"}selected{/if}>--是--</option>
-                        <option value="0" {if condition="isset($deleted) and $deleted==0"}selected{/if}>--否--</option>
+                        <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                        <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
                     </select>
                 </td>
                 <td>每页条数：</td>
                 <td>
                     <select name="display_num" id="display_num">
                         {volist name="nums" id="num"}
-                        <option value="{$num}" {if condition="isset($display_num) and $display_num==$num"}selected{/if}>--{$num}--</option>
+                        <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
                         {/volist}
                     </select>
                 </td>
@@ -235,16 +234,16 @@
                 <td>
                     <select name="ordername" id="ordername">
                         <option value="id">--默认--</option>
-                        <option value="deliver_at" {if condition="isset($ordername) and $ordername=='deliver_at'"}selected{/if}>--交付时间--</option>
-                        <option value="created_at" {if condition="isset($ordername) and $ordername=='created_at'"}selected{/if}>--创建时间--</option>
-                        <option value="updated_at" {if condition="isset($ordername) and $ordername=='updated_at'"}selected{/if}>--更新时间--</option>
+                        <option value="deliver_at" {if condition="isset($ordername) and $ordername eq 'deliver_at'"}selected{/if}>--交付时间--</option>
+                        <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                        <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
                     </select>
                 </td>
                 <td>方式：</td>
                 <td>
                     <select name="orderby" id="orderby">
                         <option value="asc">--升序--</option>
-                        <option value="desc" {if condition="isset($orderby) and $orderby=='desc'"}selected{/if}>--降序--</option>
+                        <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
                     </select>
                 </td>
             </tr>
@@ -255,13 +254,10 @@
         </div>
     </form>
 </div>
-<script src="__STATIC__/system/js/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
-<script src="__STATIC__/system/js/chosen.jquery.js" type="text/javascript" charset="utf-8"></script>
+
 <script>
 
     $(function () {
-        $('.chosen').chosen();
-
         $('input[type=text]').on('change',function () {
             var id=$(this).data('id');
             $('#check-'+id).attr('checked',true);

@@ -5,18 +5,17 @@
     <title>评估师|后台管理系统</title>
     {include file="public/head" /}
 
-    <link rel="stylesheet" href="__STATIC__/system/css/chosen.css" charset="utf-8">
 </head>
 <body>
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
-    <div class="layerCon bg_f">
+    <div class="bg_f">
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td>公司：</td>
                 <td>
-                    <select name="company_id" id="company_id" data-placeholder="请选择评估公司" class="chosen" data-no_results_text="没有匹配数据">
-                        <option value="">--请选择--</option>
+                    <select name="company_id" id="company_id" class="chosen" data-placeholder="请选择评估公司" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择评估公司--</option>
                         {volist name="companys" id="company"}
                         <option value="{$company->id}" {if condition="isset($infos) and $infos->company_id eq $company->id"}selected{/if}>{$company->name}</option>
                         {/volist}
@@ -32,7 +31,7 @@
             <tr class="h50">
                 <td><label for="valid_at">有效期：</label></td>
                 <td>
-                    <input id="valid_at" class="laydate-icon" type="text" name="valid_at" value="{:isset($infos)?$infos->valid_at:''}" placeholder="输入有效期" onClick="laydate({istime: true, format: 'YYYY-MM-DD'})"/>
+                    <input id="valid_at" class="laydate-icon" type="text" name="valid_at" value="{:isset($infos)?$infos->valid_at:''}" placeholder="输入有效期"/>
                 </td>
             </tr>
             <tr class="h50">
@@ -81,17 +80,8 @@
     </div>
 </form>
 
-<script src="__STATIC__/system/js/ajax-submit.js"></script>
-<script src="__STATIC__/system/js/chosen.jquery.js" type="text/javascript" charset="utf-8"></script>
-<script src="__STATIC__/system/js/datejs/laydate.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    /*----- 选择框 -----*/
-    $('.chosen').chosen();
-    /*----- 时间控件 -----*/
-    !function(){
-        laydate.skin('molv');//切换皮肤，请查看skins下面皮肤库
-        laydate({elem: '#valid_at'});//绑定元素
-    }();
+
 </script>
 </body>
 </html>

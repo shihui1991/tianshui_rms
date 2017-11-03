@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>项目管理|后台管理系统</title>
     {include file="public/head" /}
+    {include file="public/kindeditor" /}
 
 </head>
 <body>
@@ -19,7 +20,7 @@
             </div>
             <div class="homeCon">
                 <div class="tabPage w_100 on">
-                    <div class="layerCon bg_f">
+                    <div class=" bg_f">
                         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
                         <table class="layerTable" border="0">
                             <tr class="h50">
@@ -94,7 +95,7 @@
                     </div>
                 </div>
                 <div class="tabPage w_100">
-                    <div class="layerCon bg_f">
+                    <div class=" bg_f">
                         <table class="layerTable" border="0" id="picture-table">
                             <tr class="h50">
                                 <td>分类：</td>
@@ -114,7 +115,7 @@
                             {volist name="$infos->picture" id="pics"}
                             {php}$name=$key;{/php}
                             <tr class="h70">
-                                <td><span>{$name}</span>：<br/><br/><button type="button" onclick="picdelete(this)">点击删除</button></td>
+                                <td><span>{$name}</span>：<br/><br/><button type="button" onclick="picremove(this)">点击删除</button></td>
                                 <td class="imgCon">
                                     {volist name="pics" id="pic" key="k"}
                                     {if condition="$pic"}
@@ -125,10 +126,7 @@
                                     </div>
                                     {/if}
                                     {/volist}
-                                    <div class="img upload-btn">
-                                        <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="picture[{$name}][]" multiple data-url="{:url('Tools/upl')}">
-                                        <a>+</a>
-                                    </div>
+                                    <div class="img btn-upload" data-type="multiimage" data-hidename="picture[{$name}][]"><a>+</a></div>
                                 </td>
                             </tr>
                             {/volist}
@@ -148,37 +146,28 @@
 </form>
 <table style="display: none">
     <tr class="h70" id="img_tpl">
-        <td><span class="cate-name"></span>：<br/><br/><button type="button" onclick="picdelete(this)">点击删除</button></td>
+        <td><span class="cate-name"></span>：<br/><br/><button type="button" onclick="picremove(this)">点击删除</button></td>
         <td class="imgCon">
-            <div class="img upload-btn">
-                <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="" multiple data-url="{:url('Tools/upl')}">
-                <a>+</a>
-            </div>
+            <div class="img btn-upload" data-type="multiimage" data-hidename=""><a>+</a></div>
         </td>
     </tr>
 </table>
-<script src="__STATIC__/system/js/ajax-submit.js"></script>
-<script src="__STATIC__/system/js/upload.js"></script>
+
 <script>
     /*----- 添加分类 -----*/
     $('.add-cate').on('click',function () {
         var add_cate_box=$(this).parents('.add-cate-box'),
-            cate_name=add_cate_box.find('input[name="cate_name"]:first').val().replace(/\s+/g, ''),
-            hiddenname;
+            cate_name=add_cate_box.find('input[name="cate_name"]:first').val().replace(/\s+/g, '');
         if(cate_name.length){
             add_cate_box.find('input[name="cate_name"]:first').val('');
             var img_tpl=$('#img_tpl').clone(true).attr('id','');
             img_tpl.find('.cate-name').text(cate_name);
-            img_tpl.find('.upload_files').data('hiddenname','picture['+cate_name+'][]');
+            img_tpl.find('.btn-upload').data('hidename','picture['+cate_name+'][]');
             $('#picture-table').append(img_tpl);
         }else{
             layer.msg('请输入分类名称',function () {});
         }
     });
-    /*----- 删除图片 -----*/
-    function picdelete(obj) {
-        $(obj).parent().parent().remove();
-    }
 </script>
 </body>
 </html>

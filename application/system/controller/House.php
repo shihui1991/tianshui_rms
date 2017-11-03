@@ -187,8 +187,8 @@ class House extends Auth
             ];
             $msg=[
                 'community_id.require'=>'请选择小区',
-                'layout_id.unique'=>'请选择户型',
-                'layout_pic_id.unique'=>'请选择户型图',
+                'layout_id.require'=>'请选择户型',
+                'layout_pic_id.require'=>'请选择户型图',
                 'area.min'=>'请输入面积',
                 'deliver_at.require'=>'请输入交付时间',
             ];
@@ -264,8 +264,8 @@ class House extends Auth
         ];
         $msg=[
             'community_id.require'=>'请选择小区',
-            'layout_id.unique'=>'请选择户型',
-            'layout_pic_id.unique'=>'请选择户型图',
+            'layout_id.require'=>'请选择户型',
+            'layout_pic_id.require'=>'请选择户型图',
             'area.min'=>'请输入面积',
             'deliver_at.require'=>'请输入交付时间',
         ];

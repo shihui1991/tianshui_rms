@@ -79,7 +79,9 @@ class Houses extends Model
 
     public function other_data($input){
         $data=[];
-
+        if(!isset($input['picture'])){
+            $data['picture']=[];
+        }
         return $data;
     }
 }

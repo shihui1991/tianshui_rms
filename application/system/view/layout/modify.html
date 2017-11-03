@@ -8,7 +8,7 @@
 </head>
 <body>
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
-    <div class="layerCon bg_f">
+    <div class=" bg_f">
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
         <table class="layerTable" border="0">
             <tr class="h50">
@@ -51,7 +51,6 @@
     </div>
 </form>
 
-<script src="__STATIC__/system/js/ajax-submit.js"></script>
 <script>
 
 </script>

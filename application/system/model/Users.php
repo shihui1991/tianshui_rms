@@ -45,6 +45,9 @@ class Users extends Model
     public function other_data($input){
         $data=[];
         $data['secret_key']=create_guid();
+        if(!isset($input['signature'])){
+            $data['signature']='';
+        }
         return $data;
     }
 

@@ -92,7 +92,7 @@
     {$crowds->render()}
 </div>
 <!-- 查询 -->
-<div id="search" class="layerCon bg_f hide">
+<div id="search" class=" bg_f hide">
     <form action="{:url('all')}" method="post" id="search-form">
         <table class="layerTable">
             <tr class="h50">
@@ -102,8 +102,8 @@
                 <td>
                     <select name="status" id="status">
                         <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($status) and $status==1"}selected{/if}>--启用--</option>
-                        <option value="0" {if condition="isset($status) and $status==0"}selected{/if}>--禁用--</option>
+                        <option value="1" {if condition="isset($status) and $status eq 1"}selected{/if}>--启用--</option>
+                        <option value="0" {if condition="isset($status) and $status eq 0"}selected{/if}>--禁用--</option>
                     </select>
                 </td>
             </tr>
@@ -112,15 +112,15 @@
                 <td>
                     <select name="deleted" id="deleted">
                         <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($deleted) and $deleted==1"}selected{/if}>--是--</option>
-                        <option value="0" {if condition="isset($deleted) and $deleted==0"}selected{/if}>--否--</option>
+                        <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                        <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
                     </select>
                 </td>
                 <td>每页条数：</td>
                 <td>
                     <select name="display_num" id="display_num">
                         {volist name="nums" id="num"}
-                        <option value="{$num}" {if condition="isset($display_num) and $display_num==$num"}selected{/if}>--{$num}--</option>
+                        <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
                         {/volist}
                     </select>
                 </td>
@@ -130,18 +130,18 @@
                 <td>
                     <select name="ordername" id="ordername">
                         <option value="sort">--默认--</option>
-                        <option value="id" {if condition="isset($ordername) and $ordername=='id'"}selected{/if}>--ID--</option>
-                        <option value="level" {if condition="isset($ordername) and $ordername=='level'"}selected{/if}>--层级--</option>
-                        <option value="created_at" {if condition="isset($ordername) and $ordername=='created_at'"}selected{/if}>--创建时间--</option>
-                        <option value="updated_at" {if condition="isset($ordername) and $ordername=='updated_at'"}selected{/if}>--更新时间--</option>
-                        <option value="deleted_at" {if condition="isset($ordername) and $ordername=='deleted_at'"}selected{/if}>--删除时间--</option>
+                        <option value="id" {if condition="isset($ordername) and $ordername eq 'id'"}selected{/if}>--ID--</option>
+                        <option value="level" {if condition="isset($ordername) and $ordername eq 'level'"}selected{/if}>--层级--</option>
+                        <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                        <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                        <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
                     </select>
                 </td>
                 <td>方式：</td>
                 <td>
                     <select name="orderby" id="orderby">
                         <option value="asc">--升序--</option>
-                        <option value="desc" {if condition="isset($orderby) and $orderby=='desc'"}selected{/if}>--降序--</option>
+                        <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
                     </select>
                 </td>
             </tr>
@@ -152,7 +152,7 @@
         </div>
     </form>
 </div>
-<script src="__STATIC__/system/js/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
+
 <script>
 
     $(function () {

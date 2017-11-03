@@ -4,12 +4,14 @@
     <meta charset="utf-8">
     <title>个人中心</title>
     {include file="public/head" /}
+    {include file="public/kindeditor" /}
+
 </head>
 <body>
 
 <form action="{:url('info')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <input type="hidden" name="id" value="{$infos->id}">
-    <div class="layerCon bg_f">
+    <div class=" bg_f">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td>所在部门：</td>
@@ -49,10 +51,7 @@
                         <input type="hidden" name="signature" value="{$infos->signature}"/>
                     </div>
                     {/if}
-                    <div class="img upload-btn">
-                        <input type="file" name="upload_files" style="display: none" class="upload_files" data-hiddenname="signature" data-url="{:url('Tools/upl')}">
-                        <a>+</a>
-                    </div>
+                    <div class="img btn-upload" data-type="image" data-hidename="signature"><a>+</a></div>
                 </td>
             </tr>
             <tr class="h50">
@@ -73,7 +72,6 @@
         </div>
     </div>
 </form>
-<script src="__STATIC__/system/js/ajax-submit.js" type="text/javascript" charset="utf-8"></script>
-<script src="__STATIC__/system/js/upload.js"></script>
+
 </body>
 </html>

@@ -4,24 +4,25 @@
     <meta charset="utf-8">
     <title>系统用户|后台管理系统</title>
     {include file="public/head" /}
+    {include file="public/kindeditor" /}
 
 </head>
 <body>
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
-    <div class="layerCon bg_f">
+    <div class=" bg_f">
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label for="dept_id">所在部门：</label></td>
                 <td>
-                    <select name="dept_id" id="dept_id">
+                    <select name="dept_id" id="dept_id" class="chosen" data-placeholder="请选择部门" data-no_results_text="没有匹配数据">
                         <option value="">--选择部门--</option>
                         {$options_depts}
                     </select>
                 </td>
                 <td><label for="role_id">用户角色：</label></td>
                 <td>
-                    <select name="role_id" id="role_id">
+                    <select name="role_id" id="role_id" class="chosen" data-placeholder="请选择角色" data-no_results_text="没有匹配数据">
                         <option value="">--选择角色--</option>
                         {$options_roles}
                     </select>

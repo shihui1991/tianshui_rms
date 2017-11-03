@@ -63,13 +63,22 @@ class Tools extends Auth
         $dir=input('dir')?trim(input('dir')):'';
 
         //根目录路径，可以指定绝对路径，比如 /var/www/attached/
-        $root_path = $dir?'./uploads/'.$dir.'/':'./uploads/';
+        $root_path='./uploads/';
+        if(!file_exists($root_path)){
+            exit(json_encode(['error'=>1,'message'=>'没有文件！','total_count'=>0,'file_list'=>[]]));
+        }
+
         //根目录URL，可以指定绝对路径，比如 http://www.yoursite.com/attached/
         $root_url = request()->domain();
         //图片扩展名
         $ext_arr = array('gif', 'jpg', 'jpeg', 'png', 'bmp','ico');
 
-        $current_path=$path?$path:$root_path;
+        //文件目录
+        $file_path=$root_path;
+        if(file_exists($file_path.$dir)){
+            $file_path .=$dir.'/';
+        }
+        $current_path=$path?$path:$file_path;
         //遍历目录取得文件信息
         $file_list = array();
         if ($handle = opendir($current_path)) {
@@ -107,7 +116,12 @@ class Tools extends Auth
 
         $result = array();
         //相对于根目录的上一级目录
-        $result['moveup_dir_path'] = $root_path;
+        if(!$path || $path==$root_path || $file_path==$current_path){
+            $moveup_dir_path=$root_path;
+        }else{
+            $moveup_dir_path=$file_path;
+        }
+        $result['moveup_dir_path'] = $moveup_dir_path;
         //相对于根目录的当前目录
         $result['current_dir_path'] = $current_path;
         //当前目录的URL
