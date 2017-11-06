@@ -2,12 +2,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>入户摸底|后台管理系统</title>
+    <title>入户摸底-建筑|后台管理系统</title>
     {include file="public/head" /}
 
 </head>
 <body>
-<h4>入户摸底管理</h4>
+<h4>入户摸底-建筑管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
@@ -16,21 +16,13 @@
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
                 重置</a>
         </li>
-        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','330')" >
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','300')" >
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加入户摸底','{:url('add')}','800','580',true)">
+        <li class="fgf" onclick="layerIfWindow('添加入户摸底-建筑','{:url('add')}','800','580',true)">
             <img src="__STATIC__/system/img/add.png"/>
             添加
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
-            <img src="__STATIC__/system/img/checked.png"/>
-            启用
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">
-            <img src="__STATIC__/system/img/disabled.png"/>
-            禁用
         </li>
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
             <img src="__STATIC__/system/img/broom.png"/>
@@ -46,7 +38,7 @@
         </li>
     </ul>
 </div>
-<form action="{:url('status')}" method="post" id="js-ajax-form">
+<form action="{:url('index')}" method="post" id="js-ajax-form">
     <div class="tableCon">
         <em class="xian"></em>
         <table class="table" border="0" >
@@ -58,47 +50,53 @@
                 <th>ID<i class="stretch"></i></th>
                 <th>项目（ID）<i class="stretch"></i></th>
                 <th>片区（ID）<i class="stretch"></i></th>
-                <th>房号<i class="stretch"></i></th>
-                <th>类型<i class="stretch"></i></th>
-                <th>用途<i class="stretch"></i></th>
-                <th>意见<i class="stretch"></i></th>
-                <th>补偿方式<i class="stretch"></i></th>
-                <th>补偿单价<i class="stretch"></i></th>
-                <th>状态<i class="stretch"></i></th>
+                <th>权属（ID）<i class="stretch"></i></th>
+                <th>位置<i class="stretch"></i></th>
+                <th>结构<i class="stretch"></i></th>
+                <th>性质<i class="stretch"></i></th>
+                <th>数量<i class="stretch"></i></th>
+                <th>建造年份<i class="stretch"></i></th>
+                <th>状况<i class="stretch"></i></th>
                 <th>操作<i class="stretch"></i></th>
             </tr>
-            {volist name="collections" id="collection"}
+            {volist name="collectionbuildings" id="collectionbuilding"}
             <tr>
                 <td>
-                    <input class="va_m" type="checkbox" name="ids[]" value="{$collection->id}" onclick="checkBoxOp(this)" id="check-{$collection->id}"/>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$collectionbuilding->id}" onclick="checkBoxOp(this)" id="check-{$collectionbuilding->id}"/>
                 </td>
-                <td>{$collection->id}</td>
-                <td>{$collection->i_name}（{$collection->item_id}）</td>
-                <td title="{$collection->address}">{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->cc_name}</del>{else /}{$collection->cc_name}{/if}（{$collection->community_id}）</td>
+                <td>{$collectionbuilding->id}</td>
+                <td>{$collectionbuilding->i_name}（{$collectionbuilding->item_id}）</td>
+                <td title="{$collectionbuilding->address}">{$collectionbuilding->cc_name}（{$collectionbuilding->community_id}）</td>
                 <td>
-                    {if condition="$collection->deleted_at or $collection->getData('status') eq 0"}
+                    {if condition="$collectionbuilding->c_building"}{$collectionbuilding->c_building}栋{/if}
+                    {if condition="$collectionbuilding->c_unit"}{$collectionbuilding->c_unit}单元{/if}
+                    {if condition="$collectionbuilding->c_floor"}{$collectionbuilding->c_floor}楼{/if}
+                    {if condition="$collectionbuilding->c_number"}{$collectionbuilding->c_number}号{/if}
+                    （{$collectionbuilding->collection_id}）
+                </td>
+                <td>
+                    {if condition="$collectionbuilding->deleted_at"}
                     <del>
-                        {if condition="$collection->building"}{$collection->building}栋{/if}
-                        {if condition="$collection->unit"}{$collection->unit}单元{/if}
-                        {if condition="$collection->floor"}{$collection->floor}楼{/if}
-                        {if condition="$collection->number"}{$collection->number}号{/if}
+                        {if condition="$collectionbuilding->building"}{$collectionbuilding->building}栋{/if}
+                        {if condition="$collectionbuilding->unit"}{$collectionbuilding->unit}单元{/if}
+                        {if condition="$collectionbuilding->floor"}{$collectionbuilding->floor}楼{/if}
+                        {if condition="$collectionbuilding->number"}{$collectionbuilding->number}号{/if}
                     </del>
                     {else /}
-                    {if condition="$collection->building"}{$collection->building}栋{/if}
-                    {if condition="$collection->unit"}{$collection->unit}单元{/if}
-                    {if condition="$collection->floor"}{$collection->floor}楼{/if}
-                    {if condition="$collection->number"}{$collection->number}号{/if}
+                    {if condition="$collectionbuilding->building"}{$collectionbuilding->building}栋{/if}
+                    {if condition="$collectionbuilding->unit"}{$collectionbuilding->unit}单元{/if}
+                    {if condition="$collectionbuilding->floor"}{$collectionbuilding->floor}楼{/if}
+                    {if condition="$collectionbuilding->number"}{$collectionbuilding->number}号{/if}
                     {/if}
                 </td>
-                <td>{$collection->type}</td>
-                <td>{$collection->b_name}</td>
-                <td>{$collection->is_agree}</td>
-                <td>{$collection->compensate_way}</td>
-                <td>{$collection->compensate_price}</td>
-                <td>{$collection->status}</td>
+                <td>{$collectionbuilding->bs_name}</td>
+                <td>{$collectionbuilding->bu_name}</td>
+                <td>{$collectionbuilding->real_num} {$collectionbuilding->real_unit}</td>
+                <td>{$collectionbuilding->build_year}</td>
+                <td>{if condition="$collectionbuilding->getData('status_id') eq 0"}待定{else/}{$collectionbuilding->s_name}{/if}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('项目基本信息',	'{:url('detail',['id'=>$collection->id])}','800','630',true)" >详细信息</button>
-                    <button type="button" data-action="{:url('delete',['ids'=>$collection->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户摸底-建筑信息',	'{:url('detail',['id'=>$collectionbuilding->id])}','800','630',true)" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$collectionbuilding->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}
@@ -107,7 +105,7 @@
     </div>
 </form>
 <div class="pageCon">
-    {$collections->render()}
+    {$collectionbuildings->render()}
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
@@ -144,41 +142,6 @@
                 <td><input type="number" name="number" id="number" value="{$number?:''}" min="1"></td>
             </tr>
             <tr class="h50">
-                <td>类型：</td>
-                <td>
-                    <select name="type" id="type">
-                        <option value="">--全部--</option>
-                        <option value="0" {if condition="isset($type) and $type eq 0"}selected{/if}>--私产--</option>
-                        <option value="1" {if condition="isset($type) and $type eq 1"}selected{/if}>--公产--</option>
-                    </select>
-                </td>
-                <td>实际用途：</td>
-                <td>
-                    <select name="real_use" id="real_use">
-                        <option value="">--全部--</option>
-                        {volist name="buildinguses" id="buildinguse"}
-                        <option value="{$buildinguse->id}" {if condition="isset($real_use) and $real_use eq $buildinguse->id"}selected{/if}>{$buildinguse->name}</option>
-                        {/volist}
-                    </select>
-                </td>
-                <td>拆迁意见：</td>
-                <td>
-                    <select name="is_agree" id="is_agree">
-                        <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($is_agree) and $is_agree eq 1"}selected{/if}>--同意--</option>
-                        <option value="0" {if condition="isset($is_agree) and $is_agree eq 0"}selected{/if}>--反对--</option>
-                    </select>
-                </td>
-                <td>状态：</td>
-                <td>
-                    <select name="status" id="status">
-                        <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($status) and $status eq 1"}selected{/if}>--启用--</option>
-                        <option value="0" {if condition="isset($status) and $status eq 0"}selected{/if}>--禁用--</option>
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
                 <td>是否删除：</td>
                 <td>
                     <select name="deleted" id="deleted">
@@ -195,6 +158,8 @@
                         {/volist}
                     </select>
                 </td>
+            </tr>
+            <tr class="h50">
                 <td>排序：</td>
                 <td>
                     <select name="ordername" id="ordername">

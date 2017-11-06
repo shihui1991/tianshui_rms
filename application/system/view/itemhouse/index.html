@@ -41,8 +41,8 @@
                     <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
                 </th>
                 <th>ID</th>
-                <th>项目</th>
-                <th>房源</th>
+                <th>项目（ID）</th>
+                <th>房源（ID）</th>
                 <th>户型</th>
                 <th>面积</th>
                 <th>类型</th>
@@ -55,9 +55,8 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$itemhouse->id}" onclick="checkBoxOp(this)" id="check-{$itemhouse->id}"/>
                 </td>
                 <td>{$itemhouse->id}</td>
-                <td>（{$itemhouse->item_id}）{if condition="$itemhouse->i_status"}{$itemhouse->i_name}{else/}<del>{$itemhouse->i_name}</del>{/if}</td>
+                <td>{if condition="$itemhouse->i_status"}{$itemhouse->i_name}{else/}<del>{$itemhouse->i_name}</del>{/if}（{$itemhouse->item_id}）</td>
                 <td title="{$itemhouse->address}">
-                    （{$itemhouse->house_id}）
                     {if condition="$itemhouse->getData('house_status') eq 3"}
                     <del>
                         {$itemhouse->c_name}
@@ -73,6 +72,7 @@
                     {if condition="$itemhouse->floor"}{$itemhouse->floor}楼{/if}
                     {if condition="$itemhouse->number"}{$itemhouse->number}号{/if}
                     {/if}
+                    （{$itemhouse->house_id}）
                 </td>
                 <td>{$itemhouse->l_name}</td>
                 <td>{$itemhouse->area}</td>
