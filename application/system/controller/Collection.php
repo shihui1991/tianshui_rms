@@ -18,6 +18,7 @@ use app\system\model\Buildinguses;
 use app\system\model\Collectioncommunitys;
 use app\system\model\Collections;
 use app\system\model\Items;
+use app\system\model\Layouts;
 use think\Db;
 
 class Collection extends Auth
@@ -36,7 +37,7 @@ class Collection extends Auth
         $datas=[];
         $where=[];
         $field=['c.id','item_id','community_id','building','unit','floor','number','type','real_use','is_agree',
-            'compensate_way','compensate_price','c.status','i.name as i_name','i.is_top','cc.address','cc.name as cc_name','b.name as b_name'];
+            'compensate_way','compensate_price','c.status','c.deleted_at','i.name as i_name','i.is_top','cc.address','cc.name as cc_name','b.name as b_name'];
 
         /* ++++++++++ 项目 ++++++++++ */
         $item_id=input('item_id');
@@ -160,7 +161,7 @@ class Collection extends Auth
                 'community_id'=>'require',
             ];
             $msg=[
-                'name.require'=>'请选择项目',
+                'item_id.require'=>'请选择项目',
                 'community_id.require'=>'请选择片区',
             ];
 
@@ -184,12 +185,15 @@ class Collection extends Auth
             $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
             /* ++++++++++ 使用性质 ++++++++++ */
             $buildinguses=Buildinguses::field(['id','name','status'])->where(['status'=>1])->select();
+            /* ++++++++++ 户型 ++++++++++ */
+            $layouts=Layouts::field(['id','name','status'])->where('status',1)->select();
 
             return view('modify',[
                 'model'=>$model,
                 'items'=>$items,
                 'collectioncommunitys'=>$collectioncommunitys,
                 'buildinguses'=>$buildinguses,
+                'layouts'=>$layouts,
             ]);
         }
     }
@@ -212,6 +216,8 @@ class Collection extends Auth
         $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
         /* ++++++++++ 使用性质 ++++++++++ */
         $buildinguses=Buildinguses::field(['id','name','status'])->where(['status'=>1])->select();
+        /* ++++++++++ 户型 ++++++++++ */
+        $layouts=Layouts::field(['id','name','status'])->where('status',1)->select();
 
         return view('modify',[
             'model'=>$model,
@@ -219,6 +225,7 @@ class Collection extends Auth
             'items'=>$items,
             'collectioncommunitys'=>$collectioncommunitys,
             'buildinguses'=>$buildinguses,
+            'layouts'=>$layouts,
         ]);
     }
 
@@ -234,7 +241,7 @@ class Collection extends Auth
             'community_id'=>'require',
         ];
         $msg=[
-            'name.require'=>'请选择项目',
+            'item_id.require'=>'请选择项目',
             'community_id.require'=>'请选择片区',
         ];
 

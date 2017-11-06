@@ -15,7 +15,7 @@
                 <div class="fl"><img src="__STATIC__/system/img/outlook_new_meeting.png"/>入户摸底</div>
                 <ul class="homeTab">
                     <li class="on">基本信息</li>
-                    <li>审批文件</li>
+                    <li>相关文件及图片</li>
                 </ul>
             </div>
             <div class="homeCon">
@@ -24,21 +24,59 @@
                         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
                         <table class="layerTable" border="0">
                             <tr class="h50">
-                                <td>项目：</td>
+                                <td>类型：</td>
                                 <td>
+                                    <select name="type" id="type">
+                                        {volist name="model->type" id="type"}
+                                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->type eq $type)"}selected{/if}>{$type}</option>
+                                        {/volist}
+                                    </select>
+
+                                </td>
+                                <td>土地性质：</td>
+                                <td>
+                                    <select name="land_prop" id="land_prop">
+                                        {volist name="model->land_prop" id="land_prop"}
+                                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->land_prop eq $land_prop)"}selected{/if}>{$land_prop}</option>
+                                        {/volist}
+                                    </select>
+
+                                </td>
+                                <td>土地来源：</td>
+                                <td>
+                                    <select name="land_source" id="land_source">
+                                        {volist name="model->land_source" id="land_source"}
+                                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->land_source eq $land_source)"}selected{/if}>{$land_source}</option>
+                                        {/volist}
+                                    </select>
+
+                                </td>
+                                <td>土地状况：</td>
+                                <td>
+                                    <select name="land_status" id="land_status">
+                                        {volist name="model->land_status" id="land_status"}
+                                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->land_status eq $land_status)"}selected{/if}>{$land_status}</option>
+                                        {/volist}
+                                    </select>
+
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="item_id">项目：</label></td>
+                                <td colspan="3">
                                     <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
                                         <option value="">--请选择项目--</option>
                                         {volist name="items" id="item"}
-                                        <option value="{$item->id}">{$item->name}</option>
+                                        <option value="{$item->id}" {if condition="isset($infos) and $infos->item_id eq $item->id"}selected{/if}>{$item->name}</option>
                                         {/volist}
                                     </select>
                                 </td>
-                                <td>片区：</td>
-                                <td>
+                                <td><label for="community_id">片区：</label></td>
+                                <td colspan="3">
                                     <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
                                         <option value="">--请选择片区--</option>
                                         {volist name="collectioncommunitys" id="community"}
-                                        <option value="{$community->id}">{$community->name}</option>
+                                        <option value="{$community->id}" {if condition="isset($infos) and $infos->community_id eq $community->id"}selected{/if}>{$community->name}</option>
                                         {/volist}
                                     </select>
                                 </td>
@@ -54,60 +92,88 @@
                                 <td><input type="number" name="number" id="number" value="{:isset($infos)?$infos->number:''}" min="1"></td>
                             </tr>
                             <tr class="h50">
-                                <td>类型：</td>
+                                <td>批准用途：</td>
                                 <td>
-                                    <select name="type" id="type">
-                                        {volist name="model->type" id="type"}
-                                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->type eq $type)"}selected{/if}>{$type}</option>
+                                    <select name="default_use" id="default_use">
+                                        {volist name="buildinguses" id="buildinguse"}
+                                        <option value="{$buildinguse->id}" {if condition="isset($infos) and $infos->default_use eq $buildinguse->id"}selected{/if}>{$buildinguse->name}</option>
                                         {/volist}
                                     </select>
 
                                 </td>
-                                <td>土地性质：</td>
+                                <td>实际用途：</td>
                                 <td>
-                                    {volist name="model->land_prop" id="land_prop"}
-                                    <label><input class="va_m" name="land_prop" land_prop="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->land_prop eq $land_prop)"}checked{/if}>{$land_prop}</label>
-                                    {/volist}
+                                    <select name="real_use" id="real_use">
+                                        {volist name="buildinguses" id="buildinguse"}
+                                        <option value="{$buildinguse->id}" {if condition="isset($infos) and $infos->real_use eq $buildinguse->id"}selected{/if}>{$buildinguse->name}</option>
+                                        {/volist}
+                                    </select>
                                 </td>
-                                <td>土地来源：</td>
+                                <td>资产状况：</td>
                                 <td>
-                                    {volist name="model->land_source" id="land_source"}
-                                    <label><input class="va_m" name="land_source" land_source="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->land_source eq $land_source)"}checked{/if}>{$land_source}</label>
-                                    {/volist}
+                                    <select name="has_assets" id="has_assets">
+                                        {volist name="model->has_assets" id="has_assets"}
+                                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->has_assets eq $has_assets)"}selected{/if}>{$has_assets}</option>
+                                        {/volist}
+                                    </select>
+
                                 </td>
-                                <td>土地状况：</td>
+                                <td>拆迁意见：</td>
                                 <td>
-                                    {volist name="model->land_status" id="land_status"}
-                                    <label><input class="va_m" name="land_status" land_status="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->land_status eq $land_status)"}checked{/if}>{$land_status}</label>
-                                    {/volist}
-                                </td>
-                            </tr>
-                            <tr class="h50">
-                                <td><label for="funds">预算资金：</label></td>
-                                <td>
-                                    <input id="funds" type="number" name="funds" value="{:isset($infos)?$infos->funds:''}" placeholder="输入预算资金" min="1"/>
-                                </td>
-                            </tr>
-                            <tr class="h50">
-                                <td><label for="house">安置房：</label></td>
-                                <td>
-                                    <input id="house" type="number" name="house" value="{:isset($infos)?$infos->house:''}" placeholder="输入预计安置房数" min="1"/>
+                                    <select name="is_agree" id="is_agree">
+                                        {volist name="model->is_agree" id="is_agree"}
+                                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->is_agree eq $is_agree)"}selected{/if}>{$is_agree}</option>
+                                        {/volist}
+                                    </select>
+
                                 </td>
                             </tr>
                             <tr class="h50">
-                                <td><label for="infos">说明：</label></td>
+                                <td>补偿方式：</td>
                                 <td>
-                                    <textarea id="infos" name="infos" placeholder="输入项目说明">{:isset($infos)?$infos->infos:''}</textarea>
+                                    <select name="compensate_way" id="compensate_way">
+                                        {volist name="model->compensate_way" id="compensate_way"}
+                                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->compensate_way eq $compensate_way)"}selected{/if}>{$compensate_way}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td>补偿单价：</td>
+                                <td><input type="number" name="compensate_price" id="compensate_price" value="{:isset($infos)?$infos->compensate_price:''}" min="0" placeholder="输入期望补偿单价"></td>
+                                <td>还建面积：</td>
+                                <td><input type="number" name="rebuild_area" id="rebuild_area" value="{:isset($infos)?$infos->rebuild_area:''}" min="0" placeholder="输入还建面积"></td>
+                                <td>增面单价：</td>
+                                <td><input type="number" name="rebuild_price" id="rebuild_price" value="{:isset($infos)?$infos->rebuild_price:''}" min="0" placeholder="输入还建增加面积的单价"></td>
+                            </tr>
+                            <tr class="h50">
+                                <td>还建户型：</td>
+                                <td>
+                                    <select name="rebuild_layout_id" id="rebuild_layout_id">
+                                        <option value="">--选择还建户型--</option>
+                                        {volist name="layouts" id="layout"}
+                                        <option value="{$layout->id}" {if condition="isset($infos) and $infos->rebuild_layout_id eq $layout->id"}selected{/if}>{$layout->name}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td><label for="rebuild_addr">还建地址：</label></td>
+                                <td colspan="5">
+                                    <input type="text" id="rebuild_addr" name="rebuild_addr" placeholder="输入还建地址" value="{:isset($infos)?$infos->rebuild_addr:''}" />
                                 </td>
                             </tr>
                             <tr class="h50">
-                                <td>置顶：</td>
-                                <td>
-                                    {volist name="model->is_top" id="is_top"}
-                                    <label><input class="va_m" name="is_top" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->is_top eq $is_top)"}checked{/if}>{$is_top}</label>
-                                    {/volist}
+                                <td>其他意见：</td>
+                                <td colspan="7">
+                                    <textarea name="opinion" id="opinion">{:isset($infos)?$infos->opinion:''}</textarea>
                                 </td>
                             </tr>
+                            <tr class="h50">
+                                <td>收件人：</td>
+                                <td><input type="text" id="receive_man" name="receive_man" placeholder="输入收件人" value="{:isset($infos)?$infos->receive_man:''}" /></td>
+                                <td>收件电话：</td>
+                                <td><input type="text" id="receive_phone" name="receive_phone" placeholder="输入收件电话" value="{:isset($infos)?$infos->receive_phone:''}" /></td>
+                                <td>收件地址：</td>
+                                <td colspan="3"><input type="text" id="receive_addr" name="receive_addr" placeholder="输入收件地址" value="{:isset($infos)?$infos->receive_addr:''}" /></td>
+                            </tr>
+                            {if condition="isset($infos)"}
                             <tr class="h50">
                                 <td>状态：</td>
                                 <td>
@@ -115,11 +181,8 @@
                                     <label><input class="va_m" name="status" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $status)"}checked{/if}>{$status}</label>
                                     {/volist}
                                 </td>
-                            </tr>
-                            {if condition="isset($infos)"}
-                            <tr class="h50">
                                 <td>操作时间：</td>
-                                <td>
+                                <td colspan="5">
                                     创建于：{$infos->created_at}<br/>
                                     更新于：{$infos->updated_at}<br/>
                                     {if condition="isset($infos) and $infos->deleted_at"}
