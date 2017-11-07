@@ -68,11 +68,15 @@
                 <td>{$collectionbuilding->i_name}（{$collectionbuilding->item_id}）</td>
                 <td title="{$collectionbuilding->address}">{$collectionbuilding->cc_name}（{$collectionbuilding->community_id}）</td>
                 <td>
+                    {if condition="$collectionbuilding->collection_id"}
                     {if condition="$collectionbuilding->c_building"}{$collectionbuilding->c_building}栋{/if}
                     {if condition="$collectionbuilding->c_unit"}{$collectionbuilding->c_unit}单元{/if}
                     {if condition="$collectionbuilding->c_floor"}{$collectionbuilding->c_floor}楼{/if}
                     {if condition="$collectionbuilding->c_number"}{$collectionbuilding->c_number}号{/if}
                     （{$collectionbuilding->collection_id}）
+                    {else/}
+                    -
+                    {/if}
                 </td>
                 <td>
                     {if condition="$collectionbuilding->deleted_at"}

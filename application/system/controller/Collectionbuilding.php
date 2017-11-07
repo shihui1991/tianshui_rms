@@ -153,6 +153,9 @@ class Collectionbuilding extends Auth
             if(true !== $result){
                 return $this->error($result);
             }
+            if(input('use_id') != 3 && !input('collection_id')){
+                return $this->error('请选择权属');
+            }
 
             $other_datas=$model->other_data(input());
             $datas=array_merge(input(),$other_datas);
@@ -251,6 +254,9 @@ class Collectionbuilding extends Auth
         $result=$this->validate($datas,$rules,$msg);
         if(true !== $result){
             return $this->error($result);
+        }
+        if(input('use_id') != 3 && !input('collection_id')){
+            return $this->error('请选择权属');
         }
 
         $collectionbuilding_model=new Collectionbuildings();
