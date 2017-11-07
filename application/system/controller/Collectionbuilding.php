@@ -139,6 +139,7 @@ class Collectionbuilding extends Auth
                 'item_id'=>'require',
                 'community_id'=>'require',
                 'real_num'=>'require|min:1',
+                'real_unit'=>'require',
             ];
             $msg=[
                 'use_id.require'=>'请选择用途',
@@ -146,6 +147,7 @@ class Collectionbuilding extends Auth
                 'community_id.require'=>'请选择片区',
                 'real_num.require'=>'实际数量不能为空',
                 'real_num.min'=>'实际数量不能少于1',
+                'real_unit.require'=>'输入数量单位',
             ];
             $result=$this->validate(input(),$rules,$msg);
             if(true !== $result){
@@ -235,6 +237,7 @@ class Collectionbuilding extends Auth
             'item_id'=>'require',
             'community_id'=>'require',
             'real_num'=>'require|min:1',
+            'real_unit'=>'require',
         ];
         $msg=[
             'use_id.require'=>'请选择用途',
@@ -242,6 +245,7 @@ class Collectionbuilding extends Auth
             'community_id.require'=>'请选择片区',
             'real_num.require'=>'实际数量不能为空',
             'real_num.min'=>'实际数量不能少于1',
+            'real_unit.require'=>'输入数量单位',
         ];
 
         $result=$this->validate($datas,$rules,$msg);
