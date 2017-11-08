@@ -134,6 +134,9 @@ class Collectionholdercrowd extends Auth
         $crowds=Crowds::field(['id','name','status','parent_id'])->where('status',1)->select();
         $datas['crowds']=$crowds;
 
+        if(input('layer')){
+            $datas['layer']=input('layer');
+        }
         $this->assign($datas);
 
         return view();
@@ -148,8 +151,8 @@ class Collectionholdercrowd extends Auth
                 'community_id'=>'require',
                 'collection_id'=>'require',
                 'holder_id'=>'require',
-                'crowd_parent_id'=>'require',
                 'crowd_id'=>'require|unique:collection_holder_crowd,holder_id='.input('holder_id').'&collection_id='.input('collection_id').'&community_id='.input('community_id').'&item_id='.input('item_id'),
+                'crowd_parent_id'=>'require',
                 'picture'=>'require',
             ];
             $msg=[
@@ -157,9 +160,9 @@ class Collectionholdercrowd extends Auth
                 'community_id.require'=>'错误操作，缺少片区参数',
                 'collection_id.require'=>'错误操作，缺少权属参数',
                 'holder_id.require'=>'错误操作，缺少成员参数',
-                'crowd_parent_id.require'=>'发生错误，缺少分类',
                 'crowd_id.require'=>'请选择特殊人群',
                 'crowd_id.unique'=>'特殊人群已存在',
+                'crowd_parent_id.require'=>'发生错误，缺少分类',
                 'picture.require'=>'请选择上传相关证件',
             ];
             $result=$this->validate(input(),$rules,$msg);
@@ -268,8 +271,8 @@ class Collectionholdercrowd extends Auth
             'community_id'=>'require',
             'collection_id'=>'require',
             'holder_id'=>'require',
-            'crowd_parent_id'=>'require',
             'crowd_id'=>'require|unique:collection_holder_crowd,holder_id='.input('holder_id').'&collection_id='.input('collection_id').'&community_id='.input('community_id').'&item_id='.input('item_id'),
+            'crowd_parent_id'=>'require',
             'picture'=>'require',
         ];
         $msg=[
@@ -277,9 +280,9 @@ class Collectionholdercrowd extends Auth
             'community_id.require'=>'错误操作，缺少片区参数',
             'collection_id.require'=>'错误操作，缺少权属参数',
             'holder_id.require'=>'错误操作，缺少成员参数',
-            'crowd_parent_id.require'=>'发生错误，缺少分类',
             'crowd_id.require'=>'请选择特殊人群',
             'crowd_id.unique'=>'特殊人群已存在',
+            'crowd_parent_id.require'=>'发生错误，缺少分类',
             'picture.require'=>'请选择上传相关证件',
         ];
         $result=$this->validate(input(),$rules,$msg);

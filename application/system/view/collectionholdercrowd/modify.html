@@ -15,35 +15,31 @@
             <tr class="h50">
                 <td><label for="item_id">项目：</label></td>
                 <td>{$collectionholders->i_name}({$collectionholders->item_id})<input type="hidden" id="item_id" name="item_id" value="{$collectionholders->item_id}"></td>
-            </tr>
-            <tr class="h50">
                 <td><label for="community_id">片区：</label></td>
                 <td>{$collectionholders->cc_name}({$collectionholders->community_id})<input type="hidden" id="community_id" name="community_id" value="{$collectionholders->community_id}"></td>
             </tr>
             <tr class="h50">
                 <td><label for="collection_id">权属：</label></td>
                 <td>
-                    {if condition="$collectionholders->c_building"}{$collectionholders->c_building}栋{/if}
-                    {if condition="$collectionholders->c_unit"}{$collectionholders->c_unit}单元{/if}
-                    {if condition="$collectionholders->c_floor"}{$collectionholders->c_floor}楼{/if}
-                    {if condition="$collectionholders->c_number"}{$collectionholders->c_number}号{/if}
+                    {if condition="$collectionholders->building"}{$collectionholders->building}栋{/if}
+                    {if condition="$collectionholders->unit"}{$collectionholders->unit}单元{/if}
+                    {if condition="$collectionholders->floor"}{$collectionholders->floor}楼{/if}
+                    {if condition="$collectionholders->number"}{$collectionholders->number}号{/if}
                     （{$collectionholders->collection_id}）
                     <input type="hidden" id="collection_id" name="collection_id" value="{$collectionholders->collection_id}">
                 </td>
-            </tr>
-            <tr class="h50">
                 <td><label for="holder_id">成员：</label></td>
-                <td>{$collectionholders->name}--{$collectionholders->address}({$collectionholders->holder_id})
-                    <input type="hidden" id="holder_id" name="holder_id" value="{$collectionholders->holder_id}">
+                <td>{$collectionholders->name}--{$collectionholders->address}({$collectionholders->id})
+                    <input type="hidden" id="holder_id" name="holder_id" value="{$collectionholders->id}">
                 </td>
             </tr>
             <tr class="h50">
                 <td><label for="crowd_id">特殊人群：</label></td>
-                <td>
+                <td colspan="3">
                     <select name="crowd_id" id="crowd_id" class="chosen" data-placeholder="请选择特殊人群" data-no_results_text="没有匹配数据">
                         <option value="">--选择特殊人群--</option>
                         {volist name="crowds" id="crowd"}
-                        <optiond data-parent-id="{$crowd->parent_id}" value="{$crowd->id}" {if condition="isset($infos) and $infos->crowd_id eq $crowd->id"}selected{/if}>{$crowd->name}</option>
+                        <option data-parent_id="{$crowd->parent_id}" value="{$crowd->id}" {if condition="isset($infos) and $infos->crowd_id eq $crowd->id"}selected{/if}>{$crowd->name}</option>
                         {/volist}
                     </select>
                     <input type="hidden" id="crowd_parent_id" name="crowd_parent_id" value="{:isset($infos)?$infos->crowd_parent_id:''}">
@@ -52,13 +48,13 @@
 
             <tr class="h70">
                 <td>相关证件：</td>
-                <td class="imgCon">
+                <td class="imgCon" colspan="3">
                     {if condition="isset($infos) and $infos->picture"}
                     {volist name="infos->picture" id="pic"}
                     <div class="img">
-                        <img src="{$infos->pic}" class="w_100 h_100" onclick="bigimg(this)">
+                        <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
                         <p><span onclick="picremove(this);">删除</span></p>
-                        <input type="hidden" name="picture[]" value="{$infos->pic}"/>
+                        <input type="hidden" name="picture[]" value="{$pic}"/>
                     </div>
                     {/volist}
                     {/if}
@@ -69,7 +65,7 @@
             {if condition="isset($infos)"}
             <tr class="h50">
                 <td>操作时间：</td>
-                <td colspan="7">
+                <td colspan="3">
                     创建于：{$infos->created_at}<br/>
                     更新于：{$infos->updated_at}<br/>
                     {if condition="isset($infos) and $infos->deleted_at"}
@@ -89,7 +85,7 @@
 
 <script>
     $('#crowd_id').change(function () {
-        var crowd_parent_id=$(this).find('option:checked').data('parent-id');
+        var crowd_parent_id=$(this).find('option:checked').data('parent_id');
         crowd_parent_id=crowd_parent_id?crowd_parent_id:'';
         $('#crowd_parent_id').val(crowd_parent_id);
     });

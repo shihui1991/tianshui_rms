@@ -7,6 +7,104 @@
 
 </head>
 <body>
+{if condition="isset($layer) and $layer"}
+<div class="tabs">
+    <div class="item">
+        <div class="homeTit bg_f5">
+            <div class="fl"><img src="__STATIC__/system/img/account_balances.png"/>入户摸底-家庭人员</div>
+            <ul class="homeTab">
+                <li class=""><a href="{:url('Collectionholder/detail',['id'=>$holder_id])}">基本信息</a></li>
+                <li class="on"><a href="javascript:location.reload();">特殊人群</a></li>
+            </ul>
+
+        </div>
+        <div class="homeCon">
+            <div class="tabPage w_100 on">
+                <div class="layerCon bg_f">
+
+                    <div class="toolsBar">
+                        <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+                        <ul>
+                            <li>
+                                <a href="{:url('index',['item_id'=>$item_id,'community_id'=>$community_id,'collection_id'=>$collection_id,'holder_id'=>$holder_id,'layer'=>1])}">
+                                    <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                                    重置</a>
+                            </li>
+                            <li class="fgf" onclick="layerIfWindow('添加入户摸底-特殊人群','{:url('add',['holder_id'=>$holder_id])}','800','600')">
+                                <img src="__STATIC__/system/img/add.png"/>
+                                添加
+                            </li>
+                            <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+                                <img src="__STATIC__/system/img/broom.png"/>
+                                删除
+                            </li>
+                            <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+                                <img src="__STATIC__/system/img/recycle.png"/>
+                                恢复
+                            </li>
+                            <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+                                <img src="__STATIC__/system/img/destroy.png"/>
+                                销毁
+                            </li>
+                        </ul>
+                    </div>
+                    <form action="{:url('index')}" method="post" id="js-ajax-form">
+                        <div class="tableCon">
+                            <em class="xian"></em>
+                            <table class="table" border="0" >
+                                <tbody>
+                                <tr class="noSelect">
+                                    <th class="tc" width="35px">
+                                        <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                                    </th>
+                                    <th>ID<i class="stretch"></i></th>
+                                    <th>项目（ID）<i class="stretch"></i></th>
+                                    <th>片区（ID）<i class="stretch"></i></th>
+                                    <th>权属（ID）<i class="stretch"></i></th>
+                                    <th>成员<i class="stretch"></i></th>
+                                    <th>分类<i class="stretch"></i></th>
+                                    <th>特殊人群<i class="stretch"></i></th>
+                                    <th>操作<i class="stretch"></i></th>
+                                </tr>
+                                {volist name="collectionholdercrowds" id="collectionholdercrowd"}
+                                <tr>
+                                    <td>
+                                        <input class="va_m" type="checkbox" name="ids[]" value="{$collectionholdercrowd->id}" onclick="checkBoxOp(this)" id="check-{$collectionholdercrowd->id}"/>
+                                    </td>
+                                    <td>{$collectionholdercrowd->id}</td>
+                                    <td>{$collectionholdercrowd->i_name}（{$collectionholdercrowd->item_id}）</td>
+                                    <td title="{$collectionholdercrowd->cc_address}">{$collectionholdercrowd->cc_name}（{$collectionholdercrowd->community_id}）</td>
+                                    <td>
+                                        {if condition="$collectionholdercrowd->c_building"}{$collectionholdercrowd->c_building}栋{/if}
+                                        {if condition="$collectionholdercrowd->c_unit"}{$collectionholdercrowd->c_unit}单元{/if}
+                                        {if condition="$collectionholdercrowd->c_floor"}{$collectionholdercrowd->c_floor}楼{/if}
+                                        {if condition="$collectionholdercrowd->c_number"}{$collectionholdercrowd->c_number}号{/if}
+                                        （{$collectionholdercrowd->collection_id}）
+                                    </td>
+                                    <td title="{$collectionholdercrowd->ch_address}">{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->ch_name}</del>{else /}{$collectionholdercrowd->ch_name}{/if}</td>
+                                    <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->crp_name}</del>{else /}{$collectionholdercrowd->crp_name}{/if}</td>
+                                    <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->cr_name}</del>{else /}{$collectionholdercrowd->cr_name}{/if}</td>
+                                    <td>
+                                        <button type="button" class="btn" onclick="layerIfWindow('入户摸底-特殊人群信息',	'{:url('detail',['id'=>$collectionholdercrowd->id])}','800','600')" >详细信息</button>
+                                        <button type="button" data-action="{:url('delete',['ids'=>$collectionholdercrowd->id])}" class="btn js-ajax-form-btn">删除</button>
+                                    </td>
+                                </tr>
+                                {/volist}
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                    <div class="pageCon">
+                        {$collectionholdercrowds->render()}
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{else/}
 <h4>入户摸底-特殊人群管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
@@ -19,10 +117,6 @@
         <li class="fgf" onclick="layerPage('查询',$('#search'),'800','300')" >
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
-        </li>
-        <li class="fgf" onclick="layerIfWindow('添加入户摸底-特殊人群','{:url('add')}','700','500')">
-            <img src="__STATIC__/system/img/add.png"/>
-            添加
         </li>
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
             <img src="__STATIC__/system/img/broom.png"/>
@@ -75,7 +169,7 @@
                 <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->crp_name}</del>{else /}{$collectionholdercrowd->crp_name}{/if}</td>
                 <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->cr_name}</del>{else /}{$collectionholdercrowd->cr_name}{/if}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('入户摸底-特殊人群信息',	'{:url('detail',['id'=>$collectionholdercrowd->id])}','700','500')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户摸底-特殊人群信息',	'{:url('detail',['id'=>$collectionholdercrowd->id])}','800','600')" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$collectionholdercrowd->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
@@ -205,7 +299,7 @@
         </div>
     </form>
 </div>
-
+{/if}
 <script>
 
     $(function () {

@@ -15,7 +15,7 @@
                 <ul class="homeTab">
                     <li class="on"><a href="javascript:location.reload();">基本信息</a></li>
                     {if condition="isset($infos)"}
-                    <li class=""><a href="{:url('Collectionholdercrowd/index',['item_id'=>$infos->item_id,'community_id'=>$infos->community_id,'collection_id'=>$infos->collection_id,'holder_id'=>$infos->id])}">特殊人群</a></li>
+                    <li class=""><a href="{:url('Collectionholdercrowd/index',['item_id'=>$infos->item_id,'community_id'=>$infos->community_id,'collection_id'=>$infos->collection_id,'holder_id'=>$infos->id,'layer'=>1])}">特殊人群</a></li>
                     {/if}
                 </ul>
 
