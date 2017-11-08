@@ -55,7 +55,7 @@
                                 <td>建筑状况：</td>
                                 <td>
                                     <select name="status_id" id="status_id" class="chosen" data-placeholder="待定" data-no_results_text="没有匹配数据">
-                                        <option value="">--待定--</option>
+                                        <option value="0">--待定--</option>
                                         {volist name="buildingstatuss" id="buildingstatus"}
                                         <option value="{$buildingstatus->id}" {if condition="isset($infos) and $infos->status_id eq $buildingstatus->id"}selected{/if}>{$buildingstatus->name}</option>
                                         {/volist}

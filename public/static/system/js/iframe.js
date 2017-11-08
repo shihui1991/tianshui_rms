@@ -55,6 +55,7 @@ function layerPage(tit,Dom){
 	  	title: tit,
 	  	shadeClose: true,
 	  	area: [width+'px', height+'px'],
+        maxmin: true, //开启最大化最小化按钮
 	  	content: Dom,
 	  	yes: function(index,layero){
 	  		layer.close(index);

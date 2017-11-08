@@ -54,6 +54,24 @@ class Collectionbuilding extends Auth
             $where['collection_building.community_id']=$community_id;
             $datas['community_id']=$community_id;
         }
+        /* ++++++++++ 权属 ++++++++++ */
+        $collection_id=input('collection_id');
+        if(is_numeric($collection_id)){
+            $where['collection_building.collection_id']=$collection_id;
+            $datas['collection_id']=$collection_id;
+        }
+        /* ++++++++++ 使用性质 ++++++++++ */
+        $use_id=input('use_id');
+        if(is_numeric($use_id)){
+            $where['collection_building.use_id']=$use_id;
+            $datas['use_id']=$use_id;
+        }
+        /* ++++++++++ 建筑状况 ++++++++++ */
+        $status_id=input('status_id');
+        if(is_numeric($status_id)){
+            $where['collection_building.status_id']=$status_id;
+            $datas['status_id']=$status_id;
+        }
         /* ++++++++++ 几栋 ++++++++++ */
         $building=input('building');
         if(is_numeric($building)){
@@ -124,6 +142,15 @@ class Collectionbuilding extends Auth
         /* ++++++++++ 片区 ++++++++++ */
         $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
         $datas['collectioncommunitys']=$collectioncommunitys;
+        /* ++++++++++ 权属 ++++++++++ */
+        $collections=Collections::field(['id','building','unit','floor','number','status'])->where('status',1)->select();
+        $datas['collections']=$collections;
+        /* ++++++++++ 使用性质 ++++++++++ */
+        $buildinguses=Buildinguses::field(['id','name','status'])->where(['status'=>1])->select();
+        $datas['buildinguses']=$buildinguses;
+        /* ++++++++++ 状况 ++++++++++ */
+        $buildingstatuss=Buildingstatuss::field(['id','name','status'])->where('status',1)->select();
+        $datas['buildingstatuss']=$buildingstatuss;
 
         $this->assign($datas);
 

@@ -13,9 +13,6 @@
  * */
 namespace app\system\controller;
 
-use app\system\model\Buildingstatuss;
-use app\system\model\Buildingstructs;
-use app\system\model\Buildinguses;
 use app\system\model\Collectionholders;
 use app\system\model\Collectioncommunitys;
 use app\system\model\Collections;
@@ -55,30 +52,25 @@ class Collectionholder extends Auth
             $where['collection_holder.community_id']=$community_id;
             $datas['community_id']=$community_id;
         }
-        /* ++++++++++ 几栋 ++++++++++ */
-        $building=input('building');
-        if(is_numeric($building)){
-            $where['collection.building']=$building;
-            $datas['building']=$building;
+        /* ++++++++++ 权属 ++++++++++ */
+        $collection_id=input('collection_id');
+        if(is_numeric($collection_id)){
+            $where['collection_holder.collection_id']=$collection_id;
+            $datas['collection_id']=$collection_id;
         }
-        /* ++++++++++ 几单元 ++++++++++ */
-        $unit=input('unit');
-        if(is_numeric($unit)){
-            $where['collection.unit']=$unit;
-            $datas['unit']=$unit;
+        /* ++++++++++ 名称 ++++++++++ */
+        $name=trim(input('name'));
+        if($name){
+            $where['collection_holder.name']=['like','%'.$name.'%'];
+            $datas['name']=$name;
         }
-        /* ++++++++++ 几楼 ++++++++++ */
-        $floor=input('floor');
-        if(is_numeric($floor)){
-            $where['collection.floor']=$floor;
-            $datas['floor']=$floor;
+        /* ++++++++++ 地址 ++++++++++ */
+        $address=trim(input('address'));
+        if($address){
+            $where['collection_holder.address']=['like','%'.$address.'%'];
+            $datas['address']=$address;
         }
-        /* ++++++++++ 几号 ++++++++++ */
-        $number=input('number');
-        if(is_numeric($number)){
-            $where['collection.number']=$number;
-            $datas['number']=$number;
-        }
+       
         /* ++++++++++ 排序 ++++++++++ */
         $ordername=input('ordername');
         $ordername=$ordername?$ordername:'id';
@@ -122,7 +114,10 @@ class Collectionholder extends Auth
         /* ++++++++++ 片区 ++++++++++ */
         $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
         $datas['collectioncommunitys']=$collectioncommunitys;
-
+        /* ++++++++++ 权属 ++++++++++ */
+        $collections=Collections::field(['id','building','unit','floor','number','status'])->where('status',1)->select();
+        $datas['collections']=$collections;
+        
         $this->assign($datas);
 
         return view();
