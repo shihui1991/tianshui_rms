@@ -2,12 +2,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>入户摸底-建筑|后台管理系统</title>
+    <title>入户摸底-家庭人员|后台管理系统</title>
     {include file="public/head" /}
 
 </head>
 <body>
-<h4>入户摸底-建筑管理</h4>
+<h4>入户摸底-家庭人员管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
@@ -20,7 +20,7 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加入户摸底-建筑','{:url('add')}','800','580',true)">
+        <li class="fgf" onclick="layerIfWindow('添加入户摸底-家庭人员','{:url('add')}','800','580',true)">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
@@ -51,56 +51,38 @@
                 <th>项目（ID）<i class="stretch"></i></th>
                 <th>片区（ID）<i class="stretch"></i></th>
                 <th>权属（ID）<i class="stretch"></i></th>
-                <th>位置<i class="stretch"></i></th>
-                <th>结构<i class="stretch"></i></th>
-                <th>性质<i class="stretch"></i></th>
-                <th>数量<i class="stretch"></i></th>
-                <th>建造年份<i class="stretch"></i></th>
-                <th>状况<i class="stretch"></i></th>
+                <th>名称<i class="stretch"></i></th>
+                <th>电话<i class="stretch"></i></th>
+                <th>产权<i class="stretch"></i></th>
+                <th>份额<i class="stretch"></i></th>
+                <th>户主关系<i class="stretch"></i></th>
+                <th>现住址<i class="stretch"></i></th>
                 <th>操作<i class="stretch"></i></th>
             </tr>
-            {volist name="collectionbuildings" id="collectionbuilding"}
+            {volist name="collectionholders" id="collectionholder"}
             <tr>
                 <td>
-                    <input class="va_m" type="checkbox" name="ids[]" value="{$collectionbuilding->id}" onclick="checkBoxOp(this)" id="check-{$collectionbuilding->id}"/>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$collectionholder->id}" onclick="checkBoxOp(this)" id="check-{$collectionholder->id}"/>
                 </td>
-                <td>{$collectionbuilding->id}</td>
-                <td>{$collectionbuilding->i_name}（{$collectionbuilding->item_id}）</td>
-                <td title="{$collectionbuilding->address}">{$collectionbuilding->cc_name}（{$collectionbuilding->community_id}）</td>
+                <td>{$collectionholder->id}</td>
+                <td>{$collectionholder->i_name}（{$collectionholder->item_id}）</td>
+                <td title="{$collectionholder->cc_address}">{$collectionholder->cc_name}（{$collectionholder->community_id}）</td>
                 <td>
-                    {if condition="$collectionbuilding->collection_id"}
-                    {if condition="$collectionbuilding->c_building"}{$collectionbuilding->c_building}栋{/if}
-                    {if condition="$collectionbuilding->c_unit"}{$collectionbuilding->c_unit}单元{/if}
-                    {if condition="$collectionbuilding->c_floor"}{$collectionbuilding->c_floor}楼{/if}
-                    {if condition="$collectionbuilding->c_number"}{$collectionbuilding->c_number}号{/if}
-                    （{$collectionbuilding->collection_id}）
-                    {else/}
-                    -
-                    {/if}
+                    {if condition="$collectionholder->c_building"}{$collectionholder->c_building}栋{/if}
+                    {if condition="$collectionholder->c_unit"}{$collectionholder->c_unit}单元{/if}
+                    {if condition="$collectionholder->c_floor"}{$collectionholder->c_floor}楼{/if}
+                    {if condition="$collectionholder->c_number"}{$collectionholder->c_number}号{/if}
+                    （{$collectionholder->collection_id}）
                 </td>
+                <td title="{$collectionholder->address}">{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->name}</del>{else /}{$collectionholder->name}{/if}</td>
+                <td>{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->phone}</del>{else /}{$collectionholder->phone}{/if}</td>
+                <td>{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->holder}</del>{else /}{$collectionholder->holder}{/if}</td>
+                <td>{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->portion}</del>{else /}{$collectionholder->portion}{/if}</td>
+                <td>{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->relation}</del>{else /}{$collectionholder->relation}{/if}</td>
+                <td>{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->live_addr}</del>{else /}{$collectionholder->live_addr}{/if}</td>
                 <td>
-                    {if condition="$collectionbuilding->deleted_at"}
-                    <del>
-                        {if condition="$collectionbuilding->building"}{$collectionbuilding->building}栋{/if}
-                        {if condition="$collectionbuilding->unit"}{$collectionbuilding->unit}单元{/if}
-                        {if condition="$collectionbuilding->floor"}{$collectionbuilding->floor}楼{/if}
-                        {if condition="$collectionbuilding->number"}{$collectionbuilding->number}号{/if}
-                    </del>
-                    {else /}
-                    {if condition="$collectionbuilding->building"}{$collectionbuilding->building}栋{/if}
-                    {if condition="$collectionbuilding->unit"}{$collectionbuilding->unit}单元{/if}
-                    {if condition="$collectionbuilding->floor"}{$collectionbuilding->floor}楼{/if}
-                    {if condition="$collectionbuilding->number"}{$collectionbuilding->number}号{/if}
-                    {/if}
-                </td>
-                <td>{$collectionbuilding->bs_name}</td>
-                <td>{$collectionbuilding->bu_name}</td>
-                <td>{$collectionbuilding->real_num} {$collectionbuilding->real_unit}</td>
-                <td>{$collectionbuilding->build_year}</td>
-                <td>{if condition="$collectionbuilding->getData('status_id') eq 0"}待定{else/}{$collectionbuilding->s_name}{/if}</td>
-                <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('入户摸底-建筑信息',	'{:url('detail',['id'=>$collectionbuilding->id])}','800','630',true)" >详细信息</button>
-                    <button type="button" data-action="{:url('delete',['ids'=>$collectionbuilding->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户摸底-家庭人员信息',	'{:url('detail',['id'=>$collectionholder->id])}','800','630',true)" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$collectionholder->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}
@@ -109,7 +91,7 @@
     </div>
 </form>
 <div class="pageCon">
-    {$collectionbuildings->render()}
+    {$collectionholders->render()}
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
@@ -137,7 +119,7 @@
             </tr>
             <tr class="h50">
                 <td>几栋：</td>
-                <td><input type="number" name="building" id="building" value="{$building?:''}" min="1"></td>
+                <td><input type="number" name="holder" id="holder" value="{$holder?:''}" min="1"></td>
                 <td>几单元：</td>
                 <td><input type="number" name="unit" id="unit" value="{$unit?:''}" min="1"></td>
                 <td>几楼：</td>
