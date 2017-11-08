@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <title>入户摸底-家庭人员|后台管理系统</title>
     {include file="public/head" /}
-    {include file="public/kindeditor" /}
 
 </head>
 <body>
@@ -146,32 +145,5 @@
 
 </form>
 
-<table style="display: none">
-    <tr class="h70" id="img_tpl">
-        <td><span class="cate-name"></span>：<br/><br/><button type="button" onclick="picremove(this)">点击删除</button></td>
-        <td class="imgCon">
-            <div class="img btn-upload" data-type="multiimage" data-hidename=""><a>+</a></div>
-        </td>
-    </tr>
-</table>
-
-<script>
-    /*----- 添加分类 -----*/
-    $('.add-cate').on('click',function () {
-        var add_cate_box=$(this).parents('.add-cate-box'),
-            cate_name=add_cate_box.find('input[name="cate_name"]:first').val().replace(/\s+/g, '');
-        if(cate_name.length){
-            add_cate_box.find('input[name="cate_name"]:first').val('');
-            var img_tpl=$('#img_tpl').clone(true).attr('id','');
-            img_tpl.find('.cate-name').text(cate_name);
-            img_tpl.find('.btn-upload').data('hidename','picture['+cate_name+'][]');
-            $('#picture-table').append(img_tpl);
-        }else{
-            layer.msg('请输入分类名称',function () {});
-        }
-    });
-
-   
-</script>
 </body>
 </html>
