@@ -12,7 +12,9 @@
 
 namespace app\system\controller;
 
+use app\system\model\Collectioncommunitys;
 use app\system\model\Companys;
+use app\system\model\Itemcompanycollections;
 use app\system\model\Itemcompanys;
 use app\system\model\Items;
 
@@ -92,6 +94,191 @@ class Itemcompany extends Auth
 
     /* ========== 添加 ========== */
     public function add(){
+        $model=new Itemcompanys();
+        if(request()->isPost()){
+            $rules=[
+                'item_id'=>'require',
+                'company_id'=>'require|unique:item_company,item_id='.input('item_id').'&company_id='.input('company_id'),
+                'ids'=>'require',
+            ];
+            $msg=[
+                'item_id.require'=>'请选择项目',
+                'company_id.require'=>'请选择评估公司',
+                'company_id.unique'=>'评估公司已存在',
+                'ids.require'=>'请选择被征户',
+            ];
 
+            $result=$this->validate(input(),$rules,$msg);
+            if(true !== $result){
+                return $this->error($result);
+            }
+
+            $other_datas=$model->other_data(input());
+            $datas=array_merge(input(),$other_datas);
+
+            $model->startTrans();
+            try{
+                /* ++++++++++ 添加评估公司 ++++++++++ */
+                $model->save($datas);
+                /* ++++++++++ 添加评估公司-被征户 ++++++++++ */
+                $icc_data=[];
+                $i=0;
+                $input=input();
+                foreach ($input['ids'] as $collection_id){
+                    if($collection_id){
+                        $icc_data[$i]['item_company_id']=$model->id;
+                        $icc_data[$i]['collection_id']=$collection_id;
+                        $i++;
+                    }
+                }
+
+                $icc_model=new Itemcompanycollections();
+                $icc_model->saveAll($icc_data);
+                $res=true;
+                $model->commit();
+            }catch (\Exception $exception){
+                $res=false;
+                $model->rollback();
+            }
+
+            if($res){
+                return $this->success('保存成功','');
+            }else{
+                return $this->error('保存失败');
+            }
+        }else{
+            /* ++++++++++ 项目列表 ++++++++++ */
+            $items=Items::field(['id','name','status'])->where('status',1)->order('is_top desc')->select();
+            /* ++++++++++ 片区 ++++++++++ */
+            $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
+
+            return view('add',[
+                'model'=>$model,
+                'items'=>$items,
+                'collectioncommunitys'=>$collectioncommunitys,
+            ]);
+        }
+    }
+
+
+    /* ========== 详情 ========== */
+    public function detail(){
+        $id=input('id');
+        if(!$id){
+            return $this->error('至少选择一项');
+        }
+        $model=new Itemcompanys();
+
+        $infos=Itemcompanys::alias('ic')
+            ->field(['ic.*','i.name as i_name','c.name as c_name','c.type'])
+            ->join('item i','i.id=ic.item_id','left')
+            ->join('company c','c.id=ic.company_id','left')
+            ->where('ic.id',$id)
+            ->find();
+        if(!$infos){
+            return $this->error('选择项目不存在');
+        }
+        $collection_ids=Itemcompanycollections::where('item_company_id',$id)->column('collection_id');
+        $collection_ids=$collection_ids?json_encode($collection_ids):json_encode([]);
+
+        /* ++++++++++ 片区 ++++++++++ */
+        $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
+
+        return view('modify',[
+            'model'=>$model,
+            'infos'=>$infos,
+            'collection_ids'=>$collection_ids,
+            'collectioncommunitys'=>$collectioncommunitys,
+            ]);
+    }
+
+
+    /* ========== 修改 ========== */
+    public function edit(){
+        $id=input('id');
+        if(!$id){
+            return $this->error('至少选择一项');
+        }
+        $rules=[
+            'item_id'=>'require',
+            'company_id'=>'require|unique:item_company,item_id='.input('item_id').'&company_id='.input('company_id'),
+            'ids'=>'require',
+        ];
+        $msg=[
+            'item_id.require'=>'请选择项目',
+            'company_id.require'=>'请选择评估公司',
+            'company_id.unique'=>'评估公司已存在',
+            'ids.require'=>'请选择被征户',
+        ];
+
+        $result=$this->validate(input(),$rules,$msg);
+        if(true !== $result){
+            return $this->error($result);
+        }
+        $model=new Itemcompanys();
+        $other_datas=$model->other_data(input());
+        $datas=array_merge(input(),$other_datas);
+
+        $model->startTrans();
+
+        try{
+            $model->isUpdate(true)->allowField(['infos','updated_at'])->save($datas);
+
+            /* ++++++++++ 评估公司-被征户 ++++++++++ */
+            $icc_data=[];
+            $i=0;
+            $input=input();
+            foreach ($input['ids'] as $collection_id){
+                if($collection_id){
+                    $icc_data[$i]['item_company_id']=$model->id;
+                    $icc_data[$i]['collection_id']=$collection_id;
+                    $i++;
+                }
+            }
+
+            $icc_model=new Itemcompanycollections();
+            /* ++++++++++ 清空评估公司-被征户 ++++++++++ */
+            $icc_model->where('item_company_id',$id)->delete();
+            /* ++++++++++ 添加评估公司-被征户 ++++++++++ */
+            $icc_model->saveAll($icc_data);
+            $res=true;
+            $model->commit();
+        }catch (\Exception $exception){
+            $res=false;
+            $model->rollback();
+        }
+
+        if($res){
+            return $this->success('保存成功','');
+        }else{
+            return $this->error('保存失败');
+        }
+    }
+
+
+    /* ========== 删除 ========== */
+    public function delete(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $model=new Itemcompanys();
+        try{
+            Itemcompanycollections::whereIn('item_company_id',$ids)->delete();
+            $model->whereIn('id',$ids)->delete();
+            $res=true;
+            $model->commit();
+        }catch (\Exception $exception){
+            $res=false;
+            $model->rollback();
+        }
+
+        if($res){
+            return $this->success('删除成功','');
+        }else{
+            return $this->error('删除失败');
+        }
     }
 }

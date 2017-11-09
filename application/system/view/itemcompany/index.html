@@ -20,7 +20,7 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加项目评估公司','{:url('add')}','600','250')">
+        <li class="fgf" onclick="layerIfWindow('添加项目评估公司','{:url('add')}','800','600',true)">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
@@ -53,11 +53,11 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$itemcompany->id}" onclick="checkBoxOp(this)" id="check-{$itemcompany->id}"/>
                 </td>
                 <td>{$itemcompany->id}</td>
-                <td>{if condition="$itemcompany->deleted_at"} <del>{$itemcompany->i_name}</del>{else /}{$itemcompany->i_name}{/if}</td>
-                <td>{if condition="$itemcompany->deleted_at"} <del>{$itemcompany->type}</del>{else /}{$itemcompany->type}{/if}</td>
-                <td>{if condition="$itemcompany->deleted_at"} <del>{$itemcompany->c_name}</del>{else /}{$itemcompany->c_name}{/if}</td>
+                <td>{$itemcompany->i_name}（{$itemcompany->item_id}）</td>
+                <td>{$itemcompany->type}</td>
+                <td>{$itemcompany->c_name}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('项目评估公司信息',	'{:url('detail',['id'=>$itemcompany->id])}','600','300')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('项目评估公司信息',	'{:url('detail',['id'=>$itemcompany->id])}','800','600',true)" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$itemcompany->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
@@ -121,7 +121,6 @@
                         <option value="id">--默认--</option>
                         <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
                         <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
-                        <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
                     </select>
                 </td>
                 <td>方式：</td>

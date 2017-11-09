@@ -7,32 +7,42 @@
 
 </head>
 <body>
-<form action="{:url('edit')}" method="post" class="js-ajax-form" onsubmit="return false;">
-    <input type="hidden" name="id" value="{$infos->id}">
+<form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label for="item_id">项目：</label></td>
                 <td>
-                    {$infos->i_name}（{$infos->item_id}）
-                    <input type="hidden" name="item_id" value="{$infos->item_id}">
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择项目--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}" >{$item->name}（{$item->id}）</option>
+                        {/volist}
+                    </select>
                 </td>
             </tr>
             <tr class="h50">
                 <td><label for="type">类型：</label></td>
-                <td>{$infos->type}</td>
+                <td>
+                    <select name="type" id="type">
+                        <option value="">--选择评估公司类型--</option>
+                        <option value="0">房产评估机构</option>
+                        <option value="1">资产评估机构</option>
+                    </select>
+                </td>
             </tr>
             <tr class="h50">
                 <td><label for="company_id">评估公司：</label></td>
                 <td>
-                    {$infos->c_name}（{$infos->company_id}）
-                    <input type="hidden" name="company_id" value="{$infos->company_id}">
+                    <select name="company_id" id="company_id">
+
+                    </select>
                 </td>
             </tr>
             <tr class="h50">
                 <td><label for="infos">评估说明：</label></td>
                 <td>
-                    <textarea id="infos" name="infos">{$infos->infos}</textarea>
+                    <textarea id="infos" name="infos"></textarea>
                 </td>
             </tr>
             <tr class="h70">
@@ -65,8 +75,8 @@
 
 <div id="search" class="bg_f hide">
     <form action="{:url('Tools/collection')}" method="post" id="form-search" onsubmit="return false;">
-        <input type="hidden" name="item_id" id="item-id" value="{$infos->item_id}">
-        <input type="hidden" name="type" id="company_type" value="{$infos->getData('type')}">
+        <input type="hidden" name="item_id" id="item-id" value="">
+        <input type="hidden" name="type" id="company_type" value="">
         <table class="layerTable">
             <tr class="h50">
                 <td>片区：</td>
@@ -98,17 +108,61 @@
     </form>
 </div>
 <script>
-    /* ===== 查询摸底被征户 =====*/
-    form_search();
-    $('#btn-form-search').click(function () {
-        form_search();
+    /* ===== 查询评估公司 =====*/
+    $('#type').mouseup(function () {
+        var _type=$(this).find('option:checked').val();
+
+        $('#company_id').html('');
+        if(_type == '0' || _type == '1'){
+            $.ajax({
+                url:"{:url('Tools/company')}",
+                data:{type:_type},
+                dataType:'json',
+                type:'get',
+                success:function (resp) {
+                    var options='';
+                    if(resp.code){
+                        $.each(resp.data,function (index,info) {
+                            options += '<option value="'+info.id+'">'+info.name+'（'+info.id+'）'+'</option>';
+                        });
+                    }else{
+                        layer.msg(resp.msg,function(){});
+                    }
+                    $('#company_id').html(options);
+                },
+                error:function () {
+                    layer.msg('网络错误，请重试',function(){});
+                }
+            });
+        }else{
+            layer.msg('请选择评估公司类型',function(){});
+        }
     });
 
-    function form_search() {
+    /* ===== 项目改变->清空摸底被征户 =====*/
+    $('#item_id').change(function () {
+        $('#thead-collectionlist').siblings().remove();
+    });
+
+    /* ===== 查询摸底被征户 =====*/
+    $('#btn-form-search').click(function () {
+        var _item_id=$('#item_id').find('option:checked').val();
+        var _type=$('#type').find('option:checked').val();
         var form=$('#form-search');
         var thead=$('#thead-collectionlist');
 
         thead.siblings().remove();
+        $('#item-id').val(_item_id);
+        $('#company_type').val(_type);
+
+        if(!_item_id){
+            layer.msg('请先选择项目',function(){});
+            return false;
+        }
+        if(_type != '0' && _type != '1'){
+            layer.msg('请先选择评估公司类型',function(){});
+            return false;
+        }
 
         $.ajax({
             url:form.attr('action'),
@@ -119,15 +173,8 @@
                 var tr_obj='';
                 if(resp.code){
                     $.each(resp.data,function (index,info) {
-                        var _checked='';
-                        var collection_ids={$collection_ids};
-                        var res=$.inArray(info.id,collection_ids);
-                        if(res>-1){
-                            _checked='checked';
-                        }
-
                         tr_obj +='<tr>';
-                        tr_obj +='<td style="text-align: center;background: none;"><input class="va_m" type="checkbox" name="ids[]"  value="'+info.id+'" onclick="checkBoxOp(this)" '+_checked+'> </td>';
+                        tr_obj +='<td style="text-align: center;background: none;"><input class="va_m" type="checkbox" name="ids[]"  value="'+info.id+'" onclick="checkBoxOp(this)"> </td>';
                         tr_obj +='<td style="text-align: left;background: none;">'+info.id+'</td>';
                         tr_obj +='<td style="text-align: left;background: none;">'+info.address+'</td>';
                         tr_obj +='<td style="text-align: left;background: none;">'+info.cc_name+'</td>';
@@ -149,7 +196,7 @@
                 layer.msg('网络出错，稍候重试！',function(){});
             }
         });
-    }
+    });
 </script>
 </body>
 </html>

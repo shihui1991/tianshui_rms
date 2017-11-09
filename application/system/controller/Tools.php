@@ -12,6 +12,9 @@
 namespace app\system\controller;
 
 
+use app\system\model\Collections;
+use app\system\model\Companys;
+
 class Tools extends Auth
 {
     /* ========== 默认上传 ========== */
@@ -241,6 +244,75 @@ class Tools extends Auth
 
         if($houses){
             return $this->success('获取成功','',$houses);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+
+    /* ========== 评估公司 ========== */
+    public function company(){
+        $type=input('type');
+        if(!is_numeric($type) || !in_array($type,[0,1])){
+            return $this->error('错误操作','');
+        }
+        $companys=Companys::field(['id','name','type','status','sort'])->where('type',$type)->where('status',1)->order('sort asc')->select();
+        if($companys){
+            return $this->success('获取成功','',$companys);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+    /* ========== 摸底被征户 ========== */
+    public function collection(){
+        $item_id=input('item_id');
+        if(!is_numeric($item_id) || $item_id<1){
+            return $this->error('请先选择项目','');
+        }
+        $type=input('type');
+        if(!is_numeric($type) || !in_array($type,[0,1])){
+            return $this->error('请先选择评估公司类型','');
+        }
+        $where['item_id']=$item_id;
+        $where['collection.status']=1;
+        $where['collection.has_assets']=$type;
+        $field=['c.id','c.item_id','c.community_id','c.building','c.unit','c.floor','c.number','c.has_assets','c.status','cc.address','cc.name as cc_name'];
+
+        /* ++++++++++ 片区 ++++++++++ */
+        $community_id=input('community_id');
+        if(is_numeric($community_id)){
+            $where['community_id']=$community_id;
+        }
+        /* ++++++++++ 几栋 ++++++++++ */
+        $building=input('building');
+        if(is_numeric($building)){
+            $where['building']=$building;
+        }
+        /* ++++++++++ 几单元 ++++++++++ */
+        $unit=input('unit');
+        if(is_numeric($unit)){
+            $where['unit']=$unit;
+        }
+        /* ++++++++++ 几楼 ++++++++++ */
+        $floor=input('floor');
+        if(is_numeric($floor)){
+            $where['floor']=$floor;
+        }
+        /* ++++++++++ 几号 ++++++++++ */
+        $number=input('number');
+        if(is_numeric($number)){
+            $where['number']=$number;
+        }
+
+        $collections=Collections::alias('c')
+            ->field($field)
+            ->join('collection_community cc','cc.id=c.community_id','left')
+            ->where($where)
+            ->select();
+
+        if($collections){
+            return $this->success('获取成功','',$collections);
         }else{
             return $this->error('没有数据','');
         }
