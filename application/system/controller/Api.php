@@ -31,7 +31,7 @@ class Api extends Auth
     /* ========== 列表 ========== */
     public function index()
     {
-        $apis=Apis::field(['id','parent_id','name','url','infos','status','sort'])->order('sort asc')->select();
+        $apis=Apis::field(['id','parent_id','name','url','type','infos','status','sort'])->order('sort asc')->select();
         $table_apis='';
         if($apis){
             $array=[];
@@ -50,6 +50,7 @@ class Api extends Auth
                         <td>\$id</td>
                         <td>\$space \$name</td>
                         <td>\$url</td>
+                        <td>\$type</td>
                         <td>\$infos</td>
                         <td>\$status</td>
                         <td>
@@ -69,7 +70,7 @@ class Api extends Auth
         /* ********** 查询条件 ********** */
         $datas=[];
         $where=[];
-        $field=['id','parent_id','name','url','infos','status','sort','deleted_at'];
+        $field=['id','parent_id','name','url','type','infos','status','sort','deleted_at'];
         /* ++++++++++ 名称 ++++++++++ */
         $name=trim(input('name'));
         if($name){

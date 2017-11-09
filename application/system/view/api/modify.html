@@ -33,6 +33,15 @@
                 </td>
             </tr>
             <tr class="h50">
+                <td><label for="type">类型：</label></td>
+                <td>
+                    <select name="type" id="type">
+                        <option value="get">GET</option>
+                        <option value="post">POST</option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
                 <td><label for="infos">接口说明：</label></td>
                 <td>
                     <textarea id="infos" name="infos">{:isset($infos)?$infos->infos:''}</textarea>

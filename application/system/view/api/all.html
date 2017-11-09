@@ -68,6 +68,7 @@
                 <th>ID</th>
                 <th>名称</th>
                 <th>地址</th>
+                <th>类型</th>
                 <th>说明</th>
                 <th>状态</th>
                 <th>操作</th>
@@ -81,6 +82,7 @@
                 <td>{$api->id}</td>
                 <td>{if condition="$api->deleted_at"} <del>{$api->name}</del>{else /}{$api->name}{/if}</td>
                 <td>{if condition="$api->deleted_at"} <del>{$api->url}</del>{else /}{$api->url}{/if}</td>
+                <td>{if condition="$api->deleted_at"} <del>{$api->type}</del>{else /}{$api->type}{/if}</td>
                 <td>{if condition="$api->deleted_at"} <del>{$api->infos}</del>{else /}{$api->infos}{/if}</td>
                 <td>{$api->status}</td>
                 <td>
