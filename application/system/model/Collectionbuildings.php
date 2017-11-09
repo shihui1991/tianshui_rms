@@ -36,9 +36,7 @@ class Collectionbuildings extends Model
         if(!isset($input['picture'])){
             $data['picture']=[];
         }
-        if($input['use_id']==3){
-            $data['collection_id']='';
-        }
+
         return $data;
     }
 }

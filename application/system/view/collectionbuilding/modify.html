@@ -135,6 +135,10 @@
                                 <td><label for="build_year">建造年份：</label></td>
                                 <td><input type="number" name="build_year" id="build_year" value="{:isset($infos)?$infos->build_year:''}" min="1"></td>
                             </tr>
+                            <tr class="h50">
+                                <td><label for="remark">备注：</label></td>
+                                <td colspan="7"><input type="text" name="remark" id="remark" value="{:isset($infos)?$infos->remark:''}"></td>
+                            </tr>
                             {if condition="isset($infos)"}
                             <tr class="h50">
                                 <td>操作时间：</td>
@@ -226,23 +230,6 @@
         }
     });
 
-    /*----- 实际用途与权属 -----*/
-    var use_id_obj=$('#use_id');
-    var collection_id_obj=$('#collection_id');
-    $(document).change(function () {
-        var chosen_div= collection_id_obj.next();
-        if(!use_id_obj.val() || use_id_obj.val()=='3'){
-            collection_id_obj.prop('disabled',true).val('');
-            chosen_div.addClass('chosen-disabled').removeClass('chosen-container-active').find('input').prop('disabled',true);
-            chosen_div.find('.chosen-drop').css('display','none');
-            chosen_div.find('a.chosen-single').find('span').html('--请选择权属--');
-        }else{
-            collection_id_obj.prop('disabled',false);
-            chosen_div.removeClass('chosen-disabled').addClass('chosen-container-active').find('input').prop('disabled',false);
-            chosen_div.find('.chosen-drop').css('display','');
-        }
-
-    });
 </script>
 </body>
 </html>

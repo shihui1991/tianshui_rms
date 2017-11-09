@@ -57,6 +57,7 @@
                 <th>数量<i class="stretch"></i></th>
                 <th>建造年份<i class="stretch"></i></th>
                 <th>状况<i class="stretch"></i></th>
+                <th>备注<i class="stretch"></i></th>
                 <th>操作<i class="stretch"></i></th>
             </tr>
             {volist name="collectionbuildings" id="collectionbuilding"}
@@ -98,6 +99,7 @@
                 <td>{$collectionbuilding->real_num} {$collectionbuilding->real_unit}</td>
                 <td>{$collectionbuilding->build_year}</td>
                 <td>{if condition="$collectionbuilding->getData('status_id') eq 0"}待定{else/}{$collectionbuilding->s_name}{/if}</td>
+                <td>{$collectionbuilding->remark}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('入户摸底-建筑信息',	'{:url('detail',['id'=>$collectionbuilding->id])}','800','630',true)" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$collectionbuilding->id])}" class="btn js-ajax-form-btn">删除</button>

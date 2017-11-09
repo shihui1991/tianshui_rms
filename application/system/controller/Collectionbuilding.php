@@ -38,7 +38,7 @@ class Collectionbuilding extends Auth
         $datas=[];
         $where=[];
         $field=['cb.id','cb.item_id','cb.community_id','cb.collection_id','cb.building','cb.unit','cb.floor','cb.number',
-            'cb.real_num','cb.real_unit','cb.use_id','cb.struct_id','cb.status_id','cb.build_year','cb.deleted_at','i.name as i_name','i.is_top',
+            'cb.real_num','cb.real_unit','cb.use_id','cb.struct_id','cb.status_id','cb.build_year','cb.remark','cb.deleted_at','i.name as i_name','i.is_top',
             'cc.address','cc.name as cc_name','c.building as c_building','c.unit as c_unit','c.floor as c_floor','c.number as c_number',
             'bu.name as bu_name','bs.name as bs_name','s.name as s_name'];
 
@@ -165,6 +165,7 @@ class Collectionbuilding extends Auth
                 'use_id'=>'require',
                 'item_id'=>'require',
                 'community_id'=>'require',
+                'collection_id'=>'require',
                 'real_num'=>'require|min:1',
                 'real_unit'=>'require',
             ];
@@ -172,6 +173,7 @@ class Collectionbuilding extends Auth
                 'use_id.require'=>'请选择用途',
                 'item_id.require'=>'请选择项目',
                 'community_id.require'=>'请选择片区',
+                'collection_id.require'=>'请选择权属',
                 'real_num.require'=>'实际数量不能为空',
                 'real_num.min'=>'实际数量不能少于1',
                 'real_unit.require'=>'输入数量单位',
@@ -180,17 +182,12 @@ class Collectionbuilding extends Auth
             if(true !== $result){
                 return $this->error($result);
             }
-            if(input('use_id') != 3 && !input('collection_id')){
-                return $this->error('请选择权属');
+            $collection_info=Collections::field(['id','item_id','community_id'])->find(input('collection_id'));
+            if(!$collection_info){
+                return $this->error('选择权属不存在！');
             }
-            if(input('collection_id')){
-                $collection_info=Collections::field(['id','item_id','community_id'])->find(input('collection_id'));
-                if(!$collection_info){
-                    return $this->error('选择权属不存在！');
-                }
-                if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
-                    return $this->error('选择权属与项目片区不一致');
-                }
+            if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
+                return $this->error('选择权属与项目片区不一致');
             }
 
             $other_datas=$model->other_data(input());
@@ -275,6 +272,7 @@ class Collectionbuilding extends Auth
             'use_id'=>'require',
             'item_id'=>'require',
             'community_id'=>'require',
+            'collection_id'=>'require',
             'real_num'=>'require|min:1',
             'real_unit'=>'require',
         ];
@@ -282,6 +280,7 @@ class Collectionbuilding extends Auth
             'use_id.require'=>'请选择用途',
             'item_id.require'=>'请选择项目',
             'community_id.require'=>'请选择片区',
+            'collection_id.require'=>'请选择权属',
             'real_num.require'=>'实际数量不能为空',
             'real_num.min'=>'实际数量不能少于1',
             'real_unit.require'=>'输入数量单位',
@@ -291,17 +290,12 @@ class Collectionbuilding extends Auth
         if(true !== $result){
             return $this->error($result);
         }
-        if(input('use_id') != 3 && !input('collection_id')){
-            return $this->error('请选择权属');
+        $collection_info=Collections::field(['id','item_id','community_id'])->find(input('collection_id'));
+        if(!$collection_info){
+            return $this->error('选择权属不存在！');
         }
-        if(input('collection_id')){
-            $collection_info=Collections::field(['id','item_id','community_id'])->find(input('collection_id'));
-            if(!$collection_info){
-                return $this->error('选择权属不存在！');
-            }
-            if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
-                return $this->error('选择权属与项目片区不一致');
-            }
+        if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
+            return $this->error('选择权属与项目片区不一致');
         }
 
         $collectionbuilding_model=new Collectionbuildings();
