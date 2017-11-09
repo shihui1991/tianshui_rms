@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-09 11:37:05
+Date: 2017-11-09 11:43:59
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -29,6 +29,7 @@ CREATE TABLE `api` (
   `level` int(11) DEFAULT NULL COMMENT '层级',
   `name` varchar(255) DEFAULT NULL COMMENT ' 接口名称',
   `url` text COMMENT '接口地址',
+  `type` varchar(255) DEFAULT 'get' COMMENT '请求类型，get或post',
   `infos` text COMMENT ' 接口描述',
   `params` text COMMENT '参数',
   `response` text COMMENT '响应',
@@ -43,8 +44,8 @@ CREATE TABLE `api` (
 -- ----------------------------
 -- Records of api
 -- ----------------------------
-INSERT INTO `api` VALUES ('1', '0', '1', '登录', '/api/index/index', '', '[{\"name\":\"p1\",\"value\":\"pv1\",\"infos\":\"\"},{\"name\":\"p2\",\"value\":\"pv2\",\"infos\":\"\"}]', '[{\"name\":\"r1\",\"value\":\"rv1\",\"infos\":\"\"},{\"name\":\"r2\",\"value\":\"rv2\",\"infos\":\"\"}]', '0', '1', '1509419246', '1509670351', null);
-INSERT INTO `api` VALUES ('2', '1', '2', '注册', '/api/index/signup', '', '[{\"name\":\"p3\",\"value\":\"pv3\",\"infos\":\"\"}]', '[{\"name\":\"r3\",\"value\":\"rv3\",\"infos\":\"\"}]', '0', '1', '1509420423', '1509420423', null);
+INSERT INTO `api` VALUES ('1', '0', '1', '登录', '/api/index/index', 'get', '', '[{\"name\":\"p1\",\"value\":\"pv1\",\"infos\":\"\"},{\"name\":\"p2\",\"value\":\"pv2\",\"infos\":\"\"}]', '[{\"name\":\"r1\",\"value\":\"rv1\",\"infos\":\"\"},{\"name\":\"r2\",\"value\":\"rv2\",\"infos\":\"\"}]', '0', '1', '1509419246', '1509670351', null);
+INSERT INTO `api` VALUES ('2', '1', '2', '注册', '/api/index/signup', 'post', '', '[{\"name\":\"p3\",\"value\":\"pv3\",\"infos\":\"\"}]', '[{\"name\":\"r3\",\"value\":\"rv3\",\"infos\":\"\"}]', '0', '1', '1509420423', '1510199000', null);
 
 -- ----------------------------
 -- Table structure for bank
