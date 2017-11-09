@@ -274,9 +274,12 @@ class Tools extends Auth
         if(!is_numeric($type) || !in_array($type,[0,1])){
             return $this->error('请先选择评估公司类型','');
         }
+        if($type){
+            $where['collection.has_assets']=$type;
+        }
         $where['item_id']=$item_id;
         $where['collection.status']=1;
-        $where['collection.has_assets']=$type;
+
         $field=['c.id','c.item_id','c.community_id','c.building','c.unit','c.floor','c.number','c.has_assets','c.status','cc.address','cc.name as cc_name'];
 
         /* ++++++++++ 片区 ++++++++++ */
