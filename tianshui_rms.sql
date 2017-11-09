@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-09 11:43:59
+Date: 2017-11-09 15:40:10
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -46,6 +46,145 @@ CREATE TABLE `api` (
 -- ----------------------------
 INSERT INTO `api` VALUES ('1', '0', '1', '登录', '/api/index/index', 'get', '', '[{\"name\":\"p1\",\"value\":\"pv1\",\"infos\":\"\"},{\"name\":\"p2\",\"value\":\"pv2\",\"infos\":\"\"}]', '[{\"name\":\"r1\",\"value\":\"rv1\",\"infos\":\"\"},{\"name\":\"r2\",\"value\":\"rv2\",\"infos\":\"\"}]', '0', '1', '1509419246', '1509670351', null);
 INSERT INTO `api` VALUES ('2', '1', '2', '注册', '/api/index/signup', 'post', '', '[{\"name\":\"p3\",\"value\":\"pv3\",\"infos\":\"\"}]', '[{\"name\":\"r3\",\"value\":\"rv3\",\"infos\":\"\"}]', '0', '1', '1509420423', '1510199000', null);
+
+-- ----------------------------
+-- Table structure for assess
+-- ----------------------------
+DROP TABLE IF EXISTS `assess`;
+CREATE TABLE `assess` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
+  `estate` float DEFAULT NULL COMMENT '房产评估总额',
+  `assets` float DEFAULT NULL COMMENT '资产评估总额',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估';
+
+-- ----------------------------
+-- Records of assess
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for assess_assets
+-- ----------------------------
+DROP TABLE IF EXISTS `assess_assets`;
+CREATE TABLE `assess_assets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
+  `assess_id` int(11) DEFAULT NULL COMMENT '入户评估ID',
+  `company_id` int(11) DEFAULT NULL COMMENT ' 评估公司ID',
+  `report_at` int(11) DEFAULT NULL COMMENT ' 报告时间',
+  `valued_at` int(11) DEFAULT NULL COMMENT ' 价值时点',
+  `method` text COMMENT ' 评估方法',
+  `total` float DEFAULT NULL COMMENT ' 评估总额',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
+  `picture` text COMMENT '评估报告',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估-资产评估';
+
+-- ----------------------------
+-- Records of assess_assets
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for assess_assets_valuer
+-- ----------------------------
+DROP TABLE IF EXISTS `assess_assets_valuer`;
+CREATE TABLE `assess_assets_valuer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
+  `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
+  `estate_id` int(11) DEFAULT NULL COMMENT ' 房产评估ID',
+  `company_id` int(11) DEFAULT NULL COMMENT ' 评估公司ID',
+  `valuer_id` int(11) DEFAULT NULL COMMENT ' 评估师ID',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估-资产评估-评估师';
+
+-- ----------------------------
+-- Records of assess_assets_valuer
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for assess_estate
+-- ----------------------------
+DROP TABLE IF EXISTS `assess_estate`;
+CREATE TABLE `assess_estate` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
+  `assess_id` int(11) DEFAULT NULL COMMENT '入户评估ID',
+  `company_id` int(11) DEFAULT NULL COMMENT ' 评估公司ID',
+  `report_at` int(11) DEFAULT NULL COMMENT ' 报告时间',
+  `valued_at` int(11) DEFAULT NULL COMMENT ' 价值时点',
+  `method` text COMMENT ' 评估方法',
+  `total` float DEFAULT NULL COMMENT ' 评估总额',
+  `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
+  `picture` text COMMENT '评估报告',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估-房产评估';
+
+-- ----------------------------
+-- Records of assess_estate
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for assess_estate_building
+-- ----------------------------
+DROP TABLE IF EXISTS `assess_estate_building`;
+CREATE TABLE `assess_estate_building` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
+  `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
+  `estate_id` int(11) DEFAULT NULL COMMENT '房产评估ID',
+  `building_id` int(11) DEFAULT NULL COMMENT '建筑ID',
+  `price` float DEFAULT NULL COMMENT ' 评估单价',
+  `amount` float DEFAULT NULL COMMENT ' 评估总价',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估-房产评估-建筑评估';
+
+-- ----------------------------
+-- Records of assess_estate_building
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for assess_estate_valuer
+-- ----------------------------
+DROP TABLE IF EXISTS `assess_estate_valuer`;
+CREATE TABLE `assess_estate_valuer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
+  `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
+  `estate_id` int(11) DEFAULT NULL COMMENT ' 房产评估ID',
+  `company_id` int(11) DEFAULT NULL COMMENT ' 评估公司ID',
+  `valuer_id` int(11) DEFAULT NULL COMMENT ' 评估师ID',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估-房产评估-评估师';
+
+-- ----------------------------
+-- Records of assess_estate_valuer
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for bank
@@ -174,7 +313,7 @@ CREATE TABLE `collection` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='入户摸底 征地信息';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='入户摸底';
 
 -- ----------------------------
 -- Records of collection
@@ -209,16 +348,17 @@ CREATE TABLE `collection_building` (
   `status` tinyint(1) DEFAULT NULL COMMENT ' 使用状态，0自用，1租赁',
   `business` varchar(255) DEFAULT NULL COMMENT '经营项目',
   `build_year` int(11) DEFAULT NULL COMMENT ' 建造年份',
+  `remark` text COMMENT '备注',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='入户摸底 建筑';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='入户摸底-建筑';
 
 -- ----------------------------
 -- Records of collection_building
 -- ----------------------------
-INSERT INTO `collection_building` VALUES ('1', '2', '1', '1', '0', '0', '0', '0', '0', '', '', '0', '120', '㎡', '1', '1', '1', '0', '[]', '0', '', '0', '1510019791', '1510048117', null);
+INSERT INTO `collection_building` VALUES ('1', '2', '1', '1', '0', '0', '0', '0', '0', '', '', '0', '120', '㎡', '1', '1', '1', '0', '[]', '0', '', '0', null, '1510019791', '1510207614', null);
 
 -- ----------------------------
 -- Table structure for collection_community
@@ -233,7 +373,7 @@ CREATE TABLE `collection_community` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='征地片区';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='入户摸底-片区';
 
 -- ----------------------------
 -- Records of collection_community
@@ -266,7 +406,7 @@ CREATE TABLE `collection_holder` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='入户摸底 产权人及承租家庭';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='入户摸底-产权人及承租家庭';
 
 -- ----------------------------
 -- Records of collection_holder
@@ -290,7 +430,7 @@ CREATE TABLE `collection_holder_crowd` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='入户摸底 特殊人群';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='入户摸底-家庭成员-特殊人群';
 
 -- ----------------------------
 -- Records of collection_holder_crowd
@@ -644,7 +784,7 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=251 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=255 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
 -- ----------------------------
 -- Records of menu
@@ -664,7 +804,7 @@ INSERT INTO `menu` VALUES ('12', '9', '建筑使用性质', '2', '<img src=\"/st
 INSERT INTO `menu` VALUES ('13', '9', '建筑状况', '2', '<img src=\"/static/system/img/add_on.png\"/>', '0', '/system/buildingstatus/index', '', '1', '1', '1508146326', '1509173243', null);
 INSERT INTO `menu` VALUES ('14', '169', '新闻公告分类', '2', '<img src=\"/static/system/img/sharepoint.png\"/>', '0', '/system/newscate/index', '', '1', '1', '1508146527', '1509526851', null);
 INSERT INTO `menu` VALUES ('15', '9', '特殊人群分类', '2', '<img src=\"/static/system/img/outlook_new_meeting.png\"/>', '0', '/system/crowd/index', '', '1', '1', '1508146593', '1509178461', null);
-INSERT INTO `menu` VALUES ('16', '1', '修改用户密码', '2', '<img src=\"/static/system/img/page_code.png\"/>', '6', '/system/user/password', '', '0', '1', '1508146679', '1509693024', '1509693014');
+INSERT INTO `menu` VALUES ('16', '1', '修改用户密码', '2', '<img src=\"/static/system/img/page_code.png\"/>', '6', '/system/user/password', '', '0', '1', '1508146679', '1510210694', null);
 INSERT INTO `menu` VALUES ('17', '2', '菜单排序', '3', '<img src=\"/static/system/img/text_list_numbers.png\"/>', '0', '/system/menu/sort', '', '0', '1', '1508146897', '1509171136', null);
 INSERT INTO `menu` VALUES ('18', '2', '菜单显示状态', '3', '<img src=\"/static/system/img/monitor_window_3d.png\"/>', '0', '/system/menu/show', '', '0', '1', '1508146986', '1509171136', null);
 INSERT INTO `menu` VALUES ('19', '2', '菜单使用状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/menu/status', '', '0', '1', '1508147023', '1509171136', null);
@@ -885,20 +1025,24 @@ INSERT INTO `menu` VALUES ('233', '232', '添加项目评估公司', '3', '<img 
 INSERT INTO `menu` VALUES ('234', '232', '项目评估公司详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/itemcompany/detail', '', '0', '1', '1508894864', '1510138473', null);
 INSERT INTO `menu` VALUES ('235', '232', '项目评估公司修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/itemcompany/edit', '', '0', '1', '1508894864', '1510138486', null);
 INSERT INTO `menu` VALUES ('236', '232', '项目评估公司删除', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/itemcompany/delete', '', '0', '1', '1508894864', '1510138502', null);
-INSERT INTO `menu` VALUES ('237', '232', '入户摸底-特殊人群恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/collectionholdercrowd/restore', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('238', '232', '入户摸底-特殊人群销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/collectionholdercrowd/destroy', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('239', '232', '添加入户摸底-特殊人群', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/collectionholdercrowd/add', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('240', '232', '入户摸底-特殊人群详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/collectionholdercrowd/detail', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('241', '232', '入户摸底-特殊人群修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/collectionholdercrowd/edit', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('242', '232', '入户摸底-特殊人群删除', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/collectionholdercrowd/delete', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('243', '232', '入户摸底-特殊人群恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/collectionholdercrowd/restore', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('244', '232', '入户摸底-特殊人群销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/collectionholdercrowd/destroy', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('245', '232', '添加入户摸底-特殊人群', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/collectionholdercrowd/add', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('246', '232', '入户摸底-特殊人群详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/collectionholdercrowd/detail', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('247', '232', '入户摸底-特殊人群修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/collectionholdercrowd/edit', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('248', '232', '入户摸底-特殊人群删除', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/collectionholdercrowd/delete', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('249', '232', '入户摸底-特殊人群恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/collectionholdercrowd/restore', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('250', '232', '入户摸底-特殊人群销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/collectionholdercrowd/destroy', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('237', '231', '入户评估汇总', '2', '<img src=\"/static/system/img/bricks.png\"/>', '0', '/system/assess/index', '', '1', '1', '1508894864', '1510209344', null);
+INSERT INTO `menu` VALUES ('238', '231', '入户评估-房产评估', '2', '<img src=\"/static/system/img/books.png\"/>', '0', '/system/assessestate/index', '', '1', '1', '1508894864', '1510206416', null);
+INSERT INTO `menu` VALUES ('239', '238', '添加入户评估-房产评估', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/assessestate/add', '', '0', '1', '1508894864', '1510206587', null);
+INSERT INTO `menu` VALUES ('240', '238', '入户评估-房产评估详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/assessestate/detail', '', '0', '1', '1508894864', '1510210000', null);
+INSERT INTO `menu` VALUES ('241', '238', '入户评估-房产评估修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/assessestate/edit', '', '0', '1', '1508894864', '1510209971', null);
+INSERT INTO `menu` VALUES ('242', '238', '入户评估-房产评估删除', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/assessestate/delete', '', '0', '1', '1508894864', '1510210036', null);
+INSERT INTO `menu` VALUES ('243', '238', '入户评估-房产评估恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/assessestate/restore', '', '0', '1', '1508894864', '1510210056', null);
+INSERT INTO `menu` VALUES ('244', '238', '入户评估-房产评估销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/assessestate/destroy', '', '0', '1', '1508894864', '1510210073', null);
+INSERT INTO `menu` VALUES ('245', '251', '添加入户评估-资产评估', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/assessassets/add', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('246', '251', '入户评估-资产评估详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/assessassets/detail', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('247', '251', '入户评估-资产评估修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/assessassets/edit', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('248', '237', '入户评估删除', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/assess/delete', '', '0', '1', '1508894864', '1510210179', null);
+INSERT INTO `menu` VALUES ('249', '237', '入户评估恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/assess/restore', '', '0', '1', '1508894864', '1510210198', null);
+INSERT INTO `menu` VALUES ('250', '237', '入户评估销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/assess/destroy', '', '0', '1', '1508894864', '1510210213', null);
+INSERT INTO `menu` VALUES ('251', '231', '入户评估-资产评估', '2', '<img src=\"/static/system/img/web_disk.png\"/>', '0', '/system/assessassets/index', '', '1', '1', '1510210590', '1510210590', null);
+INSERT INTO `menu` VALUES ('252', '251', '入户评估-资产评估删除', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/assessassets/delete', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('253', '251', '入户评估-资产评估恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/assessassets/restore', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('254', '251', '入户评估-资产评估销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/assessassets/destroy', null, '0', '1', '1508894864', '1508894864', null);
 
 -- ----------------------------
 -- Table structure for nation
