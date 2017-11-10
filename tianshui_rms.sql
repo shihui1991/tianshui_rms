@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-09 15:40:10
+Date: 2017-11-10 10:19:33
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -742,6 +742,24 @@ CREATE TABLE `item_house` (
 INSERT INTO `item_house` VALUES ('1', '2', '1', '1509610556', '1509610591');
 
 -- ----------------------------
+-- Table structure for item_topic
+-- ----------------------------
+DROP TABLE IF EXISTS `item_topic`;
+CREATE TABLE `item_topic` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `topic_id` int(11) DEFAULT NULL COMMENT '话题ID',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目风险评估话题';
+
+-- ----------------------------
+-- Records of item_topic
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for layout
 -- ----------------------------
 DROP TABLE IF EXISTS `layout`;
@@ -784,8 +802,9 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=255 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=262 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
+TRUNCATE TABLE `menu`;
 -- ----------------------------
 -- Records of menu
 -- ----------------------------
@@ -976,7 +995,7 @@ INSERT INTO `menu` VALUES ('184', '180', '资金款项状态', '3', '<img src=\"
 INSERT INTO `menu` VALUES ('185', '180', '删除资金款项', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/fundsname/delete', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('186', '180', '资金款项恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/fundsname/restore', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('187', '180', '资金款项销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/fundsname/destroy', null, '0', '1', '1508146326', '1508146326', null);
-INSERT INTO `menu` VALUES ('188', '0', '征地摸底管理', '1', '<img src=\"/static/system/img/butterfly.png\"/>', '0', '/system/collection#', '', '1', '1', '1509616455', '1509616455', null);
+INSERT INTO `menu` VALUES ('188', '0', '入户摸底管理', '1', '<img src=\"/static/system/img/butterfly.png\"/>', '0', '/system/collection#', '', '1', '1', '1509616455', '1510279011', null);
 INSERT INTO `menu` VALUES ('189', '188', '征地片区', '2', '<img src=\"/static/system/img/chart_pie.png\"/>', '0', '/system/collectioncommunity/index', '', '1', '1', '1509616556', '1509616696', null);
 INSERT INTO `menu` VALUES ('190', '189', '添加征地片区', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/collectioncommunity/add', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('191', '189', '征地片区详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/collectioncommunity/detail', null, '0', '1', '1508146326', '1508146326', null);
@@ -1019,7 +1038,7 @@ INSERT INTO `menu` VALUES ('227', '224', '入户摸底-特殊人群修改', '3',
 INSERT INTO `menu` VALUES ('228', '224', '入户摸底-特殊人群删除', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/collectionholdercrowd/delete', null, '0', '1', '1508894864', '1508894864', null);
 INSERT INTO `menu` VALUES ('229', '224', '入户摸底-特殊人群恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/collectionholdercrowd/restore', null, '0', '1', '1508894864', '1508894864', null);
 INSERT INTO `menu` VALUES ('230', '224', '入户摸底-特殊人群销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/collectionholdercrowd/destroy', null, '0', '1', '1508894864', '1508894864', null);
-INSERT INTO `menu` VALUES ('231', '0', '征地评估管理', '1', '<img src=\"/static/system/img/navigation.png\"/>', '0', '/system/assess#', '', '1', '1', '1510137913', '1510137913', null);
+INSERT INTO `menu` VALUES ('231', '0', '入户评估管理', '1', '<img src=\"/static/system/img/navigation.png\"/>', '0', '/system/assess#', '', '1', '1', '1510137913', '1510279021', null);
 INSERT INTO `menu` VALUES ('232', '231', '项目评估公司', '2', '<img src=\"/static/system/img/group_gear.png\"/>', '0', '/system/itemcompany/index', '', '1', '1', '1510138108', '1510138108', null);
 INSERT INTO `menu` VALUES ('233', '232', '添加项目评估公司', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/itemcompany/add', '', '0', '1', '1508894864', '1510138450', null);
 INSERT INTO `menu` VALUES ('234', '232', '项目评估公司详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/itemcompany/detail', '', '0', '1', '1508894864', '1510138473', null);
@@ -1043,6 +1062,13 @@ INSERT INTO `menu` VALUES ('251', '231', '入户评估-资产评估', '2', '<img
 INSERT INTO `menu` VALUES ('252', '251', '入户评估-资产评估删除', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/assessassets/delete', null, '0', '1', '1508894864', '1508894864', null);
 INSERT INTO `menu` VALUES ('253', '251', '入户评估-资产评估恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/assessassets/restore', null, '0', '1', '1508894864', '1508894864', null);
 INSERT INTO `menu` VALUES ('254', '251', '入户评估-资产评估销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/assessassets/destroy', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('255', '238', '入户评估-房产评估状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/assessestate/status', '', '0', '1', '1510213563', '1510213563', null);
+INSERT INTO `menu` VALUES ('256', '251', '入户评估-资产评估状态', '3', '<img src=\"/static/system/img/checked.png\"/>', '0', '/system/assessassets/status', '', '0', '1', '1510213605', '1510213605', null);
+INSERT INTO `menu` VALUES ('257', '0', '风险评估管理', '1', '<img src=\"/static/system/img/chart_bar.png\"/>', '0', '/system/risk#', '', '1', '1', '1510278140', '1510278140', null);
+INSERT INTO `menu` VALUES ('258', '257', '调查话题管理', '2', '<img src=\"/static/system/img/insert_element.png\"/>', '0', '/system/topic/index', '', '1', '1', '1510278361', '1510278361', null);
+INSERT INTO `menu` VALUES ('259', '257', '风险评估', '2', '<img src=\"/static/system/img/chart_line.png\"/>', '0', '/system/risk/index', '', '1', '1', '1510280166', '1510280166', null);
+INSERT INTO `menu` VALUES ('260', '257', '风险评估-自选话题', '2', '<img src=\"/static/system/img/database_table.png\"/>', '0', '/system/risktopic/index', '', '1', '1', '1510280265', '1510280265', null);
+INSERT INTO `menu` VALUES ('261', '162', '项目风险评估话题', '2', '<img src=\"/static/system/img/database_table.png\"/>', '0', '/system/itemtopic/index', '', '0', '1', '1510280342', '1510280342', null);
 
 -- ----------------------------
 -- Table structure for nation
@@ -1116,6 +1142,55 @@ CREATE TABLE `news_cate` (
 INSERT INTO `news_cate` VALUES ('1', '征收范围公告', '', '1', '1509176668', '1509176668', null);
 
 -- ----------------------------
+-- Table structure for risk
+-- ----------------------------
+DROP TABLE IF EXISTS `risk`;
+CREATE TABLE `risk` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
+  `holder_id` int(11) DEFAULT NULL COMMENT ' 成员ID',
+  `deputy` tinyint(1) DEFAULT '0' COMMENT '群众代表，0拒绝，1同意',
+  `recommemd_holder_id` int(11) DEFAULT NULL COMMENT ' 推荐代表成员ID',
+  `is_agree` tinyint(1) DEFAULT '1' COMMENT ' 方案意见，0反对，1同意',
+  `compensate_way` tinyint(1) DEFAULT '0' COMMENT '补偿方式，0为货币补偿，1为产权调换',
+  `compensate_price` int(11) DEFAULT NULL COMMENT '补偿单价',
+  `transit_way` tinyint(1) DEFAULT '0' COMMENT '过渡方式，0为货币过渡，1为周转房临时安置',
+  `move_way` tinyint(1) DEFAULT '0' COMMENT '搬迁方式，0自行搬迁，1政府负责',
+  `opinion` text COMMENT '其他意见',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='风险评估';
+
+-- ----------------------------
+-- Records of risk
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for risk_topic
+-- ----------------------------
+DROP TABLE IF EXISTS `risk_topic`;
+CREATE TABLE `risk_topic` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
+  `holder_id` int(11) DEFAULT NULL COMMENT ' 成员ID',
+  `risk_id` int(11) DEFAULT NULL COMMENT ' 风险评估ID',
+  `topic_id` int(11) DEFAULT NULL COMMENT ' 话题ID',
+  `answer` text COMMENT '回答',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='风险评估话题结果';
+
+-- ----------------------------
+-- Records of risk_topic
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for role
 -- ----------------------------
 DROP TABLE IF EXISTS `role`;
@@ -1138,6 +1213,23 @@ CREATE TABLE `role` (
 -- Records of role
 -- ----------------------------
 INSERT INTO `role` VALUES ('1', '0', '内置超级管理员', '1', '1', '', '[]', '1', '1509096221', '1509171145', null);
+
+-- ----------------------------
+-- Table structure for topic
+-- ----------------------------
+DROP TABLE IF EXISTS `topic`;
+CREATE TABLE `topic` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text COMMENT '名称',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='调查话题';
+
+-- ----------------------------
+-- Records of topic
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for user
@@ -1168,4 +1260,4 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '0', '1', '', '/uploads/image/20171103/1be724c55dcc9ee0f62fb14b170ab0d1.png', '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', 'E2DB6AF6-D1C9-68FF-816D-0D8CDA322FFA', '1510108132', '127.0.0.1', '1', '1509544403', '1509686694', null);
+INSERT INTO `user` VALUES ('1', '0', '1', '', '/uploads/image/20171103/1be724c55dcc9ee0f62fb14b170ab0d1.png', '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', 'E2DB6AF6-D1C9-68FF-816D-0D8CDA322FFA', '1510215623', '10.0.0.19', '1', '1509544403', '1509686694', null);
