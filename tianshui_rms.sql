@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-10 17:03:46
+Date: 2017-11-11 11:43:25
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -54,6 +54,7 @@ DROP TABLE IF EXISTS `assess`;
 CREATE TABLE `assess` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
   `estate` float DEFAULT NULL COMMENT '房产评估总额',
   `assets` float DEFAULT NULL COMMENT '资产评估总额',
@@ -74,6 +75,7 @@ DROP TABLE IF EXISTS `assess_assets`;
 CREATE TABLE `assess_assets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
   `assess_id` int(11) DEFAULT NULL COMMENT '入户评估ID',
   `company_id` int(11) DEFAULT NULL COMMENT ' 评估公司ID',
@@ -122,6 +124,7 @@ DROP TABLE IF EXISTS `assess_estate`;
 CREATE TABLE `assess_estate` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
   `assess_id` int(11) DEFAULT NULL COMMENT '入户评估ID',
   `company_id` int(11) DEFAULT NULL COMMENT ' 评估公司ID',
@@ -148,6 +151,7 @@ DROP TABLE IF EXISTS `assess_estate_building`;
 CREATE TABLE `assess_estate_building` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
   `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
   `estate_id` int(11) DEFAULT NULL COMMENT '房产评估ID',
@@ -771,16 +775,25 @@ CREATE TABLE `item_subject` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
   `subject_id` int(11) DEFAULT NULL COMMENT '科目ID',
-  `default` int(11) DEFAULT '1' COMMENT '默认数量',
+  `default` int(11) DEFAULT '1' COMMENT '默认补偿次数',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目可变补偿科目';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='项目可变补偿科目';
 
 -- ----------------------------
 -- Records of item_subject
 -- ----------------------------
+INSERT INTO `item_subject` VALUES ('1', '2', '1', '1', '1510362931', '1510362931', null);
+INSERT INTO `item_subject` VALUES ('2', '2', '2', '1', '1510362975', '1510362975', null);
+INSERT INTO `item_subject` VALUES ('3', '1', '1', '1', '1510363014', '1510363311', null);
+INSERT INTO `item_subject` VALUES ('4', '2', '3', '1', '1510363342', '1510363342', null);
+INSERT INTO `item_subject` VALUES ('5', '2', '4', '1', '1510363354', '1510363354', null);
+INSERT INTO `item_subject` VALUES ('6', '2', '5', '1', '1510363372', '1510363372', null);
+INSERT INTO `item_subject` VALUES ('7', '2', '6', '1', '1510363375', '1510363375', null);
+INSERT INTO `item_subject` VALUES ('8', '2', '7', '1', '1510363380', '1510363380', null);
+INSERT INTO `item_subject` VALUES ('9', '2', '8', '1', '1510363385', '1510363385', null);
 
 -- ----------------------------
 -- Table structure for item_topic
@@ -843,9 +856,8 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=277 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=293 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
-TRUNCATE TABLE `menu`;
 -- ----------------------------
 -- Records of menu
 -- ----------------------------
@@ -1011,7 +1023,7 @@ INSERT INTO `menu` VALUES ('159', '154', '删除评估师', '3', '<img src=\"/st
 INSERT INTO `menu` VALUES ('160', '154', '评估师恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/companyvaluer/restore', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('161', '154', '评估师销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/companyvaluer/destroy', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('162', '0', '项目管理', '1', '<img src=\"/static/system/img/web_disk.png\"/>', '0', '/system/item#', '', '1', '1', '1509445088', '1509445088', null);
-INSERT INTO `menu` VALUES ('163', '162', '项目档案', '2', '<img src=\"/static/system/img/application_view_list.png\"/>', '1', '/system/item/index', '', '1', '1', '1509446298', '1510280672', null);
+INSERT INTO `menu` VALUES ('163', '162', '项目档案及设置', '2', '<img src=\"/static/system/img/application_view_list.png\"/>', '1', '/system/item/index', '', '1', '1', '1509446298', '1510306638', null);
 INSERT INTO `menu` VALUES ('164', '163', '添加项目', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/item/add', '', '0', '1', '1509446352', '1509496790', null);
 INSERT INTO `menu` VALUES ('165', '163', '项目详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/item/detail', '', '0', '1', '1509496863', '1509496863', null);
 INSERT INTO `menu` VALUES ('166', '163', '项目修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/item/edit', '', '0', '1', '1509496907', '1509496907', null);
@@ -1125,6 +1137,22 @@ INSERT INTO `menu` VALUES ('273', '269', '补偿科目删除', '3', '<img src=\"
 INSERT INTO `menu` VALUES ('274', '269', '补偿科目恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/subject/restore', null, '0', '1', '1508894998', '1508895590', null);
 INSERT INTO `menu` VALUES ('275', '269', '补偿科目销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/subject/destroy', null, '0', '1', '1508894998', '1508895601', null);
 INSERT INTO `menu` VALUES ('276', '188', '入户摸底-其他', '2', '<img src=\"/static/system/img/application_form.png\"/>', '6', '/system/collectionobject/index', '', '0', '1', '1510302958', '1510302985', null);
+INSERT INTO `menu` VALUES ('277', '162', '项目重要补偿科目', '2', '<img src=\"/static/system/img/bricks.png\"/>', '3', '/system/itemsubject/index', '', '0', '1', '1510307504', '1510307504', null);
+INSERT INTO `menu` VALUES ('278', '0', '兑付与协议管理', '1', '<img src=\"/static/system/img/server_database.png\"/>', '2', '/system/pay#', '', '1', '1', '1510308510', '1510308519', null);
+INSERT INTO `menu` VALUES ('279', '278', '协议模板', '2', '<img src=\"/static/system/img/file_extension_txt.png\"/>', '0', '/system/template/index', '', '1', '1', '1510309182', '1510309182', null);
+INSERT INTO `menu` VALUES ('280', '278', '兑付汇总', '2', '<img src=\"/static/system/img/email_at_sign.png\"/>', '0', '/system/pay/index', '', '1', '1', '1510309266', '1510309266', null);
+INSERT INTO `menu` VALUES ('281', '277', '添加科目', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/itemsubject/add', '', '1', '1', '1510360550', '1510360550', null);
+INSERT INTO `menu` VALUES ('282', '277', '科目详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/itemsubject/detail', '', '0', '1', '1510360637', '1510360637', null);
+INSERT INTO `menu` VALUES ('283', '277', '科目修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/itemsubject/edit', '', '0', '1', '1510360683', '1510360683', null);
+INSERT INTO `menu` VALUES ('284', '277', '科目删除', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/itemsubject/delete', '', '0', '1', '1510360721', '1510360721', null);
+INSERT INTO `menu` VALUES ('285', '277', '科目恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/itemsubject/restore', '', '0', '1', '1510360784', '1510360784', null);
+INSERT INTO `menu` VALUES ('286', '277', '科目销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/itemsubject/destroy', '', '0', '1', '1510360820', '1510360820', null);
+INSERT INTO `menu` VALUES ('287', '280', '添加兑付', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/pay/add', null, '0', '1', '1508894820', '1508896706', null);
+INSERT INTO `menu` VALUES ('288', '280', '兑付详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/pay/detail', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('289', '280', '兑付修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/pay/edit', null, '0', '1', '1508894920', '1508894920', null);
+INSERT INTO `menu` VALUES ('290', '280', '兑付删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/pay/delete', null, '0', '1', '1508894998', '1508895558', null);
+INSERT INTO `menu` VALUES ('291', '280', '兑付恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/pay/restore', null, '0', '1', '1508894998', '1508895590', null);
+INSERT INTO `menu` VALUES ('292', '280', '兑付销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/pay/destroy', null, '0', '1', '1508894998', '1508895601', null);
 
 -- ----------------------------
 -- Table structure for nation
@@ -1222,6 +1250,112 @@ INSERT INTO `object` VALUES ('5', '电热水器', '', '1510300334', '1510300334'
 INSERT INTO `object` VALUES ('6', '燃气热水器', '', '1510300352', '1510300352', null);
 INSERT INTO `object` VALUES ('7', '太阳能热水器', '', '1510300365', '1510300365', null);
 INSERT INTO `object` VALUES ('8', '空调', '', '1510300383', '1510300383', null);
+
+-- ----------------------------
+-- Table structure for pay
+-- ----------------------------
+DROP TABLE IF EXISTS `pay`;
+CREATE TABLE `pay` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
+  `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
+  `estate_amount` float DEFAULT NULL COMMENT '房产补偿',
+  `assets_amount` float DEFAULT NULL COMMENT '资产补偿',
+  `public_amount` float DEFAULT NULL COMMENT '公共附属物评估总额',
+  `public_num` int(11) DEFAULT NULL COMMENT '公共评估户数',
+  `public_avg` float DEFAULT NULL COMMENT '公共附属物平均',
+  `subject_amount` float DEFAULT NULL COMMENT '科目补偿',
+  `object_amount` float DEFAULT NULL COMMENT ' 事项补偿',
+  `total` float DEFAULT NULL COMMENT '补偿总额',
+  `compensate_way` tinyint(1) DEFAULT '0' COMMENT '补偿方式，0为货币补偿，1为产权调换',
+  `transit_way` tinyint(1) DEFAULT '0' COMMENT '过渡方式，0为货币过渡，1为周转房临时安置',
+  `move_way` tinyint(1) DEFAULT '0' COMMENT '搬迁方式，0自行搬迁，1政府负责',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付';
+
+-- ----------------------------
+-- Records of pay
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for pay_holder
+-- ----------------------------
+DROP TABLE IF EXISTS `pay_holder`;
+CREATE TABLE `pay_holder` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底 ID',
+  `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
+  `pay_id` int(11) DEFAULT NULL COMMENT '兑付ID',
+  `collection_holder_id` int(11) DEFAULT NULL COMMENT ' 入户摸底-产权人或承租人ID',
+  `holder` tinyint(1) DEFAULT '1' COMMENT '产权，1产权人，2承租人',
+  `portion` float DEFAULT NULL COMMENT ' 补偿份额',
+  `estate_amount` float DEFAULT NULL COMMENT '房产补偿',
+  `assets_amount` float DEFAULT NULL COMMENT '资产补偿',
+  `subject_amount` float DEFAULT NULL COMMENT ' 科目补偿',
+  `object_amount` float DEFAULT NULL COMMENT ' 事项补偿',
+  `total_amount` float DEFAULT NULL COMMENT ' 补偿总额',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付-产权人或承租人';
+
+-- ----------------------------
+-- Records of pay_holder
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for pay_object
+-- ----------------------------
+DROP TABLE IF EXISTS `pay_object`;
+CREATE TABLE `pay_object` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
+  `pay_id` int(11) DEFAULT NULL COMMENT '兑付ID',
+  `collection_object_id` int(11) DEFAULT NULL COMMENT ' 入户摸底-补偿事项ID',
+  `price` float DEFAULT NULL COMMENT ' 补偿单价',
+  `number` float DEFAULT NULL COMMENT ' 数量或次数',
+  `amount` float DEFAULT NULL COMMENT '补偿总价',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付-补偿事项';
+
+-- ----------------------------
+-- Records of pay_object
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for pay_subject
+-- ----------------------------
+DROP TABLE IF EXISTS `pay_subject`;
+CREATE TABLE `pay_subject` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
+  `pay_id` int(11) DEFAULT NULL COMMENT '兑付ID',
+  `item_subject_id` int(11) DEFAULT NULL COMMENT '项目重要补偿科目ID',
+  `price` float DEFAULT NULL COMMENT ' 补偿单价',
+  `number` float DEFAULT NULL COMMENT ' 数量',
+  `unit` varchar(255) DEFAULT NULL COMMENT '数量单位',
+  `times` int(11) DEFAULT '1' COMMENT '补偿次数',
+  `amount` float DEFAULT NULL COMMENT '补偿总价',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付-项目重要补偿科目';
+
+-- ----------------------------
+-- Records of pay_subject
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for risk
