@@ -88,6 +88,7 @@
                 <td>{$item->status}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('项目基本信息',	'{:url('detail',['id'=>$item->id])}','800','630')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('项目重要补偿科目',	'{:url('Itemsubject/index',['item_id'=>$item->id])}','800','600',true)" >补偿科目</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$item->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
