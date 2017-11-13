@@ -2,12 +2,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>项目管理|后台管理系统</title>
+    <title>其他补偿事项|后台管理系统</title>
     {include file="public/head" /}
 
 </head>
 <body>
-<h4>项目管理管理</h4>
+<h4>其他补偿事项管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
@@ -16,30 +16,15 @@
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
                 重置</a>
         </li>
-        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','330')" >
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','250')" >
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加项目管理','{:url('add')}','800','580')">
+        <li class="fgf" onclick="layerIfWindow('添加其他补偿事项','{:url('add')}','600','250')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
-            <img src="__STATIC__/system/img/checked.png"/>
-            启用
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">
-            <img src="__STATIC__/system/img/disabled.png"/>
-            禁用
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('istop',array('top'=>'1'))}">
-            <img src="__STATIC__/system/img/top.png"/>
-            置顶
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('istop',array('top'=>'0'))}">
-            <img src="__STATIC__/system/img/top_no.png"/>
-            取消置顶
-        </li>
+        
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
             <img src="__STATIC__/system/img/broom.png"/>
             删除
@@ -65,31 +50,20 @@
                 </th>
                 <th>ID</th>
                 <th>名称</th>
-                <th>档案编号</th>
-                <th>预计户数</th>
-                <th>预算资金</th>
-                <th>安置房</th>
-                <th>置顶</th>
-                <th>状态</th>
+                <th>说明</th>
                 <th>操作</th>
             </tr>
-            {volist name="items" id="item"}
+            {volist name="objects" id="object"}
             <tr>
                 <td>
-                    <input class="va_m" type="checkbox" name="ids[]" value="{$item->id}" onclick="checkBoxOp(this)" id="check-{$item->id}"/>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$object->id}" onclick="checkBoxOp(this)" id="check-{$object->id}"/>
                 </td>
-                <td>{$item->id}</td>
-                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->name}</del>{else /}{$item->name}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->record_num}</del>{else /}{$item->record_num}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->household|number_format}</del>{else /}{$item->household|number_format}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->funds|number_format}</del>{else /}{$item->funds|number_format}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->house|number_format}</del>{else /}{$item->house|number_format}{/if}</td>
-                <td>{$item->is_top}</td>
-                <td>{$item->status}</td>
+                <td>{$object->id}</td>
+                <td>{if condition="$object->deleted_at"} <del>{$object->name}</del>{else /}{$object->name}{/if}</td>
+                <td>{if condition="$object->deleted_at"} <del>{$object->infos}</del>{else /}{$object->infos}{/if}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('项目基本信息',	'{:url('detail',['id'=>$item->id])}','800','630')" >详细信息</button>
-                    <button type="button" class="btn" onclick="layerIfWindow('项目重要补偿科目',	'{:url('Itemsubject/index',['item_id'=>$item->id])}','800','600',true)" >补偿科目</button>
-                    <button type="button" data-action="{:url('delete',['ids'=>$item->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('其他补偿事项信息',	'{:url('detail',['id'=>$object->id])}','600','250')" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$object->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}
@@ -98,7 +72,7 @@
     </div>
 </form>
 <div class="pageCon">
-    {$items->render()}
+    {$objects->render()}
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
@@ -106,32 +80,7 @@
         <table class="layerTable">
             <tr class="h50">
                 <td>名称：</td>
-                <td><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入项目管理名称"/></td>
-                <td>档案编号：</td>
-                <td><input type="text" name="record_num" id="record_num" value="{$record_num?:''}" placeholder="请输入项目管理名称"/></td>
-            </tr>
-            <tr class="h50">
-                <td>征收范围：</td>
-                <td colspan="3"><input type="text" name="area" id="area" value="{$area?:''}" placeholder="请输入项目征收范围"/></td>
-            </tr>
-            <tr class="h50">
-                <td>置顶：</td>
-                <td>
-                    <select name="is_top" id="is_top">
-                        <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($is_top) and $is_top eq 1"}selected{/if}>--置顶--</option>
-                        <option value="0" {if condition="isset($is_top) and $is_top eq 0"}selected{/if}>--非置顶--</option>
-                    </select>
-                </td>
-                <td>状态：</td>
-                <td>
-                    <select name="status" id="status">
-                        <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($status) and $status eq 1"}selected{/if}>--启用--</option>
-                        <option value="0" {if condition="isset($status) and $status eq 0"}selected{/if}>--禁用--</option>
-                    </select>
-                </td>
-            </tr>
+                <td colspan="3"><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入其他补偿事项名称"/></td>
             <tr class="h50">
                 <td>是否删除：</td>
                 <td>

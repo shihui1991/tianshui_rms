@@ -32,7 +32,7 @@ class Menu extends Auth
     /* ========== 列表 ========== */
     public function index()
     {
-        $menus=Menus::field(['id','parent_id','name','icon','sort','url','display','status'])->order('sort asc')->select();
+        $menus=Menus::field(['id','parent_id','name','icon','sort','url','display','status'])->order(['sort'=>'asc','id'=>'asc'])->select();
         $table_menus='';
         if($menus){
             $array=[];

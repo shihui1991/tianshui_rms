@@ -27,9 +27,9 @@ class Home extends Auth
         $menus=[];
         $field=['id','parent_id','name','icon','url','display','status','sort'];
         if($userinfo['is_admin']){
-            $menus=model('Menus')->field($field)->where('display',1)->order('sort asc')->select();
+            $menus=model('Menus')->field($field)->where('display',1)->order(['sort'=>'asc','id'=>'asc'])->select();
         }elseif($menus_ids){
-            $menus=model('Menus')->field($field)->where('display',1)->whereIn('id',$menus_ids)->order('sort asc')->select();
+            $menus=model('Menus')->field($field)->where('display',1)->whereIn('id',$menus_ids)->order(['sort'=>'asc','id'=>'asc'])->select();
         }
         $nav_menus='';
         if($menus){
