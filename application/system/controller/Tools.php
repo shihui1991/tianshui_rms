@@ -12,8 +12,11 @@
 namespace app\system\controller;
 
 
+use app\system\model\Collectionbuildings;
 use app\system\model\Collections;
 use app\system\model\Companys;
+use app\system\model\Companyvaluers;
+use app\system\model\Itemcompanys;
 
 class Tools extends Auth
 {
@@ -321,6 +324,119 @@ class Tools extends Auth
 
         if($collections){
             return $this->success('获取成功','',$collections);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+    /* ========== 摸底被征户(入户评估-房产评估-添加) ========== */
+    public function collections(){
+        $item_id=input('item_id');
+        if(!is_numeric($item_id) || $item_id<1){
+            return $this->error('请先选择项目','');
+        }
+        $where['item_id']=$item_id;
+        $where['c.status']=1;
+        $field=['c.id','c.item_id','c.community_id','c.building','c.unit','c.floor','c.number','c.has_assets','c.status','cc.address','cc.name as cc_name'];
+
+        /* ++++++++++ 片区 ++++++++++ */
+        $community_id=input('community_id');
+        if(is_numeric($community_id)){
+            $where['community_id']=$community_id;
+        }
+        $collections=Collections::alias('c')
+            ->field($field)
+            ->join('collection_community cc','cc.id=c.community_id','left')
+            ->where($where)
+            ->select();
+
+        if($collections){
+            return $this->success('获取成功','',$collections);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+    /* ========== 项目评估公司 ========== */
+    public function item_company(){
+        $item_id=input('item_id');
+        $type=input('type');
+        if(!is_numeric($item_id) || $item_id<1){
+            return $this->error('请先选择项目','');
+        }
+        $where['i.item_id']=$item_id;
+        $where['c.type']=$type;
+        $field=['i.id','i.company_id','c.name as company_name'];
+
+        $collections=Itemcompanys::alias('i')
+            ->field($field)
+            ->join('company c','c.id=i.company_id','left')
+            ->where($where)
+            ->select();
+
+        if($collections){
+            return $this->success('获取成功','',$collections);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+    /* ========== 项目评估公司-->评估师 ========== */
+    public function item_company_valuer(){
+        $field=['id','name','register_num','valid_at'];
+        $ids = input('ids');
+        if($ids){
+            $where['id'] = array('in',$ids);
+            $company_valuer=Companyvaluers::field($field)
+                ->where($where)
+                ->select();
+        }else{
+            $company_id=input('company_id');
+            if(!is_numeric($company_id) || $company_id<1){
+                return $this->error('请先选择评估公司','');
+            }
+            $where['company_id']=$company_id;
+            $where['status']='1';
+
+            $company_valuer=Companyvaluers::field($field)
+                ->where($where)
+                ->select();
+        }
+
+
+        if($company_valuer){
+            return $this->success('获取成功','',$company_valuer);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+    /* ========== 评估建筑物 ========== */
+    public function estate_building(){
+        $collection_id=input('collection_id');
+        if(!is_numeric($collection_id) || $collection_id<1){
+            return $this->error('请先选择权属','');
+        }
+        $where['collection_id']=$collection_id;
+        $field=['cb.id','cb.item_id','cb.community_id','cb.collection_id','cb.building','cb.unit','cb.floor','cb.number',
+            'cb.real_num','cb.real_unit','cb.use_id','cb.struct_id','cb.status_id','cb.build_year','cb.remark','cb.deleted_at','i.name as i_name','i.is_top',
+            'cc.address','cc.name as cc_name','c.building as c_building','c.unit as c_unit','c.floor as c_floor','c.number as c_number',
+            'bu.name as bu_name','bs.name as bs_name','s.name as s_name'];
+
+        $collectionbuildings=Collectionbuildings::alias('cb')
+            ->field($field)
+            ->join('item i','i.id=cb.item_id','left')
+            ->join('collection_community cc','cc.id=cb.community_id','left')
+            ->join('collection c','c.id=cb.collection_id','left')
+            ->join('building_use bu','bu.id=cb.use_id','left')
+            ->join('building_struct bs','bs.id=cb.struct_id','left')
+            ->join('building_status s','s.id=cb.status_id','left')
+            ->where($where)
+            ->order(['cb.register'=>'desc','cb.use_id'=>'asc'])
+            ->select();
+
+        if($collectionbuildings){
+            return $this->success('获取成功','',$collectionbuildings);
         }else{
             return $this->error('没有数据','');
         }
