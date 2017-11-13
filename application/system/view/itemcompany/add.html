@@ -110,7 +110,7 @@
 <script>
     /* ===== 查询评估公司 =====*/
     $('#type').mouseup(function () {
-        var _type=$(this).find('option:checked').val();
+        var _type=$(this).find('option:selected').val();
 
         $('#company_id').html('');
         if(_type == '0' || _type == '1'){
@@ -146,8 +146,8 @@
 
     /* ===== 查询摸底被征户 =====*/
     $('#btn-form-search').click(function () {
-        var _item_id=$('#item_id').find('option:checked').val();
-        var _type=$('#type').find('option:checked').val();
+        var _item_id=$('#item_id').find('option:selected').val();
+        var _type=$('#type').find('option:selected').val();
         var form=$('#form-search');
         var thead=$('#thead-collectionlist');
 

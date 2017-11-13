@@ -222,8 +222,8 @@
     /*----- 查看户型图 -----*/
     $('#view-layout-pic').click(function () {
         var btn=$(this);
-        var community_id=$('#community_id').find('option:checked').val();
-        var layout_id=$('#layout_id').find('option:checked').val();
+        var community_id=$('#community_id').find('option:selected').val();
+        var layout_id=$('#layout_id').find('option:selected').val();
         if(!community_id){
             layer.msg('请选择小区',function () {});
         }else if(!layout_id){

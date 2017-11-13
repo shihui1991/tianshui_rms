@@ -85,7 +85,7 @@
 
 <script>
     $('#crowd_id').change(function () {
-        var crowd_parent_id=$(this).find('option:checked').data('parent_id');
+        var crowd_parent_id=$(this).find('option:selected').data('parent_id');
         crowd_parent_id=crowd_parent_id?crowd_parent_id:'';
         $('#crowd_parent_id').val(crowd_parent_id);
     });

@@ -139,14 +139,14 @@
     /* ======= 获取公共参数 ======= */
     $(function () {
         $('.parent-params').remove();
-        var parent_id=$('#parent_id').find('option:checked').val();
+        var parent_id=$('#parent_id').find('option:selected').val();
         if(parent_id !='0'){
             get_params(parent_id);
         }
     });
     $('#parent_id').change(function () {
         $('.parent-params').remove();
-        var parent_id=$(this).find('option:checked').val();
+        var parent_id=$(this).find('option:selected').val();
         if(parent_id !='0'){
             get_params(parent_id);
         }
