@@ -49,6 +49,15 @@ class Pays extends Model
         }
     }
 
+    public function getTypeAttr($key=null){
+        $array=[0=>'私产',1=>'公产'];
+        if(is_numeric($key) && in_array($key,[0,1])){
+            return $array[$key];
+        }else{
+            return $array;
+        }
+    }
+
     public function other_data($input){
         $data=[];
 

@@ -271,9 +271,14 @@ class Tools extends Auth
             return $this->error('请先选择项目','');
         }
         $type=input('type');
-        if(!is_numeric($type) || !in_array($type,[0,1])){
-            return $this->error('请先选择评估公司类型','');
+        if(input('pay')){
+            $where['collection.real_use']=['neq',3];
+        }else{
+            if(!is_numeric($type) || !in_array($type,[0,1])){
+                return $this->error('请先选择评估公司类型','');
+            }
         }
+
         if($type){
             $where['collection.has_assets']=$type;
         }

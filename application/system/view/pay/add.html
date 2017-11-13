@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>项目兑付与协议|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="item_id">项目：</label></td>
+                <td colspan="3">
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择项目--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}" >{$item->name}（{$item->id}）</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="community_id">片区：</label></td>
+                <td>
+                    <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="collectioncommunitys" id="collectioncommunity"}
+                        <option value="{$collectioncommunity->id}" >{$collectioncommunity->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td><label for="select">选择添加方式：</label></td>
+                <td>
+                    <select name="select" id="select">
+                        <option value="1">--全部--</option>
+                        <option value="0">--自定义--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="h70">
+                <td>被征户：</td>
+                <td colspan="3">
+                    <table class="table" border="0" >
+                        <tbody>
+                        <tr class="noSelect" id="thead-collectionlist">
+                            <th class="tc" width="35px">
+                                <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                            </th>
+                            <th>ID</th>
+                            <th style="text-align: left;">地址</th>
+                            <th style="text-align: left;">片区</th>
+                            <th style="text-align: left;">位置</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+
+    /* ===== 项目改变->清空摸底->查询摸底 =====*/
+    $('#item_id,#community_id,#select').change(function () {
+        var _select=$('#select').find('option:selected').val();
+        var _item_id=$('#item_id').find('option:selected').val();
+        var _community_id=$('#community_id').find('option:selected').val();
+        var thead=$('#thead-collectionlist');
+
+        thead.siblings().remove();
+
+        if(!_item_id){
+            layer.msg('请先选择项目',function(){});
+            return false;
+        }
+        _community_id=_community_id?_community_id:'';
+
+        if(_select=='1'){
+            return false;
+        }
+
+        $.ajax({
+            url:"{:url('Tools/collection')}",
+            data:{item_id:_item_id,community_id:_community_id,pay:1},
+            dataType:'json',
+            type:'get',
+            success:function (resp) {
+                var tr_obj='';
+                if(resp.code){
+                    $.each(resp.data,function (index,info) {
+                        tr_obj +='<tr>';
+                        tr_obj +='<td style="text-align: center;background: none;"><input class="va_m" type="checkbox" name="ids[]"  value="'+info.id+'" onclick="checkBoxOp(this)"> </td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.id+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.address+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.cc_name+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">';
+                        tr_obj +=info.building?(info.building+'栋'):'';
+                        tr_obj +=info.unit?(info.unit+'单元'):'';
+                        tr_obj +=info.floor?(info.floor+'楼'):'';
+                        tr_obj +=info.number?(info.number+'号'):'';
+                        tr_obj +='</td>';
+                        tr_obj +='</tr>';
+                    });
+                }else{
+                    layer.msg(resp.msg,function(){});
+                }
+                thead.after(tr_obj);
+            },
+            error:function () {
+                layer.msg('网络出错，稍候重试！',function(){});
+            }
+        });
+    });
+</script>
+</body>
+</html>
