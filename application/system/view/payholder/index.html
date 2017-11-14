@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>项目兑付与协议-分权兑付|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+
+<div class="tabs">
+    <div class="item">
+        <div class="homeTit bg_f5">
+            <div class="fl"><img src="__STATIC__/system/img/server_database.png"/>项目兑付与协议管理</div>
+            <ul class="homeTab">
+                <li><a href="{:url('Pay/detail',['id'=>$pay_id])}">兑付汇总</a></li>
+                <li class="on"><a href="javascript:location.reload();">分权兑付</a></li>
+            </ul>
+        </div>
+        <div class="homeCon">
+            <div class="tabPage w_100 on">
+                <div class="tableCon">
+                    <em class="xian"></em>
+                    <table class="table" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th class="tc" width="35px">
+                                <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                            </th>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>地址</th>
+                            <th>电话</th>
+                            <th>产权</th>
+                            <th>份额</th>
+                            <th>房产</th>
+                            <th>资产</th>
+                            <th>公共平均</th>
+                            <th>重要科目</th>
+                            <th>补偿事项</th>
+                            <th>总计</th>
+                            <th>操作</th>
+                        </tr>
+                        {volist name="payholders" id="payholder"}
+                        <tr>
+                            <td>
+                                <input class="va_m" type="checkbox" name="ids[]" value="{$payholder->id}" onclick="checkBoxOp(this)" id="check-{$payholder->id}"/>
+                            </td>
+                            <td>{$payholder->id}</td>
+                            <td>{$payholder->name}</td>
+                            <td>{$payholder->address}</td>
+                            <td>{$payholder->phone}</td>
+                            <td>{$payholder->holder}</td>
+                            <td>{$payholder->portion}</td>
+                            <td>{$payholder->estate_amount|number_format=2}</td>
+                            <td>{$payholder->assets_amount|number_format=2}</td>
+                            <td>{$payholder->public_avg|number_format=2}</td>
+                            <td>{$payholder->subject_amount|number_format=2}</td>
+                            <td>{$payholder->object_amount|number_format=2}</td>
+                            <td>{$payholder->total_amount|number_format=2}</td>
+                            <td>
+                                <button type="button" class="btn" onclick="layerIfWindow('分权兑付信息',	'{:url('detail',['id'=>$payholder->id])}','700','500')" >详细信息</button>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -216,6 +216,7 @@ class Pay extends Auth
                                 $pay_data['compensate_way']=$holders[0]->compensate_way;
                                 $pay_data['transit_way']=$holders[0]->transit_way;
                                 $pay_data['move_way']=$holders[0]->move_way;
+                                $pay_data['picture']=[];
                                 // 兑付添加
                                 $pay_model->save($pay_data);
 
@@ -234,33 +235,33 @@ class Pay extends Auth
 
                                     if($collection->getData('type')){
                                         if($holder->getData('holder')==1){
-                                            $holder_data[$i]['estate_amount']=$holder->portion*$collection->estate;
+                                            $holder_data[$i]['estate_amount']=$holder->portion/100*$collection->estate;
                                             $holder_data[$i]['assets_amount']=0;
                                             $holder_data[$i]['public_amount']=$public_sum;
                                             $holder_data[$i]['public_num']=$public_num;
                                             $holder_data[$i]['public_avg']=0;
                                             $holder_data[$i]['subject_amount']=0;
                                             $holder_data[$i]['object_amount']=0;
-                                            $holder_data[$i]['total_amount']=$holder->portion*$collection->estate;
+                                            $holder_data[$i]['total_amount']=$holder->portion/100*$collection->estate;
                                         }else{
-                                            $holder_data[$i]['estate_amount']=$holder->portion*$collection->estate;
+                                            $holder_data[$i]['estate_amount']=$holder->portion/100*$collection->estate;
                                             $holder_data[$i]['assets_amount']=$collection->assets;
                                             $holder_data[$i]['public_amount']=$public_sum;
                                             $holder_data[$i]['public_num']=$public_num;
                                             $holder_data[$i]['public_avg']=$public_avg;
                                             $holder_data[$i]['subject_amount']=0;
                                             $holder_data[$i]['object_amount']=0;
-                                            $holder_data[$i]['total_amount']=($holder->portion*$collection->estate+$collection->assets+$public_avg);
+                                            $holder_data[$i]['total_amount']=($holder->portion/100*$collection->estate+$collection->assets+$public_avg);
                                         }
                                     }else{
-                                        $holder_data[$i]['estate_amount']=$holder->portion*$collection->estate;
-                                        $holder_data[$i]['assets_amount']=$holder->portion*$collection->assets;
+                                        $holder_data[$i]['estate_amount']=$holder->portion/100*$collection->estate;
+                                        $holder_data[$i]['assets_amount']=$holder->portion/100*$collection->assets;
                                         $holder_data[$i]['public_amount']=$public_sum;
                                         $holder_data[$i]['public_num']=$public_num;
-                                        $holder_data[$i]['public_avg']=$holder->portion*$public_avg;
+                                        $holder_data[$i]['public_avg']=$holder->portion/100*$public_avg;
                                         $holder_data[$i]['subject_amount']=0;
                                         $holder_data[$i]['object_amount']=0;
-                                        $holder_data[$i]['total_amount']=$holder->portion*($collection->estate+$collection->assets+$public_avg);
+                                        $holder_data[$i]['total_amount']=$holder->portion/100*($collection->estate+$collection->assets+$public_avg);
                                     }
                                     $i++;
                                 }
@@ -324,7 +325,15 @@ class Pay extends Auth
         if(!$id){
             return $this->error('至少选择一项');
         }
-        $infos=Pays::withTrashed()->find($id);
+        $infos=Pays::withTrashed()
+            ->alias('p')
+            ->field(['p.*','i.name as i_name','cc.address as cc_address','cc.name as cc_name','c.building','c.unit','c.floor','c.number','c.type','c.real_use','bu.name as bu_name'])
+            ->join('item i','i.id=p.item_id','left')
+            ->join('collection_community cc','cc.id=p.community_id','left')
+            ->join('collection c','c.id=p.collection_id','left')
+            ->join('building_use bu','bu.id=c.real_use','left')
+            ->where('p.id',$id)
+            ->find();
         if(!$infos){
             return $this->error('选择项目不存在');
         }
@@ -343,24 +352,11 @@ class Pay extends Auth
         if(!$id){
             return $this->error('错误操作');
         }
-        $datas=input();
-        $rules=[
-            'name'=>'require|unique:pay,name,'.$id.',id',
-        ];
-        $msg=[
-            'name.require'=>'名称不能为空',
-            'name.unique'=>'名称已存在',
-        ];
-
-        $result=$this->validate($datas,$rules,$msg);
-        if(true !== $result){
-            return $this->error($result);
-        }
 
         $pay_model=new Pays();
         $other_datas=$pay_model->other_data(input());
         $datas=array_merge(input(),$other_datas);
-        $pay_model->isUpdate(true)->save($datas);
+        $pay_model->isUpdate(true)->allowField(['compensate_way','transit_way','move_way','picture'])->save($datas);
         if($pay_model !== false){
             return $this->success('修改成功','');
         }else{

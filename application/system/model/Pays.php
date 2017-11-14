@@ -19,7 +19,7 @@ class Pays extends Model
     protected $autoWriteTimestamp = true;
     protected $field=true;
     protected $type = [
-
+        'picture'=>'array',
     ];
 
     public function getCompensateWayAttr($key=null){
@@ -60,7 +60,9 @@ class Pays extends Model
 
     public function other_data($input){
         $data=[];
-
+        if(!isset($input['picture'])){
+            $data['picture']=[];
+        }
         return $data;
     }
 }
