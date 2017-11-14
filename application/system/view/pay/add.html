@@ -60,7 +60,7 @@
 
         </table>
         <div class="layerBtns">
-            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <a class="btn" data-layer="true" id="btn-form-submit">立即提交</a>
             <button class="btn" type="reset">重置</button>
         </div>
     </div>
@@ -99,7 +99,7 @@
                 if(resp.code){
                     $.each(resp.data,function (index,info) {
                         tr_obj +='<tr>';
-                        tr_obj +='<td style="text-align: center;background: none;"><input class="va_m" type="checkbox" name="ids[]"  value="'+info.id+'" onclick="checkBoxOp(this)"> </td>';
+                        tr_obj +='<td style="text-align: center;background: none;"><input class="va_m ids" type="checkbox" name="ids[]"  value="'+info.id+'" onclick="checkBoxOp(this)"> </td>';
                         tr_obj +='<td style="text-align: left;background: none;">'+info.id+'</td>';
                         tr_obj +='<td style="text-align: left;background: none;">'+info.address+'</td>';
                         tr_obj +='<td style="text-align: left;background: none;">'+info.cc_name+'</td>';
@@ -118,6 +118,48 @@
             },
             error:function () {
                 layer.msg('网络出错，稍候重试！',function(){});
+            }
+        });
+    });
+
+    $('#btn-form-submit').click(function () {
+        var _this=$(this);
+        var _form=_this.parents('form:first');
+        var _url=_form.attr('action');
+        var _data=_form.serialize();
+
+        if(!$('#item_id').find('option:selected').val()){
+            layer.msg('请选择项目',function(){});
+            return false;
+        }
+
+        if($('#select').find('option:selected').val()=='0'){
+            if(!$('input.ids:checked').length){
+                layer.msg('请选择被征户' +
+                    '',function(){});
+                return false;
+            }
+        }
+
+        if(_this.prop('disabled')){
+            return false;
+        }
+        _this.prop('disabled',true);
+
+        $('body').html('<p>正在处理数据，<span style="color: red;">请勿其他操作！！！</span></p><p>请稍候……</p>');
+        $.ajax({
+            url:_url,
+            data:_data,
+            dataType:'json',
+            type:'post',
+            success:function (resp) {
+                layer.msg(resp.msg,function(){});
+                if(resp.code){
+                    window.parent.location.reload();
+                }
+            },
+            error:function () {
+                layer.msg('网络错误，请重试',function(){});
             }
         });
     });

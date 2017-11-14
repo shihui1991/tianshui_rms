@@ -196,7 +196,7 @@ class Pay extends Auth
                                 $pay_data['object_amount']=$collection->object_amount;
                                 $pay_data['total']=($collection->estate+$collection->assets+$public_avg+$collection->subject_amount+$collection->object_amount);
 
-                                $pay_model->save($pay_data,['id',$collection->pay_id]);
+                                $pay_model->save($pay_data,['id'=>$collection->pay_id]);
                             }else{
                                 // 产权人或承租人
                                 $holders=Collectionholders::alias('ch')
@@ -206,7 +206,7 @@ class Pay extends Auth
                                     ->where('collection_holder.community_id',$collection->community_id)
                                     ->where('collection_holder.collection_id',$collection->id)
                                     ->where('collection_holder.holder','in',[1,2])
-                                    ->order('collection_holder.portion desc')
+                                    ->order('portion desc')
                                     ->select();
 
                                 // 兑付其他数据
@@ -269,8 +269,8 @@ class Pay extends Auth
 
                                 // 补偿事项
                                 $objects=Collectionobjects::field(['id','item_id','collection_id','object_id','number'])
-                                    ->where('collection_holder.item_id',$collection->item_id)
-                                    ->where('collection_holder.collection_id',$collection->id)
+                                    ->where('item_id',$collection->item_id)
+                                    ->where('collection_id',$collection->id)
                                     ->select();
 
                                 $object_data=[];
@@ -291,12 +291,12 @@ class Pay extends Auth
                             }
 
                         }
-                    });
+                    },'collection.id');
 
                 $res=true;
                 $model->commit();
             }catch (\Exception $exception){
-                $res=false;
+                $res=false;dump($exception);
                 $model->rollback();
             }
 
