@@ -15,6 +15,8 @@
             <ul class="homeTab">
                 <li><a href="{:url('Pay/detail',['id'=>$pay_id])}">兑付汇总</a></li>
                 <li class="on"><a href="javascript:location.reload();">分权兑付</a></li>
+                <li><a href="{:url('Paysubject/index',['pay_id'=>$pay_id])}">补偿科目</a></li>
+                <li><a href="{:url('Payobject/index',['pay_id'=>$pay_id])}">补偿事项</a></li>
             </ul>
         </div>
         <div class="homeCon">

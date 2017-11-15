@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>项目兑付与协议|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+
+<form action="{:url('edit')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{$infos->id}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td>补偿科目：</td>
+                <td>({$infos->subject_id}){$infos->name}【{$infos->infos}】</td>
+            </tr>
+            <tr class="h50">
+                <td>数量来源：</td>
+                <td>{$infos->num_from}</td>
+            </tr>
+            <tr class="h50">
+                <td>数量单位：</td>
+                <td>{$infos->unit}</td>
+            </tr>
+            <tr class="h50">
+                <td><label for="number">数量：</label></td>
+                <td><input type="number" name="number" id="number" min="0" value="{$infos->number}" placeholder="请输入数量"></td>
+            </tr>
+            <tr class="h50">
+                <td><label for="price">补偿单价：</label></td>
+                <td><input type="number" name="price" id="price" min="0" value="{$infos->price}" placeholder="请输入补偿单价"></td>
+            </tr>
+            <tr class="h50">
+                <td><label for="times">补偿次数：</label></td>
+                <td><input type="number" name="times" id="times" min="0" value="{$infos->times}" placeholder="请输入补偿次数"></td>
+            </tr>
+            <tr class="h50">
+                <td><label for="amount">补偿总计：</label></td>
+                <td><span id="amount">{$infos->amount|number_format=2}</span>元</td>
+            </tr>
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td>
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+    $('#number,#price,#times').on('keyup blur change',function () {
+        var number=parseFloat($('#number').val());
+        var price=parseFloat($('#price').val());
+        var times=parseFloat($('#times').val());
+        var amount=0;
+        if(number<0){
+            layer.msg('数量不能小于0',function () {});
+        }else if(price <0){
+            layer.msg('价格不能小于0',function () {});
+        }else if(times <0){
+            layer.msg('次数不能小于0',function () {});
+        }else{
+            amount=number*price*times;
+            $('#amount').html($.number_format(amount));
+        }
+    });
+    
+</script>
+</body>
+</html>

@@ -95,43 +95,52 @@ class Payholder extends Auth
         }
 
         $model=new Payholders();
-        $payholder_model=Payholders::alias('ph')
-            ->field(['ph.*','p.estate_amount as estate_total','p.assets_amount as assets_total','p.subject_amount as subject_total','p.object_amount as object_total','c.type'])
-            ->join('pay p','p.id=ph.pay_id','left')
-            ->join('collection c','c.id=ph.collection_id','left')
-            ->where('ph.id',$id)
-            ->find();
+        $model->startTrans();
+        try{
+            $payholder_model=Payholders::alias('ph')
+                ->field(['ph.*','p.estate_amount as estate_total','p.assets_amount as assets_total','p.subject_amount as subject_total','p.object_amount as object_total','c.type'])
+                ->join('pay p','p.id=ph.pay_id','left')
+                ->join('collection c','c.id=ph.collection_id','left')
+                ->where('ph.id',$id)
+                ->find();
 
-        $portion=Payholders::where('pay_id',$payholder_model->pay_id)->where('id','neq',$id)->sum('portion');
-        if((input('portion')+$portion)>100){
-            return $this->error('补偿份额总和不能超过100%');
-        }
-
-        $payholder_model->portion=input('portion');
-        $payholder_model->estate_amount=input('portion')/100*$payholder_model->estate_total;
-        if($payholder_model->getData('type')){
-            if($payholder_model->getData('holder')==1){
-                $payholder_model->assets_amount=0;
-                $payholder_model->subject_amount=0;
-                $payholder_model->object_amount=0;
-                $payholder_model->total_amount=$payholder_model->estate_amount;
-            }else{
-                $payholder_model->assets_amount=$payholder_model->assets_total;
-                $payholder_model->subject_amount=$payholder_model->subject_total;
-                $payholder_model->object_amount=$payholder_model->object_total;
-                $payholder_model->total_amount=($payholder_model->estate_amount+$payholder_model->assets_amount+$payholder_model->subject_amount+$payholder_model->object_amount);
+            $portion=Payholders::where('pay_id',$payholder_model->pay_id)->where('id','neq',$id)->sum('portion');
+            if((input('portion')+$portion)>100){
+                return $this->error('补偿份额总和不能超过100%');
             }
-        }else{
-            $payholder_model->assets_amount=input('portion')/100*$payholder_model->assets_total;
-            $payholder_model->public_avg=input('portion')/100*$payholder_model->public_amount/$payholder_model->public_num;
-            $payholder_model->subject_amount=input('portion')/100*$payholder_model->subject_total;
-            $payholder_model->object_amount=input('portion')/100*$payholder_model->object_total;
-            $payholder_model->total_amount=($payholder_model->estate_amount+$payholder_model->assets_amount+$payholder_model->public_avg+$payholder_model->subject_amount+$payholder_model->object_amount);
+
+            $payholder_model->portion=input('portion');
+            $payholder_model->estate_amount=input('portion')/100*$payholder_model->estate_total;
+            if($payholder_model->getData('type')){
+                if($payholder_model->getData('holder')==1){
+                    $payholder_model->assets_amount=0;
+                    $payholder_model->subject_amount=0;
+                    $payholder_model->object_amount=0;
+                    $payholder_model->total_amount=$payholder_model->estate_amount;
+                }else{
+                    $payholder_model->assets_amount=$payholder_model->assets_total;
+                    $payholder_model->subject_amount=$payholder_model->subject_total;
+                    $payholder_model->object_amount=$payholder_model->object_total;
+                    $payholder_model->total_amount=($payholder_model->estate_amount+$payholder_model->assets_amount+$payholder_model->subject_amount+$payholder_model->object_amount);
+                }
+            }else{
+                $payholder_model->assets_amount=input('portion')/100*$payholder_model->assets_total;
+                $payholder_model->public_avg=input('portion')/100*$payholder_model->public_amount/$payholder_model->public_num;
+                $payholder_model->subject_amount=input('portion')/100*$payholder_model->subject_total;
+                $payholder_model->object_amount=input('portion')/100*$payholder_model->object_total;
+                $payholder_model->total_amount=($payholder_model->estate_amount+$payholder_model->assets_amount+$payholder_model->public_avg+$payholder_model->subject_amount+$payholder_model->object_amount);
+            }
+
+            $payholder_model->save();
+            $res=true;
+            $model->commit();
+        }catch (\Exception $exception){
+            $res=false;
+            $model->commit();
         }
 
-        $payholder_model->save();
 
-        if($payholder_model !== false){
+        if($res){
             return $this->success('修改成功','');
         }else{
             return $this->error('修改失败');

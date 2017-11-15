@@ -76,7 +76,7 @@
     var type={$infos->getData('type')};
     var holder={$infos->getData('holder')};
     
-    $('#portion').keyup(function () {
+    $('#portion').on('keyup change blur',function () {
         var portion=parseFloat($(this).val());
         var estate_amount,
             assets_amount,
