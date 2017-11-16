@@ -2,12 +2,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>征地片区|后台管理系统</title>
+    <title>入户评估-房产评估|后台管理系统</title>
     {include file="public/head" /}
 
 </head>
 <body>
-<h4>征地片区管理</h4>
+<h4>入户评估-房产评估管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
@@ -23,6 +23,14 @@
         <li class="fgf" onclick="layerIfWindow('添加征地片区','{:url('add')}','800','650')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
+            <img src="__STATIC__/system/img/checked.png"/>
+            启用
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">
+            <img src="__STATIC__/system/img/disabled.png"/>
+            禁用
         </li>
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
             <img src="__STATIC__/system/img/broom.png"/>
@@ -87,7 +95,7 @@
                 <td>{if condition="$info->deleted_at"}<del>{$info->method}</del>{else/}{$info->method}{/if}</td>
                 <td>{if condition="$info->deleted_at"}<del>{$info->status}</del>{else/}{$info->status}{/if}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('入户评估-房产评估信息',	'{:url('detail',['id'=>$info->id])}','600','300')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户评估-房产评估信息',	'{:url('detail',['id'=>$info->id])}','800','650')" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$info->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
