@@ -82,7 +82,8 @@
                             <tr class="h50">
                                 <td><label for="valuer_id_info">评估师：</label>
                                     <input type="hidden" name="valuer_id" id="valuer_id" value="">
-                                    <button class="btn valuerid_list"  onclick="valuer_id_list()">选择评估师</button></td>
+                                    <button class="btn valuerid_list"  onclick="valuer_id_list()">选择评估师</button>
+                                </td>
                                 <td id="valuer_id_info" colspan="3">
                                     <div class="tableCon">
                                     <table class="table" border="0" style="width: 100% !important;" id="valuer_id_lists">
@@ -168,7 +169,7 @@
         </div>
 </div>
 <script>
-    /* ===== 查询权属 =====*/
+    /* ===== 查询权属 及 评估公司 =====*/
     $('.sear_collection_id').change(function () {
         var _item_id=$("#item_id").find('option:selected').val();
         var _community_id=$("#community_id").find('option:selected').val();
@@ -226,7 +227,7 @@
                     if(resp.code){
                           options += '<option value="">--请选择评估公司--</option>';
                         $.each(resp.data,function (index,info) {
-                            options += '<option value="'+info.id+'">'+info.company_name+'</option>';
+                            options += '<option value="'+info.company_id+'">'+info.company_name+'</option>';
                         });
                     }else{
                         options='<option value="">--暂无数据--</option>';
@@ -253,12 +254,71 @@
         }
     });
 
+    /* ===== 查询评估建筑物 =====*/
+    $("#collection_id_info").on('change','#collection_id',function () {
+        var _collection_id = $("#collection_id").find("option:selected").val();
+        if(_collection_id){
+            $.ajax({
+                url:"{:url('Tools/estate_building')}",
+                data:{ 'collection_id':_collection_id},
+                dataType:'json',
+                type:'post',
+                success:function (resp) {
+                    $('.tableCons').find('tr:first').siblings().remove();
+                    var options = '';
+                    if(resp.code){
+                        $.each(resp.data,function (index,info) {
+                            var remark = info.remark;
+                            if(remark==null){
+                                remark = '';
+                            }
+
+                            options += '<tr class="h50">';
+                            options += '<td>'+info.id+'</td>';
+                            options += '<td>'+info.address+'</td>';
+                            options += '<td>'+info.bu_name+'</td>';
+                            options += '<td>'+info.bs_name+'</td>';
+                            options += '<td>'+info.real_num+'</td>';
+                            options += '<td>'+info.real_unit+'</td>';
+                            options += '<td><input type="text" name="price['+info.id+']" class="price" value="" data-real_num="'+info.real_num+'" data-id="'+info.id+'" onkeyup="price_num(this)"  onchange="price_num(this)"></td>';
+                            options += '<td>'+remark+'</td>';
+                            options += '<td><input type="text" name="amount['+info.id+']" id="total-'+info.id+'"  value="" readonly></td>';
+                            options += '</tr>';
+                        });
+                        $('.tableCons').find('tbody').append(options);
+
+                    }else{
+                        layer.msg(resp.msg,function(){});
+                    }
+                },
+                error:function () {
+                    layer.msg('网络错误，请重试',function(){});
+                }
+            });
+        }else{
+            $('.tableCons').find('tr:first').siblings().remove();
+            layer.msg('请选择权属',function(){});
+        }
+    });
+    /* ===== 评估建筑物（单价变化获取总价） =====*/
+    function  price_num(obj) {
+        var _this = $(obj);
+        var price=parseFloat(_this.val());
+        var number=parseFloat(_this.data('real_num'));
+        var id=_this.data('id');
+        var total=price*number;
+        if(isNaN(total)){
+            $('#total-'+id).val('');
+            return false;
+        }
+        $('#total-'+id).val(total);
+    }
+
     /* ===== 选择评估师按钮赋值 =====*/
     $("#company_id").change(function () {
         var _company_id=$("#company_id").find('option:selected').val();
         $(".valuerid_list").attr('onclick','valuer_id_list('+_company_id+')');
     });
-
     /* ===== 查询评估师 =====*/
    function valuer_id_list(_company_id){
        if(_company_id){
@@ -308,7 +368,6 @@
        }
 
    }
-
     /* ===== 选择评估师 =====*/
     $("#btn-form-search").click(function () {
         var ids = '';
@@ -348,63 +407,9 @@
         });
     });
 
-    /* ===== 查询评估建筑物 =====*/
-    $("#collection_id_info").on('change','#collection_id',function () {
-        var _collection_id = $("#collection_id").find("option:selected").val();
-        if(_collection_id){
-            $.ajax({
-                url:"{:url('Tools/estate_building')}",
-                data:{ 'collection_id':_collection_id},
-                dataType:'json',
-                type:'post',
-                success:function (resp) {
-                    $('.tableCons').find('tr:first').siblings().remove();
-                    var options = '';
-                    if(resp.code){
-                        $.each(resp.data,function (index,info) {
-                            var remark = info.remark;
-                            if(remark==null){
-                                remark = '';
-                            }
 
-                            options += '<tr class="h50">';
-                            options += '<td>'+info.id+'</td>';
-                            options += '<td>'+info.address+'</td>';
-                            options += '<td>'+info.bu_name+'</td>';
-                            options += '<td>'+info.bs_name+'</td>';
-                            options += '<td>'+info.real_num+'</td>';
-                            options += '<td>'+info.real_unit+'</td>';
-                            options += '<td><input type="text" name="price['+info.id+']" class="price" value="" data-real_num="'+info.real_num+'" data-id="'+info.id+'" onkeyup="price_num(this)"></td>';
-                            options += '<td>'+remark+'</td>';
-                            options += '<td><input type="text" name="amount['+info.id+']" id="total-'+info.id+'"  value="" readonly></td>';
-                            options += '</tr>';
-                        });
-                        $('.tableCons').find('tbody').append(options);
 
-                    }else{
-                        layer.msg(resp.msg,function(){});
-                    }
-                },
-                error:function () {
-                    layer.msg('网络错误，请重试',function(){});
-                }
-            });
-        }else{
-            $('.tableCons').find('tr:first').siblings().remove();
-            layer.msg('请选择权属',function(){});
-        }
-    });
 
-    /* ===== 评估建筑物总价 =====*/
-    function  price_num(obj) {
-        var _this = $(obj);
-        var price=parseFloat(_this.val());
-        var number=parseFloat(_this.data('real_num'));
-        var id=_this.data('id');
-        var total=price*number;
-
-        $('#total-'+id).val(total);
-    }
 
 </script>
 </body>

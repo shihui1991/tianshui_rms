@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>入户评估-房产评估|后台管理系统</title>
+    {include file="public/head" /}
+    {include file="public/kindeditor" /}
+</head>
+<body>
+<form action="{:url('edit')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="tabs">
+        <div class="item">
+            <div class="homeTit bg_f5">
+                <div class="fl"><img src="__STATIC__/system/img/books.png"/>入户评估-房产评估</div>
+                <ul class="homeTab">
+                    <li class="on">基本信息</li>
+                    <li>相关文件及图片</li>
+                </ul>
+            </div>
+            <div class="homeCon">
+                <div class="tabPage w_100 on">
+                    <div class="layerCon bg_f">
+                        <table class="layerTable" border="0">
+                            <input type="hidden" name="id" value="{$infos->id}">
+                            <tr class="h50">
+                                <td><label>项目：</label></td>
+                                <td>
+                                    {$infos->item_name}
+                                </td>
+                                <td><label>片区：</label></td>
+                                <td>
+                                    {$infos->pq_name}
+                                </td>
+                            </tr>
+                            <tr class="h70">
+                                <td ><label>权属：</label></td>
+                                <td id="collection_id_info" colspan="3">
+                                    {if condition="$infos->c_building"}{$infos->c_building}栋{/if}
+                                    {if condition="$infos->c_unit"}{$infos->c_unit}单元{/if}
+                                    {if condition="$infos->c_floor"}{$infos->c_floor}楼{/if}
+                                    {if condition="$infos->c_number"}{$infos->c_number}号{/if}
+                                    {if condition="$infos->c_id"}({$infos->c_id}){/if}
+                                    <input type="hidden" name="collection_id" id="collection_id" value="{$infos->c_id}">
+                                </td>
+                            </tr>
+                            <tr class="h70">
+                                <td ><label>所有建筑：</label></td>
+                                <td colspan="3">
+                                    <div class="tableCon tableCons">
+                                    <table class="table" border="0" style="width: 100% !important;">
+                                        <tbody>
+                                        <tr class="noSelect">
+                                            <th style="text-align: center;">ID<i class="stretch"></i></th>
+                                            <th style="text-align: center;">位置<i class="stretch"></i></th>
+                                            <th style="text-align: center;">性质<i class="stretch"></i></th>
+                                            <th style="text-align: center;">结构<i class="stretch"></i></th>
+                                            <th style="text-align: center;">数量<i class="stretch"></i></th>
+                                            <th style="text-align: center;">计量单位<i class="stretch"></i></th>
+                                            <th style="text-align: center;">单价<i class="stretch"></i></th>
+                                            <th style="text-align: center;">备注<i class="stretch"></i></th>
+                                            <th style="text-align: center;">总价<i class="stretch"></i></th>
+                                        </tr>
+                                        {$options}
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label>评估公司：</label></td>
+                                <td colspan="3">
+                                    {$infos->cy_name}
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="valuer_id_info">评估师：</label>
+                                    <input type="hidden" name="valuer_id" id="valuer_id" value="{$valuer_ids}">
+                                    <button class="btn valuerid_list"  onclick="valuer_id_list()">选择评估师</button>
+                                </td>
+                                <td id="valuer_id_info" colspan="3">
+                                    <div class="tableCon">
+                                    <table class="table" border="0" style="width: 100% !important;" id="valuer_id_lists">
+                                        <tbody>
+                                        <tr class="noSelect">
+                                            <th style="text-align: center;">ID<i class="stretch"></i></th>
+                                            <th style="text-align: center;">姓名<i class="stretch"></i></th>
+                                            <th style="text-align: center;">注册号<i class="stretch"></i></th>
+                                            <th style="text-align: center;">有效期<i class="stretch"></i></th>
+                                        </tr>
+                                        {volist name="company_valuer_info" id="companyvaluer_info"}
+                                        <tr class="h50">
+                                            <td>{$companyvaluer_info->id}</td>
+                                            <td>{$companyvaluer_info->name}</td>
+                                            <td>{$companyvaluer_info->register_num}</td>
+                                            <td>{$companyvaluer_info->valid_at}</td>
+                                        </tr>
+                                        {/volist}
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="report_at">报告时间：</label></td>
+                                <td>
+                                    <input type="text" class="laydate-icon" name="report_at" id="report_at" value="{$infos->report_at}" placeholder="请输入报告时间">
+                                </td>
+                                <td><label for="valued_at">价值时点：</label></td>
+                                <td>
+                                    <input type="text" class="laydate-icon" name="valued_at" id="valued_at" value="{$infos->valued_at}" placeholder="请输入价值时点">
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="method">评估方法：</label></td>
+                                <td>
+                                    <input type="text" name="method" id="method" value="{$infos->method}" placeholder="请输入评估方法">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="tabPage w_100">
+                    <div class="layerCon bg_f">
+                        <table class="layerTable" border="0" id="picture-table">
+                            <tr class="h70">
+                                <td>评估报告：</td>
+                                <td class="imgCon" colspan="3">
+                                    {if condition="isset($infos) and $infos->picture"}
+                                    {volist name="infos->picture" id="pic"}
+                                    <div class="img">
+                                        <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                        <p><span onclick="picremove(this);">删除</span></p>
+                                        <input type="hidden" name="picture[]" value="{$pic}"/>
+                                    </div>
+                                    {/volist}
+                                    {/if}
+                                    <div class="img btn-upload" data-type="multiimage" data-hidename="picture[]"><a>+</a></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="layerBtns">
+                    <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+                    <button class="btn" type="reset">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+<!-- 查询评估师 -->
+<div id="search" class="bg_f hide">
+        <table class="table" border="0" style="width: 100% !important;" id="valuer_id_infos">
+            <input type="hidden" name="pinggu_ids" id="pinggu_id" value="">
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th style="text-align: center;">ID<i class="stretch"></i></th>
+                <th style="text-align: center;">姓名<i class="stretch"></i></th>
+                <th style="text-align: center;">注册号<i class="stretch"></i></th>
+                <th style="text-align: center;">有效期<i class="stretch"></i></th>
+            </tr>
+            </tbody>
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="button" id="btn-form-search">选择</button>
+        </div>
+</div>
+<script>
+    /* ===== 评估建筑物（单价变化获取总价） =====*/
+    function  price_num(obj) {
+        var _this = $(obj);
+        var price=parseFloat(_this.val());
+        var number=parseFloat(_this.data('real_num'));
+        var id=_this.data('id');
+        var total=price*number;
+        if(isNaN(total)){
+            $('#total-'+id).val('');
+            return false;
+        }
+        $('#total-'+id).val(total);
+    }
+
+    /* ===== 选择评估师按钮赋值 =====*/
+    $("#company_id").change(function () {
+        var _company_id=$("#company_id").find('option:selected').val();
+        $(".valuerid_list").attr('onclick','valuer_id_list('+_company_id+')');
+    });
+    /* ===== 查询评估师 =====*/
+    function valuer_id_list(){
+        var _company_id = "{$infos->company_id}";
+        layerPage('评估师列表',$('#search'),'800','300');
+        $.ajax({
+            url:"{:url('Tools/item_company_valuer')}",
+            data:{ 'company_id':_company_id},
+            dataType:'json',
+            type:'post',
+            success:function (resp) {
+                $('#valuer_id_infos').find('tr:first').siblings().remove();
+                var options = '';
+                var _checked='';
+                var  idss = $("#pinggu_id").val();
+                if(idss){
+                    idss = idss.split(",");
+                }else{
+                    idss = [];
+                }
+                if(resp.code){
+                    $.each(resp.data,function (index,info) {
+                        var res=$.inArray(info.id.toString(),idss);
+                        if(res>-1){
+                            _checked='checked';
+                        }
+
+                        options += '<tr class="h50">';
+                        options += ' <td><input class="va_m" type="checkbox" name="ids[]" value="'+info.id+'" onclick="checkBoxOp(this)" id="check-'+info.id+'" '+_checked+'/></td>';
+                        options += '<td>'+info.id+'</td>';
+                        options += '<td>'+info.name+'</td>';
+                        options += '<td>'+info.register_num+'</td>';
+                        options += '<td>'+info.valid_at+'</td>';
+                        options += '</tr>';
+                    });
+                    $('#valuer_id_infos').find('tbody').append(options);
+                }else{
+                    layer.msg(resp.msg,function(){});
+                }
+            },
+            error:function () {
+                layer.msg('网络错误，请重试',function(){});
+            }
+        });
+    }
+    /* ===== 选择评估师 =====*/
+    $("#btn-form-search").click(function () {
+        var ids = '';
+        var name_ids= $("input[name='ids[]']:checked");
+        for(var i = 0;i<name_ids.length;i++){
+            ids += $(name_ids[i]).val();
+            if (i < name_ids.length - 1) ids += ",";
+        }
+        $("#pinggu_id").val(ids);
+        $("#valuer_id").val(ids);
+        layer.closeAll();
+        $.ajax({
+            url:"{:url('Tools/item_company_valuer')}",
+            data:{ 'ids':ids},
+            dataType:'json',
+            type:'post',
+            success:function (resp) {
+                $('#valuer_id_lists').find('tr:first').siblings().remove();
+                var options = '';
+                if(resp.code){
+                    $.each(resp.data,function (index,info) {
+                        options += '<tr class="h50">';
+                        options += '<td>'+info.id+'</td>';
+                        options += '<td>'+info.name+'</td>';
+                        options += '<td>'+info.register_num+'</td>';
+                        options += '<td>'+info.valid_at+'</td>';
+                        options += '</tr>';
+                    });
+                    $('#valuer_id_lists').find('tbody').append(options);
+                }else{
+                    layer.msg(resp.msg,function(){});
+                }
+            },
+            error:function () {
+                layer.msg('网络错误，请重试',function(){});
+            }
+        });
+    });
+
+</script>
+</body>
+</html>
