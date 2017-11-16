@@ -1,6 +1,6 @@
 <?php
 /* |------------------------------------------------------
- * | 兑付 模型
+ * | 兑付 产权人 模型
  * |------------------------------------------------------
  * */
 namespace app\system\model;
@@ -8,10 +8,10 @@ namespace app\system\model;
 use think\Model;
 use traits\model\SoftDelete;
 
-class Pays extends Model
+class Payholders extends Model
 {
     use SoftDelete;
-    protected $table='pay';
+    protected $table='pay_holder';
     protected $pk='id';
     protected $createTime='created_at';
     protected $updateTime='updated_at';
@@ -19,30 +19,12 @@ class Pays extends Model
     protected $autoWriteTimestamp = true;
     protected $field=true;
     protected $type = [
-        'picture'=>'array',
+
     ];
 
-    public function getCompensateWayAttr($key=null){
-        $array=[0=>'货币补偿',1=>'产权调换'];
-        if(is_numeric($key) && in_array($key,[0,1])){
-            return $array[$key];
-        }else{
-            return $array;
-        }
-    }
-
-    public function getTransitWayAttr($key=null){
-        $array=[0=>'货币过渡',1=>'周转房过渡'];
-        if(is_numeric($key) && in_array($key,[0,1])){
-            return $array[$key];
-        }else{
-            return $array;
-        }
-    }
-
-    public function getMoveWayAttr($key=null){
-        $array=[0=>'自行搬迁',1=>'政府负责'];
-        if(is_numeric($key) && in_array($key,[0,1])){
+    public function getHolderAttr($key=null){
+        $array=[0=>'无',1=>'产权人',2=>'承租人'];
+        if(is_numeric($key) && in_array($key,[0,1,2])){
             return $array[$key];
         }else{
             return $array;
@@ -60,9 +42,7 @@ class Pays extends Model
 
     public function other_data($input){
         $data=[];
-        if(!isset($input['picture'])){
-            $data['picture']=[];
-        }
+
         return $data;
     }
 }

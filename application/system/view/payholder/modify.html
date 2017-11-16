@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>项目兑付与协议|后台管理系统</title>
+    {include file="public/head" /}
+    {include file="public/kindeditor" /}
+
+</head>
+<body>
+
+<form action="{:url('edit')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{$infos->id}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td>名称：</td>
+                <td>{$infos->name}</td>
+                <td>地址：</td>
+                <td>{$infos->address}</td>
+            </tr>
+            <tr class="h50">
+                <td>电话：</td>
+                <td>{$infos->phone}</td>
+                <td>产权：</td>
+                <td>{$infos->holder}</td>
+            </tr>
+            <tr class="h50">
+                <td>份额：</td>
+                <td><input type="number" name="portion" id="portion" value="{$infos->portion}" placeholder="输入产权补偿分配份额（%）"></td>
+                <td>类型：</td>
+                <td>{$infos->type}</td>
+            </tr>
+            <tr class="h50">
+                <td>兑付汇总：</td>
+                <td colspan="3">
+                    <p>房产补偿：<span id="estate_amount">{$infos->estate_amount|number_format=2}</span> 元</p>
+                    <p>资产补偿：<span id="assets_amount">{$infos->assets_amount|number_format=2}</span> 元</p>
+                    <p>公共附属物总计：<span id="public_amount">{$infos->public_amount|number_format=2}</span> 元</p>
+                    <p>平分户数：<span id="public_num">{$infos->public_num|number_format}</span> 户</p>
+                    <p>公共附属物平均：<span id="public_avg">{$infos->public_avg|number_format=2}</span> 元</p>
+                    <p>重要补偿科目小计：<span id="subject_amount">{$infos->subject_amount|number_format=2}</span> 元</p>
+                    <p>其他补偿事项小计：<span id="object_amount">{$infos->object_amount|number_format=2}</span> 元</p>
+                    <p>补偿总计：<span id="total_amount">{$infos->total_amount|number_format=2}</span> 元</p>
+                </td>
+            </tr>
+
+            {if condition="isset($infos)"}
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td>
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+
+<script>
+    var estate_total={$infos->estate_total};
+    var assets_total={$infos->assets_total};
+    var subject_total={$infos->subject_total};
+    var object_total={$infos->object_total};
+    var public_amount={$infos->public_amount};
+    var public_num={$infos->public_num};
+    var type={$infos->getData('type')};
+    var holder={$infos->getData('holder')};
+    
+    $('#portion').on('keyup change blur',function () {
+        var portion=parseFloat($(this).val());
+        var estate_amount,
+            assets_amount,
+            public_avg,
+            subject_amount,
+            object_amount,
+            total_amount;
+        
+        if(portion>100 || portion<0){
+            layer.msg('补偿份额在0-100之间',function () {});
+            return false;
+        }
+
+        estate_amount=portion/100*estate_total;
+        if(type){
+            if(holder==1){
+                assets_amount=0;
+                public_avg=0;
+                subject_amount=0;
+                object_amount=0;
+            }else{
+                assets_amount=assets_total;
+                public_avg=public_amount/public_num;
+                subject_amount=subject_total;
+                object_amount=object_total;
+            }
+        }else{
+            assets_amount=portion/100*assets_total;
+            public_avg=portion/100*public_amount/public_num;
+            subject_amount=portion/100*subject_total;
+            object_amount=portion/100*object_total;
+        }
+        total_amount=(estate_amount+assets_amount+public_avg+subject_amount+object_amount);
+
+        $('#estate_amount').text($.number_format(estate_amount));
+        $('#assets_amount').text($.number_format(assets_amount));
+        $('#public_avg').text($.number_format(public_avg));
+        $('#subject_amount').text($.number_format(subject_amount));
+        $('#object_amount').text($.number_format(object_amount));
+        $('#total_amount').text($.number_format(total_amount));
+    });
+    
+</script>
+</body>
+</html>

@@ -2,12 +2,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>入户摸底-家庭人员|后台管理系统</title>
+    <title>项目兑付与协议|后台管理系统</title>
     {include file="public/head" /}
 
 </head>
 <body>
-<h4>入户摸底-家庭人员管理</h4>
+<h4>项目兑付与协议管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
@@ -20,7 +20,7 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加入户摸底-家庭人员','{:url('add')}','800','580',true)">
+        <li class="fgf" onclick="layerIfWindow('添加项目兑付','{:url('add')}','800','600',true)">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
@@ -38,7 +38,7 @@
         </li>
     </ul>
 </div>
-<form action="{:url('index')}" method="post" id="js-ajax-form">
+<form action="{:url('status')}" method="post" id="js-ajax-form">
     <div class="tableCon">
         <em class="xian"></em>
         <table class="table" border="0" >
@@ -47,42 +47,58 @@
                 <th class="tc" width="35px">
                     <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
                 </th>
-                <th>ID<i class="stretch"></i></th>
-                <th>项目（ID）<i class="stretch"></i></th>
-                <th>片区（ID）<i class="stretch"></i></th>
-                <th>权属（ID）<i class="stretch"></i></th>
-                <th>名称<i class="stretch"></i></th>
-                <th>电话<i class="stretch"></i></th>
-                <th>产权<i class="stretch"></i></th>
-                <th>份额(%)<i class="stretch"></i></th>
-                <th>户主关系<i class="stretch"></i></th>
-                <th>现住址<i class="stretch"></i></th>
-                <th>操作<i class="stretch"></i></th>
+                <th>ID</th>
+                <th>项目</th>
+                <th>片区</th>
+                <th>位置</th>
+                <th>类型</th>
+                <th>性质</th>
+                <th>房产</th>
+                <th>资产</th>
+                <th>公共平均</th>
+                <th>重要科目</th>
+                <th>补偿事项</th>
+                <th>总计</th>
+                <th>补偿方式</th>
+                <th>过渡方式</th>
+                <th>操作</th>
             </tr>
-            {volist name="collectionholders" id="collectionholder"}
+            {volist name="pays" id="pay"}
             <tr>
                 <td>
-                    <input class="va_m" type="checkbox" name="ids[]" value="{$collectionholder->id}" onclick="checkBoxOp(this)" id="check-{$collectionholder->id}"/>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$pay->id}" onclick="checkBoxOp(this)" id="check-{$pay->id}"/>
                 </td>
-                <td>{$collectionholder->id}</td>
-                <td>{$collectionholder->i_name}（{$collectionholder->item_id}）</td>
-                <td title="{$collectionholder->cc_address}">{$collectionholder->cc_name}（{$collectionholder->community_id}）</td>
+                <td>{$pay->id}</td>
+                <td>{if condition="$pay->deleted_at"} <del>{$pay->i_name}</del>{else /}{$pay->i_name}{/if}</td>
+                <td title="{$pay->address}">{if condition="$pay->deleted_at"} <del>{$pay->cc_name}</del>{else /}{$pay->cc_name}{/if}</td>
                 <td>
-                    {if condition="$collectionholder->c_building"}{$collectionholder->c_building}栋{/if}
-                    {if condition="$collectionholder->c_unit"}{$collectionholder->c_unit}单元{/if}
-                    {if condition="$collectionholder->c_floor"}{$collectionholder->c_floor}楼{/if}
-                    {if condition="$collectionholder->c_number"}{$collectionholder->c_number}号{/if}
-                    （{$collectionholder->collection_id}）
+                    {if condition="$pay->deleted_at"}
+                    <del>
+                        {if condition="$pay->building"}{$pay->building}栋{/if}
+                        {if condition="$pay->unit"}{$pay->unit}单元{/if}
+                        {if condition="$pay->floor"}{$pay->floor}楼{/if}
+                        {if condition="$pay->number"}{$pay->number}号{/if}
+                    </del>
+                    {else /}
+                    {if condition="$pay->building"}{$pay->building}栋{/if}
+                    {if condition="$pay->unit"}{$pay->unit}单元{/if}
+                    {if condition="$pay->floor"}{$pay->floor}楼{/if}
+                    {if condition="$pay->number"}{$pay->number}号{/if}
+                    {/if}
                 </td>
-                <td title="{$collectionholder->address}">{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->name}</del>{else /}{$collectionholder->name}{/if}</td>
-                <td>{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->phone}</del>{else /}{$collectionholder->phone}{/if}</td>
-                <td>{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->holder}</del>{else /}{$collectionholder->holder}{/if}</td>
-                <td>{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->portion}</del>{else /}{$collectionholder->portion}{/if}</td>
-                <td>{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->relation}</del>{else /}{$collectionholder->relation}{/if}</td>
-                <td>{if condition="$collectionholder->deleted_at"}<del>{$collectionholder->live_addr}</del>{else /}{$collectionholder->live_addr}{/if}</td>
+                <td>{$pay->type}</td>
+                <td>{$pay->bu_name}</td>
+                <td>{$pay->estate_amount|number_format=2}</td>
+                <td>{$pay->assets_amount|number_format=2}</td>
+                <td>{$pay->public_avg|number_format=2}</td>
+                <td>{$pay->subject_amount|number_format=2}</td>
+                <td>{$pay->object_amount|number_format=2}</td>
+                <td>{$pay->total|number_format=2}</td>
+                <td>{$pay->compensate_way}</td>
+                <td>{$pay->transit_way}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('入户摸底-家庭人员信息',	'{:url('detail',['id'=>$collectionholder->id])}','800','630',true)" >详细信息</button>
-                    <button type="button" data-action="{:url('delete',['ids'=>$collectionholder->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('项目兑付与协议信息',	'{:url('detail',['id'=>$pay->id])}','800','600',true)" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$pay->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}
@@ -91,15 +107,15 @@
     </div>
 </form>
 <div class="pageCon">
-    {$collectionholders->render()}
+    {$pays->render()}
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
     <form action="{:url('index')}" method="post" id="search-form">
         <table class="layerTable">
             <tr class="h50">
-                <td>项目：</td>
-                <td colspan="3">
+                <td><label for="item_id">项目：</label></td>
+                <td>
                     <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
                         <option value="">--全部--</option>
                         {volist name="items" id="item"}
@@ -107,8 +123,8 @@
                         {/volist}
                     </select>
                 </td>
-                <td>片区：</td>
-                <td colspan="3">
+                <td><label for="community_id">片区：</label></td>
+                <td>
                     <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
                         <option value="">--全部--</option>
                         {volist name="collectioncommunitys" id="collectioncommunity"}
@@ -133,12 +149,6 @@
                         {/volist}
                     </select>
                 </td>
-                <td><label for="name">名称：</label></td>
-                <td colspan="3"><input type="text" name="name" id="name" value="{$name?:''}" placeholder="输入名称"></td>
-            </tr>
-            <tr class="h50">
-                <td><label for="address">地址：</label></td>
-                <td colspan="7"><input type="text" name="address" id="address" value="{$address?:''}" placeholder="输入地址"></td>
             </tr>
             <tr class="h50">
                 <td>是否删除：</td>
@@ -157,10 +167,16 @@
                         {/volist}
                     </select>
                 </td>
+            </tr>
+            <tr class="h50">
                 <td>排序：</td>
                 <td>
                     <select name="ordername" id="ordername">
                         <option value="id">--默认--</option>
+                        <option value="estate_amount" {if condition="isset($ordername) and $ordername eq 'estate_amount'"}selected{/if}>--房产补偿--</option>
+                        <option value="assets_amount" {if condition="isset($ordername) and $ordername eq 'assets_amount'"}selected{/if}>--资产补偿--</option>
+                        <option value="public_avg" {if condition="isset($ordername) and $ordername eq 'public_avg'"}selected{/if}>--公共平均--</option>
+                        <option value="total" {if condition="isset($ordername) and $ordername eq 'total'"}selected{/if}>--补偿总额--</option>
                         <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
                         <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
                         <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>

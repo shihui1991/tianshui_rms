@@ -134,6 +134,7 @@ class Collectionholder extends Auth
                 'community_id'=>'require',
                 'collection_id'=>'require',
                 'address'=>'require',
+                'portion'=>'between:0,100',
             ];
             $msg=[
                 'name.require'=>'名称不能为空',
@@ -142,17 +143,37 @@ class Collectionholder extends Auth
                 'community_id.require'=>'请选择片区',
                 'collection_id.require'=>'请选择权属',
                 'address.require'=>'地址不能为空',
+                'portion.between'=>'补偿份额在0-100之间',
             ];
             $result=$this->validate(input(),$rules,$msg);
             if(true !== $result){
                 return $this->error($result);
             }
-            $collection_info=Collections::field(['id','item_id','community_id'])->find(input('collection_id'));
+            $collection_info=Collections::field(['id','item_id','community_id','type'])->find(input('collection_id'));
             if(!$collection_info){
                 return $this->error('选择权属不存在！');
             }
             if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
                 return $this->error('选择权属与项目片区不一致');
+            }
+            if($collection_info->getData('type') && in_array(input('holder'),[1,2])){
+                $holders=Collectionholders::where([
+                    'item_id'=>input('item_id'),
+                    'community_id'=>input('community_id'),
+                    'collection_id'=>input('collection_id'),
+                    'holder'=>input('holder')
+                ])->count();
+                if($holders){
+                    return $this->error('产权人或承租人已存在');
+                }
+            }
+            $portion=Collectionholders::where([
+                'item_id'=>input('item_id'),
+                'community_id'=>input('community_id'),
+                'collection_id'=>input('collection_id')
+            ])->sum('portion');
+            if((input('portion')+$portion)>100){
+                return $this->error('补偿份额总和不能超过100%');
             }
 
             $other_datas=$model->other_data(input());
@@ -229,6 +250,7 @@ class Collectionholder extends Auth
             'community_id'=>'require',
             'collection_id'=>'require',
             'address'=>'require',
+            'portion'=>'between:0,100',
         ];
         $msg=[
             'name.require'=>'名称不能为空',
@@ -237,18 +259,40 @@ class Collectionholder extends Auth
             'community_id.require'=>'请选择片区',
             'collection_id.require'=>'请选择权属',
             'address.require'=>'地址不能为空',
+            'portion.between'=>'补偿份额在0-100之间',
         ];
 
         $result=$this->validate($datas,$rules,$msg);
         if(true !== $result){
             return $this->error($result);
         }
-        $collection_info=Collections::field(['id','item_id','community_id'])->find(input('collection_id'));
+        $collection_info=Collections::field(['id','item_id','community_id','type'])->find(input('collection_id'));
         if(!$collection_info){
             return $this->error('选择权属不存在！');
         }
         if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
             return $this->error('选择权属与项目片区不一致');
+        }
+        if($collection_info->getData('type') && in_array(input('holder'),[1,2])){
+            $holders=Collectionholders::where([
+                'item_id'=>input('item_id'),
+                'community_id'=>input('community_id'),
+                'collection_id'=>input('collection_id'),
+                'holder'=>input('holder')
+            ])->where('id','neq',$id)
+                ->count();
+            if($holders){
+                return $this->error('产权人或承租人已存在');
+            }
+        }
+        $portion=Collectionholders::where([
+            'item_id'=>input('item_id'),
+            'community_id'=>input('community_id'),
+            'collection_id'=>input('collection_id')
+        ])->where('id','neq',$id)
+            ->sum('portion');
+        if((input('portion')+$portion)>100){
+            return $this->error('补偿份额总和不能超过100%');
         }
 
         $collectionholder_model=new Collectionholders();

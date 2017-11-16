@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>项目兑付与协议|后台管理系统</title>
+    {include file="public/head" /}
+    {include file="public/kindeditor" /}
+
+</head>
+<body>
+
+<div class="tabs">
+    <div class="item">
+        <div class="homeTit bg_f5">
+            <div class="fl"><img src="__STATIC__/system/img/server_database.png"/>项目兑付与协议管理</div>
+            <ul class="homeTab">
+                <li class="on"><a href="javascript:location.reload();">兑付汇总</a></li>
+                <li><a href="{:url('Payholder/index',['pay_id'=>$infos->id])}">分权兑付</a></li>
+                <li><a href="{:url('Paysubject/index',['pay_id'=>$infos->id])}">补偿科目</a></li>
+                <li><a href="{:url('Payobject/index',['pay_id'=>$infos->id])}">补偿事项</a></li>
+            </ul>
+        </div>
+        <div class="homeCon">
+            <div class="tabPage w_100 on">
+                <form action="{:url('edit')}" method="post" class="js-ajax-form" onsubmit="return false;">
+                    <div class="layerCon bg_f">
+                        <input type="hidden" name="id" value="{$infos->id}">
+                        <table class="layerTable" border="0">
+                            <tr class="h50">
+                                <td>项目：</td>
+                                <td>{$infos->i_name}</td>
+                                <td>地址：</td>
+                                <td>{$infos->cc_address}</td>
+                            </tr>
+                            <tr class="h50">
+                                <td>片区：</td>
+                                <td>{$infos->cc_name}</td>
+                                <td>位置：</td>
+                                <td>
+                                    {if condition="$infos->building"}{$infos->building}栋{/if}
+                                    {if condition="$infos->unit"}{$infos->unit}单元{/if}
+                                    {if condition="$infos->floor"}{$infos->floor}楼{/if}
+                                    {if condition="$infos->number"}{$infos->number}号{/if}
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td>兑付汇总：</td>
+                                <td colspan="3">
+                                    <p>房产补偿：{$infos->estate_amount|number_format=2} 元</p>
+                                    <p>资产补偿：{$infos->assets_amount|number_format=2} 元</p>
+                                    <p>公共附属物总计：{$infos->public_amount|number_format=2} 元</p>
+                                    <p>平分户数：{$infos->public_num|number_format} 户</p>
+                                    <p>公共附属物平均：{$infos->public_avg|number_format=2} 元</p>
+                                    <p>重要补偿科目小计：{$infos->subject_amount|number_format=2} 元</p>
+                                    <p>其他补偿事项小计：{$infos->object_amount|number_format=2} 元</p>
+                                    <p>补偿总计：{$infos->total|number_format=2} 元</p>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="compensate_way">补偿方式：</label></td>
+                                <td colspan="3">
+                                    <select name="compensate_way" id="compensate_way">
+                                        {volist name="model->compensate_way" id="value"}
+                                        <option value="{$key}" {eq name="infos->getData('compensate_way')" value="$key"}selected{/eq}>{$value}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="transit_way">过渡方式：</label></td>
+                                <td>
+                                    <select name="transit_way" id="transit_way">
+                                        {volist name="model->transit_way" id="value"}
+                                        <option value="{$key}" {eq name="infos->getData('transit_way')" value="$key"}selected{/eq}>{$value}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td><label for="move_way">搬迁方式：</label></td>
+                                <td>
+                                    <select name="move_way" id="move_way">
+                                        {volist name="model->move_way" id="value"}
+                                        <option value="{$key}" {eq name="infos->getData('move_way')" value="$key"}selected{/eq}>{$value}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="h70">
+                                <td>兑付图片：</td>
+                                <td class="imgCon" colspan="3">
+                                    {if condition="isset($infos) and $infos->picture"}
+                                    {volist name="infos->picture" id="pic"}
+                                    <div class="img">
+                                        <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                        <p><span onclick="picremove(this);">删除</span></p>
+                                        <input type="hidden" name="picture[]" value="{$pic}"/>
+                                    </div>
+                                    {/volist}
+                                    {/if}
+                                    <div class="img btn-upload" data-type="multiimage" data-hidename="picture[]"><a>+</a></div>
+                                </td>
+                            </tr>
+                            {if condition="isset($infos)"}
+                            <tr class="h50">
+                                <td>操作时间：</td>
+                                <td>
+                                    创建于：{$infos->created_at}<br/>
+                                    更新于：{$infos->updated_at}<br/>
+                                    {if condition="isset($infos) and $infos->deleted_at"}
+                                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+                        </table>
+                        <div class="layerBtns">
+                            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+                            <button class="btn" type="reset">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+</script>
+</body>
+</html>
