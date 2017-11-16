@@ -251,10 +251,10 @@
                 if(resp.code){
                     $.each(resp.data,function (index,info) {
                         options += '<tr class="h50">';
-                        options += '<td>'+info.id+'</td>';
-                        options += '<td>'+info.name+'</td>';
-                        options += '<td>'+info.register_num+'</td>';
-                        options += '<td>'+info.valid_at+'</td>';
+                        options += '<td style="text-align: center">'+info.id+'</td>';
+                        options += '<td style="text-align: center">'+info.name+'</td>';
+                        options += '<td style="text-align: center">'+info.register_num+'</td>';
+                        options += '<td style="text-align: center">'+info.valid_at+'</td>';
                         options += '</tr>';
                     });
                     $('#valuer_id_lists').find('tbody').append(options);
