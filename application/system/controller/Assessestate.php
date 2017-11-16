@@ -7,15 +7,11 @@
  * | 添加
  * | 详情
  * | 修改
- * | 删除
- * | 恢复
- * | 销毁
  * */
 
 namespace app\system\controller;
 
 use app\system\model\Assessestates;
-use app\system\model\Assessestatevaluers;
 use think\Db;
 
 class Assessestate extends Auth
@@ -256,7 +252,7 @@ class Assessestate extends Auth
             ->join('building_struct bs', 'bs.id=cb.struct_id', 'left')
             ->join('building_status s', 's.id=cb.status_id', 'left')
             ->where($where)
-            ->where('status_id!=5')
+            ->where('status_id','not in','0,5')
             ->order(['cb.register' => 'desc', 'cb.use_id' => 'asc'])
             ->select();
         /*----- 建筑物表格 -----*/
@@ -264,7 +260,7 @@ class Assessestate extends Auth
         foreach ($collectionbuildings as $k => $v) {
             $options .= '<tr class="h50">';
             $options .= '<td><input type="hidden" name="ids[' . $building_price[$k]->id . ']" value="' . $v['id'] . '">' . $v['id'] . '</td>';
-            $options .= '<td>' . $v['address'] . '</td>';
+            $options .= '<td class="nowrap">' . $v['address'] . '</td>';
             $options .= '<td>' . $v['bu_name'] . '</td>';
             $options .= '<td>' . $v['bs_name'] . '</td>';
             $options .= '<td>' . $v['real_num'] . '</td>';
@@ -282,7 +278,7 @@ class Assessestate extends Auth
             ->where('estate_id', $assessestate_info['id'])
             ->where('company_id', $assessestate_info['company_id'])
             ->column('valuer_id');
-        $company_valuer_where['company_id'] = array('in', $assessestatevaluer_ids);
+        $company_valuer_where['id'] = array('in', $assessestatevaluer_ids);
         $company_valuer_where['status'] = '1';
         $company_valuer_field = ['id', 'name', 'register_num', 'valid_at'];
         $company_valuer = model('Companyvaluers')
@@ -423,11 +419,6 @@ class Assessestate extends Auth
                     $res=db()->execute($sql);
                 }
             }
-//            for($i=0;$i<count($new_where);$i++){
-//                model('Assesss')->save(['updated_at'=>time()],['item_id' =>$new_where[$i]['item_id'], 'community_id' =>$new_where[$i]['community_id'], 'collection_id' =>$new_where[$i]['collection_id']]);
-//            }
-
-
             Db::commit();
         } catch (\Exception $e) {
             $res = false;dump($e);

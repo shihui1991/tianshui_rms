@@ -143,11 +143,13 @@ body .new-layer.layui-layer-dialog .layui-layer-content{padding: 10px;}
 .layerCon{padding-bottom: 40px;}
 .layerTable{width: 100%;border: 1px solid #ccc;border-spacing: 0;table-layout: fixed;}
 .layerTable tr:not(:last-of-type) td{border-bottom: 1px solid #ccc;}
-.layerTable tr td{position: relative;border-bottom: 1px solid #ccc;border-right:1px solid #ccc ;}
+.layerTable tr td{position: relative;border-bottom: 1px solid #ccc;border-right:1px solid #ccc ;text-align: center !important;}
 .layerTable tr td:nth-of-type(2n+1){width: 90px;text-align: right;border-right: 1px solid #ccc;background-color: #f7f7f7;padding: 0 5px;}
 .layerTable tr td:nth-of-type(2n){padding: 0 1px 0 3px;border-right: 1px solid #ccc;}
 .layerTable tr td:last-of-type{border-right: none;}
 .layerTable input:not(.va_m),.layerTable select{width: 100%;height: 100%;border: none;outline:none;}
+.layerTable table input:not(.va_m),.layerTable table select{text-align: center;}
+.layerTable table td.on input:not(.va_m){background: #4A5B79!important;color: white}
 .layerTable input{width: 100%; border: none;font-size: 12px;}
 .layerTable input[type=radio]{width:auto;}
 input[type=checkbox]{width: auto;}
@@ -203,7 +205,8 @@ button:hover{ cursor: pointer}
     width: inherit;
 }
 .tabs .homeCon .tabPage{ display: none; }
-.tabs .homeCon .tabPage table{ display: table; }
+.tabs .homeCon .tabPage table{ display: table;
+    width:100%; }
 .tabs .homeCon .tabPage.on{ display: block; }
 
 
@@ -795,3 +798,5 @@ fieldset[disabled] .btn-link:focus {
 .pageCon ul li span:hover{background-color: red !important;}
 .pageCon ul li a:hover{background-color: #2D93CA !important;}
 .pageCon ul li.active span{background-color: #6B7C93 !important;}
+
+.nowrap{white-space: normal !important;}

@@ -95,7 +95,7 @@
                 <td>{if condition="$info->deleted_at"}<del>{$info->method}</del>{else/}{$info->method}{/if}</td>
                 <td>{if condition="$info->deleted_at"}<del>{$info->status}</del>{else/}{$info->status}{/if}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('入户评估-房产评估信息',	'{:url('detail',['id'=>$info->id])}','800','650')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户评估-房产评估信息',	'{:url('detail',['id'=>$info->id])}','1000','650')" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$info->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
