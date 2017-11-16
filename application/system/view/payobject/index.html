@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>项目兑付与协议-其他补偿事项|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+
+<div class="tabs">
+    <div class="item">
+        <div class="homeTit bg_f5">
+            <div class="fl"><img src="__STATIC__/system/img/server_database.png"/>项目兑付与协议管理</div>
+            <ul class="homeTab">
+                <li><a href="{:url('Pay/detail',['id'=>$pay_id])}">兑付汇总</a></li>
+                <li><a href="{:url('Payholder/index',['pay_id'=>$pay_id])}">分权兑付</a></li>
+                <li><a href="{:url('Paysubject/index',['pay_id'=>$pay_id])}">补偿科目</a></li>
+                <li class="on"><a href="javascript:location.reload();">补偿事项</a></li>
+            </ul>
+        </div>
+        <div class="homeCon">
+            <div class="tabPage w_100 on">
+                <div class="toolsBar">
+                    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+                    <ul>
+                        <li>
+                            <a href="{:url('index',['pay_id'=>$pay_id])}">
+                                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                                重置</a>
+                        </li>
+                        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+                            <img src="__STATIC__/system/img/broom.png"/>
+                            删除
+                        </li>
+                        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+                            <img src="__STATIC__/system/img/recycle.png"/>
+                            恢复
+                        </li>
+                        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+                            <img src="__STATIC__/system/img/destroy.png"/>
+                            销毁
+                        </li>
+                    </ul>
+                </div>
+                <form action="{:url('upd',['pay_id'=>$pay_id])}" method="post" id="js-ajax-form">
+                <div class="tableCon">
+                    <em class="xian"></em>
+                    <table class="table" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th class="tc" width="35px">
+                                <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                            </th>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>数量</th>
+                            <th>单价</th>
+                            <th>小计</th>
+                            <th>状态</th>
+                        </tr>
+                        {volist name="payobjects" id="payobject"}
+                        <tr>
+                            <td>
+                                <input class="va_m" type="checkbox" name="ids[]" value="{$payobject->id}" onclick="checkBoxOp(this)" id="check-{$payobject->id}"/>
+                            </td>
+                            <td>{$payobject->id}</td>
+                            <td>{if condition="$payobject->deleted_at"}<del>{$payobject->name}</del>{else/}{$payobject->name}{/if}</td>
+                            <td><input type="number" name="datas[{$payobject->id}][number]" class="number" value="{$payobject->number}" min="0"></td>
+                            <td><input type="number" name="datas[{$payobject->id}][price]" class="price" value="{$payobject->price}" min="0"></td>
+                            <td>{if condition="$payobject->deleted_at"}<del class="amount">{$payobject->amount|number_format=2} 元</del>{else/}<span class="amount">{$payobject->amount|number_format=2} 元</span>{/if}</td>
+                            <th>{if condition="$payobject->deleted_at"}已删除{else/}√{/if}</th>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </div>
+                    <div class="layerBtns">
+                        <a class="btn js-ajax-form-btn">立即提交</a>
+                        <button class="btn" type="reset">重置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.number,.price').on('keyup blur change',function () {
+        var _tr=$(this).parents('tr:first');
+        var number=_tr.find('input.number').val();
+        var price=_tr.find('input.price').val();
+        var amount=0;
+
+        if(number<0){
+            layer.msg('数量不能小于0',function () {});
+        }else if(price <0){
+            layer.msg('价格不能小于0',function () {});
+        }else{
+            amount=number*price;
+            _tr.find('.amount').text($.number_format(amount)+' 元');
+        }
+
+    });
+</script>
+</body>
+</html>
