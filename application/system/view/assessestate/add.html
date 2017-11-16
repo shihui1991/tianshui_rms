@@ -260,7 +260,6 @@
                 dataType:'json',
                 type:'post',
                 success:function (resp) {
-                    console.log(resp);
                     $('.tableCons').find('tr:first').siblings().remove();
                     var options = '';
                     if(resp.code){
@@ -271,15 +270,15 @@
                             }
 
                             options += '<tr class="h50">';
-                            options += '<td>'+info.id+'</td>';
-                            options += '<td  class="nowrap">'+info.address+'</td>';
-                            options += '<td>'+info.bu_name+'</td>';
-                            options += '<td>'+info.bs_name+'</td>';
-                            options += '<td>'+info.real_num+'</td>';
-                            options += '<td>'+info.real_unit+'</td>';
-                            options += '<td><input type="text" name="price['+info.id+']" class="price" value="" data-real_num="'+info.real_num+'" data-id="'+info.id+'" onkeyup="price_num(this)"  onchange="price_num(this)"></td>';
-                            options += '<td>'+remark+'</td>';
-                            options += '<td><input type="text" name="amount['+info.id+']" id="total-'+info.id+'"  value="" readonly></td>';
+                            options += '<td style="text-align: center">'+info.id+'</td>';
+                            options += '<td  class="nowrap" style="text-align: center">'+info.address+'</td>';
+                            options += '<td style="text-align: center">'+info.bu_name+'</td>';
+                            options += '<td style="text-align: center">'+info.bs_name+'</td>';
+                            options += '<td style="text-align: center">'+info.real_num+'</td>';
+                            options += '<td style="text-align: center">'+info.real_unit+'</td>';
+                            options += '<td style="text-align: center"><input type="text" name="price['+info.id+']" class="price" value="" data-real_num="'+info.real_num+'" data-id="'+info.id+'" onkeyup="price_num(this)"  onchange="price_num(this)"></td>';
+                            options += '<td style="text-align: center">'+remark+'</td>';
+                            options += '<td style="text-align: center"><input type="text" name="amount['+info.id+']" id="total-'+info.id+'"  value="" readonly></td>';
                             options += '</tr>';
                         });
                         $('.tableCons').find('tbody').append(options);
@@ -387,10 +386,10 @@
                 if(resp.code){
                     $.each(resp.data,function (index,info) {
                         options += '<tr class="h50">';
-                        options += '<td>'+info.id+'</td>';
-                        options += '<td>'+info.name+'</td>';
-                        options += '<td>'+info.register_num+'</td>';
-                        options += '<td>'+info.valid_at+'</td>';
+                        options += '<td style="text-align: center">'+info.id+'</td>';
+                        options += '<td style="text-align: center">'+info.name+'</td>';
+                        options += '<td style="text-align: center">'+info.register_num+'</td>';
+                        options += '<td style="text-align: center">'+info.valid_at+'</td>';
                         options += '</tr>';
                     });
                     $('#valuer_id_lists').find('tbody').append(options);

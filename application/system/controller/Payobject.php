@@ -54,7 +54,7 @@ class Payobject extends Auth
     }
 
     /* ========== 批量修改 ========== */
-    public function upd(){
+    public function edit(){
         $pay_id=input('pay_id');
         if(!$pay_id){
             return $this->error('错误操作');
