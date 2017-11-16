@@ -259,15 +259,15 @@ class Assessestate extends Auth
         $options = '';
         foreach ($collectionbuildings as $k => $v) {
             $options .= '<tr class="h50">';
-            $options .= '<td><input type="hidden" name="ids[' . $building_price[$k]->id . ']" value="' . $v['id'] . '">' . $v['id'] . '</td>';
-            $options .= '<td class="nowrap">' . $v['address'] . '</td>';
-            $options .= '<td>' . $v['bu_name'] . '</td>';
-            $options .= '<td>' . $v['bs_name'] . '</td>';
-            $options .= '<td>' . $v['real_num'] . '</td>';
-            $options .= '<td>' . $v['real_unit'] . '</td>';
-            $options .= '<td><input type="text" name="price[' . $building_price[$k]->id . ']" class="price" value="' . $building_price[$k]->price . '" data-real_num="' . $v['real_num'] . '" data-id="' . $v['id'] . '" onkeyup="price_num(this)" onchange="price_num(this)"></td>';
-            $options .= '<td>' . $v['remark'] . '</td>';
-            $options .= '<td><input type="text" name="amount[' . $building_price[$k]->id . ']" id="total-' . $v['id'] . '"  value="' . $building_price[$k]->amount . '" readonly></td>';
+            $options .= '<td style="text-align: center"><input type="hidden" name="ids[' . $building_price[$k]->id . ']" value="' . $v['id'] . '">' . $v['id'] . '</td>';
+            $options .= '<td class="nowrap" style="text-align: center">' . $v['address'] . '</td>';
+            $options .= '<td style="text-align: center">' . $v['bu_name'] . '</td>';
+            $options .= '<td style="text-align: center">' . $v['bs_name'] . '</td>';
+            $options .= '<td style="text-align: center">' . $v['real_num'] . '</td>';
+            $options .= '<td style="text-align: center">' . $v['real_unit'] . '</td>';
+            $options .= '<td style="text-align: center"><input type="text" name="price[' . $building_price[$k]->id . ']" class="price" value="' . $building_price[$k]->price . '" data-real_num="' . $v['real_num'] . '" data-id="' . $v['id'] . '" onkeyup="price_num(this)" onchange="price_num(this)"></td>';
+            $options .= '<td style="text-align: center">' . $v['remark'] . '</td>';
+            $options .= '<td style="text-align: center"><input type="text" name="amount[' . $building_price[$k]->id . ']" id="total-' . $v['id'] . '"  value="' . $building_price[$k]->amount . '" readonly></td>';
             $options .= '</tr>';
         }
 
