@@ -205,8 +205,7 @@ button:hover{ cursor: pointer}
     width: inherit;
 }
 .tabs .homeCon .tabPage{ display: none; }
-.tabs .homeCon .tabPage table{ display: table;
-    width:100%; }
+.tabs .homeCon .tabPage table{ display: table;}
 .tabs .homeCon .tabPage.on{ display: block; }
 
 
