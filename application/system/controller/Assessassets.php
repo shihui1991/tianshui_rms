@@ -1,6 +1,6 @@
 <?php
 /* |------------------------------------------------------
- * | 房产评估
+ * | 资产评估
  * |------------------------------------------------------
  * | 初始化操作
  * | 列表
@@ -10,11 +10,10 @@
  * */
 
 namespace app\system\controller;
-
-use app\system\model\Assessestates;
+use app\system\model\Assessassetss;
 use think\Db;
 
-class Assessestate extends Auth
+class Assessassets extends Auth
 {
     /* ========== 初始化 ========== */
     public function _initialize()
@@ -63,17 +62,17 @@ class Assessestate extends Auth
         $display_num = $display_num ? $display_num : config('paginate.list_rows');
         $datas['display_num'] = $display_num;
         /* ++++++++++ 查询 ++++++++++ */
-        $assessestate_model = new Assessestates();
+        $assessassets_model = new Assessassetss();
         $deleted = input('deleted');
         if (is_numeric($deleted) && in_array($deleted, [0, 1])) {
             $datas['deleted'] = $deleted;
             if ($deleted == 1) {
-                $assessestate_model = $assessestate_model->onlyTrashed();
+                $assessassets_model = $assessassets_model->onlyTrashed();
             }
         } else {
-            $assessestate_model = $assessestate_model->withTrashed();
+            $assessassets_model = $assessassets_model->withTrashed();
         }
-        $assessestate_list = $assessestate_model
+        $assessassets_list = $assessassets_model
             ->alias('ass')
             ->field($field)
             ->join('item i', 'i.id=ass.item_id', 'left')
@@ -85,7 +84,7 @@ class Assessestate extends Auth
             ->where($where)
             ->order(['i.is_top' => 'desc', 'ass.' . $ordername => $orderby])
             ->paginate($display_num);
-        $datas['assessestate_list'] = $assessestate_list;
+        $datas['assessassets_list'] = $assessassets_list;
         $this->assign($datas);
         return view();
     }
@@ -94,18 +93,18 @@ class Assessestate extends Auth
     public function add()
     {
         if (request()->isPost()) {
-            $model = new Assessestates();
+            $model = new Assessassetss();
             $datas = input();
             $rule = [
                 ['item_id', 'require', '请选择项目'],
                 ['community_id', 'require', '请选择片区'],
                 ['collection_id', 'require', '请选择权属'],
-                ['price', 'require', '建筑不能为空'],
                 ['company_id', 'require', '请选择评估公司'],
                 ['valuer_id', 'require', '请选择评估师'],
+                ['method', 'require', '评估方法不能为空'],
+                ['total', 'require', '资产总额不能为空'],
                 ['report_at', 'require', '报告时间不能为空'],
                 ['valued_at', 'require', '价值时点不能为空'],
-                ['method', 'require', '评估方法不能为空'],
                 ['picture', 'require', '评估报告不能为空']
             ];
             $result = $this->validate($datas, $rule);
@@ -116,7 +115,6 @@ class Assessestate extends Auth
             if ($collections_count == 0) {
                 return $this->error('数据异常', '');
             }
-            $building_info = $datas['price'];
             Db::startTrans();
             try {
                 /*----- 查询入户评估总表 -----*/
@@ -135,7 +133,7 @@ class Assessestate extends Auth
                     model('Assesss')->save(['updated_at' => time()], ['id' => $search_assess]);
                     $assess_id = $search_assess;
                 }
-                /*----- 添加房产评估 -----*/
+                /*----- 添加资产评估 -----*/
                 $model->save([
                     'item_id' => $datas['item_id'],
                     'community_id' => $datas['community_id'],
@@ -145,29 +143,12 @@ class Assessestate extends Auth
                     'report_at' => $datas['report_at'],
                     'valued_at' => $datas['valued_at'],
                     'method' => $datas['method'],
+                    'total' => $datas['total'],
                     'status' => 1,
                     'picture' => $datas['picture']
                 ]);
-                $estate_id = $model->getLastInsID();
-                /*----- 添加房产评估--建筑评估 -----*/
-                $building_data = [];
-                $amount_nums = 0;
-                foreach ($building_info as $k => $v) {
-                    $real_num = model('Collectionbuildings')->where('id', $k)->value('real_num');
-                    $building_data[] = [
-                        'item_id' => $datas['item_id'],
-                        'community_id' => $datas['community_id'],
-                        'collection_id' => $datas['collection_id'],
-                        'assess_id' => $assess_id,
-                        'estate_id' => $estate_id,
-                        'building_id' => $k,
-                        'price' => $v,
-                        'amount' => $real_num * $v
-                    ];
-                    $amount_nums .= $real_num * $v;
-                }
-                model('Assessestatebuildings')->saveAll($building_data);
-                /*----- 添加房产评估--评估师 -----*/
+                $assets_id = $model->getLastInsID();
+                /*----- 添加资产评估--评估师 -----*/
                 $valuer_ids = explode(",", $datas['valuer_id']);
                 $valuer_data = [];
                 foreach ($valuer_ids as $k => $v) {
@@ -175,16 +156,14 @@ class Assessestate extends Auth
                         'item_id' => $datas['item_id'],
                         'collection_id' => $datas['collection_id'],
                         'assess_id' => $assess_id,
-                        'estate_id' => $estate_id,
+                        'estate_id' => $assets_id,
                         'company_id' => $datas['company_id'],
                         'valuer_id' => $v
                     ];
                 }
-                model('Assessestatevaluers')->saveAll($valuer_data);
-                /*----- 修改房产评估总额 -----*/
-                $model->save(['total' => $amount_nums], ['id' => $estate_id]);
-                /*----- 修改房产评估总额 -----*/
-                model('Assesss')->save(['estate' => $amount_nums], ['id' => $assess_id]);
+                model('Assessassetsvaluers')->saveAll($valuer_data);
+                /*----- 修改资产评估总额 -----*/
+                model('Assesss')->save(['assets' => $datas['total']], ['id' => $assess_id]);
                 $assess_estate_valuer = true;
                 Db::commit();
             } catch (\Exception $e) {
@@ -217,12 +196,13 @@ class Assessestate extends Auth
         if (!$id) {
             return $this->error('至少选中一项', '');
         }
-        $assessestate_model = new Assessestates();
+        $assessassets_model = new Assessassetss();
         $where = [];
-        $field = ['ass.id', 'ass.assess_id', 'ass.collection_id', 'ass.company_id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
+        $field = ['ass.id', 'ass.assess_id','ass.total', 'ass.collection_id', 'ass.company_id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
             'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.picture'];
 
-        $assessestate_info = $assessestate_model
+        $where['ass.id'] = $id;
+        $assessassets_info = $assessassets_model
             ->alias('ass')
             ->field($field)
             ->join('item i', 'i.id=ass.item_id', 'left')
@@ -231,67 +211,29 @@ class Assessestate extends Auth
             ->join('assess ess', 'ess.id=ass.assess_id', 'left')
             ->join('item_company ic', 'ic.id=ass.company_id', 'left')
             ->join('company cy', 'cy.id=ic.company_id', 'left')
-            ->where('ass.id',$id)
+            ->where($where)
             ->find();
 
-        $building_price = model('Assessestatebuildings')->field(['id,building_id,price,amount'])->where('estate_id', $id)->where('assess_id', $assessestate_info->assess_id)->select();
-        /*----- 评估建筑物查询 -----*/
-        $where['collection_id'] = $assessestate_info->collection_id;
-        $field = ['cb.id', 'cb.item_id', 'cb.community_id', 'cb.collection_id', 'cb.building', 'cb.unit', 'cb.floor', 'cb.number',
-            'cb.real_num', 'cb.real_unit', 'cb.use_id', 'cb.struct_id', 'cb.status_id', 'cb.build_year', 'cb.remark', 'cb.deleted_at', 'i.name as i_name', 'i.is_top',
-            'cc.address', 'cc.name as cc_name', 'c.building as c_building', 'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number',
-            'bu.name as bu_name', 'bs.name as bs_name', 's.name as s_name'];
-
-        $collectionbuildings = model('Collectionbuildings')
-            ->alias('cb')
-            ->field($field)
-            ->join('item i', 'i.id=cb.item_id', 'left')
-            ->join('collection_community cc', 'cc.id=cb.community_id', 'left')
-            ->join('collection c', 'c.id=cb.collection_id', 'left')
-            ->join('building_use bu', 'bu.id=cb.use_id', 'left')
-            ->join('building_struct bs', 'bs.id=cb.struct_id', 'left')
-            ->join('building_status s', 's.id=cb.status_id', 'left')
-            ->where($where)
-            ->where('status_id','not in','0,5')
-            ->order(['cb.register' => 'desc', 'cb.use_id' => 'asc'])
-            ->select();
-        /*----- 建筑物表格 -----*/
-        $options = '';
-        foreach ($collectionbuildings as $k => $v) {
-            $options .= '<tr class="h50">';
-            $options .= '<td style="text-align: left;background: none;width: inherit !important;"><input type="hidden" name="ids[' . $building_price[$k]->id . ']" value="' . $v['id'] . '">' . $v['id'] . '</td>';
-            $options .= '<td class="nowrap"  style="text-align: left;background: none;">' . $v['address'] . '</td>';
-            $options .= '<td style="text-align: center;background: none;">' . $v['bu_name'] . '</td>';
-            $options .= '<td style="text-align: center;background: none;">' . $v['bs_name'] . '</td>';
-            $options .= '<td style="text-align: left;background: none;">' . $v['real_num'] . '</td>';
-            $options .= '<td style="text-align: center;background: none;">' . $v['real_unit'] . '</td>';
-            $options .= '<td style="text-align: left;background: none;"><input type="text" name="price[' . $building_price[$k]->id . ']" class="price" value="' . $building_price[$k]->price . '" data-real_num="' . $v['real_num'] . '" data-id="' . $v['id'] . '" onkeyup="price_num(this)" onchange="price_num(this)"></td>';
-            $options .= '<td style="text-align: left;background: none;">' . $v['remark'] . '</td>';
-            $options .= '<td style="text-align: left;background: none;"><input type="text" name="amount[' . $building_price[$k]->id . ']" id="total-' . $v['id'] . '"  value="' . $building_price[$k]->amount . '" readonly></td>';
-            $options .= '</tr>';
-        }
-
         /*----- 评估师查询 -----*/
-        $assessestatevaluer_ids = model('Assessestatevaluers')
-            ->where('collection_id', $assessestate_info['collection_id'])
-            ->where('assess_id', $assessestate_info['assess_id'])
-            ->where('estate_id', $assessestate_info['id'])
-            ->where('company_id', $assessestate_info['company_id'])
+        $assessassetsvaluer_ids = model('Assessassetsvaluers')
+            ->where('collection_id', $assessassets_info['collection_id'])
+            ->where('assess_id', $assessassets_info['assess_id'])
+            ->where('estate_id', $id)
+            ->where('company_id', $assessassets_info['company_id'])
             ->column('valuer_id');
-        $company_valuer_where['id'] = array('in', $assessestatevaluer_ids);
+        $company_valuer_where['id'] = array('in', $assessassetsvaluer_ids);
         $company_valuer_where['status'] = '1';
         $company_valuer_field = ['id', 'name', 'register_num', 'valid_at'];
         $company_valuer = model('Companyvaluers')
             ->field($company_valuer_field)
             ->where($company_valuer_where)
             ->select();
-        $valuer_ids = implode(",", $assessestatevaluer_ids);
+        $valuer_ids = implode(",", $assessassetsvaluer_ids);
         return view('modify',
             [
-                'infos' => $assessestate_info,
+                'infos' => $assessassets_info,
                 'company_valuer_info' => $company_valuer,
-                'valuer_ids' => $valuer_ids,
-                'options' => $options
+                'valuer_ids' => $valuer_ids
             ]);
     }
 
@@ -303,70 +245,55 @@ class Assessestate extends Auth
             ['report_at', 'require', '报告时间不能为空'],
             ['valued_at', 'require', '价值时点不能为空'],
             ['method', 'require', '评估方法不能为空'],
+            ['total', 'require', '资产总额不能为空'],
             ['picture', 'require', '评估报告不能为空']
         ];
         $result = $this->validate($datas, $rule);
         if (true !== $result) {
             return $this->error($result);
         }
-
-        $building_info = $datas['price'];
-        $ids = $datas['ids'];
         Db::startTrans();
         try {
-            $assessestate_info = model('Assessestates')->field(['item_id,assess_id,id,collection_id,company_id'])->where('id', $datas['id'])->find();
-            /*----- 修改房产评估--建筑评估 -----*/
-            $building_data = [];
-            $amount_nums = 0;
-            foreach ($building_info as $k => $v) {
-                $real_num = model('Collectionbuildings')->where('id', $ids[$k])->value('real_num');
-                $building_data[] = [
-                    'id' => $k,
-                    'price' => $v,
-                    'amount' => $real_num * $v
-                ];
-                $amount_nums .= $real_num * $v;
-            }
-            model('Assessestatebuildings')->isUpdate(true)->saveAll($building_data);
-            /*----- 房产评估信息修改 -----*/
-            model('Assessestates')->save(
+            $assessassets_info = model('Assessassetss')->field(['item_id,assess_id,id,collection_id,company_id'])->where('id', $datas['id'])->find();
+            /*----- 资产评估信息修改 -----*/
+            model('Assessassetss')->save(
                 ['report_at' => $datas['report_at'],
                     'valued_at' => $datas['valued_at'],
                     'method' => $datas['method'],
                     'picture' => $datas['picture'],
-                    'total' => $amount_nums
+                    'total' => $datas['total']
                 ],
                 ['id' => $datas['id']]
             );
-            /*----- 修改房产评估--评估师 -----*/
-            $assessestatevaluer_ids = model('Assessestatevaluers')
-                ->where('collection_id', $assessestate_info['collection_id'])
-                ->where('assess_id', $assessestate_info['assess_id'])
-                ->where('estate_id', $assessestate_info['id'])
-                ->where('company_id', $assessestate_info['company_id'])
+            /*----- 修改资产评估--评估师 -----*/
+            $assessassetsvaluer_ids = model('Assessassetsvaluers')
+                ->where('collection_id', $assessassets_info['collection_id'])
+                ->where('assess_id', $assessassets_info['assess_id'])
+                ->where('estate_id', $assessassets_info['id'])
+                ->where('company_id', $assessassets_info['company_id'])
                 ->column('id');
-            $valuer_idss = implode(",", $assessestatevaluer_ids);
-            model('Assessestatevaluers')->where('id', 'in', $valuer_idss)->delete(true);
+            $valuer_idss = implode(",", $assessassetsvaluer_ids);
+            model('Assessassetsvaluers')->where('id', 'in', $valuer_idss)->delete(true);
             $valuer_ids = explode(",", $datas['valuer_id']);
             $valuer_data = [];
             foreach ($valuer_ids as $k => $v) {
                 $valuer_data[] = [
-                    'item_id' => $assessestate_info['item_id'],
-                    'collection_id' => $assessestate_info['collection_id'],
-                    'assess_id' => $assessestate_info['assess_id'],
-                    'estate_id' => $assessestate_info['id'],
-                    'company_id' => $assessestate_info['company_id'],
+                    'item_id' => $assessassets_info['item_id'],
+                    'collection_id' => $assessassets_info['collection_id'],
+                    'assess_id' => $assessassets_info['assess_id'],
+                    'estate_id' => $assessassets_info['id'],
+                    'company_id' => $assessassets_info['company_id'],
                     'valuer_id' => $v
                 ];
             }
-            model('Assessestatevaluers')->saveAll($valuer_data);
+            model('Assessassetsvaluers')->saveAll($valuer_data);
             /*----- 查询入户评估总表 -----*/
             $search_assess = model('Assesss')
-                ->where('item_id', $assessestate_info['item_id'])
-                ->where('collection_id', $assessestate_info['collection_id'])
+                ->where('item_id', $assessassets_info['item_id'])
+                ->where('collection_id', $assessassets_info['collection_id'])
                 ->value('id');
-            /*----- 修改房产评估总额 -----*/
-            model('Assesss')->save(['estate' => $amount_nums], ['id' => $search_assess]);
+            /*----- 修改资产评估总额 -----*/
+            model('Assesss')->save(['assets' => $datas['total']], ['id' => $search_assess]);
             $res = true;
             Db::commit();
         } catch (\Exception $e) {
@@ -379,7 +306,6 @@ class Assessestate extends Auth
             return $this->error('修改失败');
         }
     }
-
 
     /* ========== 状态 ========== */
     public function status()
@@ -396,12 +322,12 @@ class Assessestate extends Auth
         }
         Db::startTrans();
         try {
-            model('Assessestates')->allowField(['status', 'updated_at'])->save(['status' => $status], ['id' => ['in', $ids]]);
-            $rs = model('Assessestates')->where('id', 'in', $ids)->select();
+            model('Assessassetss')->allowField(['status', 'updated_at'])->save(['status' => $status], ['id' => ['in', $ids]]);
+            $rs = model('Assessassetss')->where('id', 'in', $ids)->select();
             $where = [];
             $new_array = [];
             foreach ($rs as $k => $v) {
-               $where[] = ['item_id' => $v->item_id, 'community_id' => $v->community_id, 'collection_id' => $v->collection_id];
+                $where[] = ['item_id' => $v->item_id, 'community_id' => $v->community_id, 'collection_id' => $v->collection_id];
                 $new_array[] = $v->item_id."-".$v->community_id."-".$v->collection_id;
             }
             $new_array = array_keys(array_unique($new_array));
@@ -412,9 +338,9 @@ class Assessestate extends Auth
                 $new_where[$i]['updated_at'] = time();
             }
             $res = false;
-           $sqls =  batch_update_sql('assess',['updated_at','item_id','community_id','collection_id'],$new_where,'updated_at',['item_id','community_id','collection_id']);
+            $sqls =  batch_update_sql('assess',['updated_at','item_id','community_id','collection_id'],$new_where,'updated_at',['item_id','community_id','collection_id']);
 
-           if($sqls){
+            if($sqls){
                 foreach ($sqls as $sql){
                     $res=db()->execute($sql);
                 }
