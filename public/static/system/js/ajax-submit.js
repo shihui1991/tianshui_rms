@@ -3,7 +3,7 @@ $(function () {
     /* 异步提交登录 */
     $('.js-ajax-login').on('click',function () {
         var btn=$(this),
-            form=btn.parents('form.js-ajax-form'),
+            form=btn.parents('form:first'),
             url=form.attr('action'),
             data=form.serialize(),
             msg='登录中……';
@@ -49,7 +49,7 @@ $(function () {
 
 /* 异步提交表单快捷操作-数据整理 */
 function js_ajax_btn_action(btn) {
-    var form=btn.data('form')?$('#'+btn.data('form')):btn.parents('form.js-ajax-form'),
+    var form=btn.data('form')?$('#'+btn.data('form')):btn.parents('form:first'),
         url=btn.data('action')?btn.data('action'):form.attr('action'),
         data=btn.data('formdata')?btn.data('formdata'):form.serialize(),
         notice=btn.data('notice'),
@@ -125,7 +125,7 @@ function js_ajax_form_action(btn,url,data,msg,is_layer) {
 /* 异步提交查询 */
 function js_ajax_search(obj) {
     var btn=$(obj),
-        form=btn.data('form')?$('#'+btn.data('form')):btn.parents('form.js-ajax-form'),
+        form=btn.data('form')?$('#'+btn.data('form')):btn.parents('form:first'),
         url=btn.data('action')?btn.data('action'):form.attr('action'),
         data=btn.data('formdata')?btn.data('formdata'):form.serialize(),
         msg='查询中……';

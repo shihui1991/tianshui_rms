@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-11 11:43:25
+Date: 2017-11-16 12:01:13
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -322,7 +322,7 @@ CREATE TABLE `collection` (
 -- ----------------------------
 -- Records of collection
 -- ----------------------------
-INSERT INTO `collection` VALUES ('1', '2', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '1', '0', '1', '0', '0', '渝北区杨柳北路9号', '0', '0', '0', '', '', '', '', '[]', '1', '1509932860', '1509956224', null);
+INSERT INTO `collection` VALUES ('1', '2', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '3', '0', '1', '0', '0', '渝北区杨柳北路9号', '0', '0', '0', '', '', '', '', '[]', '1', '1509932860', '1510388441', null);
 INSERT INTO `collection` VALUES ('2', '2', '1', '1', '1', '2', '3', '0', '0', '0', '0', '1', '1', '1', '1', '0', '0', '', '0', '0', '0', '', '', '', '', '[]', '1', '1510196915', '1510196958', null);
 
 -- ----------------------------
@@ -362,7 +362,7 @@ CREATE TABLE `collection_building` (
 -- ----------------------------
 -- Records of collection_building
 -- ----------------------------
-INSERT INTO `collection_building` VALUES ('1', '2', '1', '1', '0', '0', '0', '0', '0', '', '', '0', '120', '㎡', '1', '1', '1', '0', '[]', '0', '', '0', null, '1510019791', '1510207614', null);
+INSERT INTO `collection_building` VALUES ('1', '2', '1', '1', '0', '0', '0', '0', '0', '', '', '0', '120', '㎡', '1', '3', '1', '0', '[]', '0', '', '0', '', '1510019791', '1510545382', null);
 
 -- ----------------------------
 -- Table structure for collection_community
@@ -415,7 +415,7 @@ CREATE TABLE `collection_holder` (
 -- ----------------------------
 -- Records of collection_holder
 -- ----------------------------
-INSERT INTO `collection_holder` VALUES ('1', '2', '1', '1', '重庆', '重庆市渝北区', '0123', '1', '0', '', '', '0', '0', '', '', '0', '', '1510111063', '1510127134', null);
+INSERT INTO `collection_holder` VALUES ('1', '2', '1', '2', '重庆', '重庆市渝北区', '0123', '1', '100', '', '', '0', '0', '', '', '0', '', '1510111063', '1510645065', null);
 
 -- ----------------------------
 -- Table structure for collection_holder_crowd
@@ -456,12 +456,15 @@ CREATE TABLE `collection_object` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='入户摸底-其他补偿事项';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='入户摸底-其他补偿事项';
 
 -- ----------------------------
 -- Records of collection_object
 -- ----------------------------
 INSERT INTO `collection_object` VALUES ('1', '2', '1', '1', '1', '[]', '1510304481', '1510304510', null);
+INSERT INTO `collection_object` VALUES ('2', '2', '2', '2', '1', '[]', '1510796083', '1510796083', null);
+INSERT INTO `collection_object` VALUES ('3', '2', '2', '3', '1', '[]', '1510796089', '1510796089', null);
+INSERT INTO `collection_object` VALUES ('4', '2', '1', '4', '1', '[]', '1510796099', '1510796099', null);
 
 -- ----------------------------
 -- Table structure for company
@@ -856,7 +859,7 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=293 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=296 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
 -- ----------------------------
 -- Records of menu
@@ -1153,6 +1156,9 @@ INSERT INTO `menu` VALUES ('289', '280', '兑付修改', '3', '<img src=\"/stati
 INSERT INTO `menu` VALUES ('290', '280', '兑付删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/pay/delete', null, '0', '1', '1508894998', '1508895558', null);
 INSERT INTO `menu` VALUES ('291', '280', '兑付恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/pay/restore', null, '0', '1', '1508894998', '1508895590', null);
 INSERT INTO `menu` VALUES ('292', '280', '兑付销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/pay/destroy', null, '0', '1', '1508894998', '1508895601', null);
+INSERT INTO `menu` VALUES ('293', '278', '分权兑付', '2', '<img src=\"/static/system/img/group_gear.png\"/>', '0', '/system/payholder/index', '', '0', '1', '1510641148', '1510641148', null);
+INSERT INTO `menu` VALUES ('294', '293', '分权兑付详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/payholder/detail', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('295', '293', '分权兑付修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/payholder/edit', null, '0', '1', '1508894920', '1508894920', null);
 
 -- ----------------------------
 -- Table structure for nation
@@ -1258,6 +1264,7 @@ DROP TABLE IF EXISTS `pay`;
 CREATE TABLE `pay` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
   `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
   `estate_amount` float DEFAULT NULL COMMENT '房产补偿',
@@ -1271,15 +1278,17 @@ CREATE TABLE `pay` (
   `compensate_way` tinyint(1) DEFAULT '0' COMMENT '补偿方式，0为货币补偿，1为产权调换',
   `transit_way` tinyint(1) DEFAULT '0' COMMENT '过渡方式，0为货币过渡，1为周转房临时安置',
   `move_way` tinyint(1) DEFAULT '0' COMMENT '搬迁方式，0自行搬迁，1政府负责',
+  `picture` text COMMENT '兑付表图',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='兑付';
 
 -- ----------------------------
 -- Records of pay
 -- ----------------------------
+INSERT INTO `pay` VALUES ('1', '2', '1', '2', '0', '0', '0', '0', '1', '0', '0', '220', '220', '0', '0', '0', '[]', '1510804110', '1510804796', null);
 
 -- ----------------------------
 -- Table structure for pay_holder
@@ -1288,6 +1297,7 @@ DROP TABLE IF EXISTS `pay_holder`;
 CREATE TABLE `pay_holder` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底 ID',
   `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
   `pay_id` int(11) DEFAULT NULL COMMENT '兑付ID',
@@ -1296,6 +1306,9 @@ CREATE TABLE `pay_holder` (
   `portion` float DEFAULT NULL COMMENT ' 补偿份额',
   `estate_amount` float DEFAULT NULL COMMENT '房产补偿',
   `assets_amount` float DEFAULT NULL COMMENT '资产补偿',
+  `public_amount` float DEFAULT NULL COMMENT '公共附属物评估总额',
+  `public_num` int(11) DEFAULT NULL COMMENT '公共评估户数',
+  `public_avg` float DEFAULT NULL COMMENT '公共附属物平均',
   `subject_amount` float DEFAULT NULL COMMENT ' 科目补偿',
   `object_amount` float DEFAULT NULL COMMENT ' 事项补偿',
   `total_amount` float DEFAULT NULL COMMENT ' 补偿总额',
@@ -1303,11 +1316,12 @@ CREATE TABLE `pay_holder` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付-产权人或承租人';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='兑付-产权人或承租人';
 
 -- ----------------------------
 -- Records of pay_holder
 -- ----------------------------
+INSERT INTO `pay_holder` VALUES ('1', '2', '1', '2', null, '1', '1', '1', '100', '0', '0', '0', '1', '0', '0', '220', '220', '1510804110', '1510804796', null);
 
 -- ----------------------------
 -- Table structure for pay_object
@@ -1316,6 +1330,7 @@ DROP TABLE IF EXISTS `pay_object`;
 CREATE TABLE `pay_object` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
   `pay_id` int(11) DEFAULT NULL COMMENT '兑付ID',
   `collection_object_id` int(11) DEFAULT NULL COMMENT ' 入户摸底-补偿事项ID',
@@ -1326,11 +1341,13 @@ CREATE TABLE `pay_object` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付-补偿事项';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='兑付-补偿事项';
 
 -- ----------------------------
 -- Records of pay_object
 -- ----------------------------
+INSERT INTO `pay_object` VALUES ('1', '2', '1', '2', '1', '2', '120', '1', '120', '1510804110', '1510804796', null);
+INSERT INTO `pay_object` VALUES ('2', '2', '1', '2', '1', '3', '100', '1', '100', '1510804110', '1510804655', null);
 
 -- ----------------------------
 -- Table structure for pay_subject
@@ -1339,6 +1356,7 @@ DROP TABLE IF EXISTS `pay_subject`;
 CREATE TABLE `pay_subject` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
   `pay_id` int(11) DEFAULT NULL COMMENT '兑付ID',
   `item_subject_id` int(11) DEFAULT NULL COMMENT '项目重要补偿科目ID',
@@ -1364,6 +1382,7 @@ DROP TABLE IF EXISTS `risk`;
 CREATE TABLE `risk` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
   `holder_id` int(11) DEFAULT NULL COMMENT ' 成员ID',
   `deputy` tinyint(1) DEFAULT '0' COMMENT '群众代表，0拒绝，1同意',
@@ -1391,6 +1410,7 @@ DROP TABLE IF EXISTS `risk_topic`;
 CREATE TABLE `risk_topic` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
   `holder_id` int(11) DEFAULT NULL COMMENT ' 成员ID',
   `risk_id` int(11) DEFAULT NULL COMMENT ' 风险评估ID',
@@ -1504,4 +1524,4 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '0', '1', '', '/uploads/image/20171103/1be724c55dcc9ee0f62fb14b170ab0d1.png', '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', 'E2DB6AF6-D1C9-68FF-816D-0D8CDA322FFA', '1510215623', '10.0.0.19', '1', '1509544403', '1509686694', null);
+INSERT INTO `user` VALUES ('1', '0', '1', '', '/uploads/image/20171103/1be724c55dcc9ee0f62fb14b170ab0d1.png', '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', 'E2DB6AF6-D1C9-68FF-816D-0D8CDA322FFA', '1510391638', '127.0.0.1', '1', '1509544403', '1509686694', null);
