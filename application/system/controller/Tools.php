@@ -432,7 +432,8 @@ class Tools extends Auth
             ->join('building_struct bs','bs.id=cb.struct_id','left')
             ->join('building_status s','s.id=cb.status_id','left')
             ->where($where)
-            ->order(['cb.register'=>'desc','cb.use_id'=>'asc'])
+            ->where('status_id', 'not in', '0,5')
+            ->order(['cb.register' => 'desc', 'cb.use_id' => 'asc'])
             ->select();
 
         if($collectionbuildings){

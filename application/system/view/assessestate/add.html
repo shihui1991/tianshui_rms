@@ -51,24 +51,22 @@
                             </tr>
                             <tr class="h70">
                                 <td ><label for="collection_id">所有建筑：</label></td>
-                                <td colspan="3">
-                                    <div class="tableCon tableCons">
-                                    <table class="table" border="0" style="width: 100% !important;">
+                                <td colspan="3" class="tableCons">
+                                    <table class="table" border="0">
                                         <tbody>
                                         <tr class="noSelect">
-                                            <th style="text-align: center;">ID<i class="stretch"></i></th>
-                                            <th style="text-align: center;">位置<i class="stretch"></i></th>
-                                            <th style="text-align: center;">性质<i class="stretch"></i></th>
-                                            <th style="text-align: center;">结构<i class="stretch"></i></th>
-                                            <th style="text-align: center;">数量<i class="stretch"></i></th>
-                                            <th style="text-align: center;">计量单位<i class="stretch"></i></th>
-                                            <th style="text-align: center;">单价<i class="stretch"></i></th>
-                                            <th style="text-align: center;">备注<i class="stretch"></i></th>
-                                            <th style="text-align: center;">总价<i class="stretch"></i></th>
+                                            <th>ID</th>
+                                            <th>位置</th>
+                                            <th>性质</th>
+                                            <th>结构</th>
+                                            <th>数量</th>
+                                            <th>计量单位</th>
+                                            <th>单价</th>
+                                            <th>备注</th>
+                                            <th>总价</th>
                                         </tr>
                                         </tbody>
                                     </table>
-                                    </div>
                                 </td>
                             </tr>
                             <tr class="h50">
@@ -85,18 +83,16 @@
                                     <button class="btn valuerid_list"  onclick="valuer_id_list()">选择评估师</button>
                                 </td>
                                 <td id="valuer_id_info" colspan="3">
-                                    <div class="tableCon">
-                                    <table class="table" border="0" style="width: 100% !important;" id="valuer_id_lists">
+                                    <table class="table" border="0" id="valuer_id_lists">
                                         <tbody>
                                         <tr class="noSelect">
-                                            <th style="text-align: center;">ID<i class="stretch"></i></th>
-                                            <th style="text-align: center;">姓名<i class="stretch"></i></th>
-                                            <th style="text-align: center;">注册号<i class="stretch"></i></th>
-                                            <th style="text-align: center;">有效期<i class="stretch"></i></th>
+                                            <th style="text-align: center;">ID</th>
+                                            <th style="text-align: center;">姓名</th>
+                                            <th style="text-align: center;">注册号</th>
+                                            <th style="text-align: center;">有效期</th>
                                         </tr>
                                         </tbody>
                                     </table>
-                                    </div>
                                 </td>
                             </tr>
                             <tr class="h50">
@@ -157,10 +153,10 @@
                 <th class="tc" width="35px">
                     <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
                 </th>
-                <th style="text-align: center;">ID<i class="stretch"></i></th>
-                <th style="text-align: center;">姓名<i class="stretch"></i></th>
-                <th style="text-align: center;">注册号<i class="stretch"></i></th>
-                <th style="text-align: center;">有效期<i class="stretch"></i></th>
+                <th style="text-align: center;">ID</th>
+                <th style="text-align: center;">姓名</th>
+                <th style="text-align: center;">注册号</th>
+                <th style="text-align: center;">有效期</th>
             </tr>
             </tbody>
         </table>
@@ -264,6 +260,7 @@
                 dataType:'json',
                 type:'post',
                 success:function (resp) {
+                    console.log(resp);
                     $('.tableCons').find('tr:first').siblings().remove();
                     var options = '';
                     if(resp.code){
@@ -275,7 +272,7 @@
 
                             options += '<tr class="h50">';
                             options += '<td>'+info.id+'</td>';
-                            options += '<td>'+info.address+'</td>';
+                            options += '<td  class="nowrap">'+info.address+'</td>';
                             options += '<td>'+info.bu_name+'</td>';
                             options += '<td>'+info.bs_name+'</td>';
                             options += '<td>'+info.real_num+'</td>';
@@ -322,7 +319,7 @@
     /* ===== 查询评估师 =====*/
    function valuer_id_list(_company_id){
        if(_company_id){
-           layerPage('评估师列表',$('#search'),'800','300');
+           layerPage('评估师列表',$('#search'),'650','300');
            $.ajax({
                url:"{:url('Tools/item_company_valuer')}",
                data:{ 'company_id':_company_id},
