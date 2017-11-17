@@ -13,6 +13,7 @@ namespace app\system\controller;
 
 
 use app\system\model\Collectionbuildings;
+use app\system\model\Collectionholders;
 use app\system\model\Collections;
 use app\system\model\Companys;
 use app\system\model\Companyvaluers;
@@ -368,14 +369,14 @@ class Tools extends Auth
         $where['c.type']=$type;
         $field=['i.id','i.company_id','c.name as company_name'];
 
-        $collections=Itemcompanys::alias('i')
+        $itemcompanys=Itemcompanys::alias('i')
             ->field($field)
             ->join('company c','c.id=i.company_id','left')
             ->where($where)
             ->select();
 
-        if($collections){
-            return $this->success('获取成功','',$collections);
+        if($itemcompanys){
+            return $this->success('获取成功','',$itemcompanys);
         }else{
             return $this->error('没有数据','');
         }
@@ -438,6 +439,34 @@ class Tools extends Auth
 
         if($collectionbuildings){
             return $this->success('获取成功','',$collectionbuildings);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+    /* ========== 入户摸底-产权人或承租人 ========== */
+    public function collection_holder(){
+        $collection_id=input('collection_id');
+        if(!is_numeric($collection_id) || $collection_id<1){
+            return $this->error('请先选择权属','');
+        }
+        $collection=Collections::field(['id','type','status'])->where('id',$collection_id)->find();
+        if(!$collection){
+            return $this->error('选择权属不存在','');
+        }
+        if(!$collection->getData('status')){
+            return $this->error('选择权属已禁用','');
+        }
+
+        $where['collection_id']=$collection_id;
+        if($collection->getData('type')){
+            $where['holder']=2;
+        }else{
+            $where['holder']=1;
+        }
+        $holders=Collectionholders::field(['id','name','address','phone'])->where($where)->select();
+        if($holders){
+            return $this->success('获取成功','',$holders);
         }else{
             return $this->error('没有数据','');
         }

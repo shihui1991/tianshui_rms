@@ -9,7 +9,6 @@
 <body>
 <h4>当前项目：（{$item_id}）{$item_name}，当前评估公司：（{$company_id}）{$company_name}</h4>
 
-
     <div class="tableCon">
         <em class="xian"></em>
         <table class="table" border="0" >
@@ -23,6 +22,7 @@
                 <th>地址</th>
                 <th>电话</th>
                 <th>产权</th>
+                <th></th>
             </tr>
             {volist name="holders" id="holder"}
             <tr>
@@ -39,10 +39,18 @@
                 <td>{$holder->address}</td>
                 <td>{$holder->phone}</td>
                 <td>{$holder->holder}</td>
+                <td>
+                    <button type="button" data-action="{:url('delete',['ids'=>$holder->id])}" class="btn js-ajax-form-btn">删除</button>
+                </td>
             </tr>
             {/volist}
             </tbody>
         </table>
     </div>
+
+
+<div class="pageCon">
+    {$holders->render()}
+</div>
 </body>
 </html>
