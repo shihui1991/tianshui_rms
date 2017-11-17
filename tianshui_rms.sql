@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-17 17:22:01
+Date: 2017-11-17 18:06:59
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -837,6 +837,25 @@ CREATE TABLE `item_house` (
 INSERT INTO `item_house` VALUES ('1', '2', '1', '1509610556', '1509610591');
 
 -- ----------------------------
+-- Table structure for item_process
+-- ----------------------------
+DROP TABLE IF EXISTS `item_process`;
+CREATE TABLE `item_process` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `process_id` int(11) DEFAULT NULL COMMENT ' 流程ID',
+  `sort` int(11) DEFAULT NULL COMMENT ' 排序',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目流程';
+
+-- ----------------------------
+-- Records of item_process
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for item_subject
 -- ----------------------------
 DROP TABLE IF EXISTS `item_subject`;
@@ -925,7 +944,7 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=321 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=322 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
 -- ----------------------------
 -- Records of menu
@@ -1250,6 +1269,7 @@ INSERT INTO `menu` VALUES ('317', '314', '房源价格修改', '3', '<img src=\"
 INSERT INTO `menu` VALUES ('318', '314', '房源价格删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/houseprice/delete', null, '0', '1', '1508894998', '1508895558', null);
 INSERT INTO `menu` VALUES ('319', '314', '房源价格恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/houseprice/restore', null, '0', '1', '1508894998', '1508895590', null);
 INSERT INTO `menu` VALUES ('320', '314', '房源价格销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/houseprice/destroy', null, '0', '1', '1508894998', '1508895601', null);
+INSERT INTO `menu` VALUES ('321', '162', '控制流程设置', '2', '<img src=\"/static/system/img/chart_organisation_add.png\"/>', '4', '/system/process/index', '', '1', '1', '1510912266', '1510912286', null);
 
 -- ----------------------------
 -- Table structure for nation
@@ -1429,6 +1449,7 @@ CREATE TABLE `pay_holder` (
   `subject_amount` float DEFAULT NULL COMMENT ' 科目补偿',
   `object_amount` float DEFAULT NULL COMMENT ' 事项补偿',
   `total_amount` float DEFAULT NULL COMMENT ' 补偿总额',
+  `house_other` float DEFAULT NULL COMMENT '安置房补交款',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
@@ -1438,7 +1459,7 @@ CREATE TABLE `pay_holder` (
 -- ----------------------------
 -- Records of pay_holder
 -- ----------------------------
-INSERT INTO `pay_holder` VALUES ('1', '2', '1', '2', null, '1', '1', '1', '100', '0', '0', '0', '1', '0', '0', '220', '220', '1510804110', '1510804796', null);
+INSERT INTO `pay_holder` VALUES ('1', '2', '1', '2', null, '1', '1', '1', '100', '0', '0', '0', '1', '0', '0', '220', '220', null, '1510804110', '1510804796', null);
 
 -- ----------------------------
 -- Table structure for pay_holder_house
@@ -1516,6 +1537,26 @@ CREATE TABLE `pay_subject` (
 
 -- ----------------------------
 -- Records of pay_subject
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for process
+-- ----------------------------
+DROP TABLE IF EXISTS `process`;
+CREATE TABLE `process` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT '名称',
+  `controller` varchar(255) DEFAULT NULL COMMENT ' 控制器',
+  `action` varchar(255) DEFAULT NULL COMMENT ' 操作方法',
+  `infos` text COMMENT ' 说明 ',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='控制流程';
+
+-- ----------------------------
+-- Records of process
 -- ----------------------------
 
 -- ----------------------------
