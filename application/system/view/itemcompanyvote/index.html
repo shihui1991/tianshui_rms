@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>评估公司选票|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<h4>{if condition="isset($item_name)"}当前项目：（{$item_id}）{$item_name}{else/}全部项目统计{/if}</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index')}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                重置</a>
+        </li>
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'600','250')" >
+            <img src="__STATIC__/system/img/page_white_magnify.png"/>
+            查询
+        </li>
+        
+    </ul>
+</div>
+<form action="{:url('index')}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>ID</th>
+                <th>名称</th>
+                <th>选票</th>
+                <th></th>
+            </tr>
+            {volist name="companys" id="company"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$company->id}" onclick="checkBoxOp(this)" id="check-{$company->id}"/>
+                </td>
+                <td>{$company->id}</td>
+                <td>{$company->name}</td>
+                <td>{$company->vote|number_format}</td>
+                <td>
+                    {if condition="isset($item_id) and $company->vote"}
+                    <button type="button" class="btn" onclick="layerIfWindow('评估公司选票信息',	'{:url('detail',['company_id'=>$company->id,'item_id'=>$item_id])}','800','600')" >详情</button>
+                    {/if}
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+<!-- 查询 -->
+<div id="search" class="layerCon bg_f hide">
+    <form action="{:url('index')}" method="post" id="search-form">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>项目：</td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if}>({$item->id}){$item->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">查询</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>
