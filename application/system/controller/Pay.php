@@ -195,6 +195,14 @@ class Pay extends Auth
                                 $pay_data['subject_amount']=$collection->subject_amount;
                                 $pay_data['object_amount']=$collection->object_amount;
                                 $pay_data['total']=($collection->estate+$collection->assets+$public_avg+$collection->subject_amount+$collection->object_amount);
+                                $pay_data['compensate_way']=0;
+                                $pay_data['transit_way']=0;
+                                $pay_data['move_way']=0;
+                                $pay_data['pay_way']=1;
+                                $pay_data['picture']=[];
+                                if($collection->getData('type')){
+                                    $pay_data['pay_way']=0;
+                                }
 
                                 $pay_model->save($pay_data,['id'=>$collection->pay_id]);
                             }else{
@@ -356,7 +364,7 @@ class Pay extends Auth
         $pay_model=new Pays();
         $other_datas=$pay_model->other_data(input());
         $datas=array_merge(input(),$other_datas);
-        $pay_model->isUpdate(true)->allowField(['compensate_way','transit_way','move_way','picture'])->save($datas);
+        $pay_model->isUpdate(true)->allowField(['compensate_way','transit_way','move_way','pay_way','picture'])->save($datas);
         if($pay_model !== false){
             return $this->success('修改成功','');
         }else{
