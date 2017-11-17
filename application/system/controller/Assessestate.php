@@ -7,10 +7,9 @@
  * | 添加
  * | 详情
  * | 修改
+ * | 状态
  * */
-
 namespace app\system\controller;
-
 use app\system\model\Assessestates;
 use think\Db;
 
@@ -379,7 +378,6 @@ class Assessestate extends Auth
             return $this->error('修改失败');
         }
     }
-
 
     /* ========== 状态 ========== */
     public function status()

@@ -4,12 +4,11 @@
  * |------------------------------------------------------
  * | 初始化操作
  * | 列表
- * | 详情
+ * | 删除
+ * | 恢复
+ * | 销毁
  * */
-
 namespace app\system\controller;
-
-
 use app\system\model\Assesss;
 use think\Db;
 
