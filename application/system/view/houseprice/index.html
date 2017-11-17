@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>房源价格|后台管理系统</title>
+    {include file="public/head" /}
+
+    <script src="__STATIC__/system/js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+
+<div class="tabs">
+    <div class="item">
+        <div class="homeTit bg_f5" style="height: 46px;">
+            <div class="toolsBar">
+                <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+                <ul>
+                    <li>
+                        <a href="{:url('index',['house_id'=>$house_id])}">
+                            <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                            重置</a>
+                    </li>
+                    <li class="fgf" onclick="layerPage('查询',$('#search'),'700','250')" >
+                        <img src="__STATIC__/system/img/page_white_magnify.png"/>
+                        查询
+                    </li>
+                    <li class="fgf" onclick="layerIfWindow('添加房源价格','{:url('add',['house_id'=>$house_id])}','500','350')">
+                        <img src="__STATIC__/system/img/add.png"/>
+                        添加
+                    </li>
+                    <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+                        <img src="__STATIC__/system/img/broom.png"/>
+                        删除
+                    </li>
+                    <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+                        <img src="__STATIC__/system/img/recycle.png"/>
+                        恢复
+                    </li>
+                    <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+                        <img src="__STATIC__/system/img/destroy.png"/>
+                        销毁
+                    </li>
+                </ul>
+            </div>
+            <ul class="homeTab">
+                <li class="on">价格数据表</li>
+                <li class="">走势图</li>
+            </ul>
+
+        </div>
+        <div class="homeCon">
+            <div class="tabPage w_100 on">
+                <form action="{:url('index')}" method="post" id="js-ajax-form">
+                    <div class="tableCon">
+                        <em class="xian"></em>
+                        <table class="table" border="0" >
+                            <tbody>
+                            <tr class="noSelect">
+                                <th class="tc" width="35px">
+                                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                                </th>
+                                <th>ID</th>
+                                <th>生效时间</th>
+                                <th>有效期限</th>
+                                <th>市场价</th>
+                                <th>优惠价</th>
+                                <th>操作</th>
+                            </tr>
+                            {php}
+                            $time_list=[];
+                            $discount_list=[];
+                            $market_list=[];
+                            {/php}
+                            {volist name="houseprices" id="houseprice"}
+                            {php}
+                            if(!$houseprice->deleted_at){
+                            $time_list[]=$houseprice->start_at.'-'.$houseprice->end_at;
+                            $discount_list[]=$houseprice->price;
+                            $market_list[]=$houseprice->market_price;
+                            }
+
+                            {/php}
+                            <tr>
+                                <td>
+                                    <input class="va_m" type="checkbox" name="ids[]" value="{$houseprice->id}" onclick="checkBoxOp(this)" id="check-{$houseprice->id}"/>
+                                </td>
+                                <td>{$houseprice->id}</td>
+                                <td>{if condition="$houseprice->deleted_at"} <del>{$houseprice->start_at}</del>{else /}{$houseprice->start_at}{/if}</td>
+                                <td>{if condition="$houseprice->deleted_at"} <del>{$houseprice->end_at}</del>{else /}{$houseprice->end_at}{/if}</td>
+                                <td>{if condition="$houseprice->deleted_at"} <del>{$houseprice->market_price|number_format=2}</del>{else /}{$houseprice->market_price|number_format=2}{/if}</td>
+                                <td>{if condition="$houseprice->deleted_at"} <del>{$houseprice->price|number_format=2}</del>{else /}{$houseprice->price|number_format=2}{/if}</td>
+                                <td>
+                                    <button type="button" class="btn" onclick="layerIfWindow('房源价格信息',	'{:url('detail',['id'=>$houseprice->id])}','500','350')" >修改</button>
+                                </td>
+                            </tr>
+                            {/volist}
+                            {php}
+                            $time_list=json_encode($time_list);
+                            $discount_list=json_encode($discount_list);
+                            $market_list=json_encode($market_list);
+                            {/php}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+            <div class="tabPage w_100">
+                <div class="layerCon bg_f" style="padding-bottom: 0">
+                    <div id="price_chart" style="width:700px;height:500px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 查询 -->
+<div id="search" class="layerCon bg_f hide">
+    <form action="{:url('index')}" method="post" id="search-form">
+        <table class="layerTable">
+            <tr class="h50">
+
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">查询</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+</script>
+
+<script>
+    var price_chart=echarts.init(document.getElementById('price_chart'));
+    var option = {
+        title: {
+            text: '房源评估价格变化',
+            subtext: ''
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:['市场评估价','安置优惠价']
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: true},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            name:'时间段',
+            boundaryGap: false,
+            data: {$time_list}
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} 元'
+            }
+        },
+        series: [
+            {
+                name:'市场评估价',
+                type:'line',
+                data:{$market_list}
+            },
+            {
+                name:'安置优惠价',
+                type:'line',
+                data:{$discount_list}
+            }
+        ]
+    };
+
+    price_chart.setOption(option);
+</script>
+</body>
+</html>
