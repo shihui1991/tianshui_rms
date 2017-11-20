@@ -19,6 +19,15 @@ class Itemhouses extends Model
 
     ];
 
+    public function getHasLiftAttr($key=null){
+        $array=[0=>'无电梯',1=>'有电梯'];
+        if(is_numeric($key) && in_array($key,[0,1])){
+            return $array[$key];
+        }else{
+            return $array;
+        }
+    }
+
     public function getIsRealAttr($key=null){
         $array=[0=>'期房',1=>'现房'];
         if(is_numeric($key) && in_array($key,[0,1])){
