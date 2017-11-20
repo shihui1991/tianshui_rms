@@ -329,7 +329,7 @@ class Tools extends Auth
         }
     }
 
-    /* ========== 摸底被征户(入户评估-房产评估-添加) ========== */
+    /* ========== 查询摸底被征户(入户评估-房产评估-添加) ========== */
     public function collections(){
         $item_id=input('item_id');
         if(!is_numeric($item_id) || $item_id<1){
@@ -357,7 +357,7 @@ class Tools extends Auth
         }
     }
 
-    /* ========== 项目评估公司 ========== */
+    /* ========== 查询项目评估公司 ========== */
     public function item_company(){
         $item_id=input('item_id');
         $type=input('type');
@@ -381,7 +381,7 @@ class Tools extends Auth
         }
     }
 
-    /* ========== 项目评估公司-->评估师 ========== */
+    /* ========== 查询项目评估公司-->评估师 ========== */
     public function item_company_valuer(){
         $field=['id','name','register_num','valid_at'];
         $ids = input('ids');
@@ -411,7 +411,7 @@ class Tools extends Auth
         }
     }
 
-    /* ========== 评估建筑物 ========== */
+    /* ========== 查询评估建筑物 ========== */
     public function estate_building(){
         $collection_id=input('collection_id');
         if(!is_numeric($collection_id) || $collection_id<1){
@@ -438,6 +438,106 @@ class Tools extends Auth
 
         if($collectionbuildings){
             return $this->success('获取成功','',$collectionbuildings);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+    /* ========== 查询成员 ========== */
+    public function sear_collection_holder(){
+        $collection_id = input('collection_id');
+        if(!$collection_id){
+            return $this->error('请选择权属','');
+        }
+        $holder_id = input('holder_id');
+        if (!$holder_id){
+            $type = model('Collections')->where('id',$collection_id)->value('type');
+            if($type == 0){
+                $where['holder'] = 1;
+            }else{
+                $where['holder'] = 2;
+            }
+            $where['collection_id'] = $collection_id;
+            $holder_info = model('Collectionholders')
+                ->field(['id','name'])
+                ->where($where)
+                ->select();
+        }else{
+            $type = model('Collections')->where('id',$collection_id)->value('type');
+            if($type == 0){
+                $where['holder'] = array('in','0,1');
+            }else{
+                $where['holder'] = array('in','0,1,2');
+            }
+            $where['collection_id'] = $collection_id;
+            $holder_info = model('Collectionholders')
+                ->field(['id','name'])
+                ->where($where)
+                ->select();
+            foreach ($holder_info as $k=>$v){
+              if ($v['id']==$holder_id){
+                  unset($holder_info[$k]);
+               }
+            }
+        }
+
+
+        if($holder_info){
+            return $this->success('获取成功','',$holder_info);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+    /* ========== 查询风险评估 ========== */
+    public function sear_risk(){
+        $item_id = input('item_id');
+        $community_id = input('community_id');
+        $collection_id = input('collection_id');
+        if(!$item_id){
+            $this->error('请选择项目','');
+        }
+        if(!$community_id){
+            $this->error('请选择片区','');
+        }
+        if(!$collection_id){
+            $this->error('请选择权属','');
+        }
+        $field = ['ass.*', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
+            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id','ch.name as holder_name','ch.id as holder_name_id','chr.name as recommemd_holder_name','chr.id as recommemd_holder_name_id'];
+        $risk_list = model('Risks')
+            ->alias('ass')
+            ->field($field)
+            ->join('item i', 'i.id=ass.item_id', 'left')
+            ->join('collection_community cc', 'cc.id=ass.community_id', 'left')
+            ->join('collection c', 'c.id=ass.collection_id', 'left')
+            ->join('collection_holder ch', 'ch.id=ass.holder_id', 'left')
+            ->join('collection_holder chr', 'chr.id=ass.recommemd_holder_id', 'left')
+            ->where('ass.item_id',$item_id)
+            ->where('ass.community_id',$community_id)
+            ->where('ass.collection_id',$collection_id)
+            ->select();
+        if($risk_list){
+            return $this->success('获取成功','',$risk_list);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+    /* ========== 查询项目话题 ========== */
+    public function sear_item_topic(){
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('请选择项目','');
+        }
+       $item_topic_list = model('Itemtopics')
+           ->alias('ips')
+           ->field(['ips.*','t.id as topic_name_id','t.name as topic_name'])
+           ->join('topic t','t.id = ips.topic_id','left')
+           ->where('ips.item_id',$item_id)
+           ->select();
+        if($item_topic_list){
+            return $this->success('获取成功','',$item_topic_list);
         }else{
             return $this->error('没有数据','');
         }
