@@ -96,6 +96,7 @@
                 <td>{$house->status}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('安置房源信息',	'{:url('detail',['id'=>$house->id])}','800','560')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('房源价格信息',	'{:url('Houseprice/index',['house_id'=>$house->id])}','800','600')" >房源价格</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$house->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>

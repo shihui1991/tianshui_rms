@@ -59,12 +59,24 @@
                             </tr>
                             <tr class="h50">
                                 <td><label for="compensate_way">补偿方式：</label></td>
-                                <td colspan="3">
+                                <td>
                                     <select name="compensate_way" id="compensate_way">
                                         {volist name="model->compensate_way" id="value"}
                                         <option value="{$key}" {eq name="infos->getData('compensate_way')" value="$key"}selected{/eq}>{$value}</option>
                                         {/volist}
                                     </select>
+                                </td>
+                                <td><label for="pay_way">兑付方式：</label></td>
+                                <td>
+                                    {if condition="$infos->getData('type')"}
+                                    {$infos->pay_way}
+                                    {else/}
+                                    <select name="pay_way" id="pay_way">
+                                        {volist name="model->pay_way" id="value"}
+                                        <option value="{$key}" {eq name="infos->getData('pay_way')" value="$key"}selected{/eq}>{$value}</option>
+                                        {/volist}
+                                    </select>
+                                    {/if}
                                 </td>
                             </tr>
                             <tr class="h50">

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>房源价格|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <input type="hidden" name="house_id" value="{:isset($infos)?$infos->house_id:$house_id}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="start_at">生效时间：</label></td>
+                <td>
+                    <input id="start_at" class="laydate-icon" data-format="YYYY/MM/DD" type="text" name="start_at" value="{:isset($infos)?$infos->start_at:''}" required placeholder="输入生效时间"/>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="end_at">有效期限：</label></td>
+                <td>
+                    <input id="end_at" class="laydate-icon" data-format="YYYY/MM/DD" type="text" name="end_at" value="{:isset($infos)?$infos->end_at:''}" required placeholder="输入有效期限"/>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="market_price">市场评估价：</label></td>
+                <td>
+                    <input id="market_price" class="must" type="number" name="market_price" value="{:isset($infos)?$infos->market_price:''}" required placeholder="输入市场评估价" min="0"/>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="price">安置优惠价：</label></td>
+                <td>
+                    <input id="price" class="must" type="number" name="price" value="{:isset($infos)?$infos->price:''}" required placeholder="输入安置优惠价" min="0"/>
+                </td>
+            </tr>
+            
+            {if condition="isset($infos)"}
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td>
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<script>
+
+</script>
+</body>
+</html>
