@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>流程控制|后台管理系统</title>
+    <title>控制流程|后台管理系统</title>
     {include file="public/head" /}
 
 </head>
@@ -18,24 +18,34 @@
                 </td>
             </tr>
             <tr class="h50">
-                <td><label for="controller">控制器：</label></td>
-                <td>
-                    <input id="controller" class="must" type="text" name="controller" value="{:isset($infos)?$infos->controller:''}" required placeholder="输入控制器"/>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td><label for="action">操作方法：</label></td>
-                <td>
-                    <input id="action" class="must" type="text" name="action" value="{:isset($infos)?$infos->action:''}" required placeholder="输入操作方法"/>
-                </td>
-            </tr>
-            <tr class="h50">
                 <td><label for="infos">说明：</label></td>
                 <td>
                     <textarea id="infos" name="infos">{:isset($infos)?$infos->infos:''}</textarea>
                 </td>
             </tr>
+            <tr class="h50" id="url">
+                <td colspan="2" style="text-align: left;">
+                    <label for="url">流程地址： </label>
+                    <a class="btn btn-add" title="点击添加"><img src="__STATIC__/system/img/add.png" alt="添加"></a>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><a class="btn btn-remove">删除</a></td>
+                <td>
+                    <input type="text" name="url[]" value="" placeholder="输入流程链接地址">
+                </td>
+            </tr>
+
             {if condition="isset($infos)"}
+            {volist name="processurls" id="url"}
+            <tr class="h50">
+                <td><a class="btn btn-remove">删除</a></td>
+                <td>
+                    <input type="text" name="url[]" value="{$url.url}" placeholder="输入流程链接地址">
+                </td>
+            </tr>
+            {/volist}
+
             <tr class="h50">
                 <td>操作时间：</td>
                 <td>
@@ -55,7 +65,26 @@
     </div>
 </form>
 
+<table class="hide">
+    <tr class="h50" id="tpl">
+        <td><a class="btn btn-remove">删除</a></td>
+        <td>
+            <input type="text" name="url[]" value="" placeholder="输入流程链接地址">
+        </td>
+    </tr>
+</table>
 <script>
+    $('.btn-add').click(function () {
+        var tpl=$('#tpl').clone(true).attr('id','');
+        tpl.find('.btn-remove').click(function () {
+            $(this).parents('tr:first').remove();
+        });
+        $('#url').after(tpl);
+    });
+
+    $('.btn-remove').click(function () {
+        $(this).parents('tr:first').remove();
+    });
 
 </script>
 </body>

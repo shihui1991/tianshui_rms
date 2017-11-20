@@ -14,6 +14,7 @@
 namespace app\system\controller;
 
 use app\system\model\Processs;
+use app\system\model\Processurls;
 use think\Db;
 
 class Process extends Auth
@@ -31,24 +32,12 @@ class Process extends Auth
         /* ********** 查询条件 ********** */
         $datas=[];
         $where=[];
-        $field=['id','name','controller','action','infos','deleted_at'];
+        $field=['id','name','infos','deleted_at'];
         /* ++++++++++ 名称 ++++++++++ */
         $name=trim(input('name'));
         if($name){
             $where['name']=['like','%'.$name.'%'];
             $datas['name']=$name;
-        }
-        /* ++++++++++ 控制器 ++++++++++ */
-        $controller=trim(input('controller'));
-        if($controller){
-            $where['controller']=['like','%'.$controller.'%'];
-            $datas['controller']=$controller;
-        }
-        /* ++++++++++ 操作方法 ++++++++++ */
-        $action=trim(input('action'));
-        if($action){
-            $where['action']=['like','%'.$action.'%'];
-            $datas['action']=$action;
         }
 
         /* ++++++++++ 排序 ++++++++++ */
@@ -91,14 +80,12 @@ class Process extends Auth
         if(request()->isPost()){
             $rules=[
                 'name'=>'require|unique:process',
-                'controller'=>'require',
-                'action'=>'require',
+                'url'=>'require',
             ];
             $msg=[
                 'name.require'=>'名称不能为空',
                 'name.unique'=>'名称已存在',
-                'controller.require'=>'控制器不能为空',
-                'action.require'=>'操作方法不能为空',
+                'url.require'=>'地址不能为空',
             ];
 
             $result=$this->validate(input(),$rules,$msg);
@@ -106,10 +93,32 @@ class Process extends Auth
                 return $this->error($result);
             }
 
-            $other_datas=$model->other_data(input());
-            $datas=array_merge(input(),$other_datas);
-            $model->save($datas);
-            if($model !== false){
+            $model->startTrans();
+            $inputs=input();
+            try{
+                $process_model=$model;
+                $other_datas=$process_model->other_data(input());
+                $datas=array_merge(input(),$other_datas);
+                $process_model->save($datas);
+
+                $urls=array_values(array_unique(array_filter($inputs['url'])));
+                $url_data=[];
+                foreach ($urls as $url){
+                    $url_data[]=[
+                        'process_id'=>$process_model->id,
+                        'url'=>$url,
+                    ];
+                }
+                $processurl_model=new Processurls();
+                $processurl_model->saveAll($url_data);
+                $res=true;
+                $model->commit();
+            }catch (\Exception $exception){
+                $res=false;
+                $model->rollback();
+            }
+
+            if($res){
                 return $this->success('保存成功','');
             }else{
                 return $this->error('保存失败');
@@ -131,11 +140,14 @@ class Process extends Auth
             return $this->error('选择项目不存在');
         }
 
+        $processurls=Processurls::field(['id','url'])->where('process_id',$id)->select();
+
         $model=new Processs();
 
         return view('modify',[
             'model'=>$model,
             'infos'=>$infos,
+            'processurls'=>$processurls,
         ]);
     }
 
@@ -148,26 +160,48 @@ class Process extends Auth
         $datas=input();
         $rules=[
             'name'=>'require|unique:process,name,'.$id.',id',
-            'controller'=>'require',
-            'action'=>'require',
+            'url'=>'require',
         ];
         $msg=[
             'name.require'=>'名称不能为空',
             'name.unique'=>'名称已存在',
-            'controller.require'=>'控制器不能为空',
-            'action.require'=>'操作方法不能为空',
+            'url.require'=>'地址不能为空',
         ];
 
         $result=$this->validate($datas,$rules,$msg);
         if(true !== $result){
             return $this->error($result);
         }
+        $model=new Processs();
+        $model->startTrans();
+        $inputs=input();
+        try{
+            $process_model=$model;
+            $other_datas=$process_model->other_data(input());
+            $datas=array_merge(input(),$other_datas);
+            $process_model->isUpdate(true)->save($datas);
 
-        $process_model=new Processs();
-        $other_datas=$process_model->other_data(input());
-        $datas=array_merge(input(),$other_datas);
-        $process_model->isUpdate(true)->save($datas);
-        if($process_model !== false){
+            $urls=array_values(array_unique(array_filter($inputs['url'])));
+
+            Processurls::where('process_id',$process_model->id)->delete(true);
+
+            $url_data=[];
+            foreach ($urls as $url){
+                $url_data[]=[
+                    'process_id'=>$process_model->id,
+                    'url'=>$url,
+                ];
+            }
+            $processurl_model=new Processurls();
+            $processurl_model->saveAll($url_data);
+            $res=true;
+            $model->commit();
+        }catch (\Exception $exception){
+            $res=false;dump($exception);
+            $model->rollback();
+        }
+
+        if($res){
             return $this->success('修改成功','');
         }else{
             return $this->error('修改失败');
@@ -216,7 +250,18 @@ class Process extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Processs::onlyTrashed()->whereIn('id',$ids)->delete(true);
+        $model=new Processs();
+        $model->startTrans();
+        try{
+            Processs::onlyTrashed()->whereIn('id',$ids)->delete(true);
+            Processurls::whereIn('process_id',$ids)->delete(true);
+            $res=true;
+            $model->commit();
+        }catch (\Exception $exception){
+            $res=false;
+            $model->rollback();
+        }
+
         if($res){
             return $this->success('销毁成功','');
         }else{
