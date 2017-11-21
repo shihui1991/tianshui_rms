@@ -21,7 +21,7 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加风险评估话题结果','{:url('add')}','850','580')">
+        <li class="fgf" onclick="layerIfWindow('添加风险评估话题结果','{:url('add')}','1000','580',true)">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
@@ -83,9 +83,8 @@
                 <td>{if condition="$info->deleted_at"}<del>{$info->holder_name}</del>{else/}{$info->holder_name}{/if}</td>
                 <td>{if condition="$info->deleted_at"}<del>{$info->topic_name}</del>{else/}{$info->topic_name}{/if}</td>
                 <td>{if condition="$info->deleted_at"}<del>{$info->answer}</del>{else/}{$info->answer}{/if}</td>
-
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('风险评估话题结果信息',	'{:url('detail',['id'=>$info->id])}','1000','650')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('风险评估话题结果信息',	'{:url('detail',['id'=>$info->id])}','1000','650',true)" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$info->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>

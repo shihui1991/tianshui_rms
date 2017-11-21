@@ -111,10 +111,21 @@ class Assessassets extends Auth
             if (true !== $result) {
                 return $this->error($result);
             }
+
             $collections_count = model('Collections')->where('item_id', $datas['item_id'])->where('community_id', $datas['community_id'])->count();
             if ($collections_count == 0) {
                 return $this->error('数据异常', '');
             }
+            $assessassets_count = model('Assessassetss')
+                ->where('item_id', $datas['item_id'])
+                ->where('community_id', $datas['community_id'])
+                ->where('collection_id', $datas['collection_id'])
+                ->where('company_id', $datas['company_id'])
+                ->count();
+            if ($assessassets_count) {
+                return $this->error('数据重复,请不要重复添加', '');
+            }
+
             Db::startTrans();
             try {
                 /*----- 查询入户评估总表 -----*/
@@ -198,7 +209,7 @@ class Assessassets extends Auth
         }
         $assessassets_model = new Assessassetss();
         $where = [];
-        $field = ['ass.id', 'ass.assess_id','ass.total', 'ass.collection_id', 'ass.company_id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
+        $field = ['ass.id','ass.created_at','ass.updated_at','ass.deleted_at', 'ass.assess_id','ass.total', 'ass.collection_id', 'ass.company_id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
             'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.picture'];
 
         $where['ass.id'] = $id;

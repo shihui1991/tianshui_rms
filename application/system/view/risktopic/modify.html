@@ -30,57 +30,73 @@
                     {if condition="$infos->c_id"}({$infos->c_id}){/if}
                 </td>
             </tr>
-            <tr class="h50">
-                <td ><label>成员：</label></td>
+            <tr class="h70">
+                <td><label>风险评估：</label></td>
                 <td colspan="3">
-                    {$infos->holder_name}
+                    <table class="table" id="risk_info" border="0">
+                        <tbody>
+                            <tr class="noSelect">
+                                <th style="text-align: center;background: none;"></th>
+                                <th style="text-align: center;background: none;">ID</th>
+                                <th style="text-align: center;background: none;">项目</th>
+                                <th style="text-align: center;background: none;">片区</th>
+                                <th style="text-align: center;background: none;">权属(ID)</th>
+                                <th style="text-align: center;background: none;">成员</th>
+                                <th style="text-align: center;background: none;">推荐代表成员</th>
+                                <th style="text-align: center;background: none;">群众代表意见</th>
+                                <th style="text-align: center;background: none;">方案意见</th>
+                                <th style="text-align: center;background: none;">补偿方式</th>
+                                <th style="text-align: center;background: none;">补偿单价</th>
+                                <th style="text-align: center;background: none;">过渡方式</th>
+                                <th style="text-align: center;background: none;">搬迁方式</th>
+                            </tr>
+                            <tr class="h50">
+                                <td style="text-align: center;background: none;width: inherit !important;">
+                                    <input class="va_m" type="radio" name="ids" value="" id="check-{$risk_info.id}" checked/>
+                                </td>
+                                <td style="text-align: center;background: none;">{$risk_info.id}</td>
+                                <td style="text-align: center;background: none;">{$risk_info.item_name}</td>
+                                <td style="text-align: center;background: none;">{$risk_info.pq_name}</td>
+                                <td style="text-align: center;background: none;">
+                                    {if condition="$risk_info->c_building"}{$risk_info->c_building}栋{/if}
+                                    {if condition="$risk_info->c_unit"}{$risk_info->c_unit}单元{/if}
+                                    {if condition="$risk_info->c_floor"}{$risk_info->c_floor}楼{/if}
+                                    {if condition="$risk_info->c_number"}{$risk_info->c_number}号{/if}
+                                    {if condition="$risk_info->c_id"}({$risk_info->c_id}){/if}
+                                </td>
+                                <td style="text-align: center;background: none;">{$risk_info.holder_name}</td>
+                                <td style="text-align: center;background: none;">{$risk_info.recommemd_holder_name}</td>
+                                <td style="text-align: center;background: none;">{$risk_info.deputy}</td>
+                                <td style="text-align: center;background: none;">{$risk_info.is_agree}</td>
+                                <td style="text-align: center;background: none;">{$risk_info.compensate_way}</td>
+                                <td style="text-align: center;background: none;">{$risk_info.compensate_price}</td>
+                                <td style="text-align: center;background: none;">{$risk_info.transit_way}</td>
+                                <td style="text-align: center;background: none;">{$risk_info.move_way}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </td>
             </tr>
             <tr class="h50">
-                <td ><label> 推荐代表成员：</label></td>
+                <td ><label>话题：</label></td>
                 <td colspan="3">
-                    {$infos->recommemd_holder_name}
-                </td>
-            </tr>
-            <tr class="h50">
-                <td ><label>群众代表：</label></td>
-                <td>
-                    <label><input class="va_m" name="deputy" type="radio"  value="1" {if condition="$infos->getData('deputy') eq 1"}checked{/if}>同意</label>
-                    <label><input class="va_m" name="deputy" type="radio"  value="0"{if condition="$infos->getData('deputy') eq 0"}checked{/if}>拒绝</label>
-                </td>
-                <td ><label>方案意见：</label></td>
-                <td>
-                    <label><input class="va_m" name="is_agree" type="radio"  value="1" {if condition="$infos->getData('is_agree') eq 1"}checked{/if}>同意</label>
-                    <label><input class="va_m" name="is_agree" type="radio"  value="0" {if condition="$infos->getData('is_agree') eq 0"}checked{/if}>反对</label>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td ><label>补偿方式：</label></td>
-                <td>
-                    <label><input class="va_m" name="compensate_way" type="radio"  value="1" {if condition="$infos->getData('compensate_way') eq 1"}checked{/if}>产权调换</label>
-                    <label><input class="va_m" name="compensate_way" type="radio"  value="0" {if condition="$infos->getData('compensate_way') eq 0"}checked{/if}>货币补偿</label>
-                </td>
-                <td ><label for="compensate_price">补偿单价：</label></td>
-                <td>
-                    <input type="text" name="compensate_price" id="compensate_price" value="{$infos.compensate_price}" placeholder="请输入补偿单价">
-                </td>
-            </tr>
-            <tr class="h50">
-                <td ><label>过渡方式：</label></td>
-                <td>
-                    <label><input class="va_m" name="transit_way" type="radio"  value="1" {if condition="$infos->getData('transit_way') eq 1"}checked{/if}>周转房临时安置</label>
-                    <label><input class="va_m" name="transit_way" type="radio"  value="0" {if condition="$infos->getData('transit_way') eq 0"}checked{/if}>货币过渡</label>
-                </td>
-                <td ><label>搬迁方式：</label></td>
-                <td>
-                    <label><input class="va_m" name="move_way" type="radio"  value="1" {if condition="$infos->getData('move_way') eq 1"}checked{/if}>政府负责</label>
-                    <label><input class="va_m" name="move_way" type="radio"  value="0" {if condition="$infos->getData('move_way') eq 0"}checked{/if}>自行搬迁</label>
+                    {$infos->topic_name}
                 </td>
             </tr>
             <tr class="h70">
-                <td><label>其他意见：</label></td>
+                <td><label>话题回答：</label></td>
                 <td colspan="3">
-                    <textarea name="opinion" id="opinion" cols="10" rows="3">{$infos.opinion}</textarea>
+                    <textarea name="answer" id="answer" cols="10" rows="3">{$infos->answer}</textarea>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td>
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
                 </td>
             </tr>
         </table>

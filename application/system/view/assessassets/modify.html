@@ -95,6 +95,16 @@
                                     <input type="text" class="laydate-icon" name="valued_at" id="valued_at" value="{$infos->valued_at}" placeholder="请输入价值时点">
                                 </td>
                             </tr>
+                            <tr class="h50">
+                                <td>操作时间：</td>
+                                <td colspan="3">
+                                    创建于：{$infos->created_at}<br/>
+                                    更新于：{$infos->updated_at}<br/>
+                                    {if condition="isset($infos) and $infos->deleted_at"}
+                                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                                    {/if}
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>

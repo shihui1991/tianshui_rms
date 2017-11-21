@@ -78,6 +78,13 @@ class Itemtopic extends Auth
             if (true !== $result) {
                 return $this->error($result);
             }
+            $item_topic_count = model('Itemtopics')
+                ->where('item_id',$datas['item_id'])
+                ->where('topic_id',$datas['topic_id'])
+                ->count();
+            if($item_topic_count){
+                return $this->error('数据重复，请确认后再添加','');
+            }
             $rs = model('Itemtopics')->save($datas);
             if ($rs) {
                 return $this->success('添加成功', '');

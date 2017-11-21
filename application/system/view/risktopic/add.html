@@ -191,6 +191,8 @@
               type:'post',
               success:function (resp) {
                   $('#risk_info').find('tr:first').siblings().remove();
+                  $('#risk_id').val('');
+                  $('#holder_id').val('');
                   var options = '';
                   if(resp.code){
                       $.each(resp.data,function (index,info) {
