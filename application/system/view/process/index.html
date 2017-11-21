@@ -2,12 +2,12 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>流程控制|后台管理系统</title>
+    <title>控制流程|后台管理系统</title>
     {include file="public/head" /}
 
 </head>
 <body>
-<h4>流程控制管理</h4>
+<h4>控制流程管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
@@ -20,7 +20,7 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加流程控制','{:url('add')}','600','300')">
+        <li class="fgf" onclick="layerIfWindow('添加控制流程','{:url('add')}','800','600',true)">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
@@ -49,8 +49,6 @@
                 </th>
                 <th>ID</th>
                 <th>名称</th>
-                <th>控制器</th>
-                <th>操作方法</th>
                 <th>说明</th>
                 <th>操作</th>
             </tr>
@@ -61,11 +59,9 @@
                 </td>
                 <td>{$process->id}</td>
                 <td>{if condition="$process->deleted_at"} <del>{$process->name}</del>{else /}{$process->name}{/if}</td>
-                <td>{if condition="$process->deleted_at"} <del>{$process->controller}</del>{else /}{$process->controller}{/if}</td>
-                <td>{if condition="$process->deleted_at"} <del>{$process->action}</del>{else /}{$process->action}{/if}</td>
                 <td>{if condition="$process->deleted_at"} <del>{$process->infos}</del>{else /}{$process->infos}{/if}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('流程控制信息',	'{:url('detail',['id'=>$process->id])}','600','350')" >详细信息</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('控制流程信息',	'{:url('detail',['id'=>$process->id])}','800','600',true)" >详细信息</button>
                     <button type="button" data-action="{:url('delete',['ids'=>$process->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
@@ -82,14 +78,8 @@
     <form action="{:url('index')}" method="post" id="search-form">
         <table class="layerTable">
             <tr class="h50">
-                <td>控制器：</td>
-                <td><input type="text" name="controller" id="controller" value="{$controller?:''}" placeholder="请输入控制器"/></td>
-                <td>操作方法：</td>
-                <td><input type="text" name="action" id="action" value="{$action?:''}" placeholder="请输入操作方法"/></td>
-            </tr>
-            <tr class="h50">
                 <td>名称：</td>
-                <td colspan="3"><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入流程控制名称"/></td>
+                <td colspan="3"><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入控制流程名称"/></td>
             </tr>
             <tr class="h50">
                 <td>是否删除：</td>

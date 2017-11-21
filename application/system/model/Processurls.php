@@ -1,6 +1,6 @@
 <?php
 /* |------------------------------------------------------
- * | 流程控制 模型
+ * | 流程控制-流程地址 模型
  * |------------------------------------------------------
  * */
 namespace app\system\model;
@@ -8,10 +8,10 @@ namespace app\system\model;
 use think\Model;
 use traits\model\SoftDelete;
 
-class Processs extends Model
+class Processurls extends Model
 {
     use SoftDelete;
-    protected $table='process';
+    protected $table='process_url';
     protected $pk='id';
     protected $createTime='created_at';
     protected $updateTime='updated_at';
@@ -22,14 +22,4 @@ class Processs extends Model
 
     ];
 
-    public function setNameAttr($value)
-    {
-        return trim($value);
-    }
-
-    public function other_data($input){
-        $data=[];
-
-        return $data;
-    }
 }
