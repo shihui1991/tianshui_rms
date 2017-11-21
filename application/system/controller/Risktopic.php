@@ -47,6 +47,12 @@ class Risktopic extends Auth
             $where['ass.collection_id'] = $collection_id;
             $datas['collection_id'] = $collection_id;
         }
+        /* ++++++++++ 话题 ++++++++++ */
+        $topic_id = input('topic_id');
+        if (is_numeric($topic_id)) {
+            $where['ass.topic_id'] = $topic_id;
+            $datas['topic_id'] = $topic_id;
+        }
         /* ++++++++++ 排序 ++++++++++ */
         $ordername = input('ordername');
         $ordername = $ordername ? $ordername : 'id';
@@ -84,6 +90,20 @@ class Risktopic extends Auth
             ->order(['i.is_top' => 'desc', 'ass.' . $ordername => $orderby])
             ->paginate($display_num);
         $datas['risktopic_list'] = $risktopic_list;
+
+        /* ++++++++++ 项目列表 ++++++++++ */
+        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        $datas['item_list'] = $items;
+        /* ++++++++++ 片区 ++++++++++ */
+        $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
+        $datas['collectioncommunity_list'] = $collectioncommunitys;
+        /* ++++++++++ 权属 ++++++++++ */
+        $collections = model('Collections')->field(['id', 'building', 'unit','floor','number'])->select();
+        $datas['collections_list'] = $collections;
+        /* ++++++++++ 话题列表 ++++++++++ */
+        $topics = model('Topics')->field(['id', 'name'])->select();
+        $datas['topic_list'] = $topics;
+
         $this->assign($datas);
         return view();
     }

@@ -81,6 +81,16 @@ class Assess extends Auth
             ->order(['i.is_top' => 'desc', 'ass.' . $ordername => $orderby])
             ->paginate($display_num);
         $datas['assess_list'] = $assess_list;
+
+        /* ++++++++++ 项目列表 ++++++++++ */
+        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        $datas['item_list'] = $items;
+        /* ++++++++++ 片区 ++++++++++ */
+        $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
+        $datas['collectioncommunity_list'] = $collectioncommunitys;
+        /* ++++++++++ 权属 ++++++++++ */
+        $collections = model('Collections')->field(['id', 'building', 'unit','floor','number'])->select();
+        $datas['collections_list'] = $collections;
         $this->assign($datas);
         return view();
     }

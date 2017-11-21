@@ -47,6 +47,34 @@ class Assessassets extends Auth
             $where['ass.collection_id'] = $collection_id;
             $datas['collection_id'] = $collection_id;
         }
+        /* ++++++++++ 评估公司 ++++++++++ */
+        $company_id = input('company_id');
+        if (is_numeric($company_id)) {
+            $where['ass.company_id'] = $company_id;
+            $datas['company_id'] = $company_id;
+        }
+        /* ++++++++++ 报告时间 ++++++++++ */
+        $report_at = input('report_at');
+        if($report_at){
+            $report_at_start = strtotime($report_at." 00:00:00");
+            $report_at_end = strtotime($report_at." 23:59:59");
+            $where['ass.report_at'] = [['<=',$report_at_end],['>=',$report_at_start]];
+            $datas['report_at'] = $report_at;
+        }
+        /* ++++++++++ 价值时点 ++++++++++ */
+        $valued_at = input('valued_at');
+        if($valued_at){
+            $valued_at_start = strtotime($valued_at." 00:00:00");
+            $valued_at_end = strtotime($valued_at." 23:59:59");
+            $where['ass.valued_at'] = [['<=',$valued_at_end],['>=',$valued_at_start]];
+            $datas['valued_at'] = $valued_at;
+        }
+        /* ++++++++++ 状态 ++++++++++ */
+        $status = input('status');
+        if (is_numeric($status)) {
+            $where['ass.status'] = $status;
+            $datas['status'] = $status;
+        }
         /* ++++++++++ 排序 ++++++++++ */
         $ordername = input('ordername');
         $ordername = $ordername ? $ordername : 'id';
@@ -85,6 +113,19 @@ class Assessassets extends Auth
             ->order(['i.is_top' => 'desc', 'ass.' . $ordername => $orderby])
             ->paginate($display_num);
         $datas['assessassets_list'] = $assessassets_list;
+
+        /* ++++++++++ 项目列表 ++++++++++ */
+        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        $datas['item_list'] = $items;
+        /* ++++++++++ 片区 ++++++++++ */
+        $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
+        $datas['collectioncommunity_list'] = $collectioncommunitys;
+        /* ++++++++++ 权属 ++++++++++ */
+        $collections = model('Collections')->field(['id', 'building', 'unit','floor','number'])->select();
+        $datas['collections_list'] = $collections;
+        /* ++++++++++ 评估公司 ++++++++++ */
+        $companys = model('Companys')->field(['id','name'])->where('status',1)->where('type',1)->select();
+        $datas['company_list'] = $companys;
         $this->assign($datas);
         return view();
     }
@@ -214,6 +255,7 @@ class Assessassets extends Auth
 
         $where['ass.id'] = $id;
         $assessassets_info = $assessassets_model
+            ->withTrashed()
             ->alias('ass')
             ->field($field)
             ->join('item i', 'i.id=ass.item_id', 'left')
