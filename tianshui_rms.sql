@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-17 18:06:59
+Date: 2017-11-21 09:14:05
 */
 
 CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -457,11 +457,12 @@ CREATE TABLE `collection_holder_house` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='产权人或承租人选择安置房';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='产权人或承租人选择安置房';
 
 -- ----------------------------
 -- Records of collection_holder_house
 -- ----------------------------
+INSERT INTO `collection_holder_house` VALUES ('1', '2', '1', '2', '1', '1', '1', '1511165768', '1511166450', null);
 
 -- ----------------------------
 -- Table structure for collection_object
@@ -603,6 +604,32 @@ CREATE TABLE `dept` (
 INSERT INTO `dept` VALUES ('1', '0', '管理层', '0', '1', '', '1', '1509152121', '1509171143', null);
 
 -- ----------------------------
+-- Table structure for funds_in
+-- ----------------------------
+DROP TABLE IF EXISTS `funds_in`;
+CREATE TABLE `funds_in` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `pay_id` int(11) DEFAULT NULL COMMENT ' 兑付ID',
+  `pay_holder_id` int(11) DEFAULT NULL COMMENT ' 兑付-产权人或承租人ID',
+  `name_id` int(11) DEFAULT NULL COMMENT '资金款项ID',
+  `voucher` varchar(255) DEFAULT NULL COMMENT ' 凭证号',
+  `entry_at` int(11) DEFAULT NULL COMMENT ' 缴纳时间',
+  `payer` varchar(255) DEFAULT NULL COMMENT ' 缴纳人',
+  `amount` float DEFAULT NULL COMMENT ' 金额',
+  `bank` varchar(255) DEFAULT NULL COMMENT ' 支付银行',
+  `account` varchar(255) DEFAULT NULL COMMENT ' 支付账号',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='资金收入';
+
+-- ----------------------------
+-- Records of funds_in
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for funds_name
 -- ----------------------------
 DROP TABLE IF EXISTS `funds_name`;
@@ -621,6 +648,32 @@ CREATE TABLE `funds_name` (
 -- Records of funds_name
 -- ----------------------------
 INSERT INTO `funds_name` VALUES ('1', '项目预备金', '', '1', '1509186075', '1509613310', null);
+
+-- ----------------------------
+-- Table structure for funds_out
+-- ----------------------------
+DROP TABLE IF EXISTS `funds_out`;
+CREATE TABLE `funds_out` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `pay_id` int(11) DEFAULT NULL COMMENT ' 兑付ID',
+  `pay_holder_id` int(11) DEFAULT NULL COMMENT ' 兑付-产权人或承租人ID',
+  `name_id` int(11) DEFAULT NULL COMMENT '资金款项ID',
+  `voucher` varchar(255) DEFAULT NULL COMMENT ' 凭证号',
+  `outlay_at` int(11) DEFAULT NULL COMMENT '支付时间',
+  `payee` varchar(255) DEFAULT NULL COMMENT '接收人',
+  `amount` float DEFAULT NULL COMMENT ' 金额',
+  `bank` varchar(255) DEFAULT NULL COMMENT '接收银行',
+  `account` varchar(255) DEFAULT NULL COMMENT '接收账号',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='资金支出';
+
+-- ----------------------------
+-- Records of funds_out
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for house
@@ -837,6 +890,26 @@ CREATE TABLE `item_house` (
 INSERT INTO `item_house` VALUES ('1', '2', '1', '1509610556', '1509610591');
 
 -- ----------------------------
+-- Table structure for item_house_up
+-- ----------------------------
+DROP TABLE IF EXISTS `item_house_up`;
+CREATE TABLE `item_house_up` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) NOT NULL COMMENT '兑付-房屋ID',
+  `up_start` float DEFAULT NULL COMMENT '上浮面积区间-起',
+  `up_end` float DEFAULT NULL COMMENT '上浮面积区间-止',
+  `up_rate` float DEFAULT NULL COMMENT '上浮比例（%）',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目安置房上浮比例';
+
+-- ----------------------------
+-- Records of item_house_up
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for item_process
 -- ----------------------------
 DROP TABLE IF EXISTS `item_process`;
@@ -845,6 +918,7 @@ CREATE TABLE `item_process` (
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
   `process_id` int(11) DEFAULT NULL COMMENT ' 流程ID',
   `sort` int(11) DEFAULT NULL COMMENT ' 排序',
+  `status` tinyint(1) DEFAULT '0' COMMENT '状态，0未进行，1进行中，2完成',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
@@ -944,7 +1018,7 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=322 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=345 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
 -- ----------------------------
 -- Records of menu
@@ -1224,7 +1298,7 @@ INSERT INTO `menu` VALUES ('272', '269', '补偿科目修改', '3', '<img src=\"
 INSERT INTO `menu` VALUES ('273', '269', '补偿科目删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/subject/delete', null, '0', '1', '1508894998', '1508895558', null);
 INSERT INTO `menu` VALUES ('274', '269', '补偿科目恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/subject/restore', null, '0', '1', '1508894998', '1508895590', null);
 INSERT INTO `menu` VALUES ('275', '269', '补偿科目销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/subject/destroy', null, '0', '1', '1508894998', '1508895601', null);
-INSERT INTO `menu` VALUES ('276', '188', '入户摸底-其他', '2', '<img src=\"/static/system/img/application_form.png\"/>', '6', '/system/collectionobject/index', '', '0', '1', '1510302958', '1510302985', null);
+INSERT INTO `menu` VALUES ('276', '188', '入户摸底-其他事项', '2', '<img src=\"/static/system/img/application_form.png\"/>', '6', '/system/collectionobject/index', '', '0', '1', '1510302958', '1511146980', null);
 INSERT INTO `menu` VALUES ('277', '162', '项目重要补偿科目', '2', '<img src=\"/static/system/img/bricks.png\"/>', '3', '/system/itemsubject/index', '', '0', '1', '1510307504', '1510307504', null);
 INSERT INTO `menu` VALUES ('278', '0', '兑付与协议管理', '1', '<img src=\"/static/system/img/server_database.png\"/>', '11', '/system/pay#', '', '1', '1', '1510308510', '1510882136', null);
 INSERT INTO `menu` VALUES ('279', '278', '补偿协议', '2', '<img src=\"/static/system/img/file_extension_txt.png\"/>', '0', '/system/pact/index', '', '0', '1', '1510309182', '1510817343', null);
@@ -1261,7 +1335,7 @@ INSERT INTO `menu` VALUES ('309', '279', '补偿协议详情', '3', '<img src=\"
 INSERT INTO `menu` VALUES ('310', '279', '补偿协议修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/pact/edit', null, '0', '1', '1508894920', '1508894920', null);
 INSERT INTO `menu` VALUES ('311', '0', '投票与统计', '1', '<img src=\"/static/system/img/chart_line.png\"/>', '12', '/system/statis#', '', '1', '1', '1510882058', '1510882136', null);
 INSERT INTO `menu` VALUES ('312', '311', '评估公司选票', '2', '<img src=\"/static/system/img/bricks.png\"/>', '0', '/system/itemcompanyvote/index', '', '1', '1', '1510882226', '1510882226', null);
-INSERT INTO `menu` VALUES ('313', '311', '安置房选择', '2', '<img src=\"/static/system/img/books.png\"/>', '0', '/system/collectionholderhouse/index', '', '1', '1', '1510882290', '1510882290', null);
+INSERT INTO `menu` VALUES ('313', '188', '安置房选择', '2', '<img src=\"/static/system/img/books.png\"/>', '7', '/system/collectionholderhouse/index', '', '0', '1', '1510882290', '1511147485', null);
 INSERT INTO `menu` VALUES ('314', '107', '房源价格', '2', '<img src=\"/static/system/img/chart_line.png\"/>', '0', '/system/houseprice/index', '', '0', '1', '1510885890', '1510885890', null);
 INSERT INTO `menu` VALUES ('315', '314', '添加房源价格', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/houseprice/add', null, '0', '1', '1508894820', '1508896706', null);
 INSERT INTO `menu` VALUES ('316', '314', '房源价格详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/houseprice/detail', null, '0', '1', '1508894864', '1508894864', null);
@@ -1270,6 +1344,29 @@ INSERT INTO `menu` VALUES ('318', '314', '房源价格删除', '3', '<img src=\"
 INSERT INTO `menu` VALUES ('319', '314', '房源价格恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/houseprice/restore', null, '0', '1', '1508894998', '1508895590', null);
 INSERT INTO `menu` VALUES ('320', '314', '房源价格销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/houseprice/destroy', null, '0', '1', '1508894998', '1508895601', null);
 INSERT INTO `menu` VALUES ('321', '162', '控制流程设置', '2', '<img src=\"/static/system/img/chart_organisation_add.png\"/>', '4', '/system/process/index', '', '1', '1', '1510912266', '1510912286', null);
+INSERT INTO `menu` VALUES ('322', '321', '添加控制流程', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/process/add', null, '0', '1', '1508894820', '1508896706', null);
+INSERT INTO `menu` VALUES ('323', '321', '控制流程详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/process/detail', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('324', '321', '控制流程修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/process/edit', null, '0', '1', '1508894920', '1508894920', null);
+INSERT INTO `menu` VALUES ('325', '321', '控制流程删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/process/delete', null, '0', '1', '1508894998', '1508895558', null);
+INSERT INTO `menu` VALUES ('326', '321', '控制流程恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/process/restore', null, '0', '1', '1508894998', '1508895590', null);
+INSERT INTO `menu` VALUES ('327', '321', '控制流程销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/process/destroy', null, '0', '1', '1508894998', '1508895601', null);
+INSERT INTO `menu` VALUES ('328', '162', '项目流程控制', '2', '<img src=\"/static/system/img/combined_chart.png\"/>', '5', '/system/itemprocess/index', '', '0', '1', '1511139613', '1511141405', null);
+INSERT INTO `menu` VALUES ('329', '276', '添加入户摸底-其他事项', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/collectionobject/add', null, '0', '1', '1508894820', '1508896706', null);
+INSERT INTO `menu` VALUES ('330', '276', '入户摸底-其他事项详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/collectionobject/detail', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('331', '276', '入户摸底-其他事项修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/collectionobject/edit', null, '0', '1', '1508894920', '1508894920', null);
+INSERT INTO `menu` VALUES ('332', '276', '入户摸底-其他事项删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/collectionobject/delete', null, '0', '1', '1508894998', '1508895558', null);
+INSERT INTO `menu` VALUES ('333', '276', '入户摸底-其他事项恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/collectionobject/restore', null, '0', '1', '1508894998', '1508895590', null);
+INSERT INTO `menu` VALUES ('334', '276', '入户摸底-其他事项销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/collectionobject/destroy', null, '0', '1', '1508894998', '1508895601', null);
+INSERT INTO `menu` VALUES ('335', '313', '添加安置房选择', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/collectionholderhouse/add', null, '0', '1', '1508894820', '1508896706', null);
+INSERT INTO `menu` VALUES ('336', '313', '安置房选择详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/collectionholderhouse/detail', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('337', '313', '安置房选择修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/collectionholderhouse/edit', null, '0', '1', '1508894920', '1508894920', null);
+INSERT INTO `menu` VALUES ('338', '313', '安置房选择删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/collectionholderhouse/delete', null, '0', '1', '1508894998', '1508895558', null);
+INSERT INTO `menu` VALUES ('339', '313', '安置房选择恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/collectionholderhouse/restore', null, '0', '1', '1508894998', '1508895590', null);
+INSERT INTO `menu` VALUES ('340', '313', '安置房选择销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/collectionholderhouse/destroy', null, '0', '1', '1508894998', '1508895601', null);
+INSERT INTO `menu` VALUES ('341', '312', '添加评估公司选票', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/itemcompanyvote/add', null, '0', '1', '1508894820', '1508896706', null);
+INSERT INTO `menu` VALUES ('342', '312', '评估公司选票详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/itemcompanyvote/detail', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('343', '312', '评估公司选票删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/itemcompanyvote/delete', null, '0', '1', '1508894998', '1508895558', null);
+INSERT INTO `menu` VALUES ('344', '278', '兑付-安置房', '2', '<img src=\"/static/system/img/house.png\"/>', '0', '/system/payholderhouse/index', '', '0', '1', '1511167691', '1511167787', null);
 
 -- ----------------------------
 -- Table structure for nation
@@ -1476,7 +1573,9 @@ CREATE TABLE `pay_holder_house` (
   `sort` int(11) DEFAULT NULL COMMENT ' 排序',
   `price` float DEFAULT NULL COMMENT ' 单价',
   `area` float DEFAULT NULL COMMENT ' 面积',
-  `amount` float DEFAULT NULL COMMENT ' 总价',
+  `amount` float DEFAULT NULL COMMENT '房屋优惠总价',
+  `amount_up` float DEFAULT NULL COMMENT '房屋上浮总额',
+  `total` float DEFAULT NULL COMMENT ' 总价',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
@@ -1485,6 +1584,30 @@ CREATE TABLE `pay_holder_house` (
 
 -- ----------------------------
 -- Records of pay_holder_house
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for pay_holder_house_up
+-- ----------------------------
+DROP TABLE IF EXISTS `pay_holder_house_up`;
+CREATE TABLE `pay_holder_house_up` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pay_holder_house_id` int(11) NOT NULL COMMENT '兑付-房屋ID',
+  `up_start` float DEFAULT NULL COMMENT '上浮面积区间-起',
+  `up_end` float DEFAULT NULL COMMENT '上浮面积区间-止',
+  `up_area` float DEFAULT NULL COMMENT '上浮面积',
+  `up_rate` float DEFAULT NULL COMMENT '上浮比例（%）',
+  `price` float DEFAULT NULL COMMENT '基本单价',
+  `up_price` float DEFAULT NULL COMMENT '上浮后单价',
+  `amount` float DEFAULT NULL COMMENT ' 上浮小计',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付房屋-上浮';
+
+-- ----------------------------
+-- Records of pay_holder_house_up
 -- ----------------------------
 
 -- ----------------------------
@@ -1546,8 +1669,6 @@ DROP TABLE IF EXISTS `process`;
 CREATE TABLE `process` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL COMMENT '名称',
-  `controller` varchar(255) DEFAULT NULL COMMENT ' 控制器',
-  `action` varchar(255) DEFAULT NULL COMMENT ' 操作方法',
   `infos` text COMMENT ' 说明 ',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
@@ -1557,6 +1678,24 @@ CREATE TABLE `process` (
 
 -- ----------------------------
 -- Records of process
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for process_url
+-- ----------------------------
+DROP TABLE IF EXISTS `process_url`;
+CREATE TABLE `process_url` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `process_id` int(11) DEFAULT NULL COMMENT '控制流程ID',
+  `url` text COMMENT '操作地址',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='控制流程-操作地址';
+
+-- ----------------------------
+-- Records of process_url
 -- ----------------------------
 
 -- ----------------------------

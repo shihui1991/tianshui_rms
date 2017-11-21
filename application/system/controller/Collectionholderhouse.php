@@ -66,16 +66,8 @@ class Collectionholderhouse extends Auth
 
         /* ++++++++++ 查询 ++++++++++ */
         $collectionholderhouse_model=new Collectionholderhouses();
-        $deleted=input('deleted');
-        if(is_numeric($deleted) && in_array($deleted,[0,1])){
-            $datas['deleted']=$deleted;
-            if($deleted==1){
-                $collectionholderhouse_model=$collectionholderhouse_model->onlyTrashed();
-            }
-        }else{
-            $collectionholderhouse_model=$collectionholderhouse_model->withTrashed();
-        }
         $collectionholderhouses=$collectionholderhouse_model
+            ->withTrashed()
             ->alias('chh')
             ->field($field)
             ->join('collection_holder ch','ch.id=chh.collection_holder_id','left')
