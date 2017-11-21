@@ -1,6 +1,6 @@
 <?php
 /* |------------------------------------------------------
- * | 调查话题
+ * | 项目风险评估话题
  * |------------------------------------------------------
  * | 初始化操作
  * | 列表
@@ -12,9 +12,9 @@
  * | 销毁
  * */
 namespace app\system\controller;
-use app\system\model\Topics;
+use app\system\model\Itemtopics;
 
-class Topic extends Auth
+class Itemtopic extends Auth
 {
     /* ========== 初始化 ========== */
     public function _initialize()
@@ -42,21 +42,25 @@ class Topic extends Auth
         $display_num = $display_num ? $display_num : config('paginate.list_rows');
         $datas['display_num'] = $display_num;
         /* ++++++++++ 查询 ++++++++++ */
-        $topic_model = new Topics();
+        $itemtopic_model = new Itemtopics();
         $deleted = input('deleted');
         if (is_numeric($deleted) && in_array($deleted, [0, 1])) {
             $datas['deleted'] = $deleted;
             if ($deleted == 1) {
-                $topic_model = $topic_model->onlyTrashed();
+                $itemtopic_model = $itemtopic_model->onlyTrashed();
             }
         } else {
-            $topic_model = $topic_model->withTrashed();
+            $itemtopic_model = $itemtopic_model->withTrashed();
         }
-        $topic_list = $topic_model
+        $itemtopic_list = $itemtopic_model
+            ->alias('t')
+            ->field(['t.*','i.name as item_name','p.name as topic_name'])
+            ->join('item i', 'i.id=t.item_id', 'left')
+            ->join('topic p','p.id=t.topic_id','left')
             ->where($where)
             ->order([$ordername => $orderby])
             ->paginate($display_num);
-        $datas['topic_list'] = $topic_list;
+        $datas['itemtopic_list'] = $itemtopic_list;
         $this->assign($datas);
         return view();
     }
@@ -67,20 +71,27 @@ class Topic extends Auth
         if (request()->isPost()) {
             $datas = input();
             $rule = [
-                ['name', 'require', '请输入话题内容']
+                ['item_id', 'require', '请选择项目'],
+                ['topic_id', 'require', '请选择风险评估话题']
             ];
             $result = $this->validate($datas, $rule);
             if (true !== $result) {
                 return $this->error($result);
             }
-            $rs = model('Topics')->save(['name'=>input('name')]);
+            $rs = model('Itemtopics')->save($datas);
             if ($rs) {
                 return $this->success('添加成功', '');
             } else {
                 return $this->error('添加失败', '');
             }
         } else {
-            return view('modify');
+            /* ++++++++++ 项目列表 ++++++++++ */
+            $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+
+            /* ++++++++++ 话题列表 ++++++++++ */
+            $topic = model('Topics')->field(['id', 'name'])->select();
+
+            return view('modify',['items'=>$items,'topic'=>$topic]);
         }
     }
 
@@ -91,11 +102,16 @@ class Topic extends Auth
         if (!$id) {
             return $this->error('至少选中一项', '');
         }
-        $assessassets_info = model('Topics')
+        $itemtopic_info = model('Itemtopics')
             ->withTrashed()
             ->where('id',$id)
             ->find();
-        return view('modify', ['infos' => $assessassets_info]);
+        /* ++++++++++ 项目列表 ++++++++++ */
+        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        /* ++++++++++ 话题列表 ++++++++++ */
+        $topic = model('Topics')->field(['id', 'name'])->select();
+
+        return view('modify', ['infos' => $itemtopic_info,'items'=>$items,'topic'=>$topic]);
     }
 
     /* ========== 修改 ========== */
@@ -103,13 +119,14 @@ class Topic extends Auth
     {
         $datas = input();
         $rule = [
-            ['name', 'require', '请输入话题内容']
+            ['item_id', 'require', '请选择项目'],
+            ['topic_id', 'require', '请选择风险评估话题']
         ];
         $result = $this->validate($datas, $rule);
         if (true !== $result) {
             return $this->error($result);
         }
-        $res = model('Topics')->save(['name'=>input('name')],['id'=>input('id')]);
+        $res = model('Itemtopics')->save($datas,['id'=>input('id')]);
         if ($res) {
             return $this->success('修改成功', '');
         } else {
@@ -124,7 +141,7 @@ class Topic extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res = model('Topics')->destroy($ids);
+        $res = model('Itemtopics')->destroy($ids);
         if($res){
             return $this->success('删除成功','');
         }else{
@@ -140,7 +157,7 @@ class Topic extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res = db('topic')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+        $res = db('item_topic')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
         if($res){
             return $this->success('恢复成功','');
         }else{
@@ -156,7 +173,7 @@ class Topic extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res = model('Topics')->onlyTrashed()->whereIn('id',$ids)->delete(true);
+        $res = model('Itemtopics')->onlyTrashed()->whereIn('id',$ids)->delete(true);
         if($res){
             return $this->success('销毁成功','');
         }else{

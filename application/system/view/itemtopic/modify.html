@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>项目风险评估话题|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="item_id">项目：</label></td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择项目--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}" {if condition="isset($infos) and ($item->id eq $infos->item_id)"}selected{/if}>{$item->name}（{$item->id}）</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="topic_id">风险评估话题：</label></td>
+                <td>
+                    <select name="topic_id" id="topic_id" class="chosen sear_collection_id" data-placeholder="请选择风险评估话题" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择风险评估话题--</option>
+                        {volist name="topic" id="topics"}
+                        <option value="{$topics->id}" {if condition="isset($infos) and ($topics->id eq $infos->topic_id)"}selected{/if}>{$topics->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            {if condition="isset($infos)"}
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td>
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<script>
+
+</script>
+</body>
+</html>
