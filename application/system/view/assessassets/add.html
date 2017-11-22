@@ -36,7 +36,7 @@
                                     <select name="community_id" id="community_id" class="chosen sear_collection_id" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
                                         <option value="">--请选择片区--</option>
                                         {volist name="collectioncommunitys" id="community"}
-                                        <option value="{$community->id}" {if condition="isset($infos) and $infos->community_id eq $community->id"}selected{/if}>{$community->name}</option>
+                                        <option value="{$community->id}">{$community->name}</option>
                                         {/volist}
                                     </select>
                                 </td>

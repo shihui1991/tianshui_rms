@@ -16,7 +16,7 @@
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
                 重置</a>
         </li>
-        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','250')" >
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','430')" >
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
@@ -111,6 +111,72 @@
 <div id="search" class="layerCon bg_f hide">
     <form action="{:url('index')}" method="post" id="search-form">
         <table class="layerTable">
+            <tr class="h50">
+                <td><label for="item_id">项目：</label></td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择项目--</option>
+                        {volist name="item_list" id="item"}
+                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if} >{$item->name}（{$item->id}）</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td><label for="community_id">片区：</label></td>
+                <td>
+                    <select name="community_id" id="community_id" class="chosen sear_collection_id" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择片区--</option>
+                        {volist name="collectioncommunity_list" id="community"}
+                        <option value="{$community->id}" {if condition="isset($community_id) and $community_id eq $community->id"}selected{/if}>{$community->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td ><label for="collection_id">权属：</label></td>
+                <td>
+                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择权属--</option>
+                        {volist name="collections_list" id="collection"}
+                        <option value="{$collection->id}" {if condition="isset($collection_id) and $collection_id eq $collection->id"}selected{/if}>
+                        {if condition="$collection->building"}{$collection->building}栋{/if}
+                        {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                        {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                        {if condition="$collection->number"}{$collection->number}号{/if}
+                        {if condition="$collection->id"}({$collection->id}){/if}
+                        </option>
+                        {/volist}
+                    </select>
+                </td>
+                <td><label for="company_id">评估公司：</label></td>
+                <td>
+                    <select name="company_id" id="company_id" class="chosen" data-placeholder="请选择评估公司" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择评估公司--</option>
+                        {volist name="company_list" id="company"}
+                        <option value="{$company->id}" {if condition="isset($company_id) and $company_id eq $company->id"}selected{/if}>{$company->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="report_at">报告时间：</label></td>
+                <td>
+                    <input type="text" class="laydate-icon" name="report_at" id="report_at" value="{:isset($report_at)?$report_at:''}" placeholder="请输入报告时间">
+                </td>
+                <td><label for="valued_at">价值时点：</label></td>
+                <td>
+                    <input type="text" class="laydate-icon" name="valued_at" id="valued_at" value="{:isset($valued_at)?$valued_at:''}" placeholder="请输入价值时点">
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>状态：</td>
+                <td colspan="3">
+                    <select name="status" id="status">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($status) and $status eq 1"}selected{/if}>--启用--</option>
+                        <option value="0" {if condition="isset($status) and $status eq 0"}selected{/if}>--停用--</option>
+                    </select>
+                </td>
+            </tr>
             <tr class="h50">
                 <td>是否删除：</td>
                 <td>

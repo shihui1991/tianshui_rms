@@ -27,6 +27,18 @@ class Itemtopic extends Auth
         /* ********** 查询条件 ********** */
         $datas = [];
         $where = [];
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_id = input('item_id');
+        if (is_numeric($item_id)) {
+            $where['t.item_id'] = $item_id;
+            $datas['item_id'] = $item_id;
+        }
+        /* ++++++++++ 话题 ++++++++++ */
+        $topic_id = input('topic_id');
+        if (is_numeric($topic_id)) {
+            $where['t.topic_id'] = $topic_id;
+            $datas['topic_id'] = $topic_id;
+        }
         /* ++++++++++ 排序 ++++++++++ */
         $ordername = input('ordername');
         $ordername = $ordername ? $ordername : 'id';
@@ -61,6 +73,13 @@ class Itemtopic extends Auth
             ->order([$ordername => $orderby])
             ->paginate($display_num);
         $datas['itemtopic_list'] = $itemtopic_list;
+
+        /* ++++++++++ 项目列表 ++++++++++ */
+        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        $datas['item_list'] = $items;
+        /* ++++++++++ 话题列表 ++++++++++ */
+        $topics = model('Topics')->field(['id', 'name'])->select();
+        $datas['topic_list'] = $topics;
         $this->assign($datas);
         return view();
     }
@@ -77,6 +96,13 @@ class Itemtopic extends Auth
             $result = $this->validate($datas, $rule);
             if (true !== $result) {
                 return $this->error($result);
+            }
+            $item_topic_count = model('Itemtopics')
+                ->where('item_id',$datas['item_id'])
+                ->where('topic_id',$datas['topic_id'])
+                ->count();
+            if($item_topic_count){
+                return $this->error('数据重复，请确认后再添加','');
             }
             $rs = model('Itemtopics')->save($datas);
             if ($rs) {

@@ -12,8 +12,6 @@
  * | 销毁
  * */
 namespace app\system\controller;
-
-
 use app\system\model\Risktopics;
 
 class Risktopic extends Auth
@@ -48,6 +46,12 @@ class Risktopic extends Auth
         if (is_numeric($collection_id)) {
             $where['ass.collection_id'] = $collection_id;
             $datas['collection_id'] = $collection_id;
+        }
+        /* ++++++++++ 话题 ++++++++++ */
+        $topic_id = input('topic_id');
+        if (is_numeric($topic_id)) {
+            $where['ass.topic_id'] = $topic_id;
+            $datas['topic_id'] = $topic_id;
         }
         /* ++++++++++ 排序 ++++++++++ */
         $ordername = input('ordername');
@@ -86,6 +90,20 @@ class Risktopic extends Auth
             ->order(['i.is_top' => 'desc', 'ass.' . $ordername => $orderby])
             ->paginate($display_num);
         $datas['risktopic_list'] = $risktopic_list;
+
+        /* ++++++++++ 项目列表 ++++++++++ */
+        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        $datas['item_list'] = $items;
+        /* ++++++++++ 片区 ++++++++++ */
+        $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
+        $datas['collectioncommunity_list'] = $collectioncommunitys;
+        /* ++++++++++ 权属 ++++++++++ */
+        $collections = model('Collections')->field(['id', 'building', 'unit','floor','number'])->select();
+        $datas['collections_list'] = $collections;
+        /* ++++++++++ 话题列表 ++++++++++ */
+        $topics = model('Topics')->field(['id', 'name'])->select();
+        $datas['topic_list'] = $topics;
+
         $this->assign($datas);
         return view();
     }
@@ -99,12 +117,24 @@ class Risktopic extends Auth
                 ['item_id', 'require', '请选择项目'],
                 ['community_id', 'require', '请选择片区'],
                 ['collection_id', 'require', '请选择权属'],
-                ['holder_id', 'require', '请选择成员']
+                ['risk_id', 'require', '请选择风险评估'],
+                ['answer', 'require', '请输入回答内容']
             ];
             $result = $this->validate($datas, $rule);
             if (true !== $result) {
                 return $this->error($result);
             }
+            $risktopic_count = model('Risktopics')
+                ->where('item_id', $datas['item_id'])
+                ->where('community_id', $datas['community_id'])
+                ->where('collection_id', $datas['collection_id'])
+                ->where('risk_id', $datas['risk_id'])
+                ->where('topic_id', $datas['topic_id'])
+                ->count();
+            if ($risktopic_count) {
+                return $this->error('数据重复,请不要重复添加', '');
+            }
+
             $rs = model('Risktopics')->save($datas);
             if ($rs) {
                 return $this->success('添加成功', '');
@@ -119,6 +149,110 @@ class Risktopic extends Auth
             return view('add',[
                 'items' => $items,
                 'collectioncommunitys' => $collectioncommunitys]);
+        }
+    }
+
+    /* ========== 详情 ========== */
+    public function detail(){
+        $id = input('id');
+        if(!$id){
+            return $this->error('至少选择一项','');
+        }
+        $field = ['ass.*', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
+            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id','ch.name as holder_name','tc.name as topic_name'];
+
+        $risktopic_info = model('Risktopics')
+            ->withTrashed()
+            ->alias('ass')
+            ->field($field)
+            ->join('item i', 'i.id=ass.item_id', 'left')
+            ->join('collection_community cc', 'cc.id=ass.community_id', 'left')
+            ->join('collection c', 'c.id=ass.collection_id', 'left')
+            ->join('collection_holder ch', 'ch.id=ass.holder_id', 'left')
+            ->join('topic tc', 'tc.id=ass.topic_id', 'left')
+            ->where('ass.id',$id)
+            ->find();
+//        dump($risktopic_info);die;
+        $fields = ['ass.*', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
+            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id','ch.name as holder_name','ch.id as holder_name_id','chr.name as recommemd_holder_name','chr.id as recommemd_holder_name_id'];
+        $risk_info = model('Risks')
+            ->alias('ass')
+            ->field($fields)
+            ->join('item i', 'i.id=ass.item_id', 'left')
+            ->join('collection_community cc', 'cc.id=ass.community_id', 'left')
+            ->join('collection c', 'c.id=ass.collection_id', 'left')
+            ->join('collection_holder ch', 'ch.id=ass.holder_id', 'left')
+            ->join('collection_holder chr', 'chr.id=ass.recommemd_holder_id', 'left')
+            ->where('ass.id',$risktopic_info['risk_id'])
+            ->find();
+        return view('modify',[
+            'infos'=>$risktopic_info,
+            'risk_info'=>$risk_info
+        ]);
+    }
+
+    /* ========== 修改 ========== */
+    public function edit(){
+        $datas = input();
+        $rule = [
+            ['answer', 'require', '请输入回答内容']
+        ];
+        $result = $this->validate($datas, $rule);
+        if (true !== $result) {
+            return $this->error($result);
+        }
+        $rs = model('Risktopics')->save($datas,['id'=>input('id')]);
+        if ($rs) {
+            return $this->success('修改成功', '');
+        } else {
+            return $this->error('修改失败', '');
+        }
+    }
+
+    /* ========== 删除 ========== */
+    public function delete(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $res = model('Risktopics')->destroy($ids);
+        if($res){
+            return $this->success('删除成功','');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
+    /* ========== 恢复 ========== */
+    public function restore(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $res = db('risk_topic')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+        if($res){
+            return $this->success('恢复成功','');
+        }else{
+            return $this->error('恢复失败');
+        }
+    }
+
+    /* ========== 销毁 ========== */
+    public function destroy(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $res = model('Risktopics')->onlyTrashed()->whereIn('id',$ids)->delete(true);
+        if($res){
+            return $this->success('销毁成功','');
+        }else{
+            return $this->error('销毁失败，请先删除！');
         }
     }
 }

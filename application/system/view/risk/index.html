@@ -17,7 +17,7 @@
                 重置
             </a>
         </li>
-        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','250')" >
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','290')" >
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
@@ -110,6 +110,43 @@
 <div id="search" class="layerCon bg_f hide">
     <form action="{:url('index')}" method="post" id="search-form">
         <table class="layerTable">
+            <tr class="h50">
+                <td><label for="item_id">项目：</label></td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择项目--</option>
+                        {volist name="item_list" id="item"}
+                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if} >{$item->name}（{$item->id}）</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td><label for="community_id">片区：</label></td>
+                <td>
+                    <select name="community_id" id="community_id" class="chosen sear_collection_id" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择片区--</option>
+                        {volist name="collectioncommunity_list" id="community"}
+                        <option value="{$community->id}" {if condition="isset($community_id) and $community_id eq $community->id"}selected{/if}>{$community->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td ><label for="collection_id">权属：</label></td>
+                <td colspan="3">
+                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择权属--</option>
+                        {volist name="collections_list" id="collection"}
+                        <option value="{$collection->id}" {if condition="isset($collection_id) and $collection_id eq $collection->id"}selected{/if}>
+                        {if condition="$collection->building"}{$collection->building}栋{/if}
+                        {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                        {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                        {if condition="$collection->number"}{$collection->number}号{/if}
+                        {if condition="$collection->id"}({$collection->id}){/if}
+                        </option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
             <tr class="h50">
                 <td>是否删除：</td>
                 <td>

@@ -47,6 +47,34 @@ class Assessassets extends Auth
             $where['ass.collection_id'] = $collection_id;
             $datas['collection_id'] = $collection_id;
         }
+        /* ++++++++++ 评估公司 ++++++++++ */
+        $company_id = input('company_id');
+        if (is_numeric($company_id)) {
+            $where['ass.company_id'] = $company_id;
+            $datas['company_id'] = $company_id;
+        }
+        /* ++++++++++ 报告时间 ++++++++++ */
+        $report_at = input('report_at');
+        if($report_at){
+            $report_at_start = strtotime($report_at." 00:00:00");
+            $report_at_end = strtotime($report_at." 23:59:59");
+            $where['ass.report_at'] = [['<=',$report_at_end],['>=',$report_at_start]];
+            $datas['report_at'] = $report_at;
+        }
+        /* ++++++++++ 价值时点 ++++++++++ */
+        $valued_at = input('valued_at');
+        if($valued_at){
+            $valued_at_start = strtotime($valued_at." 00:00:00");
+            $valued_at_end = strtotime($valued_at." 23:59:59");
+            $where['ass.valued_at'] = [['<=',$valued_at_end],['>=',$valued_at_start]];
+            $datas['valued_at'] = $valued_at;
+        }
+        /* ++++++++++ 状态 ++++++++++ */
+        $status = input('status');
+        if (is_numeric($status)) {
+            $where['ass.status'] = $status;
+            $datas['status'] = $status;
+        }
         /* ++++++++++ 排序 ++++++++++ */
         $ordername = input('ordername');
         $ordername = $ordername ? $ordername : 'id';
@@ -85,6 +113,19 @@ class Assessassets extends Auth
             ->order(['i.is_top' => 'desc', 'ass.' . $ordername => $orderby])
             ->paginate($display_num);
         $datas['assessassets_list'] = $assessassets_list;
+
+        /* ++++++++++ 项目列表 ++++++++++ */
+        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        $datas['item_list'] = $items;
+        /* ++++++++++ 片区 ++++++++++ */
+        $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
+        $datas['collectioncommunity_list'] = $collectioncommunitys;
+        /* ++++++++++ 权属 ++++++++++ */
+        $collections = model('Collections')->field(['id', 'building', 'unit','floor','number'])->select();
+        $datas['collections_list'] = $collections;
+        /* ++++++++++ 评估公司 ++++++++++ */
+        $companys = model('Companys')->field(['id','name'])->where('status',1)->where('type',1)->select();
+        $datas['company_list'] = $companys;
         $this->assign($datas);
         return view();
     }
@@ -111,10 +152,21 @@ class Assessassets extends Auth
             if (true !== $result) {
                 return $this->error($result);
             }
+
             $collections_count = model('Collections')->where('item_id', $datas['item_id'])->where('community_id', $datas['community_id'])->count();
             if ($collections_count == 0) {
                 return $this->error('数据异常', '');
             }
+            $assessassets_count = model('Assessassetss')
+                ->where('item_id', $datas['item_id'])
+                ->where('community_id', $datas['community_id'])
+                ->where('collection_id', $datas['collection_id'])
+                ->where('company_id', $datas['company_id'])
+                ->count();
+            if ($assessassets_count) {
+                return $this->error('数据重复,请不要重复添加', '');
+            }
+
             Db::startTrans();
             try {
                 /*----- 查询入户评估总表 -----*/
@@ -198,11 +250,12 @@ class Assessassets extends Auth
         }
         $assessassets_model = new Assessassetss();
         $where = [];
-        $field = ['ass.id', 'ass.assess_id','ass.total', 'ass.collection_id', 'ass.company_id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
+        $field = ['ass.id','ass.created_at','ass.updated_at','ass.deleted_at', 'ass.assess_id','ass.total', 'ass.collection_id', 'ass.company_id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
             'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.picture'];
 
         $where['ass.id'] = $id;
         $assessassets_info = $assessassets_model
+            ->withTrashed()
             ->alias('ass')
             ->field($field)
             ->join('item i', 'i.id=ass.item_id', 'left')
