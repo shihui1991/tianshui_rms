@@ -2,23 +2,23 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>安置房选择|后台管理系统</title>
+    <title>项目兑付与协议-安置房|后台管理系统</title>
     {include file="public/head" /}
 
 </head>
 <body>
 <form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
-        <input type="hidden" name="collection_id" value="{$collection_id}">
+        <input type="hidden" name="pay_id" value="{$pay_id}">
         <table class="layerTable" border="0">
             <tr class="h50">
-                <td><label for="collection_holder_id">被征收人：</label></td>
+                <td><label for="pay_holder_id">被征收人：</label></td>
                 <td>
-                    <select name="collection_holder_id" id="collection_holder_id">
+                    <select name="pay_holder_id" id="pay_holder_id">
                         <option value="">--选择被征收人--</option>
-                        {volist name="collectionholders" id="collectionholder"}
-                        {if condition="($collectionholder->type and $collectionholder->getData('holder') eq 2) or (!$collectionholder->type and $collectionholder->getData('holder') eq 1)"}
-                        <option value="{$collectionholder->id}" >{$collectionholder->name} 【{$collectionholder->holder}】</option>
+                        {volist name="payholders" id="payholder"}
+                        {if condition="($pay_info->getData('type') and $payholder->getData('holder') eq 2) or (!$pay_info->getData('type') and $payholder->getData('holder') eq 1)"}
+                        <option value="{$payholder->id}" >{$payholder->name} 【{$payholder->holder}】</option>
                         {/volist}
                     </select>
                 </td>
@@ -31,14 +31,13 @@
                         {volist name="houses" id="house"}
                         <option value="{$house->house_id}">
                             {$house->address}
-                            {$house->name}
+                            {$house->hc_name}
                             {if condition="$house->building"}{$house->building}栋{/if}
                             {if condition="$house->unit"}{$house->unit}单元{/if}
                             {if condition="$house->floor"}{$house->floor}楼{/if}
                             {if condition="$house->number"}{$house->number}号{/if}
                             【{$house->l_name}】
                             【{$house->area} ㎡】
-                            【{$house->has_lift}/{$house->total_floor}】
                         </option>
                         {/volist}
                     </select>
@@ -46,7 +45,7 @@
             </tr>
             <tr class="h50">
                 <td><label for="sort">选择排序：</label></td>
-                <td><input type="number" name="sort" id="sort" value="" placeholder="输入选择安置优先顺序"></td>
+                <td><input type="number" name="sort" id="sort" value="" placeholder="输入选择安置优先顺序" min="0"></td>
             </tr>
            
             
