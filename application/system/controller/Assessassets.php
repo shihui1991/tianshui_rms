@@ -153,9 +153,12 @@ class Assessassets extends Auth
                 return $this->error($result);
             }
 
-            $collections_count = model('Collections')->where('item_id', $datas['item_id'])->where('community_id', $datas['community_id'])->count();
-            if ($collections_count == 0) {
-                return $this->error('数据异常', '');
+            $collection_info=model('Collections')->field(['id','item_id','community_id'])->find(input('collection_id'));
+            if(!$collection_info){
+                return $this->error('选择权属不存在！');
+            }
+            if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
+                return $this->error('选择权属与项目片区不一致');
             }
             $assessassets_count = model('Assessassetss')
                 ->where('item_id', $datas['item_id'])
