@@ -105,11 +105,11 @@ class Assess extends Auth
         Db::startTrans();
         try{
             $rs = model('Assesss')->destroy($ids);
-                model('Assessestates')->destroy(['estate_id'=>['in',$ids]]);
-                model('Assessestatebuildings')->destroy(['estate_id'=>['in',$ids]]);
-                model('Assessestatevaluers')->destroy(['estate_id'=>['in',$ids]]);
-                model('Assessassetss')->destroy(['estate_id'=>['in',$ids]]);
-                model('Assessassetsvaluers')->destroy(['estate_id'=>['in',$ids]]);
+                model('Assessestates')->destroy(['assess_id'=>['in',$ids]]);
+                model('Assessestatebuildings')->destroy(['assess_id'=>['in',$ids]]);
+                model('Assessestatevaluers')->destroy(['assess_id'=>['in',$ids]]);
+                model('Assessassetss')->destroy(['assess_id'=>['in',$ids]]);
+                model('Assessassetsvaluers')->destroy(['assess_id'=>['in',$ids]]);
             if($rs){
                 $res=true;
                 Db::commit();
