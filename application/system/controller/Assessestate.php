@@ -484,4 +484,98 @@ class Assessestate extends Auth
             return $this->error('修改失败');
         }
     }
+
+    /* ========== 删除 ========== */
+    public function delete(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+
+        Db::startTrans();
+        try{
+            $rs = model('Assessestates')->destroy($ids);
+            model('Assessestatebuildings')->destroy(['estate_id'=>['in',$ids]]);
+            model('Assessestatevaluers')->destroy(['estate_id'=>['in',$ids]]);
+            if($rs){
+                $res=true;
+                Db::commit();
+            }else{
+                $res=false;
+                Db::rollback();
+            }
+        }catch (\Exception $e){
+            $res=false;
+            Db::rollback();
+        }
+        if($res){
+            return $this->success('删除成功','');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
+    /* ========== 恢复 ========== */
+    public function restore(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+
+        Db::startTrans();
+        try{
+            $rs = db('assess_estate')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_estate_building')->whereIn('estate_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_estate_valuer')->whereIn('estate_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            if($rs){
+                $res=true;
+                Db::commit();
+            }else{
+                $res=false;
+                Db::rollback();
+            }
+        }catch (\Exception $e){
+            $res=false;
+            Db::rollback();
+        }
+        if($res){
+            return $this->success('恢复成功','');
+        }else{
+            return $this->error('恢复失败');
+        }
+    }
+
+    /* ========== 销毁 ========== */
+    public function destroy(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        Db::startTrans();
+        try{
+            model('Assessestatebuildings')->withTrashed()->whereIn('estate_id',$ids)->delete(true);
+            model('Assessestatevaluers')->withTrashed()->whereIn('estate_id',$ids)->delete(true);
+            $rs = model('Assessestates')->onlyTrashed()->whereIn('id',$ids)->delete(true);
+            if($rs){
+                $res=true;
+                Db::commit();
+            }else{
+                $res=false;
+                Db::rollback();
+            }
+        }catch (\Exception $e){
+            $res=false;
+            Db::rollback();
+        }
+        if($res){
+            return $this->success('销毁成功','');
+        }else{
+            return $this->error('销毁失败，请先删除！');
+        }
+    }
 }
