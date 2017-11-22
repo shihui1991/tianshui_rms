@@ -10,12 +10,8 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-21 09:14:05
+Date: 2017-11-22 16:04:48
 */
-
-CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
-
-USE `tianshui_rms`;
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -783,6 +779,49 @@ INSERT INTO `house_price` VALUES ('1', '1', '2000', '1500', '1451577600', '14672
 INSERT INTO `house_price` VALUES ('2', '1', '3000', '2000', '1467302400', '1483113600', '1510897750', '1510898622', null);
 
 -- ----------------------------
+-- Table structure for house_resettle
+-- ----------------------------
+DROP TABLE IF EXISTS `house_resettle`;
+CREATE TABLE `house_resettle` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `pay_id` int(11) DEFAULT NULL COMMENT ' 兑付ID',
+  `house_id` int(11) DEFAULT NULL COMMENT ' 安置房源ID',
+  `start_at` int(11) DEFAULT NULL COMMENT ' 开始时间',
+  `end_at` int(11) DEFAULT NULL COMMENT ' 结束时间',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='房源安置';
+
+-- ----------------------------
+-- Records of house_resettle
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for house_transit
+-- ----------------------------
+DROP TABLE IF EXISTS `house_transit`;
+CREATE TABLE `house_transit` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `pay_id` int(11) DEFAULT NULL COMMENT ' 兑付ID',
+  `house_id` int(11) DEFAULT NULL COMMENT ' 安置房源ID',
+  `start_at` int(11) DEFAULT NULL COMMENT ' 开始时间',
+  `exp_end` int(11) DEFAULT NULL COMMENT ' 预计结束时间',
+  `end_at` int(11) DEFAULT NULL COMMENT ' 结束时间',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='房源临时安置';
+
+-- ----------------------------
+-- Records of house_transit
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for item
 -- ----------------------------
 DROP TABLE IF EXISTS `item`;
@@ -895,7 +934,7 @@ INSERT INTO `item_house` VALUES ('1', '2', '1', '1509610556', '1509610591');
 DROP TABLE IF EXISTS `item_house_up`;
 CREATE TABLE `item_house_up` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `item_id` int(11) NOT NULL COMMENT '兑付-房屋ID',
+  `item_id` int(11) DEFAULT NULL COMMENT '兑付-房屋ID',
   `up_start` float DEFAULT NULL COMMENT '上浮面积区间-起',
   `up_end` float DEFAULT NULL COMMENT '上浮面积区间-止',
   `up_rate` float DEFAULT NULL COMMENT '上浮比例（%）',
@@ -1018,7 +1057,7 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=345 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=351 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
 -- ----------------------------
 -- Records of menu
@@ -1367,6 +1406,12 @@ INSERT INTO `menu` VALUES ('341', '312', '添加评估公司选票', '3', '<img 
 INSERT INTO `menu` VALUES ('342', '312', '评估公司选票详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/itemcompanyvote/detail', null, '0', '1', '1508894864', '1508894864', null);
 INSERT INTO `menu` VALUES ('343', '312', '评估公司选票删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/itemcompanyvote/delete', null, '0', '1', '1508894998', '1508895558', null);
 INSERT INTO `menu` VALUES ('344', '278', '兑付-安置房', '2', '<img src=\"/static/system/img/house.png\"/>', '0', '/system/payholderhouse/index', '', '0', '1', '1511167691', '1511167787', null);
+INSERT INTO `menu` VALUES ('345', '344', '添加兑付-安置房', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/payholderhouse/add', null, '0', '1', '1508894820', '1508896706', null);
+INSERT INTO `menu` VALUES ('346', '344', '兑付-安置房排序', '3', '<img src=\"/static/system/img/text_list_numbers.png\"/>', '0', '/system/payholderhouse/sort', null, '0', '1', '1508894998', '1508894998', null);
+INSERT INTO `menu` VALUES ('347', '344', '兑付-安置房删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/payholderhouse/delete', null, '0', '1', '1508894998', '1508895558', null);
+INSERT INTO `menu` VALUES ('348', '162', '安置房价上浮设置', '2', '<img src=\"/static/system/img/house.png\"/>', '6', '/system/itemhouseup/index', '', '0', '1', '1511335743', '1511335755', null);
+INSERT INTO `menu` VALUES ('349', '107', '临时安置记录', '2', '<img src=\"/static/system/img/transit.png\"/>', '0', '/system/housetransit/index', '', '1', '1', '1511337799', '1511337799', null);
+INSERT INTO `menu` VALUES ('350', '107', '安置记录', '2', '<img src=\"/static/system/img/reset.png\"/>', '0', '/system/houseresettle/index', '', '1', '1', '1511337841', '1511337841', null);
 
 -- ----------------------------
 -- Table structure for nation
@@ -1522,7 +1567,7 @@ CREATE TABLE `pay` (
 -- ----------------------------
 -- Records of pay
 -- ----------------------------
-INSERT INTO `pay` VALUES ('1', '2', '1', '2', '0', '0', '0', '0', '1', '0', '0', '220', '220', '0', '0', '0', '0', '[]', '1510804110', '1510883217', null);
+INSERT INTO `pay` VALUES ('1', '2', '1', '2', '0', '0', '0', '0', '1', '0', '0', '220', '220', '1', '0', '0', '1', '[]', '1510804110', '1511258278', null);
 
 -- ----------------------------
 -- Table structure for pay_holder
@@ -1546,7 +1591,7 @@ CREATE TABLE `pay_holder` (
   `subject_amount` float DEFAULT NULL COMMENT ' 科目补偿',
   `object_amount` float DEFAULT NULL COMMENT ' 事项补偿',
   `total_amount` float DEFAULT NULL COMMENT ' 补偿总额',
-  `house_other` float DEFAULT NULL COMMENT '安置房补交款',
+  `house_amount` float DEFAULT NULL COMMENT '安置房款',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
@@ -1556,7 +1601,7 @@ CREATE TABLE `pay_holder` (
 -- ----------------------------
 -- Records of pay_holder
 -- ----------------------------
-INSERT INTO `pay_holder` VALUES ('1', '2', '1', '2', null, '1', '1', '1', '100', '0', '0', '0', '1', '0', '0', '220', '220', null, '1510804110', '1510804796', null);
+INSERT INTO `pay_holder` VALUES ('1', '2', '1', '2', null, '1', '1', '1', '100', '0', '0', '0', '1', '0', '0', '220', '220', null, '1510804110', '1511247722', null);
 
 -- ----------------------------
 -- Table structure for pay_holder_house
@@ -1598,7 +1643,6 @@ CREATE TABLE `pay_holder_house_up` (
   `up_area` float DEFAULT NULL COMMENT '上浮面积',
   `up_rate` float DEFAULT NULL COMMENT '上浮比例（%）',
   `price` float DEFAULT NULL COMMENT '基本单价',
-  `up_price` float DEFAULT NULL COMMENT '上浮后单价',
   `amount` float DEFAULT NULL COMMENT ' 上浮小计',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
