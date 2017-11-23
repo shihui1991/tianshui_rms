@@ -53,6 +53,7 @@ class Itemprocess extends Auth
             ->field($field)
             ->join('process p','p.id=ip.process_id','left')
             ->where($where)
+            ->order('ip.sort asc')
             ->select();
 
         $datas['itemprocesss']=$itemprocesss;
