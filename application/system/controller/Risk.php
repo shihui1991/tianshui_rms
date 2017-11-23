@@ -119,6 +119,13 @@ class Risk extends Auth
             if (true !== $result) {
                 return $this->error($result);
             }
+            $collection_info=model('Collections')->field(['id','item_id','community_id'])->find(input('collection_id'));
+            if(!$collection_info){
+                return $this->error('选择权属不存在！');
+            }
+            if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
+                return $this->error('选择权属与项目片区不一致');
+            }
             $sear_rickid = model('Risks')
                 ->where('item_id',$datas['item_id'])
                 ->where('community_id',$datas['community_id'])

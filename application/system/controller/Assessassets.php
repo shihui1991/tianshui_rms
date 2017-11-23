@@ -153,9 +153,12 @@ class Assessassets extends Auth
                 return $this->error($result);
             }
 
-            $collections_count = model('Collections')->where('item_id', $datas['item_id'])->where('community_id', $datas['community_id'])->count();
-            if ($collections_count == 0) {
-                return $this->error('数据异常', '');
+            $collection_info=model('Collections')->field(['id','item_id','community_id'])->find(input('collection_id'));
+            if(!$collection_info){
+                return $this->error('选择权属不存在！');
+            }
+            if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
+                return $this->error('选择权属与项目片区不一致');
             }
             $assessassets_count = model('Assessassetss')
                 ->where('item_id', $datas['item_id'])
@@ -407,6 +410,95 @@ class Assessassets extends Auth
             return $this->success('修改成功','');
         }else{
             return $this->error('修改失败');
+        }
+    }
+
+    /* ========== 删除 ========== */
+    public function delete(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        Db::startTrans();
+        try{
+            $rs = model('Assessassetss')->destroy($ids);
+            model('Assessassetsvaluers')->destroy(['estate_id'=>['in',$ids]]);
+            if($rs){
+                $res=true;
+                Db::commit();
+            }else{
+                $res=false;
+                Db::rollback();
+            }
+        }catch (\Exception $e){
+            $res=false;
+            Db::rollback();
+        }
+        if($res){
+            return $this->success('删除成功','');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
+    /* ========== 恢复 ========== */
+    public function restore(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        Db::startTrans();
+        try{
+            $rs = db('assess_assets')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_assets_valuer')->whereIn('estate_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            if($rs){
+                $res=true;
+                Db::commit();
+            }else{
+                $res=false;
+                Db::rollback();
+            }
+        }catch (\Exception $e){
+            $res=false;
+            Db::rollback();
+        }
+        if($res){
+            return $this->success('恢复成功','');
+        }else{
+            return $this->error('恢复失败');
+        }
+    }
+
+    /* ========== 销毁 ========== */
+    public function destroy(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        Db::startTrans();
+        try{
+            model('Assessassetsvaluers')->withTrashed()->whereIn('estate_id',$ids)->delete(true);
+            $rs = model('Assessassetss')->onlyTrashed()->whereIn('id',$ids)->delete(true);
+            if($rs){
+                $res=true;
+                Db::commit();
+            }else{
+                $res=false;
+                Db::rollback();
+            }
+        }catch (\Exception $e){
+            $res=false;
+            Db::rollback();
+        }
+        if($res){
+            return $this->success('销毁成功','');
+        }else{
+            return $this->error('销毁失败，请先删除！');
         }
     }
 }

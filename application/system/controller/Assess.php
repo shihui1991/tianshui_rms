@@ -105,29 +105,20 @@ class Assess extends Auth
         Db::startTrans();
         try{
             $rs = model('Assesss')->destroy($ids);
-            if(is_array($ids)){
-                foreach ($ids as $k=>$v){
-                    model('Assessestates')->destroy(['assess_id'=>$v]);
-                    model('Assessestatebuildings')->destroy(['assess_id'=>$v]);
-                    model('Assessestatevaluers')->destroy(['assess_id'=>$v]);
-                    model('Assessassetss')->destroy(['assess_id'=>$v]);
-                    model('Assessassetsvaluers')->destroy(['assess_id'=>$v]);
-                }
-            }else{
-                model('Assessestates')->destroy(['assess_id'=>$ids]);
-                model('Assessestatebuildings')->destroy(['assess_id'=>$ids]);
-                model('Assessestatevaluers')->destroy(['assess_id'=>$ids]);
-                model('Assessassetss')->destroy(['assess_id'=>$ids]);
-                model('Assessassetsvaluers')->destroy(['assess_id'=>$ids]);
-            }
+                model('Assessestates')->destroy(['assess_id'=>['in',$ids]]);
+                model('Assessestatebuildings')->destroy(['assess_id'=>['in',$ids]]);
+                model('Assessestatevaluers')->destroy(['assess_id'=>['in',$ids]]);
+                model('Assessassetss')->destroy(['assess_id'=>['in',$ids]]);
+                model('Assessassetsvaluers')->destroy(['assess_id'=>['in',$ids]]);
             if($rs){
                 $res=true;
+                Db::commit();
             }else{
                 $res=false;
+                Db::rollback();
             }
-            Db::commit();
         }catch (\Exception $e){
-            $res=false;dump($e);
+            $res=false;
             Db::rollback();
         }
         if($res){
@@ -148,27 +139,18 @@ class Assess extends Auth
         Db::startTrans();
         try{
            $rs = db('assess')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-            if(is_array($ids)){
-                foreach ($ids as $k=>$v){
-                    db('assess_estate')->where('assess_id',$v)->update(['deleted_at'=>null,'updated_at'=>time()]);
-                    db('assess_estate_building')->where('assess_id',$v)->update(['deleted_at'=>null,'updated_at'=>time()]);
-                    db('assess_estate_valuer')->where('assess_id',$v)->update(['deleted_at'=>null,'updated_at'=>time()]);
-                    db('assess_assets')->where('assess_id',$v)->update(['deleted_at'=>null,'updated_at'=>time()]);
-                    db('assess_assets_valuer')->where('assess_id',$v)->update(['deleted_at'=>null,'updated_at'=>time()]);
-                }
-            }else{
-                db('assess_estate')->where('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-                db('assess_estate_building')->where('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-                db('assess_estate_valuer')->where('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-                db('assess_assets')->where('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-                db('assess_assets_valuer')->where('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-            }
+            db('assess_estate')->whereIn('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_estate_building')->whereIn('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_estate_valuer')->whereIn('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_assets')->whereIn('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_assets_valuer')->whereIn('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
             if($rs){
                 $res=true;
+                Db::commit();
             }else{
                 $res=false;
+                Db::rollback();
             }
-            Db::commit();
         }catch (\Exception $e){
             $res=false;
             Db::rollback();
@@ -190,29 +172,19 @@ class Assess extends Auth
         }
         Db::startTrans();
         try{
-
-            if(is_array($ids)){
-                foreach ($ids as $k=>$v){
-                    model('Assessestates')->onlyTrashed()->where('assess_id',$v)->delete(true);
-                    model('Assessestatebuildings')->onlyTrashed()->where('assess_id',$v)->delete(true);
-                    model('Assessestatevaluers')->onlyTrashed()->where('assess_id',$v)->delete(true);
-                    model('Assessassetss')->onlyTrashed()->where('assess_id',$v)->delete(true);
-                    model('Assessassetsvaluers')->onlyTrashed()->where('assess_id',$v)->delete(true);
-                }
-            }else{
-                model('Assessestates')->onlyTrashed()->where('assess_id',$ids)->delete(true);
-                model('Assessestatebuildings')->onlyTrashed()->where('assess_id',$ids)->delete(true);
-                model('Assessestatevaluers')->onlyTrashed()->where('assess_id',$ids)->delete(true);
-                model('Assessassetss')->onlyTrashed()->where('assess_id',$ids)->delete(true);
-                model('Assessassetsvaluers')->onlyTrashed()->where('assess_id',$ids)->delete(true);
-            }
+            model('Assessestates')->withTrashed()->whereIn('assess_id',$ids)->delete(true);
+            model('Assessestatebuildings')->withTrashed()->whereIn('assess_id',$ids)->delete(true);
+            model('Assessestatevaluers')->withTrashed()->whereIn('assess_id',$ids)->delete(true);
+            model('Assessassetss')->withTrashed()->whereIn('assess_id',$ids)->delete(true);
+            model('Assessassetsvaluers')->withTrashed()->whereIn('assess_id',$ids)->delete(true);
            $rs = model('Assesss')->onlyTrashed()->whereIn('id',$ids)->delete(true);
             if($rs){
                 $res=true;
+                Db::commit();
             }else{
                 $res=false;
+                Db::rollback();
             }
-            Db::commit();
         }catch (\Exception $e){
             $res=false;
             Db::rollback();

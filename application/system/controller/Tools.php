@@ -571,4 +571,23 @@ class Tools extends Auth
             return $this->error('没有数据','');
         }
     }
+
+    /* ========== 查询产权人(承租人)名称 ========== */
+    public function sear_holder_name(){
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('请选择项目','');
+        }
+        $holder_name_list = model('Payholders')
+            ->alias('p')
+            ->field(['p.*','c.name as holder_name'])
+            ->join('collection_holder c','c.id = p.collection_holder_id','left')
+            ->where('p.item_id',$item_id)
+            ->select();
+        if($holder_name_list){
+            return $this->success('获取成功','',$holder_name_list);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
 }
