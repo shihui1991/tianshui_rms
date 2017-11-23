@@ -10,8 +10,12 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-22 16:04:48
+Date: 2017-11-23 11:49:20
 */
+
+CREATE DATABASE IF NOT EXISTS `tianshui_rms` DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+
+USE `tianshui_rms`;
 
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -52,8 +56,8 @@ CREATE TABLE `assess` (
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
   `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
-  `estate` float DEFAULT NULL COMMENT '房产评估总额',
-  `assets` float DEFAULT NULL COMMENT '资产评估总额',
+  `estate` decimal(30,2) DEFAULT NULL COMMENT '房产评估总额',
+  `assets` decimal(30,2) DEFAULT NULL COMMENT '资产评估总额',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
@@ -78,7 +82,7 @@ CREATE TABLE `assess_assets` (
   `report_at` int(11) DEFAULT NULL COMMENT ' 报告时间',
   `valued_at` int(11) DEFAULT NULL COMMENT ' 价值时点',
   `method` text COMMENT ' 评估方法',
-  `total` float DEFAULT NULL COMMENT ' 评估总额',
+  `total` decimal(30,2) DEFAULT NULL COMMENT ' 评估总额',
   `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
   `picture` text COMMENT '评估报告',
   `created_at` int(11) DEFAULT NULL,
@@ -127,7 +131,7 @@ CREATE TABLE `assess_estate` (
   `report_at` int(11) DEFAULT NULL COMMENT ' 报告时间',
   `valued_at` int(11) DEFAULT NULL COMMENT ' 价值时点',
   `method` text COMMENT ' 评估方法',
-  `total` float DEFAULT NULL COMMENT ' 评估总额',
+  `total` decimal(30,2) DEFAULT NULL COMMENT ' 评估总额',
   `status` tinyint(1) DEFAULT '1' COMMENT '状态，0禁用，1启用',
   `picture` text COMMENT '评估报告',
   `created_at` int(11) DEFAULT NULL,
@@ -152,8 +156,8 @@ CREATE TABLE `assess_estate_building` (
   `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
   `estate_id` int(11) DEFAULT NULL COMMENT '房产评估ID',
   `building_id` int(11) DEFAULT NULL COMMENT '建筑ID',
-  `price` float DEFAULT NULL COMMENT ' 评估单价',
-  `amount` float DEFAULT NULL COMMENT ' 评估总价',
+  `price` decimal(30,2) DEFAULT NULL COMMENT ' 评估单价',
+  `amount` decimal(30,2) DEFAULT NULL COMMENT ' 评估总价',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
@@ -393,7 +397,7 @@ CREATE TABLE `collection_holder` (
   `address` text COMMENT ' 地址',
   `phone` varchar(255) DEFAULT NULL COMMENT ' 电话',
   `holder` tinyint(1) DEFAULT '0' COMMENT '产权，0无，1产权人，2承租人',
-  `portion` float DEFAULT '0' COMMENT '补偿份额',
+  `portion` decimal(10,2) DEFAULT '0.00' COMMENT '补偿份额',
   `cardnum` varchar(255) DEFAULT NULL COMMENT '证件号（身份证）',
   `relation` varchar(255) DEFAULT NULL COMMENT ' 与户主关系',
   `gender` tinyint(1) DEFAULT '0' COMMENT ' 性别，0无，1男，2女',
@@ -411,7 +415,7 @@ CREATE TABLE `collection_holder` (
 -- ----------------------------
 -- Records of collection_holder
 -- ----------------------------
-INSERT INTO `collection_holder` VALUES ('1', '2', '1', '2', '重庆', '重庆市渝北区', '0123', '1', '100', '', '', '0', '0', '', '', '0', '', '1510111063', '1510645065', null);
+INSERT INTO `collection_holder` VALUES ('1', '2', '1', '2', '重庆', '重庆市渝北区', '0123', '1', '100.00', '', '', '0', '0', '', '', '0', '', '1510111063', '1510645065', null);
 
 -- ----------------------------
 -- Table structure for collection_holder_crowd
@@ -612,7 +616,7 @@ CREATE TABLE `funds_in` (
   `voucher` varchar(255) DEFAULT NULL COMMENT ' 凭证号',
   `entry_at` int(11) DEFAULT NULL COMMENT ' 缴纳时间',
   `payer` varchar(255) DEFAULT NULL COMMENT ' 缴纳人',
-  `amount` float DEFAULT NULL COMMENT ' 金额',
+  `amount` decimal(30,2) DEFAULT NULL COMMENT ' 金额',
   `bank` varchar(255) DEFAULT NULL COMMENT ' 支付银行',
   `account` varchar(255) DEFAULT NULL COMMENT ' 支付账号',
   `created_at` int(11) DEFAULT NULL,
@@ -658,7 +662,7 @@ CREATE TABLE `funds_out` (
   `voucher` varchar(255) DEFAULT NULL COMMENT ' 凭证号',
   `outlay_at` int(11) DEFAULT NULL COMMENT '支付时间',
   `payee` varchar(255) DEFAULT NULL COMMENT '接收人',
-  `amount` float DEFAULT NULL COMMENT ' 金额',
+  `amount` decimal(30,2) DEFAULT NULL COMMENT ' 金额',
   `bank` varchar(255) DEFAULT NULL COMMENT '接收银行',
   `account` varchar(255) DEFAULT NULL COMMENT '接收账号',
   `created_at` int(11) DEFAULT NULL,
@@ -687,8 +691,8 @@ CREATE TABLE `house` (
   `area` float DEFAULT NULL COMMENT '面积 （平米）',
   `total_floor` int(11) DEFAULT NULL COMMENT '总楼层',
   `has_lift` tinyint(1) DEFAULT '0' COMMENT '是否配电梯，0否，1是',
-  `property_manage_fee` float DEFAULT NULL COMMENT '物业管理费单价 (元/平米/月）',
-  `public_fee` float DEFAULT NULL COMMENT '公摊费单价 （元/月）',
+  `property_manage_fee` decimal(10,2) DEFAULT NULL COMMENT '物业管理费单价 (元/平米/月）',
+  `public_fee` decimal(10,2) DEFAULT NULL COMMENT '公摊费单价 （元/月）',
   `is_real` tinyint(1) DEFAULT '0' COMMENT '0期房，1现房',
   `is_buy` tinyint(1) DEFAULT '0' COMMENT '0非购置房，1购置房',
   `is_transit` tinyint(1) DEFAULT '0' COMMENT '0不可用作临时安置房，1可作临时安置房',
@@ -705,7 +709,7 @@ CREATE TABLE `house` (
 -- ----------------------------
 -- Records of house
 -- ----------------------------
-INSERT INTO `house` VALUES ('1', '1', '0', '0', '0', '0', '1', '2', '0', '0', '0', '0', '0', '0', '0', '0', '0', '[]', '1508860800', '0', '1509413843', '1510897236', null);
+INSERT INTO `house` VALUES ('1', '1', '0', '0', '0', '0', '1', '2', '0', '0', '0', '0.00', '0.00', '0', '0', '0', '0', '[]', '1508860800', '0', '1509413843', '1510897236', null);
 
 -- ----------------------------
 -- Table structure for house_community
@@ -762,8 +766,8 @@ DROP TABLE IF EXISTS `house_price`;
 CREATE TABLE `house_price` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `house_id` int(11) DEFAULT NULL COMMENT '房源ID',
-  `market_price` float DEFAULT NULL COMMENT ' 市场评估价格',
-  `price` float DEFAULT NULL COMMENT ' 安置优惠价格',
+  `market_price` decimal(10,2) DEFAULT NULL COMMENT ' 市场评估价格',
+  `price` decimal(10,2) DEFAULT NULL COMMENT ' 安置优惠价格',
   `start_at` int(11) DEFAULT NULL COMMENT ' 生效时间',
   `end_at` int(11) DEFAULT NULL COMMENT ' 有效期限',
   `created_at` int(11) DEFAULT NULL,
@@ -775,8 +779,8 @@ CREATE TABLE `house_price` (
 -- ----------------------------
 -- Records of house_price
 -- ----------------------------
-INSERT INTO `house_price` VALUES ('1', '1', '2000', '1500', '1451577600', '1467216000', '1510897084', '1510898290', null);
-INSERT INTO `house_price` VALUES ('2', '1', '3000', '2000', '1467302400', '1483113600', '1510897750', '1510898622', null);
+INSERT INTO `house_price` VALUES ('1', '1', '2000.00', '1500.00', '1451577600', '1467216000', '1510897084', '1510898290', null);
+INSERT INTO `house_price` VALUES ('2', '1', '3000.00', '2000.00', '1467302400', '1483113600', '1510897750', '1510898622', null);
 
 -- ----------------------------
 -- Table structure for house_resettle
@@ -831,7 +835,7 @@ CREATE TABLE `item` (
   `record_num` varchar(255) DEFAULT NULL COMMENT '档案编号',
   `area` text COMMENT ' 征收范围',
   `household` int(11) DEFAULT NULL COMMENT ' 预计户数',
-  `funds` float DEFAULT NULL COMMENT ' 预算资金',
+  `funds` decimal(30,2) DEFAULT NULL COMMENT ' 预算资金',
   `house` int(11) DEFAULT NULL COMMENT ' 预计安置房数',
   `picture` text COMMENT '图片',
   `infos` text COMMENT '说明',
@@ -846,8 +850,8 @@ CREATE TABLE `item` (
 -- ----------------------------
 -- Records of item
 -- ----------------------------
-INSERT INTO `item` VALUES ('1', '西关片区棚户区改造', '0123456', '东至，西至，', '200', '200000', '300', null, '', '0', '1', '1509531788', '1509962456', null);
-INSERT INTO `item` VALUES ('2', '永庆路北侧片区土地熟化', '32141654', '东至，西至，北至，南至', '100', '2000000', '200', '[]', '', '1', '1', '1509606705', '1509962456', null);
+INSERT INTO `item` VALUES ('1', '西关片区棚户区改造', '0123456', '东至，西至，', '200', '200000.00', '300', null, '', '0', '1', '1509531788', '1509962456', null);
+INSERT INTO `item` VALUES ('2', '永庆路北侧片区土地熟化', '32141654', '东至，西至，北至，南至', '100', '2000000.00', '200', '[]', '', '1', '1', '1509606705', '1511402704', null);
 
 -- ----------------------------
 -- Table structure for item_company
@@ -935,18 +939,23 @@ DROP TABLE IF EXISTS `item_house_up`;
 CREATE TABLE `item_house_up` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_id` int(11) DEFAULT NULL COMMENT '兑付-房屋ID',
-  `up_start` float DEFAULT NULL COMMENT '上浮面积区间-起',
-  `up_end` float DEFAULT NULL COMMENT '上浮面积区间-止',
-  `up_rate` float DEFAULT NULL COMMENT '上浮比例（%）',
+  `up_start` decimal(10,2) DEFAULT NULL COMMENT '上浮面积区间-起',
+  `up_end` decimal(10,2) DEFAULT NULL COMMENT '上浮面积区间-止',
+  `up_rate` decimal(10,2) DEFAULT NULL COMMENT '上浮比例（%）',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目安置房上浮比例';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='项目安置房上浮比例';
 
 -- ----------------------------
 -- Records of item_house_up
 -- ----------------------------
+INSERT INTO `item_house_up` VALUES ('1', '2', '0.00', '15.00', '10.00', '1511340140', '1511340474', null);
+INSERT INTO `item_house_up` VALUES ('2', '2', '15.00', '25.00', '20.00', '1511340169', '1511340169', null);
+INSERT INTO `item_house_up` VALUES ('3', '2', '25.00', '30.00', '30.00', '1511340180', '1511340180', null);
+INSERT INTO `item_house_up` VALUES ('4', '2', '30.00', '0.00', '0.00', '1511340184', '1511340184', null);
+INSERT INTO `item_house_up` VALUES ('5', '1', '0.00', '15.00', '10.00', '1511340403', '1511340403', null);
 
 -- ----------------------------
 -- Table structure for item_process
@@ -1057,7 +1066,7 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=351 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=357 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
 -- ----------------------------
 -- Records of menu
@@ -1412,6 +1421,12 @@ INSERT INTO `menu` VALUES ('347', '344', '兑付-安置房删除', '3', '<img sr
 INSERT INTO `menu` VALUES ('348', '162', '安置房价上浮设置', '2', '<img src=\"/static/system/img/house.png\"/>', '6', '/system/itemhouseup/index', '', '0', '1', '1511335743', '1511335755', null);
 INSERT INTO `menu` VALUES ('349', '107', '临时安置记录', '2', '<img src=\"/static/system/img/transit.png\"/>', '0', '/system/housetransit/index', '', '1', '1', '1511337799', '1511337799', null);
 INSERT INTO `menu` VALUES ('350', '107', '安置记录', '2', '<img src=\"/static/system/img/reset.png\"/>', '0', '/system/houseresettle/index', '', '1', '1', '1511337841', '1511337841', null);
+INSERT INTO `menu` VALUES ('351', '348', '添加房价上浮', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/itemhouseup/add', null, '0', '1', '1508894820', '1508896706', null);
+INSERT INTO `menu` VALUES ('352', '348', '房价上浮详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/itemhouseup/detail', null, '0', '1', '1508894864', '1508894864', null);
+INSERT INTO `menu` VALUES ('353', '348', '房价上浮修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/itemhouseup/edit', null, '0', '1', '1508894920', '1508894920', null);
+INSERT INTO `menu` VALUES ('354', '348', '房价上浮删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/itemhouseup/delete', null, '0', '1', '1508894998', '1508895558', null);
+INSERT INTO `menu` VALUES ('355', '348', '房价上浮恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/itemhouseup/restore', null, '0', '1', '1508894998', '1508895590', null);
+INSERT INTO `menu` VALUES ('356', '348', '房价上浮销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/itemhouseup/destroy', null, '0', '1', '1508894998', '1508895601', null);
 
 -- ----------------------------
 -- Table structure for nation
@@ -1545,14 +1560,14 @@ CREATE TABLE `pay` (
   `community_id` int(11) DEFAULT NULL COMMENT '片区ID',
   `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
   `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
-  `estate_amount` float DEFAULT NULL COMMENT '房产补偿',
-  `assets_amount` float DEFAULT NULL COMMENT '资产补偿',
-  `public_amount` float DEFAULT NULL COMMENT '公共附属物评估总额',
+  `estate_amount` decimal(30,2) DEFAULT NULL COMMENT '房产补偿',
+  `assets_amount` decimal(30,2) DEFAULT NULL COMMENT '资产补偿',
+  `public_amount` decimal(30,2) DEFAULT NULL COMMENT '公共附属物评估总额',
   `public_num` int(11) DEFAULT NULL COMMENT '公共评估户数',
-  `public_avg` float DEFAULT NULL COMMENT '公共附属物平均',
-  `subject_amount` float DEFAULT NULL COMMENT '科目补偿',
-  `object_amount` float DEFAULT NULL COMMENT ' 事项补偿',
-  `total` float DEFAULT NULL COMMENT '补偿总额',
+  `public_avg` decimal(30,2) DEFAULT NULL COMMENT '公共附属物平均',
+  `subject_amount` decimal(30,2) DEFAULT NULL COMMENT '科目补偿',
+  `object_amount` decimal(30,2) DEFAULT NULL COMMENT ' 事项补偿',
+  `total` decimal(30,2) DEFAULT NULL COMMENT '补偿总额',
   `compensate_way` tinyint(1) DEFAULT '0' COMMENT '补偿方式，0为货币补偿，1为产权调换',
   `transit_way` tinyint(1) DEFAULT '0' COMMENT '过渡方式，0为货币过渡，1为周转房临时安置',
   `move_way` tinyint(1) DEFAULT '0' COMMENT '搬迁方式，0自行搬迁，1政府负责',
@@ -1567,7 +1582,7 @@ CREATE TABLE `pay` (
 -- ----------------------------
 -- Records of pay
 -- ----------------------------
-INSERT INTO `pay` VALUES ('1', '2', '1', '2', '0', '0', '0', '0', '1', '0', '0', '220', '220', '1', '0', '0', '1', '[]', '1510804110', '1511258278', null);
+INSERT INTO `pay` VALUES ('1', '2', '1', '2', '0', '0.00', '0.00', '0.00', '1', '0.00', '0.00', '220.00', '220.00', '1', '0', '0', '1', '[]', '1510804110', '1511258278', null);
 
 -- ----------------------------
 -- Table structure for pay_holder
@@ -1582,16 +1597,16 @@ CREATE TABLE `pay_holder` (
   `pay_id` int(11) DEFAULT NULL COMMENT '兑付ID',
   `collection_holder_id` int(11) DEFAULT NULL COMMENT ' 入户摸底-产权人或承租人ID',
   `holder` tinyint(1) DEFAULT '1' COMMENT '产权，1产权人，2承租人',
-  `portion` float DEFAULT NULL COMMENT ' 补偿份额',
-  `estate_amount` float DEFAULT NULL COMMENT '房产补偿',
-  `assets_amount` float DEFAULT NULL COMMENT '资产补偿',
-  `public_amount` float DEFAULT NULL COMMENT '公共附属物评估总额',
+  `portion` decimal(10,2) DEFAULT NULL COMMENT ' 补偿份额',
+  `estate_amount` decimal(30,2) DEFAULT NULL COMMENT '房产补偿',
+  `assets_amount` decimal(30,2) DEFAULT NULL COMMENT '资产补偿',
+  `public_amount` decimal(30,2) DEFAULT NULL COMMENT '公共附属物评估总额',
   `public_num` int(11) DEFAULT NULL COMMENT '公共评估户数',
-  `public_avg` float DEFAULT NULL COMMENT '公共附属物平均',
-  `subject_amount` float DEFAULT NULL COMMENT ' 科目补偿',
-  `object_amount` float DEFAULT NULL COMMENT ' 事项补偿',
-  `total_amount` float DEFAULT NULL COMMENT ' 补偿总额',
-  `house_amount` float DEFAULT NULL COMMENT '安置房款',
+  `public_avg` decimal(30,2) DEFAULT NULL COMMENT '公共附属物平均',
+  `subject_amount` decimal(30,2) DEFAULT NULL COMMENT ' 科目补偿',
+  `object_amount` decimal(30,2) DEFAULT NULL COMMENT ' 事项补偿',
+  `total_amount` decimal(30,2) DEFAULT NULL COMMENT ' 补偿总额',
+  `house_amount` decimal(30,2) DEFAULT NULL COMMENT '安置房款',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
@@ -1601,7 +1616,7 @@ CREATE TABLE `pay_holder` (
 -- ----------------------------
 -- Records of pay_holder
 -- ----------------------------
-INSERT INTO `pay_holder` VALUES ('1', '2', '1', '2', null, '1', '1', '1', '100', '0', '0', '0', '1', '0', '0', '220', '220', null, '1510804110', '1511247722', null);
+INSERT INTO `pay_holder` VALUES ('1', '2', '1', '2', null, '1', '1', '1', '100.00', '0.00', '0.00', '0.00', '1', '0.00', '0.00', '220.00', '220.00', null, '1510804110', '1511247722', null);
 
 -- ----------------------------
 -- Table structure for pay_holder_house
@@ -1616,11 +1631,11 @@ CREATE TABLE `pay_holder_house` (
   `pay_holder_id` int(11) DEFAULT NULL COMMENT ' 兑付-产权人或承租人ID',
   `house_id` int(11) DEFAULT NULL COMMENT ' 房源ID',
   `sort` int(11) DEFAULT NULL COMMENT ' 排序',
-  `price` float DEFAULT NULL COMMENT ' 单价',
-  `area` float DEFAULT NULL COMMENT ' 面积',
-  `amount` float DEFAULT NULL COMMENT '房屋优惠总价',
-  `amount_up` float DEFAULT NULL COMMENT '房屋上浮总额',
-  `total` float DEFAULT NULL COMMENT ' 总价',
+  `price` decimal(10,2) DEFAULT NULL COMMENT ' 单价',
+  `area` decimal(30,2) DEFAULT NULL COMMENT ' 面积',
+  `amount` decimal(30,2) DEFAULT NULL COMMENT '房屋优惠总价',
+  `amount_up` decimal(30,2) DEFAULT NULL COMMENT '房屋上浮总额',
+  `total` decimal(30,2) DEFAULT NULL COMMENT ' 总价',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
@@ -1638,12 +1653,12 @@ DROP TABLE IF EXISTS `pay_holder_house_up`;
 CREATE TABLE `pay_holder_house_up` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `pay_holder_house_id` int(11) NOT NULL COMMENT '兑付-房屋ID',
-  `up_start` float DEFAULT NULL COMMENT '上浮面积区间-起',
-  `up_end` float DEFAULT NULL COMMENT '上浮面积区间-止',
-  `up_area` float DEFAULT NULL COMMENT '上浮面积',
-  `up_rate` float DEFAULT NULL COMMENT '上浮比例（%）',
-  `price` float DEFAULT NULL COMMENT '基本单价',
-  `amount` float DEFAULT NULL COMMENT ' 上浮小计',
+  `up_start` decimal(10,2) DEFAULT NULL COMMENT '上浮面积区间-起',
+  `up_end` decimal(10,2) DEFAULT NULL COMMENT '上浮面积区间-止',
+  `up_area` float(10,2) DEFAULT NULL COMMENT '上浮面积',
+  `up_rate` float(10,2) DEFAULT NULL COMMENT '上浮比例（%）',
+  `price` float(10,2) DEFAULT NULL COMMENT '基本单价',
+  `amount` float(30,2) DEFAULT NULL COMMENT ' 上浮小计',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
@@ -1665,9 +1680,9 @@ CREATE TABLE `pay_object` (
   `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
   `pay_id` int(11) DEFAULT NULL COMMENT '兑付ID',
   `collection_object_id` int(11) DEFAULT NULL COMMENT ' 入户摸底-补偿事项ID',
-  `price` float DEFAULT NULL COMMENT ' 补偿单价',
-  `number` float DEFAULT NULL COMMENT ' 数量或次数',
-  `amount` float DEFAULT NULL COMMENT '补偿总价',
+  `price` decimal(30,2) DEFAULT NULL COMMENT ' 补偿单价',
+  `number` decimal(10,2) DEFAULT NULL COMMENT ' 数量或次数',
+  `amount` decimal(30,2) DEFAULT NULL COMMENT '补偿总价',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
@@ -1677,8 +1692,8 @@ CREATE TABLE `pay_object` (
 -- ----------------------------
 -- Records of pay_object
 -- ----------------------------
-INSERT INTO `pay_object` VALUES ('1', '2', '1', '2', '1', '2', '120', '1', '120', '1510804110', '1510804796', null);
-INSERT INTO `pay_object` VALUES ('2', '2', '1', '2', '1', '3', '100', '1', '100', '1510804110', '1510804655', null);
+INSERT INTO `pay_object` VALUES ('1', '2', '1', '2', '1', '2', '120.00', '1.00', '120.00', '1510804110', '1510804796', null);
+INSERT INTO `pay_object` VALUES ('2', '2', '1', '2', '1', '3', '100.00', '1.00', '100.00', '1510804110', '1510804655', null);
 
 -- ----------------------------
 -- Table structure for pay_subject
@@ -1691,11 +1706,11 @@ CREATE TABLE `pay_subject` (
   `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
   `pay_id` int(11) DEFAULT NULL COMMENT '兑付ID',
   `item_subject_id` int(11) DEFAULT NULL COMMENT '项目重要补偿科目ID',
-  `price` float DEFAULT NULL COMMENT ' 补偿单价',
-  `number` float DEFAULT NULL COMMENT ' 数量',
+  `price` decimal(30,2) DEFAULT NULL COMMENT ' 补偿单价',
+  `number` decimal(30,2) DEFAULT NULL COMMENT ' 数量',
   `unit` varchar(255) DEFAULT NULL COMMENT '数量单位',
   `times` int(11) DEFAULT '1' COMMENT '补偿次数',
-  `amount` float DEFAULT NULL COMMENT '补偿总价',
+  `amount` decimal(30,2) DEFAULT NULL COMMENT '补偿总价',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
