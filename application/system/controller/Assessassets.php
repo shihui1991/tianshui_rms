@@ -188,6 +188,8 @@ class Assessassets extends Auth
                     model('Assesss')->save(['updated_at' => time()], ['id' => $search_assess]);
                     $assess_id = $search_assess;
                 }
+                /*----- 禁用之前添加的房产评估 -----*/
+                model('Assessassetss')->save(['status'=>0],['assess_id' =>$assess_id]);
                 /*----- 添加资产评估 -----*/
                 $model->save([
                     'item_id' => $datas['item_id'],
@@ -367,49 +369,37 @@ class Assessassets extends Auth
     public function status()
     {
         $inputs = input();
-        $ids = isset($inputs['ids']) ? $inputs['ids'] : '';
-        $status = input('status');
-
-        if (empty($ids)) {
+        $id = isset($inputs['id']) ? $inputs['id'] : '';
+        if (empty($id)) {
             return $this->error('至少选择一项');
         }
-        if (!in_array($status, [0, 1])) {
-            return $this->error('错误操作');
+        $assessassets_info =  model('Assessassetss')
+            ->field(['item_id','community_id','collection_id','assess_id','status','total'])
+            ->where('id',  $id)
+            ->find();
+        if(!$assessassets_info){
+            return  $this->error('数据异常，请检查后重试');
         }
-        Db::startTrans();
-        try {
-            model('Assessassetss')->allowField(['status', 'updated_at'])->save(['status' => $status], ['id' => ['in', $ids]]);
-            $rs = model('Assessassetss')->where('id', 'in', $ids)->select();
-            $where = [];
-            $new_array = [];
-            foreach ($rs as $k => $v) {
-                $where[] = ['item_id' => $v->item_id, 'community_id' => $v->community_id, 'collection_id' => $v->collection_id];
-                $new_array[] = $v->item_id."-".$v->community_id."-".$v->collection_id;
-            }
-            $new_array = array_keys(array_unique($new_array));
+        if($assessassets_info->getData('status')==0){
+            Db::startTrans();
+            try{
+                model('Assessassetss')->save(['status'=>0],['item_id' => $assessassets_info->item_id, 'community_id' => $assessassets_info->community_id, 'collection_id' => $assessassets_info->collection_id]);
+                model('Assessassetss')->allowField(['status', 'updated_at'])->save(['status'=>1],['id'=>$id]);
 
-            $new_where = [];
-            for($i=0;$i<count($new_array);$i++){
-                $new_where[] = $where[$new_array[$i]];
-                $new_where[$i]['updated_at'] = time();
+                model('Assesss')->save(['assets' => $assessassets_info->total], ['id' => $assessassets_info->assess_id]);
+                $res = true;
+                Db::commit();
+            }catch (\Exception $e){
+                $res = false;
+                Db::rollback();
             }
-            $res = false;
-            $sqls =  batch_update_sql('assess',['updated_at','item_id','community_id','collection_id'],$new_where,'updated_at',['item_id','community_id','collection_id']);
-
-            if($sqls){
-                foreach ($sqls as $sql){
-                    $res=db()->execute($sql);
-                }
+            if($res){
+                return $this->success('修改成功','');
+            }else{
+                return $this->error('修改失败');
             }
-            Db::commit();
-        } catch (\Exception $e) {
-            $res = false;dump($e);
-            Db::rollback();
-        }
-        if($res){
-            return $this->success('修改成功','');
         }else{
-            return $this->error('修改失败');
+            return $this->error('当前资产评估不能被禁用');
         }
     }
 

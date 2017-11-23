@@ -12,6 +12,7 @@
 namespace app\system\controller;
 use app\system\model\Assessestates;
 use think\Db;
+use think\Exception;
 
 class Assessestate extends Auth
 {
@@ -189,6 +190,8 @@ class Assessestate extends Auth
                     model('Assesss')->save(['updated_at' => time()], ['id' => $search_assess]);
                     $assess_id = $search_assess;
                 }
+                /*----- 禁用之前添加的房产评估 -----*/
+                model('Assessestates')->save(['status'=>0],['assess_id' =>$assess_id]);
                 /*----- 添加房产评估 -----*/
                 $model->save([
                     'item_id' => $datas['item_id'],
@@ -312,19 +315,22 @@ class Assessestate extends Auth
             ->select();
         /*----- 建筑物表格 -----*/
         $options = '';
-        foreach ($collectionbuildings as $k => $v) {
-            $options .= '<tr class="h50">';
-            $options .= '<td style="text-align: left;background: none;width: inherit !important;"><input type="hidden" name="ids[' . $building_price[$k]->id . ']" value="' . $v['id'] . '">' . $v['id'] . '</td>';
-            $options .= '<td class="nowrap"  style="text-align: left;background: none;">' . $v['address'] . '</td>';
-            $options .= '<td style="text-align: center;background: none;">' . $v['bu_name'] . '</td>';
-            $options .= '<td style="text-align: center;background: none;">' . $v['bs_name'] . '</td>';
-            $options .= '<td style="text-align: left;background: none;">' . $v['real_num'] . '</td>';
-            $options .= '<td style="text-align: center;background: none;">' . $v['real_unit'] . '</td>';
-            $options .= '<td style="text-align: left;background: none;"><input type="text" name="price[' . $building_price[$k]->id . ']" class="price" value="' . $building_price[$k]->price . '" data-real_num="' . $v['real_num'] . '" data-id="' . $v['id'] . '" onkeyup="price_num(this)" onchange="price_num(this)"></td>';
-            $options .= '<td style="text-align: left;background: none;">' . $v['remark'] . '</td>';
-            $options .= '<td style="text-align: left;background: none;"><input type="text" name="amount[' . $building_price[$k]->id . ']" id="total-' . $v['id'] . '"  value="' . $building_price[$k]->amount . '" readonly></td>';
-            $options .= '</tr>';
+        if($collectionbuildings){
+            foreach ($collectionbuildings as $k => $v) {
+                $options .= '<tr class="h50">';
+                $options .= '<td style="text-align: left;background: none;width: inherit !important;"><input type="hidden" name="ids[' . $building_price[$k]->id . ']" value="' . $v['id'] . '">' . $v['id'] . '</td>';
+                $options .= '<td class="nowrap"  style="text-align: left;background: none;">' . $v['address'] . '</td>';
+                $options .= '<td style="text-align: center;background: none;">' . $v['bu_name'] . '</td>';
+                $options .= '<td style="text-align: center;background: none;">' . $v['bs_name'] . '</td>';
+                $options .= '<td style="text-align: left;background: none;">' . $v['real_num'] . '</td>';
+                $options .= '<td style="text-align: center;background: none;">' . $v['real_unit'] . '</td>';
+                $options .= '<td style="text-align: left;background: none;"><input type="text" name="price[' . $building_price[$k]->id . ']" class="price" value="' . $building_price[$k]->price . '" data-real_num="' . $v['real_num'] . '" data-id="' . $v['id'] . '" onkeyup="price_num(this)" onchange="price_num(this)"></td>';
+                $options .= '<td style="text-align: left;background: none;">' . $v['remark'] . '</td>';
+                $options .= '<td style="text-align: left;background: none;"><input type="text" name="amount[' . $building_price[$k]->id . ']" id="total-' . $v['id'] . '"  value="' . $building_price[$k]->amount . '" readonly></td>';
+                $options .= '</tr>';
+            }
         }
+
 
         /*----- 评估师查询 -----*/
         $assessestatevaluer_ids = model('Assessestatevaluers')
@@ -439,50 +445,42 @@ class Assessestate extends Auth
     public function status()
     {
         $inputs = input();
-        $ids = isset($inputs['ids']) ? $inputs['ids'] : '';
-        $status = input('status');
+        $id = isset($inputs['id']) ? $inputs['id'] : '';
 
-        if (empty($ids)) {
+        if (empty($id)) {
             return $this->error('至少选择一项');
         }
-        if (!in_array($status, [0, 1])) {
-            return $this->error('错误操作');
+        $assessestate_info =  model('Assessestates')->field(['item_id','community_id','collection_id','assess_id','status'])->where('id',  $id)->find();
+        if(!$assessestate_info){
+           return  $this->error('数据异常，请检查后重试');
         }
-        Db::startTrans();
-        try {
-            model('Assessestates')->allowField(['status', 'updated_at'])->save(['status' => $status], ['id' => ['in', $ids]]);
-            $rs = model('Assessestates')->where('id', 'in', $ids)->select();
-            $where = [];
-            $new_array = [];
-            foreach ($rs as $k => $v) {
-               $where[] = ['item_id' => $v->item_id, 'community_id' => $v->community_id, 'collection_id' => $v->collection_id];
-                $new_array[] = $v->item_id."-".$v->community_id."-".$v->collection_id;
-            }
-            $new_array = array_keys(array_unique($new_array));
-
-            $new_where = [];
-            for($i=0;$i<count($new_array);$i++){
-                $new_where[] = $where[$new_array[$i]];
-                $new_where[$i]['updated_at'] = time();
-            }
-            $res = false;
-           $sqls =  batch_update_sql('assess',['updated_at','item_id','community_id','collection_id'],$new_where,'updated_at',['item_id','community_id','collection_id']);
-
-           if($sqls){
-                foreach ($sqls as $sql){
-                    $res=db()->execute($sql);
+        if($assessestate_info->getData('status')==0){
+            Db::startTrans();
+            try{
+                model('Assessestates')->save(['status'=>0],['item_id' => $assessestate_info->item_id, 'community_id' => $assessestate_info->community_id, 'collection_id' => $assessestate_info->collection_id]);
+                model('Assessestates')->allowField(['status', 'updated_at'])->save(['status'=>1],['id'=>$id]);
+                $assessestatebuilding_amount =  model('Assessestatebuildings')->field(['amount'])->where(['estate_id' =>$id])->select();
+                $amounts = 0;
+                foreach ($assessestatebuilding_amount as $k=>$v){
+                  $amounts+=$v['amount'];
                 }
+                model('Assesss')->save(['estate' => $amounts], ['id' => $assessestate_info->assess_id]);
+                $res = true;
+                Db::commit();
+            }catch (\Exception $e){
+                $res = false;
+                Db::rollback();
             }
-            Db::commit();
-        } catch (\Exception $e) {
-            $res = false;dump($e);
-            Db::rollback();
-        }
-        if($res){
-            return $this->success('修改成功','');
+            if($res){
+                return $this->success('修改成功','');
+            }else{
+                return $this->error('修改失败');
+            }
         }else{
-            return $this->error('修改失败');
+            return $this->error('当前房产评估不能被禁用');
         }
+
+
     }
 
     /* ========== 删除 ========== */
