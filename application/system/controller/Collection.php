@@ -36,8 +36,7 @@ class Collection extends Auth
         /* ********** 查询条件 ********** */
         $datas=[];
         $where=[];
-        $field=['c.id','item_id','community_id','building','unit','floor','number','type','real_use','is_agree',
-            'compensate_way','compensate_price','c.status','c.deleted_at','i.name as i_name','i.is_top','cc.address','cc.name as cc_name','b.name as b_name'];
+        $field=['id','item_id','community_id','building','unit','floor','number','type','real_use','is_agree', 'compensate_way','compensate_price','status','deleted_at'];
 
         /* ++++++++++ 项目 ++++++++++ */
         $item_id=input('item_id');
@@ -126,13 +125,10 @@ class Collection extends Auth
             $collection_model=$collection_model->withTrashed();
         }
         $collections=$collection_model
-            ->alias('c')
             ->field($field)
-            ->join('item i','i.id=c.item_id','left')
-            ->join('collection_community cc','cc.id=c.community_id','left')
-            ->join('building_use b','b.id=c.real_use','left')
+            ->with('item,community,realuse')
             ->where($where)
-            ->order(['item.is_top'=>'desc','collection.'.$ordername=>$orderby])
+            ->order([$ordername=>$orderby])
             ->paginate($display_num);
 
         $datas['collections']=$collections;

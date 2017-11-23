@@ -101,4 +101,17 @@ class Collections extends Model
         }
         return $data;
     }
+
+
+    public function item(){
+        return $this->belongsTo('Items','item_id','id','item')->field('id,name,is_top,status,deleted_at');
+    }
+
+    public function community(){
+        return $this->belongsTo('Collectioncommunitys','community_id','id','community')->field('id,address,name');
+    }
+
+    public function realuse(){
+        return $this->belongsTo('Buildinguses','real_use','id','building_use')->field('id,name');
+    }
 }

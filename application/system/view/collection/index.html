@@ -73,8 +73,8 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$collection->id}" onclick="checkBoxOp(this)" id="check-{$collection->id}"/>
                 </td>
                 <td>{$collection->id}</td>
-                <td>{$collection->i_name}（{$collection->item_id}）</td>
-                <td title="{$collection->address}">{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->cc_name}</del>{else /}{$collection->cc_name}{/if}（{$collection->community_id}）</td>
+                <td>{$collection->item->name}（{$collection->item_id}）</td>
+                <td title="{$collection->community->address}">{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->community->name}</del>{else /}{$collection->community->name}{/if}（{$collection->community_id}）</td>
                 <td>
                     {if condition="$collection->deleted_at or $collection->getData('status') eq 0"}
                     <del>
@@ -91,7 +91,7 @@
                     {/if}
                 </td>
                 <td>{$collection->type}</td>
-                <td>{$collection->b_name}</td>
+                <td>{$collection->realuse->name}</td>
                 <td>{$collection->is_agree}</td>
                 <td>{$collection->compensate_way}</td>
                 <td>{$collection->compensate_price}</td>
