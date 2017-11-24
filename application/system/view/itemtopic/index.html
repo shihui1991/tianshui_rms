@@ -7,21 +7,17 @@
 
 </head>
 <body>
-<h4>项目风险评估话题管理</h4>
+<h4>项目风险评估话题管理--->当前项目：{$item_name}</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
         <li>
-            <a href="{:url('index')}">
+            <a href="{:url('index',['item_id'=>$item_id])}">
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
                 重置
             </a>
         </li>
-        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','240')" >
-            <img src="__STATIC__/system/img/page_white_magnify.png"/>
-            查询
-        </li>
-        <li class="fgf" onclick="layerIfWindow('添加项目风险评估话题','{:url('add')}','550','260')">
+        <li class="fgf" onclick="layerIfWindow('添加项目风险评估话题','{:url('add',['item_id'=>$item_id])}','550','260')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
@@ -49,7 +45,6 @@
                     <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
                 </th>
                 <th>ID</th>
-                <th>项目</th>
                 <th>风险评估话题</th>
                 <th>操作</th>
             </tr>
@@ -59,7 +54,6 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$info->id}" onclick="checkBoxOp(this)" id="check-{$info->id}"/>
                 </td>
                 <td>{if condition="$info->deleted_at"}<del>{$info->id}</del>{else/}{$info->id}{/if}</td>
-                <td>{if condition="$info->deleted_at"}<del>{$info->item_name}</del>{else/}{$info->item_name}{/if}</td>
                 <td>{if condition="$info->deleted_at"}<del>{$info->topic_name}</del>{else/}{$info->topic_name}{/if}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('项目风险评估话题基本信息','{:url('detail',['id'=>$info->id])}','550','260')" >详细信息</button>
@@ -77,66 +71,8 @@
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
     <form action="{:url('index')}" method="post" id="search-form">
-        <table class="layerTable">
-            <tr class="h50">
-                <td><label for="item_id">项目：</label></td>
-                <td>
-                    <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
-                        <option value="">--请选择项目--</option>
-                        {volist name="item_list" id="item"}
-                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if} >{$item->name}（{$item->id}）</option>
-                        {/volist}
-                    </select>
-                </td>
-                <td><label for="topic_id">话题：</label></td>
-                <td>
-                    <select name="topic_id" id="topic_id" class="chosen" data-placeholder="请选择话题" data-no_results_text="没有匹配数据">
-                        <option value="">--请选择话题--</option>
-                        {volist name="topic_list" id="topic"}
-                        <option value="{$topic->id}" {if condition="isset($topic_id) and $topic_id eq $topic->id"}selected{/if}>{$topic->name}</option>
-                        {/volist}
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td>是否删除：</td>
-                <td>
-                    <select name="deleted" id="deleted">
-                        <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
-                        <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
-                    </select>
-                </td>
-                <td>每页条数：</td>
-                <td>
-                    <select name="display_num" id="display_num">
-                        {volist name="nums" id="num"}
-                        <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
-                        {/volist}
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td>排序：</td>
-                <td>
-                    <select name="ordername" id="ordername">
-                        <option value="id">--默认--</option>
-                        <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
-                        <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
-                        <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
-                    </select>
-                </td>
-                <td>方式：</td>
-                <td>
-                    <select name="orderby" id="orderby">
-                        <option value="asc">--升序--</option>
-                        <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
-                    </select>
-                </td>
-            </tr>
-
-        </table>
         <div class="layerBtns">
+            <input type="hidden" name="item_id" value="{$item_id}">
             <button class="btn" type="submit">查询</button>
         </div>
     </form>
