@@ -43,7 +43,7 @@ class Index extends Controller
         $username=input('username');
         $password=input('password');
 
-        $user=Users::field(['u.id','username','password','secret_key','role_id','dept_id','u.status','is_admin','menu_ids','r.status as r_status'])
+        $user=Users::field(['u.id','username','password','secret_key','role_id','dept_id','u.status','is_admin','menu_ids','r.status as r_status','r.parent_id as role_parent_id'])
             ->alias('u')
             ->join('role r','r.id = u.role_id','left')
             ->where(['username'=>$username])
@@ -64,6 +64,7 @@ class Index extends Controller
             'user_id'=>$user->id,
             'dept_id'=>$user->dept_id,
             'role_id'=>$user->role_id,
+            'role_parent_id'=>$user->role_parent_id,
             'username'=>$user->username,
             'secret_key'=>$user->secret_key,
             'is_admin'=>$user->is_admin,

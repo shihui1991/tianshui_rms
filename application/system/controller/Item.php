@@ -2,21 +2,21 @@
 /* |------------------------------------------------------
  * | 项目管理
  * |------------------------------------------------------
- * | 初始化操作
- * | 列表
- * | 添加
- * | 详情
- * | 修改
- * | 状态
- * | 置顶
- * | 删除
- * | 恢复
- * | 销毁
+ * | 初始化操作 _initialize
+ * | 列表 index
+ * | 添加 add
+ * | 详情 detail
+ * | 修改 edit
+ * | 状态 status
+ * | 置顶 istop
+ * | 审核 check
  * */
 namespace app\system\controller;
 
 use app\system\model\Items;
+use app\system\model\Itemstatuss;
 use think\Db;
+use think\Exception;
 
 class Item extends Auth
 {
@@ -60,7 +60,7 @@ class Item extends Auth
         }
         /* ++++++++++ 状态 ++++++++++ */
         $status=input('status');
-        if(is_numeric($status) && in_array($status,[0,1])){
+        if(is_numeric($status) && in_array($status,[0,1,2,3])){
             $where['status']=$status;
             $datas['status']=$status;
         }
@@ -79,18 +79,10 @@ class Item extends Auth
         $display_num=$display_num?$display_num:config('paginate.list_rows');
         $datas['display_num']=$display_num;
         /* ++++++++++ 查询 ++++++++++ */
-        $deleted=input('deleted');
         $item_model=new Items();
         $datas['model']=$item_model;
-        if(is_numeric($deleted) && in_array($deleted,[0,1])){
-            $datas['deleted']=$deleted;
-            if($deleted==1){
-                $item_model=$item_model->onlyTrashed();
-            }
-        }else{
-            $item_model=$item_model->withTrashed();
-        }
-        $items=$item_model->where($where)->field($field)->order(['is_top'=>'desc',$ordername=>$orderby])->paginate($display_num);
+
+        $items=$item_model->withTrashed()->where($where)->field($field)->order(['is_top'=>'desc',$ordername=>$orderby])->paginate($display_num);
 
         $datas['items']=$items;
 
@@ -100,7 +92,7 @@ class Item extends Auth
     }
 
     /* ========== 添加 ========== */
-    public function add($id=0){
+    public function add(){
         $model=new Items();
         if(request()->isPost()){
             $rules=[
@@ -116,16 +108,41 @@ class Item extends Auth
 
             $result=$this->validate(input(),$rules,$msg);
             if(true !== $result){
-                return $this->error($result);
+                return $this->error($result,'');
             }
 
-            $other_datas=$model->other_data(input());
-            $datas=array_merge(input(),$other_datas);
-            $model->save($datas);
-            if($model !== false){
-                return $this->success('保存成功','');
+            Db::startTrans();
+            try{
+
+                $other_datas=$model->other_data(input());
+                $datas=array_merge(input(),$other_datas);
+                $datas['status']=0;
+                $model->save($datas);
+
+                $status_model=new Itemstatuss();
+                $status_data=[
+                    'keyname'=>'item_id',
+                    'keyvalue'=>$model->id,
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>0
+                ];
+                $status_model->save($status_data);
+
+                $res=true;
+                $msg='保存成功';
+                Db::commit();
+            }catch (\Exception $exception){
+                $res=false;
+                $msg=$exception->getMessage();
+                Db::rollback();
+            }
+
+            if($res){
+                return $this->success($msg,'');
             }else{
-                return $this->error('保存失败');
+                return $this->error($msg,'');
             }
         }else{
             return view('modify',[
@@ -135,13 +152,14 @@ class Item extends Auth
     }
 
     /* ========== 详情 ========== */
-    public function detail($id=null){
+    public function detail(){
+        $id=input('id');
         if(!$id){
-            return $this->error('至少选择一项');
+            return $this->error('至少选择一项','');
         }
         $infos=Items::withTrashed()->find($id);
         if(!$infos){
-            return $this->error('选择项目不存在');
+            return $this->error('选择项目不存在','');
         }
 
         $model=new Items();
@@ -156,7 +174,7 @@ class Item extends Auth
     public function edit(){
         $id=input('id');
         if(!$id){
-            return $this->error('错误操作');
+            return $this->error('错误操作','');
         }
         $datas=input();
         $rules=[
@@ -175,35 +193,103 @@ class Item extends Auth
             return $this->error($result);
         }
 
-        $item_model=new Items();
-        $other_datas=$item_model->other_data(input());
-        $datas=array_merge(input(),$other_datas);
-        $item_model->isUpdate(true)->save($datas);
-        if($item_model !== false){
-            return $this->success('修改成功','');
+        $status=Itemstatuss::where(['keyname'=>'item_id','keyvalue'=>$id])->order('created_at desc')->value('status');
+        if($status==8){
+            return $this->error('已通过审核，禁止修改！','');
+        }
+
+        $model=new Items();
+        Db::startTrans();
+        try{
+            $other_datas=$model->other_data(input());
+            $datas=array_merge(input(),$other_datas);
+            $model->except('status')->save($datas,['id'=>$id]);
+
+            $status_model=new Itemstatuss();
+            $status_data=[
+                'keyname'=>'item_id',
+                'keyvalue'=>$id,
+                'user_id'=>session('userinfo.user_id'),
+                'role_id'=>session('userinfo.role_id'),
+                'role_parent_id'=>session('userinfo.role_parent_id'),
+                'status'=>1
+            ];
+            $status_model->save($status_data);
+
+            $res=true;
+            $msg='修改成功';
+            Db::commit();
+        }catch (\Exception $exception){
+            $res=false;
+            $msg=$exception->getMessage();
+            Db::rollback();
+        }
+
+        if($res){
+            return $this->success($msg,'');
         }else{
-            return $this->error('修改失败');
+            return $this->error($msg,'');
         }
     }
 
     /* ========== 状态 ========== */
     public function status(){
-        $inputs=input();
-        $ids=isset($inputs['ids'])?$inputs['ids']:'';
-        $status=input('status');
+        $id=input('id');
+        if(!$id){
+            return $this->error('错误操作','');
+        }
+        if(request()->isPost()){
+            $status=input('status');
+            if(!in_array($status,[0,1,2,3])){
+                return $this->error('错误操作','');
+            }
 
-        if(empty($ids)){
-            return $this->error('至少选择一项');
-        }
-        if(!in_array($status,[0,1])){
-            return $this->error('错误操作');
-        }
-        $model=new Items();
-        $res=$model->allowField(['status','updated_at'])->save(['status'=>$status],['id'=>['in',$ids]]);
-        if($res){
-            return $this->success('修改成功','');
+            if(!session('userinfo.is_admin')){
+                return $this->error('没有操作权限','');
+            }
+
+            $model=new Items();
+            Db::startTrans();
+            try{
+                $model->allowField(['status','updated_at'])->save(['status'=>$status],['id'=>$id]);
+
+                $status_model=new Itemstatuss();
+                $status_data=[
+                    'keyname'=>'item_id',
+                    'keyvalue'=>$id,
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>1
+                ];
+                $status_model->save($status_data);
+
+                $res=true;
+                $msg='修改成功';
+                Db::commit();
+            }catch (\Exception $exception){
+                $res=false;
+                $msg=$exception->getMessage();
+                Db::rollback();
+            }
+
+            if($res){
+                return $this->success($msg,'');
+            }else{
+                return $this->error($msg,'');
+            }
         }else{
-            return $this->error('修改失败');
+            $datas['id']=$id;
+
+            $model=new Itemstatuss();
+            $datas['model']=$model;
+
+            $statuss=$model->with('user,role')->where(['keyname'=>'item_id','keyvalue'=>$id])->order('created_at asc')->paginate();
+            $datas['statuss']=$statuss;
+
+            $this->assign($datas);
+
+            return view();
         }
     }
 
@@ -214,66 +300,60 @@ class Item extends Auth
         $top=input('top');
 
         if(empty($ids)){
-            return $this->error('至少选择一项');
+            return $this->error('至少选择一项','');
         }
         if(!in_array($top,[0,1])){
-            return $this->error('错误操作');
+            return $this->error('错误操作','');
         }
         $model=new Items();
         $res=$model->allowField(['is_top','updated_at'])->save(['is_top'=>$top],['id'=>['in',$ids]]);
         if($res){
             return $this->success('修改成功','');
         }else{
-            return $this->error('修改失败');
+            return $this->error('修改失败','');
         }
     }
 
-    /* ========== 删除 ========== */
-    public function delete(){
-        $inputs=input();
-        $ids=isset($inputs['ids'])?$inputs['ids']:'';
-
-        if(empty($ids)){
-            return $this->error('至少选择一项');
+    /* ========== 审核 ========== */
+    public function check(){
+        $id=input('id');
+        if(!$id){
+            return $this->error('错误操作','');
         }
-        $res=Items::destroy($ids);
+        $check=input('check');
+        if(!in_array($check,[8,9])){
+            return $this->error('错误操作','');
+        }
+        Db::startTrans();
+        try{
+            $last_status=Itemstatuss::where(['keyname'=>'item_id','keyvalue'=>$id])->order('created_at desc')->find();
+            if($last_status->role_parent_id!=session('userinfo.role_id') && $last_status->role_parent_id!=session('userinfo.role_parent_id')){
+                throw new Exception('审核流程已超出权限！');
+            }
+            $status_model=new Itemstatuss();
+            $status_data=[
+                'keyname'=>'item_id',
+                'keyvalue'=>$id,
+                'user_id'=>session('userinfo.user_id'),
+                'role_id'=>session('userinfo.role_id'),
+                'role_parent_id'=>session('userinfo.role_parent_id'),
+                'status'=>$check
+            ];
+            $status_model->save($status_data);
+
+            $res=true;
+            $msg='操作成功';
+            Db::commit();
+        }catch (\Exception $exception){
+            $msg=$exception->getMessage();
+            $res=false;
+            Db::rollback();
+        }
+
         if($res){
-            return $this->success('删除成功','');
+            return $this->success($msg,'');
         }else{
-            return $this->error('删除失败');
-        }
-    }
-
-    /* ========== 恢复 ========== */
-    public function restore(){
-        $inputs=input();
-        $ids=isset($inputs['ids'])?$inputs['ids']:'';
-
-        if(empty($ids)){
-            return $this->error('至少选择一项');
-        }
-
-        $res=Db::table('item')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-        if($res){
-            return $this->success('恢复成功','');
-        }else{
-            return $this->error('恢复失败');
-        }
-    }
-
-    /* ========== 销毁 ========== */
-    public function destroy(){
-        $inputs=input();
-        $ids=isset($inputs['ids'])?$inputs['ids']:'';
-
-        if(empty($ids)){
-            return $this->error('至少选择一项');
-        }
-        $res=Items::onlyTrashed()->whereIn('id',$ids)->delete(true);
-        if($res){
-            return $this->success('销毁成功','');
-        }else{
-            return $this->error('销毁失败，请先删除！');
+            return $this->error($msg,'');
         }
     }
 }

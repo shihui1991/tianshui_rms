@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>项目管理|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<form action="{:url('status')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <input type="hidden" name="id" value="{$id}">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th>序号</th>
+                <th>姓名</th>
+                <th>用户</th>
+                <th>角色</th>
+                <th>操作</th>
+                <th>时间</th>
+            </tr>
+            {volist name="statuss" id="status"}
+            <tr>
+                <td>{$i}</td>
+                <td>{$status->user->name}</td>
+                <td>{$status->user->username}</td>
+                <td>{$status->role->name}</td>
+                <td>{$status->status}</td>
+                <td>{$status->created_at}</td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+    <div class="pageCon">
+        {$statuss->render()}
+    </div>
+    <div class="layerBtns">
+        <button type="button" data-action="{:url('check',['check'=>8])}" class="btn js-ajax-form-btn" data-layer="true">审核通过</button>
+        <button type="button" data-action="{:url('check',['check'=>9])}" class="btn js-ajax-form-btn" data-layer="true">审核驳回</button>
+        <button type="button" data-action="{:url('status',['status'=>0])}" class="btn js-ajax-form-btn" data-layer="true">项目待定</button>
+        <button type="button" data-action="{:url('status',['status'=>1])}" class="btn js-ajax-form-btn" data-layer="true">项目启动</button>
+        <button type="button" data-action="{:url('status',['status'=>2])}" class="btn js-ajax-form-btn" data-layer="true">项目完成</button>
+        <button type="button" data-action="{:url('status',['status'=>3])}" class="btn js-ajax-form-btn" data-layer="true">项目取消</button>
+    </div>
+</form>
+</body>
+</html>

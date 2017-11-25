@@ -42,8 +42,8 @@ class Items extends Model
     }
 
     public function getStatusAttr($key=null){
-        $array=[1=>'启用',0=>'禁用'];
-        if(is_numeric($key) && in_array($key,[0,1])){
+        $array=[0=>'待定',1=>'进行中',2=>'完成',3=>'取消'];
+        if(is_numeric($key) && in_array($key,[0,1,2,3])){
             return $array[$key];
         }else{
             return $array;

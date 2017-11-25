@@ -28,8 +28,6 @@
                                 <td>
                                     <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入唯一名称"/>
                                 </td>
-                            </tr>
-                            <tr class="h50">
                                 <td><label for="record_num">档案编号：</label></td>
                                 <td>
                                     <input id="record_num" class="must" type="text" name="record_num" value="{:isset($infos)?$infos->record_num:''}" required placeholder="输入档案编号"/>
@@ -37,8 +35,14 @@
                             </tr>
                             <tr class="h50">
                                 <td><label for="area">征收范围：</label></td>
-                                <td>
+                                <td colspan="3">
                                     <textarea id="area" name="area" placeholder="输入项目征收范围">{:isset($infos)?$infos->area:''}</textarea>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="infos">说明：</label></td>
+                                <td colspan="3">
+                                    <textarea id="infos" name="infos" placeholder="输入项目说明">{:isset($infos)?$infos->infos:''}</textarea>
                                 </td>
                             </tr>
                             <tr class="h50">
@@ -46,25 +50,18 @@
                                 <td>
                                     <input id="household" type="number" name="household" value="{:isset($infos)?$infos->household:''}" placeholder="输入预计户数" min="1"/>
                                 </td>
+                                <td><label for="house">预备安置房：</label></td>
+                                <td>
+                                    <input id="house" type="number" name="house" value="{:isset($infos)?$infos->house:''}" placeholder="输入预计安置房套数" min="1"/>
+                                </td>
                             </tr>
                             <tr class="h50">
                                 <td><label for="funds">预算资金：</label></td>
-                                <td>
+                                <td colspan="3">
                                     <input id="funds" type="number" name="funds" value="{:isset($infos)?$infos->funds:''}" placeholder="输入预算资金" min="1"/>
                                 </td>
                             </tr>
-                            <tr class="h50">
-                                <td><label for="house">安置房：</label></td>
-                                <td>
-                                    <input id="house" type="number" name="house" value="{:isset($infos)?$infos->house:''}" placeholder="输入预计安置房数" min="1"/>
-                                </td>
-                            </tr>
-                            <tr class="h50">
-                                <td><label for="infos">说明：</label></td>
-                                <td>
-                                    <textarea id="infos" name="infos" placeholder="输入项目说明">{:isset($infos)?$infos->infos:''}</textarea>
-                                </td>
-                            </tr>
+
                             <tr class="h50">
                                 <td>置顶：</td>
                                 <td>
@@ -72,19 +69,14 @@
                                     <label><input class="va_m" name="is_top" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->is_top eq $is_top)"}checked{/if}>{$is_top}</label>
                                     {/volist}
                                 </td>
-                            </tr>
-                            <tr class="h50">
                                 <td>状态：</td>
-                                <td>
-                                    {volist name="model->status" id="status"}
-                                    <label><input class="va_m" name="status" type="radio"  value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $status)"}checked{/if}>{$status}</label>
-                                    {/volist}
-                                </td>
+                                <td>{if condition="isset($infos)"}{$infos->status}{else/}待定{/if}</td>
                             </tr>
+
                             {if condition="isset($infos)"}
                             <tr class="h50">
                                 <td>操作时间：</td>
-                                <td>
+                                <td colspan="3">
                                     创建于：{$infos->created_at}<br/>
                                     更新于：{$infos->updated_at}<br/>
                                     {if condition="isset($infos) and $infos->deleted_at"}

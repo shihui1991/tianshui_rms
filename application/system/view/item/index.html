@@ -14,7 +14,8 @@
         <li>
             <a href="{:url('index')}">
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
-                重置</a>
+                刷新
+            </a>
         </li>
         <li class="fgf" onclick="layerPage('查询',$('#search'),'700','330')" >
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
@@ -24,14 +25,7 @@
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
-            <img src="__STATIC__/system/img/checked.png"/>
-            启用
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">
-            <img src="__STATIC__/system/img/disabled.png"/>
-            禁用
-        </li>
+
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('istop',array('top'=>'1'))}">
             <img src="__STATIC__/system/img/top.png"/>
             置顶
@@ -39,18 +33,6 @@
         <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('istop',array('top'=>'0'))}">
             <img src="__STATIC__/system/img/top_no.png"/>
             取消置顶
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
-            <img src="__STATIC__/system/img/broom.png"/>
-            删除
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
-            <img src="__STATIC__/system/img/recycle.png"/>
-            恢复
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
-            <img src="__STATIC__/system/img/destroy.png"/>
-            销毁
         </li>
     </ul>
 </div>
@@ -63,15 +45,15 @@
                 <th class="tc" width="35px">
                     <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
                 </th>
-                <th>ID</th>
-                <th>名称</th>
-                <th>档案编号</th>
-                <th>预计户数</th>
-                <th>预算资金</th>
-                <th>安置房</th>
-                <th>置顶</th>
-                <th>状态</th>
-                <th>操作</th>
+                <th>ID<i class="stretch"></i></th>
+                <th>名称<i class="stretch"></i></th>
+                <th>档案编号<i class="stretch"></i></th>
+                <th>预计户数<i class="stretch"></i></th>
+                <th>预算资金<i class="stretch"></i></th>
+                <th>安置房<i class="stretch"></i></th>
+                <th>置顶<i class="stretch"></i></th>
+                <th>状态<i class="stretch"></i></th>
+                <th>操作<i class="stretch"></i></th>
             </tr>
             {volist name="items" id="item"}
             <tr>
@@ -79,19 +61,33 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$item->id}" onclick="checkBoxOp(this)" id="check-{$item->id}"/>
                 </td>
                 <td>{$item->id}</td>
-                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->name}</del>{else /}{$item->name}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->record_num}</del>{else /}{$item->record_num}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->household|number_format}</del>{else /}{$item->household|number_format}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->funds|number_format}</del>{else /}{$item->funds|number_format}{/if}</td>
-                <td>{if condition="$item->getData('status') eq 0 or $item->deleted_at"} <del>{$item->house|number_format}</del>{else /}{$item->house|number_format}{/if}</td>
+                <td>{if condition="$item->getData('status') eq 3"} <del>{$item->name}</del>{else /}{$item->name}{/if}</td>
+                <td>{if condition="$item->getData('status') eq 3"} <del>{$item->record_num}</del>{else /}{$item->record_num}{/if}</td>
+                <td>{if condition="$item->getData('status') eq 3"} <del>{$item->household|number_format}</del>{else /}{$item->household|number_format}{/if}</td>
+                <td>{if condition="$item->getData('status') eq 3"} <del>{$item->funds|number_format}</del>{else /}{$item->funds|number_format}{/if}</td>
+                <td>{if condition="$item->getData('status') eq 3"} <del>{$item->house|number_format}</del>{else /}{$item->house|number_format}{/if}</td>
                 <td>{$item->is_top}</td>
                 <td>{$item->status}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('项目基本信息',	'{:url('detail',['id'=>$item->id])}','800','630')" >详细信息</button>
-                    <button type="button" class="btn" onclick="layerIfWindow('项目控制流程',	'{:url('Itemprocess/index',['item_id'=>$item->id])}','800','600',true)" >控制流程</button>
-                    <button type="button" class="btn" onclick="layerIfWindow('项目重要补偿科目',	'{:url('Itemsubject/index',['item_id'=>$item->id])}','800','600',true)" >补偿科目</button>
-                    <button type="button" class="btn" onclick="layerIfWindow('安置房价上浮设置',	'{:url('Itemhouseup/index',['item_id'=>$item->id])}','800','600',true)" >房价上浮</button>
-                    <button type="button" data-action="{:url('delete',['ids'=>$item->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('项目基本信息',	'{:url('detail',['id'=>$item->id])}','800','630')">详情</button>
+                    <button type="button" class="btn" onclick="layerPage('项目设置',	$('#setting-{$item->id}'),'460','200')">设置</button>
+                    <div id="setting-{$item->id}" class="layerCon bg_f hide">
+                        <div style="padding:10px;width: 100%;height: auto;">
+                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('项目动态与审核',	'{:url('status',['id'=>$item->id])}','800','600')">项目动态</button>
+                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('项目流程控制及设置',	'{:url('Itemprocess/index',['item_id'=>$item->id])}','800','600',true)" >流程设置</button>
+                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('项目重要流程时间',	'{:url('processtime',['id'=>$item->id])}','800','600')" >重要时间</button>
+                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('项目重要补偿科目',	'{:url('Itemsubject/index',['item_id'=>$item->id])}','800','600',true)" >补偿科目</button>
+                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('安置房价上浮设置',	'{:url('Itemhouseup/index',['item_id'=>$item->id])}','800','600',true)" >房价上浮</button>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn" onclick="layerPage('项目流程操作',	$('#process-{$item->id}'),'500','200')">流程</button>
+                    <div id="process-{$item->id}" class="layerCon bg_f hide">
+                        <div style="padding:10px;width: 100%;height: auto;">
+                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('入户摸底',	'{:url('Collection/index',['item_id'=>$item->id,'l'=>1])}','800','600',true)">入户摸底</button>
+
+                        </div>
+                    </div>
                 </td>
             </tr>
             {/volist}
@@ -121,37 +117,22 @@
                 <td>
                     <select name="is_top" id="is_top">
                         <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($is_top) and $is_top eq 1"}selected{/if}>--置顶--</option>
-                        <option value="0" {if condition="isset($is_top) and $is_top eq 0"}selected{/if}>--非置顶--</option>
+                        {volist name="model->is_top" id="value"}
+                        <option value="{$key}" {if condition="isset($is_top) and $is_top eq $key"}selected{/if}>{$value}</option>
+                        {/volist}
                     </select>
                 </td>
                 <td>状态：</td>
                 <td>
                     <select name="status" id="status">
                         <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($status) and $status eq 1"}selected{/if}>--启用--</option>
-                        <option value="0" {if condition="isset($status) and $status eq 0"}selected{/if}>--禁用--</option>
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td>是否删除：</td>
-                <td>
-                    <select name="deleted" id="deleted">
-                        <option value="">--全部--</option>
-                        <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
-                        <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
-                    </select>
-                </td>
-                <td>每页条数：</td>
-                <td>
-                    <select name="display_num" id="display_num">
-                        {volist name="nums" id="num"}
-                        <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                        {volist name="model->status" id="value"}
+                        <option value="{$key}" {if condition="isset($status) and $status eq $key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>
             </tr>
+
             <tr class="h50">
                 <td>排序：</td>
                 <td>
@@ -159,14 +140,19 @@
                         <option value="id">--默认--</option>
                         <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
                         <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
-                        <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
                     </select>
                 </td>
-                <td>方式：</td>
                 <td>
                     <select name="orderby" id="orderby">
                         <option value="asc">--升序--</option>
                         <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                    </select>
+                </td>
+                <td>
+                    <select name="display_num" id="display_num">
+                        {volist name="nums" id="num"}
+                        <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                        {/volist}
                     </select>
                 </td>
             </tr>
