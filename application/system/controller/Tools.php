@@ -590,4 +590,57 @@ class Tools extends Auth
             return $this->error('没有数据','');
         }
     }
+
+    /* ========== 查询项目房源(冻结安置房) ========== */
+    public function sear_item_house(){
+        $id = input('id');
+        if(!$id){
+            return $this->error('至少选中一项');
+        }
+        /* ********** 查询条件 ********** */
+        $field=['ih.*','i.name as i_name','i.status as i_status','i.is_top','h.community_id','c.address','c.name as c_name',
+            'h.building','h.unit','h.floor','h.number','h.layout_id','h.area','h.status as house_status','h.is_real','h.is_buy',
+            'h.is_transit','h.is_public','l.name as l_name'];
+
+
+        $itemhouses=model('Itemhouses')
+            ->alias('ih')
+            ->field($field)
+            ->join('item i','ih.item_id=i.id','left')
+            ->join('house h','ih.house_id=h.id','left')
+            ->join('house_community c','h.community_id=c.id','left')
+            ->join('layout l','h.layout_id=l.id','left')
+            ->where('ih.id',$id)
+            ->find();
+        if($itemhouses){
+            return $this->success('获取成功','',$itemhouses);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
+    /* ========== 查询兑付 ========== */
+    public function sear_pay(){
+        $id = input('id');
+        if(!$id){
+            return $this->error('至少选中一项');
+        }
+        /* ********** 查询条件 ********** */
+        $field=['p.*','i.name as i_name','i.is_top','c.community_id','c.building','c.unit','c.floor','c.number','c.type','c.real_use','cc.address','cc.name as cc_name','bu.name as bu_name'];
+
+        $pays=model('Pays')
+            ->alias('p')
+            ->field($field)
+            ->join('item i','i.id=p.item_id','left')
+            ->join('collection c','c.id=p.collection_id','left')
+            ->join('collection_community cc','cc.id=p.community_id','left')
+            ->join('building_use bu','bu.id=c.real_use','left')
+            ->where('p.id',$id)
+            ->find();
+        if($pays){
+            return $this->success('获取成功','',$pays);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
 }
