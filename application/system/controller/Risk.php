@@ -86,7 +86,7 @@ class Risk extends Auth
         $datas['risk_list'] = $risk_list;
 
         /* ++++++++++ 项目列表 ++++++++++ */
-        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        $items = model('Items')->field(['id', 'name', 'status'])->order('is_top desc')->select();
         $datas['item_list'] = $items;
         /* ++++++++++ 片区 ++++++++++ */
         $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();

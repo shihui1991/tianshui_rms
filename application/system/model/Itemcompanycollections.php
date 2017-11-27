@@ -28,4 +28,12 @@ class Itemcompanycollections extends Model
 
         return $data;
     }
+
+    public function itemcompany(){
+        return $this->belongsTo('Itemcompanys','item_company_id','id','itemcompany');
+    }
+
+    public function collection(){
+        return $this->belongsTo('Collections','collection_id','id','collection')->field('id,building,unit,floor,number,type');
+    }
 }

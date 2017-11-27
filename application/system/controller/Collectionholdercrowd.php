@@ -88,13 +88,13 @@ class Collectionholdercrowd extends Auth
             $with='item,community,collection,holder,crowdgroup,crowd';
             $view='all';
             /* ++++++++++ 项目 ++++++++++ */
-            $items=Items::field(['id','name','status','is_top'])->where(['status'=>1])->order('is_top desc')->select();
+            $items=Items::field(['id','name','status','is_top'])->order('is_top desc')->select();
             $datas['items']=$items;
             /* ++++++++++ 片区 ++++++++++ */
             $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
             $datas['collectioncommunitys']=$collectioncommunitys;
             /* ++++++++++ 入户摸底 ++++++++++ */
-            $collections=Collections::field(['id','building','unit','floor','number','status'])->where('status',1)->select();
+            $collections=Collections::field(['id','building','unit','floor','number','status'])->select();
             $datas['collections']=$collections;
             /* ++++++++++ 成员 ++++++++++ */
             $collectionholders=Collectionholders::field(['id','name','address'])->select();

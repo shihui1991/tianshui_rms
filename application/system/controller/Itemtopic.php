@@ -75,7 +75,7 @@ class Itemtopic extends Auth
         $datas['itemtopic_list'] = $itemtopic_list;
 
         /* ++++++++++ 项目列表 ++++++++++ */
-        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        $items = model('Items')->field(['id', 'name', 'status'])->order('is_top desc')->select();
         $datas['item_list'] = $items;
         /* ++++++++++ 话题列表 ++++++++++ */
         $topics = model('Topics')->field(['id', 'name'])->select();

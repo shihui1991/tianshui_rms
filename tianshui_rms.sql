@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-25 11:23:04
+Date: 2017-11-27 17:30:47
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -318,7 +318,7 @@ CREATE TABLE `collection` (
 -- ----------------------------
 -- Records of collection
 -- ----------------------------
-INSERT INTO `collection` VALUES ('1', '2', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '3', '0', '1', '0', '0', '渝北区杨柳北路9号', '0', '0', '0', '', '', '', '', '[]', '1', '1509932860', '1511579101', null);
+INSERT INTO `collection` VALUES ('1', '2', '1', '0', '0', '0', '0', '0', '0', '0', '0', '1', '3', '0', '1', '0', '0', '渝北区杨柳北路9号', '0', '0', '0', '', '', '', '', '[]', '1', '1509932860', '1511601196', null);
 INSERT INTO `collection` VALUES ('2', '2', '1', '1', '1', '2', '3', '0', '0', '0', '0', '1', '1', '1', '1', '0', '0', '', '0', '0', '0', '', '', '', '', '[]', '1', '1510196915', '1510883562', null);
 
 -- ----------------------------
@@ -358,7 +358,7 @@ CREATE TABLE `collection_building` (
 -- ----------------------------
 -- Records of collection_building
 -- ----------------------------
-INSERT INTO `collection_building` VALUES ('1', '2', '1', '1', '0', '0', '0', '0', '0', '', '', '0', '120', '㎡', '1', '3', '1', '1', '[]', '0', '', '0', '', '1510019791', '1511419058', null);
+INSERT INTO `collection_building` VALUES ('1', '2', '1', '1', '0', '0', '0', '0', '0', '', '', '0', '120', '㎡', '1', '3', '1', '1', '[]', '1', '', '0', '', '1510019791', '1511604085', null);
 
 -- ----------------------------
 -- Table structure for collection_community
@@ -411,7 +411,7 @@ CREATE TABLE `collection_holder` (
 -- ----------------------------
 -- Records of collection_holder
 -- ----------------------------
-INSERT INTO `collection_holder` VALUES ('1', '2', '1', '2', '重庆', '重庆市渝北区', '0123', '1', '100.00', '', '', '0', '0', '', '', '0', '', '1510111063', '1510645065', null);
+INSERT INTO `collection_holder` VALUES ('1', '2', '1', '2', '重庆', '重庆市渝北区', '0123', '1', '100.00', '', '', '0', '0', '', '', '0', '', '1510111063', '1511748234', null);
 
 -- ----------------------------
 -- Table structure for collection_holder_crowd
@@ -435,7 +435,7 @@ CREATE TABLE `collection_holder_crowd` (
 -- ----------------------------
 -- Records of collection_holder_crowd
 -- ----------------------------
-INSERT INTO `collection_holder_crowd` VALUES ('1', '2', '1', '1', '1', '9', '6', '[\"\\/uploads\\/image\\/20171108\\/e11890aff033dae658834003a3cd3268.jpg\"]', '1510134644', '1510134756', null);
+INSERT INTO `collection_holder_crowd` VALUES ('1', '2', '1', '2', '1', '9', '6', '[\"\\/uploads\\/image\\/20171108\\/e11890aff033dae658834003a3cd3268.jpg\"]', '1510134644', '1511755243', null);
 
 -- ----------------------------
 -- Table structure for collection_holder_house
@@ -458,7 +458,7 @@ CREATE TABLE `collection_holder_house` (
 -- ----------------------------
 -- Records of collection_holder_house
 -- ----------------------------
-INSERT INTO `collection_holder_house` VALUES ('1', '2', '1', '2', '1', '1', '1', '1511165768', '1511166450', null);
+INSERT INTO `collection_holder_house` VALUES ('1', '2', '1', '2', '1', '1', '1', '1511165768', '1511762953', null);
 
 -- ----------------------------
 -- Table structure for collection_object
@@ -480,32 +480,10 @@ CREATE TABLE `collection_object` (
 -- ----------------------------
 -- Records of collection_object
 -- ----------------------------
-INSERT INTO `collection_object` VALUES ('1', '2', '1', '1', '1', '[]', '1510304481', '1510304510', null);
-INSERT INTO `collection_object` VALUES ('2', '2', '2', '2', '1', '[]', '1510796083', '1510796083', null);
+INSERT INTO `collection_object` VALUES ('1', '2', '1', '1', '1', '[]', '1510304481', '1511763821', null);
+INSERT INTO `collection_object` VALUES ('2', '2', '2', '2', '1', '[]', '1510796083', '1511763657', null);
 INSERT INTO `collection_object` VALUES ('3', '2', '2', '3', '1', '[]', '1510796089', '1510796089', null);
 INSERT INTO `collection_object` VALUES ('4', '2', '1', '4', '1', '[]', '1510796099', '1510796099', null);
-
--- ----------------------------
--- Table structure for collection_status
--- ----------------------------
-DROP TABLE IF EXISTS `collection_status`;
-CREATE TABLE `collection_status` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
-  `user_id` int(11) DEFAULT NULL COMMENT '用户ID',
-  `role_id` int(11) DEFAULT NULL COMMENT ' 角色ID',
-  `role_parent_id` int(11) DEFAULT NULL COMMENT ' 上级角色ID',
-  `status` tinyint(4) DEFAULT '0' COMMENT '状态，0添加，1修改，2删除，3恢复，8通过，9驳回',
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='入户摸底状态';
-
--- ----------------------------
--- Records of collection_status
--- ----------------------------
-INSERT INTO `collection_status` VALUES ('1', '1', '1', '1', null, '1', '1511505564', '1511505564', null);
 
 -- ----------------------------
 -- Table structure for company
@@ -810,6 +788,7 @@ CREATE TABLE `house_resettle` (
   `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
   `collection_community_id` int(11) DEFAULT NULL COMMENT ' 片区ID',
   `pay_id` int(11) DEFAULT NULL COMMENT ' 兑付ID',
+  `holder_id` int(11) DEFAULT NULL COMMENT '产权人或承租人ID',
   `house_id` int(11) DEFAULT NULL COMMENT ' 安置房源ID',
   `house_community_id` int(11) DEFAULT NULL COMMENT ' 房源小区ID',
   `start_at` int(11) DEFAULT NULL COMMENT ' 开始时间',
@@ -1009,7 +988,6 @@ INSERT INTO `item_process` VALUES ('3', '2', '3', '3', '0', '1511417121', '15114
 -- ----------------------------
 DROP TABLE IF EXISTS `item_status`;
 CREATE TABLE `item_status` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `keyname` varchar(255) DEFAULT NULL COMMENT '关键词名',
   `keyvalue` varchar(255) DEFAULT NULL COMMENT '关键词值',
   `user_id` int(11) DEFAULT NULL COMMENT '用户ID',
@@ -1018,26 +996,39 @@ CREATE TABLE `item_status` (
   `status` tinyint(4) DEFAULT '0' COMMENT '状态，0添加，1修改，2删除，3恢复，4销毁，8通过，9驳回',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
-  `deleted_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='项目动态';
+  `deleted_at` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目动态';
 
 -- ----------------------------
 -- Records of item_status
 -- ----------------------------
-INSERT INTO `item_status` VALUES ('1', '1', null, '1', '1', null, '1', '1511505564', '1511505564', null);
-INSERT INTO `item_status` VALUES ('2', 'item_id', '2', '1', '1', null, '1', '1511515809', '1511515809', null);
-INSERT INTO `item_status` VALUES ('3', 'item_id', '2', '1', '1', null, '1', '1511515819', '1511515819', null);
-INSERT INTO `item_status` VALUES ('4', 'item_id', '2', '1', '1', null, '1', '1511515834', '1511515834', null);
-INSERT INTO `item_status` VALUES ('5', 'item_id', '2', '1', '1', null, '8', '1511515884', '1511515884', null);
-INSERT INTO `item_status` VALUES ('6', 'item_id', '2', '1', '1', null, '9', '1511515887', '1511515887', null);
-INSERT INTO `item_status` VALUES ('7', 'item_id', '2', '1', '1', null, '9', '1511515891', '1511515891', null);
-INSERT INTO `item_status` VALUES ('8', 'item_id', '2', '1', '1', null, '8', '1511515892', '1511515892', null);
-INSERT INTO `item_status` VALUES ('9', 'item_id', '2', '1', '1', null, '8', '1511515932', '1511515932', null);
-INSERT INTO `item_status` VALUES ('10', 'item_id', '2', '1', '1', null, '1', '1511516125', '1511516125', null);
-INSERT INTO `item_status` VALUES ('11', 'item_id', '2', '1', '1', null, '1', '1511516132', '1511516132', null);
-INSERT INTO `item_status` VALUES ('12', 'item_id', '1', '1', '1', null, '1', '1511573608', '1511573608', null);
-INSERT INTO `item_status` VALUES ('13', 'collection_id', '1', '1', '1', null, '3', '1511579101', '1511579101', null);
+INSERT INTO `item_status` VALUES ('item_id', '2', '1', '1', null, '1', '1511515809', '1511515809', null);
+INSERT INTO `item_status` VALUES ('item_id', '2', '1', '1', null, '1', '1511515819', '1511515819', null);
+INSERT INTO `item_status` VALUES ('item_id', '2', '1', '1', null, '1', '1511515834', '1511515834', null);
+INSERT INTO `item_status` VALUES ('item_id', '2', '1', '1', null, '8', '1511515884', '1511515884', null);
+INSERT INTO `item_status` VALUES ('item_id', '2', '1', '1', null, '9', '1511515887', '1511515887', null);
+INSERT INTO `item_status` VALUES ('item_id', '2', '1', '1', null, '9', '1511515891', '1511515891', null);
+INSERT INTO `item_status` VALUES ('item_id', '2', '1', '1', null, '8', '1511515892', '1511515892', null);
+INSERT INTO `item_status` VALUES ('item_id', '2', '1', '1', null, '8', '1511515932', '1511515932', null);
+INSERT INTO `item_status` VALUES ('item_id', '2', '1', '1', null, '1', '1511516125', '1511516125', null);
+INSERT INTO `item_status` VALUES ('item_id', '2', '1', '1', null, '1', '1511516132', '1511516132', null);
+INSERT INTO `item_status` VALUES ('item_id', '1', '1', '1', null, '1', '1511573608', '1511573608', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '3', '1511579101', '1511579101', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '2', '1511580300', '1511580300', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '3', '1511580313', '1511580313', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '1', '1511580558', '1511580558', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '8', '1511583988', '1511583988', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '9', '1511584000', '1511584000', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '1', '1511584003', '1511584003', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '9', '1511584287', '1511584287', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '1', '1511584292', '1511584292', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '1', '1511584295', '1511584295', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '8', '1511596469', '1511596469', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '9', '1511596480', '1511596480', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '1', '1511601182', '1511601182', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '1', '1511601196', '1511601196', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '8', '1511601751', '1511601751', null);
+INSERT INTO `item_status` VALUES ('collection_id', '1', '1', '1', null, '9', '1511601768', '1511601768', null);
 
 -- ----------------------------
 -- Table structure for item_subject
@@ -1320,7 +1311,7 @@ INSERT INTO `menu` VALUES ('184', '180', '资金款项状态', '3', '<img src=\"
 INSERT INTO `menu` VALUES ('185', '180', '删除资金款项', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/fundsname/delete', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('186', '180', '资金款项恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/fundsname/restore', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('187', '180', '资金款项销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/fundsname/destroy', null, '0', '1', '1508146326', '1508146326', null);
-INSERT INTO `menu` VALUES ('188', '0', '入户摸底管理', '1', '<img src=\"/static/system/img/butterfly.png\"/>', '8', '/system/collection/index', '', '1', '1', '1509616455', '1511574108', null);
+INSERT INTO `menu` VALUES ('188', '0', '入户摸底管理', '1', '<img src=\"/static/system/img/butterfly.png\"/>', '8', '/system/collection#', '', '1', '1', '1509616455', '1511591927', null);
 INSERT INTO `menu` VALUES ('189', '188', '征地片区', '2', '<img src=\"/static/system/img/chart_pie.png\"/>', '1', '/system/collectioncommunity/index', '', '1', '1', '1509616556', '1510302985', null);
 INSERT INTO `menu` VALUES ('190', '189', '添加征地片区', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/collectioncommunity/add', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('191', '189', '征地片区详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/collectioncommunity/detail', null, '0', '1', '1508146326', '1508146326', null);
@@ -1334,7 +1325,7 @@ INSERT INTO `menu` VALUES ('198', '170', '新闻公告销毁', '3', '<img src=\"
 INSERT INTO `menu` VALUES ('199', '189', '删除征地片区', '3', '<img src=\"/static/system/img/broom.png\"/>', '0', '/system/collectioncommunity/delete', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('200', '189', '征地片区恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/collectioncommunity/restore', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('201', '189', '征地片区销毁', '3', '<img src=\"/static/system/img/destroy.png\"/>', '0', '/system/collectioncommunity/destroy', null, '0', '1', '1508146326', '1508146326', null);
-INSERT INTO `menu` VALUES ('202', '188', '入户摸底', '2', '<img src=\"/static/system/img/outlook_new_meeting.png\"/>', '2', '/system/collection/all', '', '1', '1', '1509700423', '1511574092', null);
+INSERT INTO `menu` VALUES ('202', '188', '入户摸底', '2', '<img src=\"/static/system/img/outlook_new_meeting.png\"/>', '2', '/system/collection/index', '', '1', '1', '1509700423', '1511591941', null);
 INSERT INTO `menu` VALUES ('203', '202', '添加入户摸底', '3', '<img src=\"/static/system/img/add.png\"/>', '0', '/system/collection/add', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('204', '202', '入户摸底详情', '3', '<img src=\"/static/system/img/page_white_paste.png\"/>', '0', '/system/collection/detail', null, '0', '1', '1508146326', '1508146326', null);
 INSERT INTO `menu` VALUES ('205', '202', '入户摸底修改', '3', '<img src=\"/static/system/img/richtext_editor.png\"/>', '0', '/system/collection/edit', null, '0', '1', '1508146326', '1508146326', null);

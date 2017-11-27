@@ -50,7 +50,7 @@ class Itemcompanyvote extends Auth
         $datas['companys']=$companys;
 
         /* ++++++++++ 项目列表 ++++++++++ */
-        $items=Items::field(['id','name','is_top'])->where('status',1)->order('is_top desc')->select();
+        $items=Items::field(['id','name','is_top'])->order('is_top desc')->select();
         $datas['items']=$items;
 
         $this->assign($datas);
@@ -82,10 +82,36 @@ class Itemcompanyvote extends Auth
             if(true !== $result){
                 return $this->error($result);
             }
-            $collection_info=Collections::field(['id','item_id','community_id','type'])->find(input('collection_id'));
+
+            /* ++++++++++ 入户摸底信息 ++++++++++ */
+            $collection_info=Collections::withTrashed()
+                ->field(['id','item_id','community_id','building','unit','floor','number','type'])
+                ->with('item,community')
+                ->where('id',input('collection_id'))
+                ->find();
             if(!$collection_info){
                 return $this->error('选择权属不存在！');
             }
+
+            if($collection_info->item->getData('status') !=1){
+                switch ($collection_info->item->getData('status')){
+                    case 2:
+                        $msg='项目已完成，禁止操作！';
+                        break;
+                    case 3:
+                        $msg='项目已取消，禁止操作！';
+                        break;
+                    default:
+                        $msg='项目未进行，禁止操作！';
+                }
+                if(request()->isAjax()){
+                    return $this->error($msg,'');
+                }else{
+                    return $msg;
+                }
+            }
+
+
             if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
                 return $this->error('选择权属与项目片区不一致');
             }

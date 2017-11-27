@@ -138,7 +138,7 @@ class Itemhouse extends Auth
         $display_num=$display_num?$display_num:config('paginate.list_rows');
         $datas['display_num']=$display_num;
         /* ++++++++++ 查询 ++++++++++ */
-        $deleted=input('deleted');
+
         $itemhouse_model=new Itemhouses();
         $datas['model']=$itemhouse_model;
         $itemhouses=$itemhouse_model
@@ -154,7 +154,7 @@ class Itemhouse extends Auth
 
         $datas['itemhouses']=$itemhouses;
         /* ++++++++++ 项目列表 ++++++++++ */
-        $items=Items::field(['id','name','status'])->where('status',1)->order('is_top desc')->select();
+        $items=Items::field(['id','name','status'])->order('is_top desc')->select();
         $datas['items']=$items;
         /* ++++++++++ 小区列表 ++++++++++ */
         $communitys=Housecommunitys::field(['id','address','name','status'])->where('status',1)->select();
