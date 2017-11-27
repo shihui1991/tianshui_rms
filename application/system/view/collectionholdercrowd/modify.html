@@ -11,28 +11,50 @@
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <input type="hidden" name="item_id" value="{:isset($infos)?$infos->item_id:$holder_info->item_id}">
+        <input type="hidden" name="holder_id" value="{:isset($infos)?$infos->holder_id:$holder_info->id}">
         <table class="layerTable" border="0">
+            {if condition="isset($infos)"}
             <tr class="h50">
                 <td><label for="item_id">项目：</label></td>
-                <td>{$collectionholders->i_name}({$collectionholders->item_id})<input type="hidden" id="item_id" name="item_id" value="{$collectionholders->item_id}"></td>
+                <td>{$infos->item->name} ({$infos->item_id})</td>
                 <td><label for="community_id">片区：</label></td>
-                <td>{$collectionholders->cc_name}({$collectionholders->community_id})<input type="hidden" id="community_id" name="community_id" value="{$collectionholders->community_id}"></td>
+                <td>{$infos->community->name} ({$infos->community_id})【{$infos->community->address}】</td>
             </tr>
             <tr class="h50">
                 <td><label for="collection_id">权属：</label></td>
                 <td>
-                    {if condition="$collectionholders->building"}{$collectionholders->building}栋{/if}
-                    {if condition="$collectionholders->unit"}{$collectionholders->unit}单元{/if}
-                    {if condition="$collectionholders->floor"}{$collectionholders->floor}楼{/if}
-                    {if condition="$collectionholders->number"}{$collectionholders->number}号{/if}
-                    （{$collectionholders->collection_id}）
-                    <input type="hidden" id="collection_id" name="collection_id" value="{$collectionholders->collection_id}">
+                    {if condition="$infos->collection->building"}{$infos->collection->building}栋{/if}
+                    {if condition="$infos->collection->unit"}{$infos->collection->unit}单元{/if}
+                    {if condition="$infos->collection->floor"}{$infos->collection->floor}楼{/if}
+                    {if condition="$infos->collection->number"}{$infos->collection->number}号{/if}
+                    （{$infos->collection_id}）
                 </td>
                 <td><label for="holder_id">成员：</label></td>
-                <td>{$collectionholders->name}--{$collectionholders->address}({$collectionholders->id})
-                    <input type="hidden" id="holder_id" name="holder_id" value="{$collectionholders->id}">
+                <td>{$infos->holder->name} ({$infos->holder_id})【{$infos->holder->address}，{$infos->holder->phone}】
                 </td>
             </tr>
+            {else/}
+            <tr class="h50">
+                <td><label for="item_id">项目：</label></td>
+                <td>{$holder_info->item->name} ({$holder_info->item_id})</td>
+                <td><label for="community_id">片区：</label></td>
+                <td>{$holder_info->community->name} ({$holder_info->community_id})【{$holder_info->community->address}】</td>
+            </tr>
+            <tr class="h50">
+                <td><label for="collection_id">权属：</label></td>
+                <td>
+                    {if condition="$holder_info->collection->building"}{$holder_info->collection->building}栋{/if}
+                    {if condition="$holder_info->collection->unit"}{$holder_info->collection->unit}单元{/if}
+                    {if condition="$holder_info->collection->floor"}{$holder_info->collection->floor}楼{/if}
+                    {if condition="$holder_info->collection->number"}{$holder_info->collection->number}号{/if}
+                    （{$holder_info->collection_id}）
+                </td>
+                <td><label for="holder_id">成员：</label></td>
+                <td>{$holder_info->name} ({$holder_info->id})【{$holder_info->address}，{$holder_info->phone}】
+                </td>
+            </tr>
+            {/if}
             <tr class="h50">
                 <td><label for="crowd_id">特殊人群：</label></td>
                 <td colspan="3">

@@ -10,6 +10,8 @@
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <input type="hidden" name="id" value="{$infos->id}">
+        <input type="hidden" name="item_id" value="{$infos->item_id}">
+        <input type="hidden" name="collection_id" value="{$infos->collection_id}">
         <table class="layerTable" border="0">
            
             <tr class="h50">

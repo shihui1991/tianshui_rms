@@ -598,12 +598,14 @@ class Collection extends Auth
             $status_model=new Itemstatuss();
             $status_model->saveAll($status_data);
 
-            Collectionobjects::withTrashed()->whereIn('collection_id',$ids)->delete(true);
-            Collectionholderhouses::withTrashed()->whereIn('collection_id',$ids)->delete(true);
-            Collectionholders::withTrashed()->whereIn('collection_id',$ids)->delete(true);
-            Collectionholdercrowds::withTrashed()->whereIn('collection_id',$ids)->delete(true);
-            Collectionbuildings::withTrashed()->whereIn('collection_id',$ids)->delete(true);
-            Collections::onlyTrashed()->whereIn('collection_id',$ids)->delete(true);
+            $collection_ids=Collections::onlyTrashed()->whereIn('id',$ids)->column('id');
+
+            Collectionobjects::withTrashed()->whereIn('collection_id',$collection_ids)->delete(true);
+            Collectionholderhouses::withTrashed()->whereIn('collection_id',$collection_ids)->delete(true);
+            Collectionholders::withTrashed()->whereIn('collection_id',$collection_ids)->delete(true);
+            Collectionholdercrowds::withTrashed()->whereIn('collection_id',$collection_ids)->delete(true);
+            Collectionbuildings::withTrashed()->whereIn('collection_id',$collection_ids)->delete(true);
+            Collections::onlyTrashed()->whereIn('id',$collection_ids)->delete(true);
 
             $res=true;
             $msg='销毁成功';

@@ -99,10 +99,10 @@
                         <div style="padding:10px;width: 100%;height: auto;">
                             <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('入户摸底-建筑信息',	'{:url('Collectionbuilding/index',['collection_id'=>$collection->id,'l'=>1])}','800','600',true)" >建筑信息</button>
                             <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('入户摸底-成员情况',	'{:url('Collectionholder/index',['item_id'=>$collection->item_id,'collection_id'=>$collection->id,'l'=>1])}','800','600',true)" >成员情况</button>
-                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('入户摸底-其他补偿事项',	'{:url('Collectionobject/index',['item_id'=>$collection->item_id,'collection_id'=>$collection->id,'l'=>1])}','800','600',true)" >补偿事项</button>
+                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('入户摸底-其他补偿事项',	'{:url('Collectionobject/index',['collection_id'=>$collection->id])}','800','600',true)" >补偿事项</button>
                         </div>
                     </div>
-                    <button type="button" class="btn" onclick="layerIfWindow('安置房选择','{:url('Collectionholderhouse/index',['item_id'=>$collection->item_id,'community_id'=>$collection->community_id,'collection_id'=>$collection->id])}','800','600',true)" >安置房选择</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('安置房选择','{:url('Collectionholderhouse/index',['collection_id'=>$collection->id])}','800','600',true)" >安置房选择</button>
                 </td>
             </tr>
             {/volist}

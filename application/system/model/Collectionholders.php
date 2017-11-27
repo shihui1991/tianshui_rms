@@ -58,4 +58,17 @@ class Collectionholders extends Model
 
         return $data;
     }
+
+
+    public function item(){
+        return $this->belongsTo('Items','item_id','id','item')->field('id,name,is_top,status,deleted_at');
+    }
+
+    public function community(){
+        return $this->belongsTo('Collectioncommunitys','community_id','id','community')->field('id,address,name');
+    }
+
+    public function collection(){
+        return $this->belongsTo('Collections','collection_id','id','collection')->field('id,building,unit,floor,number,type');
+    }
 }
