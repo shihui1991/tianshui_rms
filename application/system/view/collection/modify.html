@@ -61,26 +61,30 @@
 
                                 </td>
                             </tr>
+                            {if condition="isset($infos)"}
                             <tr class="h50">
                                 <td><label for="item_id">项目：</label></td>
-                                <td colspan="3">
-                                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
-                                        <option value="">--请选择项目--</option>
-                                        {volist name="items" id="item"}
-                                        <option value="{$item->id}" {if condition="isset($infos) and $infos->item_id eq $item->id"}selected{/if}>{$item->name}</option>
-                                        {/volist}
-                                    </select>
-                                </td>
+                                <td colspan="3">{$infos->item->name}<input type="hidden" name="item_id" value="{$infos->item_id}"></td>
+                                <td><label for="community_id">片区：</label></td>
+                                <td colspan="3">{$infos->community->name}【{$infos->community->address}】</td>
+                            </tr>
+
+                            {else/}
+                            <tr class="h50">
+                                <td><label for="item_id">项目：</label></td>
+                                <td colspan="3">{$item_info->name}<input type="hidden" name="item_id" value="{$item_info->id}"></td>
                                 <td><label for="community_id">片区：</label></td>
                                 <td colspan="3">
                                     <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
                                         <option value="">--请选择片区--</option>
                                         {volist name="collectioncommunitys" id="community"}
-                                        <option value="{$community->id}" {if condition="isset($infos) and $infos->community_id eq $community->id"}selected{/if}>{$community->name}</option>
+                                        <option value="{$community->id}" >{$community->name}</option>
                                         {/volist}
                                     </select>
                                 </td>
                             </tr>
+                            {/if}
+
                             <tr class="h50">
                                 <td>几栋：</td>
                                 <td><input type="number" name="building" id="building" value="{:isset($infos)?$infos->building:''}" min="1"></td>

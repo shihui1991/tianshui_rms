@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>入户摸底-建筑信息-合法性认定|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<form action="{:url('status')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{$id}">
+        <input type="hidden" name="item_id" value="{$collection_info->item_id}">
+        <input type="hidden" name="collection_id" value="{$collection_info->id}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td>建筑性质：</td>
+                <td>
+                    <select name="status" id="status">
+                        {volist name="buildingstatuss" id="status"}
+                        <option value="{$status->id}">{$status->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="layerBtns">
+        <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+    </div>
+</form>
+</body>
+</html>

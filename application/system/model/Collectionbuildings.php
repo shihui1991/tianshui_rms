@@ -39,4 +39,28 @@ class Collectionbuildings extends Model
 
         return $data;
     }
+
+    public function item(){
+        return $this->belongsTo('Items','item_id','id','item')->field('id,name,is_top,status,deleted_at');
+    }
+
+    public function community(){
+        return $this->belongsTo('Collectioncommunitys','community_id','id','community')->field('id,address,name');
+    }
+
+    public function collection(){
+        return $this->belongsTo('Collections','collection_id','id','collection')->field('id,building,unit,floor,number,type');
+    }
+
+    public function realuse(){
+        return $this->belongsTo('Buildinguses','use_id','id','realuse')->field('id,name');
+    }
+
+    public function buildingstruct(){
+        return $this->belongsTo('Buildingstructs','struct_id','id','buildingstruct')->field('id,name');
+    }
+
+    public function buildingstatus(){
+        return $this->belongsTo('Buildingstatuss','status_id','id','buildingstatus')->field('id,name');
+    }
 }

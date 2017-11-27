@@ -12,7 +12,7 @@
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
         <li>
-            <a href="{:url('index',['item_id'=>$item_info->id,'l'=>1])}">
+            <a href="{:url('index')}">
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
                 刷新
             </a>
@@ -21,27 +21,10 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        {if condition="$item_info->getData('status') eq 1"}
-        <li class="fgf" onclick="layerIfWindow('添加入户摸底','{:url('add',['item_id'=>$item_info->id])}','800','600',true)">
-            <img src="__STATIC__/system/img/add.png"/>
-            添加
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$item_info->id])}">
-            <img src="__STATIC__/system/img/broom.png"/>
-            删除
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$item_info->id])}">
-            <img src="__STATIC__/system/img/recycle.png"/>
-            恢复
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$item_info->id])}" data-notice="确定要彻底删除吗？">
-            <img src="__STATIC__/system/img/destroy.png"/>
-            销毁
-        </li>
-        {/if}
+
     </ul>
 </div>
-<form action="{:url('status',['item_id'=>$item_info->id])}" method="post" id="js-ajax-form">
+<form action="{:url('index')}" method="post" id="js-ajax-form">
     <div class="tableCon">
         <em class="xian"></em>
         <table class="table" border="0" >
@@ -51,7 +34,7 @@
                     <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
                 </th>
                 <th>ID<i class="stretch"></i></th>
-                <th>地址<i class="stretch"></i></th>
+                <th>项目（ID）<i class="stretch"></i></th>
                 <th>片区（ID）<i class="stretch"></i></th>
                 <th>房号<i class="stretch"></i></th>
                 <th>类型<i class="stretch"></i></th>
@@ -68,8 +51,8 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$collection->id}" onclick="checkBoxOp(this)" id="check-{$collection->id}"/>
                 </td>
                 <td>{$collection->id}</td>
-                <td>{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->community->address}</del>{else /}{$collection->community->address}{/if}</td>
-                <td>{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->community->name}</del>{else /}{$collection->community->name}{/if}（{$collection->community_id}）</td>
+                <td>{$collection->item->name}（{$collection->item_id}）</td>
+                <td title="{$collection->community->address}">{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->community->name}</del>{else /}{$collection->community->name}{/if}（{$collection->community_id}）</td>
                 <td>
                     {if condition="$collection->deleted_at or $collection->getData('status') eq 0"}
                     <del>
@@ -115,11 +98,18 @@
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
-    <form action="{:url('index',['item_id'=>$item_info->id,'l'=>1])}" method="post" id="search-form">
+    <form action="{:url('index')}" method="post" id="search-form">
         <table class="layerTable">
             <tr class="h50">
                 <td>项目：</td>
-                <td colspan="3">{$item_info->name}</td>
+                <td colspan="3">
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if}>{$item->name}</option>
+                        {/volist}
+                    </select>
+                </td>
                 <td>片区：</td>
                 <td colspan="3">
                     <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
