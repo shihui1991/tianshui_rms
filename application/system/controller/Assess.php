@@ -7,8 +7,6 @@
  * | 删除
  * | 恢复
  * | 销毁
- * | 房产列表
- * | 资产列表
  * */
 namespace app\system\controller;
 use app\system\model\Assesss;
@@ -295,82 +293,4 @@ class Assess extends Auth
         }
     }
 
-    /* ========== 房产列表 ========== */
-    public function assessestate_list()
-    {
-        /* ********** 查询条件 ********** */
-        $datas = [];
-        $where = [];
-        $field = ['ass.id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
-            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.deleted_at'];
-        $assess_id = input('assess_id');
-        $this->assign('assess_id',$assess_id);
-        $where['assess_id'] = $assess_id;
-
-        /* ++++++++++ 查询 ++++++++++ */
-        $assessestate_model = model('Assessestates');
-        $deleted = input('deleted');
-        if (is_numeric($deleted) && in_array($deleted, [0, 1])) {
-            $datas['deleted'] = $deleted;
-            if ($deleted == 1) {
-                $assessestate_model = $assessestate_model->onlyTrashed();
-            }
-        } else {
-            $assessestate_model = $assessestate_model->withTrashed();
-        }
-        $assessestate_list = $assessestate_model
-            ->alias('ass')
-            ->field($field)
-            ->join('item i', 'i.id=ass.item_id', 'left')
-            ->join('collection_community cc', 'cc.id=ass.community_id', 'left')
-            ->join('collection c', 'c.id=ass.collection_id', 'left')
-            ->join('assess ess', 'ess.id=ass.assess_id', 'left')
-            ->join('item_company ic', 'ic.id=ass.company_id', 'left')
-            ->join('company cy', 'cy.id=ic.company_id', 'left')
-            ->where($where)
-            ->order(['i.is_top' => 'desc'])
-            ->paginate(config('paginate.list_rows'));
-        $datas['assessestate_list'] = $assessestate_list;
-        $this->assign($datas);
-        return view();
-    }
-
-    /* ========== 资产列表 ========== */
-    public function assessassets_list()
-    {
-        /* ********** 查询条件 ********** */
-        $datas = [];
-        $where = [];
-        $field = ['ass.id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
-            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.deleted_at'];
-        $assess_id = input('assess_id');
-        $this->assign('assess_id',$assess_id);
-        $where['assess_id'] = $assess_id;
-        /* ++++++++++ 查询 ++++++++++ */
-        $assessassets_model = model('Assessassetss');
-        $deleted = input('deleted');
-        if (is_numeric($deleted) && in_array($deleted, [0, 1])) {
-            $datas['deleted'] = $deleted;
-            if ($deleted == 1) {
-                $assessassets_model = $assessassets_model->onlyTrashed();
-            }
-        } else {
-            $assessassets_model = $assessassets_model->withTrashed();
-        }
-        $assessassets_list = $assessassets_model
-            ->alias('ass')
-            ->field($field)
-            ->join('item i', 'i.id=ass.item_id', 'left')
-            ->join('collection_community cc', 'cc.id=ass.community_id', 'left')
-            ->join('collection c', 'c.id=ass.collection_id', 'left')
-            ->join('assess ess', 'ess.id=ass.assess_id', 'left')
-            ->join('item_company ic', 'ic.id=ass.company_id', 'left')
-            ->join('company cy', 'cy.id=ic.company_id', 'left')
-            ->where($where)
-            ->order(['i.is_top' => 'desc'])
-            ->paginate(config('paginate.list_rows'));
-        $datas['assessassets_list'] = $assessassets_list;
-        $this->assign($datas);
-        return view();
-    }
 }
