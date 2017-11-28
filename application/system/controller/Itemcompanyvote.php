@@ -27,8 +27,32 @@ class Itemcompanyvote extends Auth
 
     /* ========== 列表 ========== */
     public function index(){
-        $on[]='c.id=icv.company_id';
+        $datas=[];
+        /* ********** 是否弹出层 ********** */
+        $l=input('l');
         $item_id=input('item_id');
+        if($l){
+            if(!$item_id){
+                return $this->error('错误操作','');
+            }
+
+            /* ++++++++++ 项目信息 ++++++++++ */
+            $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+            $datas['item_info']=$item_info;
+            $datas['item_id']=$item_id;
+
+        }else{
+            if($item_id){
+                $datas['item_id']=$item_id;
+            }
+
+            /* ++++++++++ 项目列表 ++++++++++ */
+            $items=Items::field(['id','name','status','is_top'])->order('is_top desc')->select();
+            $datas['items']=$items;
+        }
+
+
+        $on[]='c.id=icv.company_id';
         if($item_id){
             $on[]='icv.item_id='.$item_id;
             $datas['item_id']=$item_id;
@@ -49,10 +73,6 @@ class Itemcompanyvote extends Auth
 
         $datas['companys']=$companys;
 
-        /* ++++++++++ 项目列表 ++++++++++ */
-        $items=Items::field(['id','name','is_top'])->order('is_top desc')->select();
-        $datas['items']=$items;
-
         $this->assign($datas);
 
         return view();
@@ -60,6 +80,29 @@ class Itemcompanyvote extends Auth
 
     /* ========== 添加 ========== */
     public function add(){
+        $item_info=Items::where('id',input('item_id'))->field(['id','name','status'])->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
         $model=new Itemcompanyvotes();
         if(request()->isPost()){
             $rules=[
@@ -86,31 +129,11 @@ class Itemcompanyvote extends Auth
             /* ++++++++++ 入户摸底信息 ++++++++++ */
             $collection_info=Collections::withTrashed()
                 ->field(['id','item_id','community_id','building','unit','floor','number','type'])
-                ->with('item,community')
                 ->where('id',input('collection_id'))
                 ->find();
             if(!$collection_info){
                 return $this->error('选择权属不存在！');
             }
-
-            if($collection_info->item->getData('status') !=1){
-                switch ($collection_info->item->getData('status')){
-                    case 2:
-                        $msg='项目已完成，禁止操作！';
-                        break;
-                    case 3:
-                        $msg='项目已取消，禁止操作！';
-                        break;
-                    default:
-                        $msg='项目未进行，禁止操作！';
-                }
-                if(request()->isAjax()){
-                    return $this->error($msg,'');
-                }else{
-                    return $msg;
-                }
-            }
-
 
             if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
                 return $this->error('选择权属与项目片区不一致');
@@ -125,8 +148,6 @@ class Itemcompanyvote extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            /* ++++++++++ 项目列表 ++++++++++ */
-            $items=Items::field(['id','name','is_top'])->where('status',1)->order('is_top desc')->select();
             /* ++++++++++ 片区 ++++++++++ */
             $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
             /* ++++++++++ 权属 ++++++++++ */
@@ -135,7 +156,7 @@ class Itemcompanyvote extends Auth
             $companys=Companys::field(['id','name','status'])->where('status',1)->where('type',0)->order('sort asc')->select();
             return view('add',[
                 'model'=>$model,
-                'items'=>$items,
+                'item_info'=>$item_info,
                 'collectioncommunitys'=>$collectioncommunitys,
                 'collections'=>$collections,
                 'companys'=>$companys,
@@ -176,6 +197,29 @@ class Itemcompanyvote extends Auth
 
     /* ========== 删除 ========== */
     public function delete(){
+        $item_info=Items::where('id',input('item_id'))->field(['id','name','status'])->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 

@@ -11,22 +11,32 @@
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
+        {if condition="isset($item_info)"}
+        <li>
+            <a href="{:url('index',['item_id'=>$item_info->id,'l'=>1])}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                刷新
+            </a>
+        </li>
+        <li class="fgf" onclick="layerIfWindow('添加评估公司选票','{:url('add',['item_id'=>$item_info->id])}','600','400')">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+        {else/}
         <li>
             <a href="{:url('index')}">
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
-                重置</a>
+                刷新
+            </a>
         </li>
         <li class="fgf" onclick="layerPage('查询',$('#search'),'600','250')" >
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加评估公司选票','{:url('add')}','600','400')">
-            <img src="__STATIC__/system/img/add.png"/>
-            添加
-        </li>
+        {/if}
     </ul>
 </div>
-<form action="{:url('index')}" method="post" id="js-ajax-form">
+<form action="{:isset($item_info)?url('index',['item_id'=>$item_info->id,'l'=>1]):url('index')}" method="post" id="js-ajax-form">
     <div class="tableCon">
         <em class="xian"></em>
         <table class="table" border="0" >
@@ -60,6 +70,7 @@
     </div>
 </form>
 
+{if condition="!isset($item_info)"}
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
     <form action="{:url('index')}" method="post" id="search-form">
@@ -82,7 +93,7 @@
         </div>
     </form>
 </div>
-
+{/if}
 <script>
 
     $(function () {

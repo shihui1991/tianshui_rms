@@ -40,7 +40,7 @@
                 <td>{$holder->phone}</td>
                 <td>{$holder->holder}</td>
                 <td>
-                    <button type="button" data-action="{:url('delete',['ids'=>$holder->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" data-action="{:url('delete',['item_id'=>$item_id,'ids'=>$holder->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}

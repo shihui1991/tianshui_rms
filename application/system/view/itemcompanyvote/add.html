@@ -13,14 +13,7 @@
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label for="item_id">项目：</label></td>
-                <td>
-                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
-                        <option value="">--请选择项目--</option>
-                        {volist name="items" id="item"}
-                        <option value="{$item->id}" >{$item->name}</option>
-                        {/volist}
-                    </select>
-                </td>
+                <td>{$item_info->name}</td>
             </tr>
             <tr class="h50">
                 <td><label for="community_id">片区：</label></td>
