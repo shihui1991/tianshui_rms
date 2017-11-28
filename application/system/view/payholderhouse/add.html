@@ -19,6 +19,7 @@
                         {volist name="payholders" id="payholder"}
                         {if condition="($pay_info->getData('type') and $payholder->getData('holder') eq 2) or (!$pay_info->getData('type') and $payholder->getData('holder') eq 1)"}
                         <option value="{$payholder->id}" >{$payholder->name} 【{$payholder->holder}】</option>
+                        {/if}
                         {/volist}
                     </select>
                 </td>

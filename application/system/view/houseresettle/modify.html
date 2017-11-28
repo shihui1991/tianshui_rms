@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>房源安置|后台管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label>项目：</label></td>
+                <td id="item_id_info">
+                    {$infos->item_name}
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>兑付信息：</td>
+                <td>
+                    <table class="table" border="0" id="pay_id_lists">
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: center;">ID</th>
+                            <th>片区</th>
+                            <th>位置</th>
+                            <th>类型</th>
+                            <th>性质</th>
+                            <th>房产</th>
+                            <th>资产</th>
+                            <th>公共平均</th>
+                            <th>重要科目</th>
+                            <th>补偿事项</th>
+                            <th>总计</th>
+                            <th>补偿方式</th>
+                            <th>过渡方式</th>
+                        </tr>
+                        <tr class="h50">
+                            <td style="width: inherit !important;background: none;text-align: center;">{$infos->pay_id}</td>
+                            <td style="text-align: left;background: none;">{$pays->pq_name}</td>
+                            <td style="text-align: left;background: none;"> {if condition="$pays->building"}{$pays->building}栋{/if}
+                                {if condition="$pays->unit"}{$pays->unit}单元{/if}
+                                {if condition="$pays->floor"}{$pays->floor}楼{/if}
+                                {if condition="$pays->number"}{$pays->number}号{/if}
+                            </td>
+                            <td style="text-align: left;background: none;">{$pays->type}</td>
+                            <td style="text-align: left;background: none;">{$pays->bu_name}</td>
+                            <td style="text-align: left;background: none;">{$pays->estate_amount|number_format=2}</td>
+                            <td style="text-align: left;background: none;">{$pays->assets_amount|number_format=2}</td>
+                            <td style="text-align: left;background: none;">{$pays->public_avg|number_format=2}</td>
+                            <td style="text-align: left;background: none;">{$pays->subject_amount|number_format=2}</td>
+                            <td style="text-align: left;background: none;">{$pays->object_amount|number_format=2}</td>
+                            <td style="text-align: left;background: none;">{$pays->total|number_format=2}</td>
+                            <td style="text-align: left;background: none;">{$pays->compensate_way}</td>
+                            <td style="text-align: left;background: none;">{$pays->transit_way}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label>被征收人(ID)：</label></td>
+                <td>
+                    {$infos->ch_name}【{if condition="$infos->holder eq 1"}产权人{/if}{if condition="$infos->holder eq 2"}承租人{/if}】({$infos->collection_holder_id})
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label>安置房(ID)：</label></td>
+                <td id="house_id_info">
+                    {$infos->hc_name}
+                    {if condition="$infos->building"}{$infos->building}栋{/if}
+                    {if condition="$infos->unit"}{$infos->unit}单元{/if}
+                    {if condition="$infos->floor"}{$infos->floor}楼{/if}
+                    {if condition="$infos->number"}{$infos->number}号{/if}
+                    {if condition="$infos->l_name"}【{$infos->l_name}】{/if}
+                    {if condition="$infos->area"}【{$infos->area}㎡】{/if}
+                    ({$infos->house_id})
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="start_at">开始时间：</label></td>
+                <td>
+                    <input type="text" class="laydate-icon" name="start_at" id="start_at" value="{$infos->start_at}" placeholder="请输入开始时间">
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="end_at">结束时间：</label></td>
+                <td>
+                    <input type="text" class="laydate-icon" name="end_at" id="end_at" value="{$end_at}" placeholder="请输入结束时间">
+                </td>
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+</body>
+</html>
