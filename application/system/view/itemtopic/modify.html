@@ -10,17 +10,11 @@
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <input type="hidden" name="item_id" value="{:isset($infos)?$infos->item_id:$item_info->id}">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label>项目：</label></td>
-                <td>
-                    {if condition="isset($infos)"}
-                            {$infos->item_name}
-                    {else/}
-                    <input type="hidden" name="item_id" value="{$item_id}">
-                             {$item_name}
-                    {/if}
-                </td>
+                <td>{$item_info->name}</td>
             </tr>
             <tr class="h50">
                 <td><label for="topic_id">风险评估话题：</label></td>
