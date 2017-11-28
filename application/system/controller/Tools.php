@@ -575,15 +575,37 @@ class Tools extends Auth
     /* ========== 查询产权人(承租人)名称 ========== */
     public function sear_holder_name(){
         $item_id = input('item_id');
-        if(!$item_id){
-            return $this->error('请选择项目','');
+        $pay_id = input('pay_id');
+        $biaoshi = input('bisoshi');
+        if($biaoshi){
+            if(!$pay_id){
+                return $this->error('请选择兑付','');
+            }
+        }else{
+            if(!$item_id){
+                return $this->error('请选择项目','');
+            }
         }
-        $holder_name_list = model('Payholders')
-            ->alias('p')
-            ->field(['p.*','c.name as holder_name'])
-            ->join('collection_holder c','c.id = p.collection_holder_id','left')
-            ->where('p.item_id',$item_id)
-            ->select();
+
+        if($item_id){
+            $holder_name_list = model('Payholders')
+                ->alias('p')
+                ->field(['p.*','c.name as holder_name'])
+                ->join('collection_holder c','c.id = p.collection_holder_id','left')
+                ->where('p.item_id',$item_id)
+                ->select();
+        }else{
+            $payholder_ids=model('Houseresettles')->where('pay_id',$pay_id)->column('collection_holder_id');
+            $holder_name_list=model('Payholders')
+                ->alias('ph')
+                ->field(['ph.id','ph.item_id','ph.community_id','ph.collection_id','ph.pay_id','ph.collection_holder_id','ph.holder','ch.name','ch.id as ch_id'])
+                ->join('collection_holder ch','ch.id=ph.collection_holder_id','left')
+                ->where('ph.pay_id',$pay_id)
+                ->where('ph.collection_holder_id','not in',$payholder_ids)
+                ->order('ph.portion desc')
+                ->select();
+        }
+
         if($holder_name_list){
             return $this->success('获取成功','',$holder_name_list);
         }else{
@@ -626,7 +648,7 @@ class Tools extends Auth
             return $this->error('至少选中一项');
         }
         /* ********** 查询条件 ********** */
-        $field=['p.*','i.name as i_name','i.is_top','c.community_id','c.building','c.unit','c.floor','c.number','c.type','c.real_use','cc.address','cc.name as cc_name','bu.name as bu_name'];
+        $field=['p.*','i.name as i_name','i.is_top','c.id as collection_id','c.community_id','c.building','c.unit','c.floor','c.number','c.type','c.real_use','cc.address','cc.name as cc_name','bu.name as bu_name'];
 
         $pays=model('Pays')
             ->alias('p')
@@ -643,4 +665,33 @@ class Tools extends Auth
             return $this->error('没有数据','');
         }
     }
+
+    /* ========== 查询安置房源 ========== */
+    public function sear_house(){
+        $pay_id = input('pay_id');
+        $pay_holder_id = input('pay_holder_id');
+        if(!$pay_holder_id){
+            return $this->error('请选择被征收人');
+        }
+        /* ++++++++++ 安置房选择 ++++++++++ */
+        $where['pyh.pay_id']=$pay_id;
+        $where['pyh.pay_holder_id']=$pay_holder_id;
+        $where['h.status']=0;
+        $house_list=model('Payholderhouses')
+            ->alias('pyh')
+            ->field(['pyh.collection_id','pyh.sort','pyh.house_id','h.community_id as house_community_id','h.id as h_id','h.building','h.unit',
+                'h.floor','h.number','h.layout_id','h.area','h.status as house_status','hc.address','hc.name as hc_name','l.name as l_name'])
+            ->join('house h','h.id=pyh.house_id','left')
+            ->join('house_community hc','hc.id=h.community_id','left')
+            ->join('layout l','l.id=h.layout_id','left')
+            ->where($where)
+            ->order('pyh.sort asc')
+            ->select();
+        if($house_list){
+            return $this->success('获取成功','',$house_list);
+        }else{
+            return $this->error('没有数据','');
+        }
+    }
+
 }

@@ -77,7 +77,7 @@
                             {/php}
                             {if condition="$payholder->house_amount"}
                             {php}
-                            $payholderhouses=Payholderhouses::alias('phh')
+                            $payholderhouses=model('Payholderhouses')->alias('phh')
                             ->field(['phh.*','h.community_id as house_community_id','h.building','h.unit','h.floor','h.number','h.layout_id','h.area','h.status as house_status','hc.address','hc.name as hc_name','l.name as l_name'])
                             ->join('house h','h.id=phh.house_id','left')
                             ->join('house_community hc','hc.id=h.community_id','left')
@@ -88,7 +88,7 @@
                             {/php}
                             <tr class="h50">
                                 <td>排序</td>
-                                <td>{payholder->name} 【{payholder->holder}】</td>
+                                <td>{$payholder->name} 【{$payholder->holder}】</td>
                             </tr>
                             {volist name="payholderhouses" id="payholderhouse"}
                             <tr class="h50">

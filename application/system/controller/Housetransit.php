@@ -108,12 +108,15 @@ class Housetransit extends Auth
 
             $start_at = strtotime(input('start_at'));
             $end_at = strtotime(input('end_at'));
-            if($start_at>$end_at){
-                return $this->error('结束时间不能早于开始时间');
+            if(input('end_at')){
+                if($start_at>$end_at){
+                    return $this->error('结束时间不能早于开始时间');
+                }
             }
+
             /*+++++ 判断过渡方式 +++++*/
             if($pay_info->getData('transit_way') == 0){
-                return $this->error('已选择货币过渡，无法添加');
+                return $this->error('过渡方式为货币过渡，无法添加');
             }else{
                 Db::startTrans();
                 try{
@@ -431,8 +434,10 @@ class Housetransit extends Auth
 
         $start_at = strtotime(input('start_at'));
         $end_at = strtotime(input('end_at'));
-        if($start_at>$end_at){
-            return $this->error('结束时间不能早于开始时间');
+        if(input('end_at')) {
+            if ($start_at > $end_at) {
+                return $this->error('结束时间不能早于开始时间');
+            }
         }
         $end_at_end = strtotime(date('Y-m-d')." 23:59:59");
         if($end_at<=$end_at_end){
@@ -459,11 +464,28 @@ class Housetransit extends Auth
                 Db::rollback();
             }
         }else{
-            $res =  model('Housetransits')->save([
-                'start_at'=>$datas['start_at'],
-                'exp_end'=>$datas['exp_end'],
-                'end_at'=>$datas['end_at'],
-            ],['id'=>$datas['id']]);
+            Db::startTrans();
+            try{
+                $rs = model('Housetransits')->save([
+                    'start_at'=>$datas['start_at'],
+                    'exp_end'=>$datas['exp_end'],
+                    'end_at'=>$datas['end_at']
+                ],['id'=>$datas['id']]);
+                $house_id =  model('Housetransits')
+                    ->where('id',$datas['id'])
+                    ->value('house_id');
+                model('Houses')->save(['status'=>1],['id'=>$house_id]);
+                if(!$rs){
+                    $res = false;
+                    Db::rollback();
+                }else{
+                    $res = true;
+                    Db::commit();
+                }
+            }catch (\Exception $e){
+                $res = false;
+                Db::rollback();
+            }
         }
         if($res){
             return $this->success('修改成功','');
