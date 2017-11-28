@@ -17,6 +17,8 @@ use app\system\model\Companys;
 use app\system\model\Itemcompanycollections;
 use app\system\model\Itemcompanys;
 use app\system\model\Items;
+use app\system\model\Itemstatuss;
+use think\Exception;
 
 class Itemcompany extends Auth
 {
@@ -28,17 +30,40 @@ class Itemcompany extends Auth
 
     /* ========== 列表 ========== */
     public function index(){
-        /* ********** 查询条件 ********** */
-        $datas=[];
         $where=[];
-        $field=['ic.id','ic.item_id','ic.company_id','i.name as i_name','c.type','c.name as c_name'];
-
-        /* ++++++++++ 项目 ++++++++++ */
+        $datas=[];
+        /* ********** 是否弹出层 ********** */
+        $l=input('l');
         $item_id=input('item_id');
-        if(is_numeric($item_id)){
+        if($l){
+            if(!$item_id){
+                return $this->error('错误操作','');
+            }
+            $with='company';
+            $view='index';
+            /* ++++++++++ 项目信息 ++++++++++ */
+            $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+            $datas['item_info']=$item_info;
             $where['item_id']=$item_id;
-            $datas['item_id']=$item_id;
+            /* ++++++++++ 项目状态 ++++++++++ */
+            $item_status=Itemstatuss::where(['keyname'=>'item_company_id','keyvalue'=>$item_id])->order('created_at desc')->value('status');
+            $datas['item_status']=$item_status;
+
+        }else{
+            if($item_id){
+                $where['item_id']=$item_id;
+                $datas['item_id']=$item_id;
+            }
+            $with='item,company';
+            $view='all';
+            /* ++++++++++ 项目列表 ++++++++++ */
+            $items=Items::field(['id','name','status','is_top'])->order('is_top desc')->select();
+            $datas['items']=$items;
         }
+
+
+        /* ********** 查询条件 ********** */
+
         /* ++++++++++ 评估公司 ++++++++++ */
         $company_id=input('company_id');
         if(is_numeric($company_id)){
@@ -70,30 +95,58 @@ class Itemcompany extends Auth
         $itemcompany_model=new Itemcompanys();
         $datas['model']=$itemcompany_model;
         $itemcompanys=$itemcompany_model
-            ->alias('ic')
-            ->field($field)
-            ->join('item i','ic.item_id=i.id','left')
-            ->join('company c','ic.company_id=c.id','left')
+            ->with($with)
             ->where($where)
-            ->order(['item.is_top'=>'desc','item_company.'.$ordername=>$orderby])
+            ->order([$ordername=>$orderby])
             ->paginate($display_num);
 
         $datas['itemcompanys']=$itemcompanys;
 
-        /* ++++++++++ 项目列表 ++++++++++ */
-        $items=Items::field(['id','name','status'])->where('status',1)->order('is_top desc')->select();
-        $datas['items']=$items;
         /* ++++++++++ 评估公司 ++++++++++ */
         $companys=Companys::field(['id','name','status'])->where('status',1)->order('sort asc')->select();
         $datas['companys']=$companys;
 
         $this->assign($datas);
 
-        return view();
+        return view($view);
     }
 
     /* ========== 添加 ========== */
     public function add(){
+        $item_info=Items::where('id',input('item_id'))->field(['id','name','status'])->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+        /* ++++++++++ 项目状态 ++++++++++ */
+        $item_status=Itemstatuss::where(['keyname'=>'item_company_id','keyvalue'=>input('item_id')])->order('created_at desc')->value('status');
+        if($item_status == 8){
+            $msg='选定评估公司数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
         $model=new Itemcompanys();
         if(request()->isPost()){
             $rules=[
@@ -112,7 +165,6 @@ class Itemcompany extends Auth
             if(true !== $result){
                 return $this->error($result);
             }
-
             $other_datas=$model->other_data(input());
             $datas=array_merge(input(),$other_datas);
 
@@ -132,6 +184,17 @@ class Itemcompany extends Auth
                     }
                 }
 
+                $status_data=[
+                    'keyname'=>'item_company_id',
+                    'keyvalue'=>input('item_id'),
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>0
+                ];
+                $status_model=new Itemstatuss();
+                $status_model->save($status_data);
+
                 $icc_model=new Itemcompanycollections();
                 $icc_model->saveAll($icc_data);
                 $res=true;
@@ -147,14 +210,12 @@ class Itemcompany extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            /* ++++++++++ 项目列表 ++++++++++ */
-            $items=Items::field(['id','name','status'])->where('status',1)->order('is_top desc')->select();
             /* ++++++++++ 片区 ++++++++++ */
             $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
 
             return view('add',[
                 'model'=>$model,
-                'items'=>$items,
+                'item_info'=>$item_info,
                 'collectioncommunitys'=>$collectioncommunitys,
             ]);
         }
@@ -205,8 +266,8 @@ class Itemcompany extends Auth
             'ids'=>'require',
         ];
         $msg=[
-            'item_id.require'=>'请选择项目',
-            'company_id.require'=>'请选择评估公司',
+            'item_id.require'=>'数据错误',
+            'company_id.require'=>'数据错误',
             'company_id.unique'=>'评估公司已存在',
             'ids.require'=>'请选择被征户',
         ];
@@ -215,12 +276,46 @@ class Itemcompany extends Auth
         if(true !== $result){
             return $this->error($result);
         }
+
+        $item_info=Items::where('id',input('item_id'))->field(['id','name','status'])->find();
+        if(!$item_info){
+            return $this->error('项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+        /* ++++++++++ 项目状态 ++++++++++ */
+        $item_status=Itemstatuss::where(['keyname'=>'item_company_id','keyvalue'=>input('item_id')])->order('created_at desc')->value('status');
+        if($item_status == 8){
+            $msg='选定评估公司数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
         $model=new Itemcompanys();
         $other_datas=$model->other_data(input());
         $datas=array_merge(input(),$other_datas);
 
         $model->startTrans();
-
         try{
             $model->isUpdate(true)->allowField(['infos','updated_at'])->save($datas);
 
@@ -235,6 +330,17 @@ class Itemcompany extends Auth
                     $i++;
                 }
             }
+
+            $status_data=[
+                'keyname'=>'item_company_id',
+                'keyvalue'=>input('item_id'),
+                'user_id'=>session('userinfo.user_id'),
+                'role_id'=>session('userinfo.role_id'),
+                'role_parent_id'=>session('userinfo.role_parent_id'),
+                'status'=>1
+            ];
+            $status_model=new Itemstatuss();
+            $status_model->save($status_data);
 
             $icc_model=new Itemcompanycollections();
             /* ++++++++++ 清空评估公司-被征户 ++++++++++ */
@@ -258,6 +364,40 @@ class Itemcompany extends Auth
 
     /* ========== 删除 ========== */
     public function delete(){
+        $item_info=Items::where('id',input('item_id'))->field(['id','name','status'])->find();
+        if(!$item_info){
+            return $this->error('项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+        /* ++++++++++ 项目状态 ++++++++++ */
+        $item_status=Itemstatuss::where(['keyname'=>'item_company_id','keyvalue'=>input('item_id')])->order('created_at desc')->value('status');
+        if($item_status == 8){
+            $msg='选定评估公司数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
@@ -266,8 +406,24 @@ class Itemcompany extends Auth
         }
         $model=new Itemcompanys();
         try{
-            Itemcompanycollections::whereIn('item_company_id',$ids)->delete();
-            $model->whereIn('id',$ids)->delete();
+            $itemcompany_ids=Itemcompanys::whereIn('id',$ids)->column('id');
+            if(!$itemcompany_ids){
+                throw new Exception('数据不存在');
+            }
+            $status_data[]=[
+                'keyname'=>'item_company_id',
+                'keyvalue'=>input('item_id'),
+                'user_id'=>session('userinfo.user_id'),
+                'role_id'=>session('userinfo.role_id'),
+                'role_parent_id'=>session('userinfo.role_parent_id'),
+                'status'=>2
+            ];
+
+            $status_model=new Itemstatuss();
+            $status_model->saveAll($status_data);
+
+            Itemcompanycollections::whereIn('item_company_id',$itemcompany_ids)->delete();
+            $model->whereIn('id',$itemcompany_ids)->delete();
             $res=true;
             $model->commit();
         }catch (\Exception $exception){

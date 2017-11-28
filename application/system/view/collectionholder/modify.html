@@ -15,7 +15,7 @@
                 <ul class="homeTab">
                     <li class="on"><a href="javascript:location.reload();">基本信息</a></li>
                     {if condition="isset($infos)"}
-                    <li class=""><a href="{:url('Collectionholdercrowd/index',['item_id'=>$infos->item_id,'community_id'=>$infos->community_id,'collection_id'=>$infos->collection_id,'holder_id'=>$infos->id,'layer'=>1])}">特殊人群</a></li>
+                    <li class=""><a href="{:url('Collectionholdercrowd/index',['item_id'=>$infos->item_id,'holder_id'=>$infos->id,'l'=>1])}">特殊人群</a></li>
                     {/if}
                 </ul>
 
@@ -24,6 +24,8 @@
                 <div class="tabPage w_100 on">
                     <div class="layerCon bg_f">
                         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                        <input type="hidden" name="item_id" value="{:isset($infos)?$infos->item_id:$collection_info->item_id}">
+                        <input type="hidden" name="collection_id" value="{:isset($infos)?$infos->collection_id:$collection_info->id}">
                         <table class="layerTable" border="0">
                             <tr class="h50">
                                 <td><label for="name">名称：</label></td>
@@ -43,39 +45,24 @@
                             </tr>
                             <tr class="h50">
                                 <td><label for="item_id">项目：</label></td>
-                                <td colspan="3">
-                                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
-                                        <option value="">--请选择项目--</option>
-                                        {volist name="items" id="item"}
-                                        <option value="{$item->id}" {if condition="isset($infos) and $infos->item_id eq $item->id"}selected{/if}>{$item->name}</option>
-                                        {/volist}
-                                    </select>
-                                </td>
+                                <td colspan="3">{:isset($infos)?$infos->item->name:$collection_info->item->name}</td>
                                 <td><label for="community_id">片区：</label></td>
-                                <td colspan="3">
-                                    <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
-                                        <option value="">--请选择片区--</option>
-                                        {volist name="collectioncommunitys" id="community"}
-                                        <option value="{$community->id}" {if condition="isset($infos) and $infos->community_id eq $community->id"}selected{/if}>{$community->name}</option>
-                                        {/volist}
-                                    </select>
-                                </td>
+                                <td colspan="3">{:isset($infos)?$infos->community->name:$collection_info->community->name}</td>
                             </tr>
                             <tr class="h50">
                                 <td><label for="collection_id">权属：</label></td>
                                 <td colspan="3">
-                                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
-                                        <option value="">--请选择权属--</option>
-                                        {volist name="collections" id="collection"}
-                                        <option value="{$collection->id}" {if condition="isset($infos) and $infos->collection_id eq $collection->id"}selected{/if}>
-                                        {if condition="$collection->building"}{$collection->building}栋{/if}
-                                        {if condition="$collection->unit"}{$collection->unit}单元{/if}
-                                        {if condition="$collection->floor"}{$collection->floor}楼{/if}
-                                        {if condition="$collection->number"}{$collection->number}号{/if}
-                                        （{$collection->id}）
-                                        </option>
-                                        {/volist}
-                                    </select>
+                                    {if condition="isset($infos)"}
+                                    {if condition="$infos->collection->building"}{$infos->collection->building}栋{/if}
+                                    {if condition="$infos->collection->unit"}{$infos->collection->unit}单元{/if}
+                                    {if condition="$infos->collection->floor"}{$infos->collection->floor}楼{/if}
+                                    {if condition="$infos->collection->number"}{$infos->collection->number}号{/if}
+                                    {else/}
+                                    {if condition="$collection_info->building"}{$collection_info->building}栋{/if}
+                                    {if condition="$collection_info->unit"}{$collection_info->unit}单元{/if}
+                                    {if condition="$collection_info->floor"}{$collection_info->floor}楼{/if}
+                                    {if condition="$collection_info->number"}{$collection_info->number}号{/if}
+                                    {/if}
                                 </td>
                                 <td><label for="address">地址：</label></td>
                                 <td colspan="3"><input type="text" name="address" id="address" value="{:isset($infos)?$infos->address:''}"></td>

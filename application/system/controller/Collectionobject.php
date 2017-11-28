@@ -15,6 +15,7 @@ namespace app\system\controller;
 
 use app\system\model\Collectionobjects;
 use app\system\model\Collections;
+use app\system\model\Itemstatuss;
 use app\system\model\Objects;
 use think\Db;
 
@@ -31,21 +32,25 @@ class Collectionobject extends Auth
     /* ========== 列表 ========== */
     public function index()
     {
-        $item_id=input('item_id');
-        if(!$item_id){
-            return $this->error('错误操作');
-        }
         $collection_id=input('collection_id');
         if(!$collection_id){
-            return $this->error('错误操作');
+            return $this->error('错误操作','');
         }
+        /* ++++++++++ 入户摸底信息 ++++++++++ */
+        $collection_info=Collections::withTrashed()
+            ->field(['id','item_id','community_id','building','unit','floor','number','type'])
+            ->with('item,community')
+            ->where('id',$collection_id)
+            ->find();
+        $datas['collection_info']=$collection_info;
+        /* ++++++++++ 入户摸底状态 ++++++++++ */
+        $collection_status=Itemstatuss::where(['keyname'=>'collection_id','keyvalue'=>$collection_id])->order('created_at desc')->value('status');
+        $datas['collection_status']=$collection_status;
+
         /* ********** 查询条件 ********** */
-        $datas=[
-            'item_id'=>$item_id,
-            'collection_id'=>$collection_id
-        ];
+
         $where=[
-            'collection_object.item_id'=>$item_id,
+            'collection_object.item_id'=>$collection_info->item_id,
             'collection_object.collection_id'=>$collection_id
         ];
         $field=['co.id','co.item_id','co.collection_id','co.object_id','co.number','co.deleted_at', 'o.name as o_name'];
@@ -68,18 +73,55 @@ class Collectionobject extends Auth
     }
 
     /* ========== 添加 ========== */
-    public function add($id=0){
+    public function add(){
+        $collection_id=input('collection_id');
+        if(!$collection_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 入户摸底信息 ++++++++++ */
+        $collection_info=Collections::withTrashed()
+            ->field(['id','item_id','community_id','building','unit','floor','number','type'])
+            ->with('item,community')
+            ->where('id',$collection_id)
+            ->find();
+
+        if($collection_info->item->getData('status') !=1){
+            switch ($collection_info->item->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+        /* ++++++++++ 入户摸底状态 ++++++++++ */
+        $collection_status=Itemstatuss::where(['keyname'=>'collection_id','keyvalue'=>$collection_id])->order('created_at desc')->value('status');
+        if($collection_status == 8){
+            $msg='入户摸底数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
         $model=new Collectionobjects();
         if(request()->isPost()){
             $rules=[
-                'item_id'=>'require',
-                'collection_id'=>'require',
                 'object_id'=>'require|unique:collection_object,collection_id='.input('collection_id').'&object_id='.input('object_id'),
                 'number'=>'require|min:1',
             ];
             $msg=[
-                'item_id.require'=>'数据错误，请关闭窗口重试',
-                'collection_id.require'=>'数据错误，请关闭窗口重试',
                 'object_id.require'=>'请选择补偿事项',
                 'object_id.unique'=>'补偿事项已存在',
                 'number.require'=>'请输入数量',
@@ -89,16 +131,13 @@ class Collectionobject extends Auth
             if(true !== $result){
                 return $this->error($result);
             }
-            $collection_info=Collections::field(['id','item_id'])->find(input('collection_id'));
-            if(!$collection_info){
-                return $this->error('数据错误，请关闭窗口重试！');
-            }
-            if(input('item_id') != $collection_info->item_id ){
-                return $this->error('数据错误，请关闭窗口重试');
-            }
 
             $other_datas=$model->other_data(input());
             $datas=array_merge(input(),$other_datas);
+            $datas['item_id']=$collection_info->item_id;
+            $datas['collection_id']=$collection_info->id;
+
+
             $model->save($datas);
             if($model !== false){
                 return $this->success('保存成功','');
@@ -106,28 +145,20 @@ class Collectionobject extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            $item_id=input('item_id');
-            if(!$item_id){
-                return $this->error('错误操作');
-            }
-            $collection_id=input('collection_id');
-            if(!$collection_id){
-                return $this->error('错误操作');
-            }
             /* ++++++++++ 其他补偿事项 ++++++++++ */
             $objects=Objects::field(['id','name'])->select();
 
             return view('modify',[
                 'model'=>$model,
-                'item_id'=>$item_id,
-                'collection_id'=>$collection_id,
+                'collection_info'=>$collection_info,
                 'objects'=>$objects,
             ]);
         }
     }
 
     /* ========== 详情 ========== */
-    public function detail($id=null){
+    public function detail(){
+        $id=input('id');
         if(!$id){
             return $this->error('至少选择一项');
         }
@@ -152,22 +183,55 @@ class Collectionobject extends Auth
 
     /* ========== 修改 ========== */
     public function edit(){
+        $collection_id=input('collection_id');
+        if(!$collection_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 入户摸底信息 ++++++++++ */
+        $collection_info=Collections::withTrashed()
+            ->field(['id','item_id','community_id','building','unit','floor','number','type'])
+            ->with('item,community')
+            ->where('id',$collection_id)
+            ->find();
+
+        if($collection_info->item->getData('status') !=1){
+            switch ($collection_info->item->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+        /* ++++++++++ 入户摸底状态 ++++++++++ */
+        $collection_status=Itemstatuss::where(['keyname'=>'collection_id','keyvalue'=>$collection_id])->order('created_at desc')->value('status');
+        if($collection_status == 8){
+            $msg='入户摸底数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
         $id=input('id');
         if(!$id){
             return $this->error('错误操作');
         }
         $datas=input();
         $rules=[
-            'item_id'=>'require',
-            'collection_id'=>'require',
-            'object_id'=>'require|unique:collection_object,collection_id='.input('collection_id').'&object_id='.input('object_id'),
             'number'=>'require|min:1',
         ];
         $msg=[
-            'item_id.require'=>'数据错误，请关闭窗口重试',
-            'collection_id.require'=>'数据错误，请关闭窗口重试',
-            'object_id.require'=>'请选择补偿事项',
-            'object_id.unique'=>'补偿事项已存在',
             'number.require'=>'请输入数量',
             'number.min'=>'数量至少为1',
         ];
@@ -176,13 +240,7 @@ class Collectionobject extends Auth
         if(true !== $result){
             return $this->error($result);
         }
-        $collection_info=Collections::field(['id','item_id'])->find(input('collection_id'));
-        if(!$collection_info){
-            return $this->error('数据错误，请关闭窗口重试！');
-        }
-        if(input('item_id') != $collection_info->item_id ){
-            return $this->error('数据错误，请关闭窗口重试');
-        }
+
 
         $collectionobject_model=new Collectionobjects();
         $other_datas=$collectionobject_model->other_data(input());
@@ -197,6 +255,47 @@ class Collectionobject extends Auth
 
     /* ========== 删除 ========== */
     public function delete(){
+        $collection_id=input('collection_id');
+        if(!$collection_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 入户摸底信息 ++++++++++ */
+        $collection_info=Collections::withTrashed()
+            ->field(['id','item_id','community_id','building','unit','floor','number','type'])
+            ->with('item,community')
+            ->where('id',$collection_id)
+            ->find();
+
+        if($collection_info->item->getData('status') !=1){
+            switch ($collection_info->item->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+        /* ++++++++++ 入户摸底状态 ++++++++++ */
+        $collection_status=Itemstatuss::where(['keyname'=>'collection_id','keyvalue'=>$collection_id])->order('created_at desc')->value('status');
+        if($collection_status == 8){
+            $msg='入户摸底数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
@@ -213,6 +312,46 @@ class Collectionobject extends Auth
 
     /* ========== 恢复 ========== */
     public function restore(){
+        $collection_id=input('collection_id');
+        if(!$collection_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 入户摸底信息 ++++++++++ */
+        $collection_info=Collections::withTrashed()
+            ->field(['id','item_id','community_id','building','unit','floor','number','type'])
+            ->with('item,community')
+            ->where('id',$collection_id)
+            ->find();
+
+        if($collection_info->item->getData('status') !=1){
+            switch ($collection_info->item->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+        /* ++++++++++ 入户摸底状态 ++++++++++ */
+        $collection_status=Itemstatuss::where(['keyname'=>'collection_id','keyvalue'=>$collection_id])->order('created_at desc')->value('status');
+        if($collection_status == 8){
+            $msg='入户摸底数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
@@ -230,6 +369,46 @@ class Collectionobject extends Auth
 
     /* ========== 销毁 ========== */
     public function destroy(){
+        $collection_id=input('collection_id');
+        if(!$collection_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 入户摸底信息 ++++++++++ */
+        $collection_info=Collections::withTrashed()
+            ->field(['id','item_id','community_id','building','unit','floor','number','type'])
+            ->with('item,community')
+            ->where('id',$collection_id)
+            ->find();
+
+        if($collection_info->item->getData('status') !=1){
+            switch ($collection_info->item->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+        /* ++++++++++ 入户摸底状态 ++++++++++ */
+        $collection_status=Itemstatuss::where(['keyname'=>'collection_id','keyvalue'=>$collection_id])->order('created_at desc')->value('status');
+        if($collection_status == 8){
+            $msg='入户摸底数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 

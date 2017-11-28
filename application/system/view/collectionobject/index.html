@@ -12,29 +12,32 @@
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
         <li>
-            <a href="{:url('index',['item_id'=>$item_id,'collection_id'=>$collection_id])}">
+            <a href="{:url('index',['collection_id'=>$collection_info->id])}">
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
-                重置</a>
+                刷新
+            </a>
         </li>
-        <li class="fgf" onclick="layerIfWindow('添加入户摸底-其他补偿事项','{:url('add',['item_id'=>$item_id,'collection_id'=>$collection_id])}','800','600')">
+        {if condition="$collection_info->item->getData('status') eq 1 and $collection_status neq 8"}
+        <li class="fgf" onclick="layerIfWindow('添加入户摸底-其他补偿事项','{:url('add',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}','800','600')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}">
             <img src="__STATIC__/system/img/broom.png"/>
             删除
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}">
             <img src="__STATIC__/system/img/recycle.png"/>
             恢复
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}" data-notice="确定要彻底删除吗？">
             <img src="__STATIC__/system/img/destroy.png"/>
             销毁
         </li>
+        {/if}
     </ul>
 </div>
-<form action="{:url('index',['item_id'=>$item_id,'collection_id'=>$collection_id])}" method="post" id="js-ajax-form">
+<form action="{:url('index',['collection_id'=>$collection_info->id])}" method="post" id="js-ajax-form">
     <div class="tableCon">
         <em class="xian"></em>
         <table class="table" border="0" >
@@ -58,7 +61,7 @@
                 <td>{if condition="$collectionobject->deleted_at"}<del>{$collectionobject->number}</del>{else /}{$collectionobject->number}{/if}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('入户摸底-其他补偿事项信息',	'{:url('detail',['id'=>$collectionobject->id])}','800','600')" >详细信息</button>
-                    <button type="button" data-action="{:url('delete',['ids'=>$collectionobject->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" data-action="{:url('delete',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id,'ids'=>$collectionobject->id])}" class="btn js-ajax-form-btn">删除</button>
                 </td>
             </tr>
             {/volist}

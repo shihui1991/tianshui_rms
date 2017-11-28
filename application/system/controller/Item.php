@@ -176,6 +176,12 @@ class Item extends Auth
         if(!$id){
             return $this->error('错误操作','');
         }
+
+        $status=Itemstatuss::where(['keyname'=>'item_id','keyvalue'=>$id])->order('created_at desc')->value('status');
+        if($status==8){
+            return $this->error('已通过审核，禁止修改！','');
+        }
+
         $datas=input();
         $rules=[
             'name'=>'require|unique:item,name,'.$id.',id',
@@ -191,11 +197,6 @@ class Item extends Auth
         $result=$this->validate($datas,$rules,$msg);
         if(true !== $result){
             return $this->error($result);
-        }
-
-        $status=Itemstatuss::where(['keyname'=>'item_id','keyvalue'=>$id])->order('created_at desc')->value('status');
-        if($status==8){
-            return $this->error('已通过审核，禁止修改！','');
         }
 
         $model=new Items();

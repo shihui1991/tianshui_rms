@@ -120,7 +120,7 @@ class News extends Auth
         $newscates=Newscates::field(['id','name','status'])->where('status',1)->select();
         $datas['newscates']=$newscates;
         /* ++++++++++ 项目列表 ++++++++++ */
-        $items=Items::field(['id','name','is_top','status'])->where('status',1)->order('is_top desc')->select();
+        $items=Items::field(['id','name','is_top','status'])->order('is_top desc')->select();
         $datas['items']=$items;
 
         $this->assign($datas);
@@ -129,7 +129,7 @@ class News extends Auth
     }
 
     /* ========== 添加 ========== */
-    public function add($id=0){
+    public function add(){
         $model=new Newss();
         if(request()->isPost()){
             $rules=[
@@ -172,7 +172,8 @@ class News extends Auth
     }
 
     /* ========== 详情 ========== */
-    public function detail($id=null){
+    public function detail(){
+        $id=input('id');
         if(!$id){
             return $this->error('至少选择一项');
         }

@@ -27,28 +27,59 @@ class Itemtopic extends Auth
         /* ********** 查询条件 ********** */
         $datas = [];
         $where = [];
+        /* ++++++++++ 项目 ++++++++++ */
         $item_id = input('item_id');
-        $datas['item_id'] = $item_id;
-
-        $where['item_id'] = $item_id;
-        if($item_id){
-            $item_name = model('Items')->where('id',$item_id)->value('name');
-        }else{
-            $item_name = '';
+        if (is_numeric($item_id)) {
+            $where['t.item_id'] = $item_id;
+            $datas['item_id'] = $item_id;
         }
-        $datas['item_name'] = $item_name;
+        /* ++++++++++ 话题 ++++++++++ */
+        $topic_id = input('topic_id');
+        if (is_numeric($topic_id)) {
+            $where['t.topic_id'] = $topic_id;
+            $datas['topic_id'] = $topic_id;
+        }
+        /* ++++++++++ 排序 ++++++++++ */
+        $ordername = input('ordername');
+        $ordername = $ordername ? $ordername : 'id';
+        $datas['ordername'] = $ordername;
+        $orderby = input('orderby');
+        $orderby = $orderby ? $orderby : 'asc';
+        $datas['orderby'] = $orderby;
+        /* ++++++++++ 每页条数 ++++++++++ */
+        $nums = [config('paginate.list_rows'), 30, 50, 100, 200, 500];
+        sort($nums);
+        $datas['nums'] = $nums;
+        $display_num = input('display_num');
+        $display_num = $display_num ? $display_num : config('paginate.list_rows');
+        $datas['display_num'] = $display_num;
         /* ++++++++++ 查询 ++++++++++ */
         $itemtopic_model = new Itemtopics();
+        $deleted = input('deleted');
+        if (is_numeric($deleted) && in_array($deleted, [0, 1])) {
+            $datas['deleted'] = $deleted;
+            if ($deleted == 1) {
+                $itemtopic_model = $itemtopic_model->onlyTrashed();
+            }
+        } else {
+            $itemtopic_model = $itemtopic_model->withTrashed();
+        }
         $itemtopic_list = $itemtopic_model
             ->alias('t')
             ->field(['t.*','i.name as item_name','p.name as topic_name'])
             ->join('item i', 'i.id=t.item_id', 'left')
             ->join('topic p','p.id=t.topic_id','left')
             ->where($where)
-            ->order('created_at desc')
-            ->paginate(config('paginate.list_rows'));
+            ->order([$ordername => $orderby])
+            ->paginate($display_num);
         $datas['itemtopic_list'] = $itemtopic_list;
 
+        /* ++++++++++ 项目列表 ++++++++++ */
+        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        $datas['item_list'] = $items;
+        /* ++++++++++ 话题列表 ++++++++++ */
+        $topics = model('Topics')->field(['id', 'name'])->select();
+        $datas['topic_list'] = $topics;
         $this->assign($datas);
         return view();
     }
@@ -56,11 +87,10 @@ class Itemtopic extends Auth
     /* ========== 添加 ========== */
     public function add()
     {
-        $item_id = input('item_id');
-        $this->assign('item_id',$item_id);
         if (request()->isPost()) {
             $datas = input();
             $rule = [
+                ['item_id', 'require', '请选择项目'],
                 ['topic_id', 'require', '请选择风险评估话题']
             ];
             $result = $this->validate($datas, $rule);
@@ -74,18 +104,20 @@ class Itemtopic extends Auth
             if($item_topic_count){
                 return $this->error('数据重复，请确认后再添加','');
             }
-            $rs = model('Itemtopics')->save(['item_id'=>$datas['item_id'],'topic_id'=>$datas['topic_id']]);
+            $rs = model('Itemtopics')->save($datas);
             if ($rs) {
                 return $this->success('添加成功', '');
             } else {
                 return $this->error('添加失败', '');
             }
         } else {
-            $item_name = model('Items')->where('id',$item_id)->value('name');
+            /* ++++++++++ 项目列表 ++++++++++ */
+            $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+
             /* ++++++++++ 话题列表 ++++++++++ */
             $topic = model('Topics')->field(['id', 'name'])->select();
 
-            return view('modify',['item_name'=>$item_name,'topic'=>$topic]);
+            return view('modify',['items'=>$items,'topic'=>$topic]);
         }
     }
 
@@ -98,15 +130,14 @@ class Itemtopic extends Auth
         }
         $itemtopic_info = model('Itemtopics')
             ->withTrashed()
-            ->alias('t')
-            ->field(['t.*','i.name as item_name'])
-            ->join('item i', 'i.id=t.item_id', 'left')
-            ->where('t.id',$id)
+            ->where('id',$id)
             ->find();
-       /* ++++++++++ 话题列表 ++++++++++ */
+        /* ++++++++++ 项目列表 ++++++++++ */
+        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+        /* ++++++++++ 话题列表 ++++++++++ */
         $topic = model('Topics')->field(['id', 'name'])->select();
 
-        return view('modify', ['infos' => $itemtopic_info,'topic'=>$topic]);
+        return view('modify', ['infos' => $itemtopic_info,'items'=>$items,'topic'=>$topic]);
     }
 
     /* ========== 修改 ========== */
@@ -114,13 +145,14 @@ class Itemtopic extends Auth
     {
         $datas = input();
         $rule = [
+            ['item_id', 'require', '请选择项目'],
             ['topic_id', 'require', '请选择风险评估话题']
         ];
         $result = $this->validate($datas, $rule);
         if (true !== $result) {
             return $this->error($result);
         }
-        $res = model('Itemtopics')->save(['topic_id'=>$datas['topic_id']],['id'=>input('id')]);
+        $res = model('Itemtopics')->save($datas,['id'=>input('id')]);
         if ($res) {
             return $this->success('修改成功', '');
         } else {

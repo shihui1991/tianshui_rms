@@ -64,7 +64,7 @@ class Itemprocess extends Auth
     }
 
     /* ========== 添加 ========== */
-    public function add($id=0){
+    public function add(){
         $model=new Itemprocesss();
         if(request()->isPost()){
             $rules=[
@@ -107,7 +107,8 @@ class Itemprocess extends Auth
     }
 
     /* ========== 详情 ========== */
-    public function detail($id=null){
+    public function detail(){
+        $id=input('id');
         if(!$id){
             return $this->error('至少选择一项');
         }

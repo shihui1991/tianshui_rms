@@ -97,13 +97,13 @@ class Pay extends Auth
         $datas['pays']=$pays;
 
         /* ++++++++++ 项目 ++++++++++ */
-        $items=Items::field(['id','name','status','is_top'])->where(['status'=>1])->order('is_top desc')->select();
+        $items=Items::field(['id','name','status','is_top'])->order('is_top desc')->select();
         $datas['items']=$items;
         /* ++++++++++ 片区 ++++++++++ */
         $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
         $datas['collectioncommunitys']=$collectioncommunitys;
         /* ++++++++++ 权属 ++++++++++ */
-        $collections=Collections::field(['id','building','unit','floor','number','status'])->where('status',1)->select();
+        $collections=Collections::field(['id','building','unit','floor','number','status'])->select();
         $datas['collections']=$collections;
 
         $this->assign($datas);
@@ -112,7 +112,7 @@ class Pay extends Auth
     }
 
     /* ========== 添加 ========== */
-    public function add($id=0){
+    public function add(){
         $model=new Pays();
         if(request()->isPost()){
             $rules=[
@@ -329,7 +329,8 @@ class Pay extends Auth
     }
 
     /* ========== 详情 ========== */
-    public function detail($id=null){
+    public function detail(){
+        $id=input('id');
         if(!$id){
             return $this->error('至少选择一项');
         }

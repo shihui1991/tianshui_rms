@@ -11,15 +11,13 @@
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
-        <input type="hidden" name="item_id" value="{:isset($infos)?$infos->item_id : $item_id}">
-        <input type="hidden" name="collection_id" value="{:isset($infos)?$infos->collection_id : $collection_id}">
+        <input type="hidden" name="item_id" value="{:isset($infos)?$infos->item_id : $collection_info->item_id}">
+        <input type="hidden" name="collection_id" value="{:isset($infos)?$infos->collection_id : $collection_info->id}">
         <table class="layerTable" border="0">
             {if condition="isset($infos)"}
             <tr class="h50">
                 <td><label for="object_id">补偿事项：</label></td>
-                <td>{$infos->o_name}
-                    <input type="hidden" name="object_id" value="{$infos->object_id}" id="object_id">
-                </td>
+                <td>{$infos->o_name}</td>
             </tr>
             {else/}
             <tr class="h50">

@@ -12,14 +12,7 @@
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label for="item_id">项目：</label></td>
-                <td>
-                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
-                        <option value="">--请选择项目--</option>
-                        {volist name="items" id="item"}
-                        <option value="{$item->id}" >{$item->name}（{$item->id}）</option>
-                        {/volist}
-                    </select>
-                </td>
+                <td>{$item_info->name}</td>
             </tr>
             <tr class="h50">
                 <td><label for="type">类型：</label></td>
@@ -139,14 +132,9 @@
         }
     });
 
-    /* ===== 项目改变->清空摸底被征户 =====*/
-    $('#item_id').change(function () {
-        $('#thead-collectionlist').siblings().remove();
-    });
-
     /* ===== 查询摸底被征户 =====*/
     $('#btn-form-search').click(function () {
-        var _item_id=$('#item_id').find('option:selected').val();
+        var _item_id={$item_info->id};
         var _type=$('#type').find('option:selected').val();
         var form=$('#form-search');
         var thead=$('#thead-collectionlist');
@@ -155,10 +143,6 @@
         $('#item-id').val(_item_id);
         $('#company_type').val(_type);
 
-        if(!_item_id){
-            layer.msg('请先选择项目',function(){});
-            return false;
-        }
         if(_type != '0' && _type != '1'){
             layer.msg('请先选择评估公司类型',function(){});
             return false;
