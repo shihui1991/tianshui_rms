@@ -11,6 +11,7 @@
  * */
 namespace app\system\controller;
 use app\system\model\Assessestates;
+use app\system\model\Items;
 use think\Db;
 use think\Exception;
 
@@ -30,11 +31,31 @@ class Assessestate extends Auth
         $where = [];
         $field = ['ass.id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
             'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.deleted_at'];
-        /* ++++++++++ 项目 ++++++++++ */
-        $item_id = input('item_id');
-        if (is_numeric($item_id)) {
-            $where['ass.item_id'] = $item_id;
-            $datas['item_id'] = $item_id;
+
+        $assess_id = input('assess_id');
+        $this->assign('assess_id',$assess_id);
+        $where['assess_id'] = $assess_id;
+        /* ********** 是否弹出层 ********** */
+        $l=input('l');
+        $item_id=input('item_id');
+        if($l){
+            if(!$item_id){
+                return $this->error('错误操作','');
+            }
+            $view='index';
+            /* ++++++++++ 项目信息 ++++++++++ */
+            $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+            $datas['item_info']=$item_info;
+            $where['ass.item_id']=$item_id;
+        }else{
+            if($item_id){
+                $where['ass.item_id']=$item_id;
+                $datas['item_id']=$item_id;
+            }
+            $view='all';
+            /* ++++++++++ 项目列表 ++++++++++ */
+            $items=Items::field(['id','name','status','is_top'])->order('is_top desc')->select();
+            $datas['item_list']=$items;
         }
         /* ++++++++++ 片区 ++++++++++ */
         $community_id = input('community_id');
@@ -115,9 +136,6 @@ class Assessestate extends Auth
             ->paginate($display_num);
         $datas['assessestate_list'] = $assessestate_list;
 
-        /* ++++++++++ 项目列表 ++++++++++ */
-        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
-        $datas['item_list'] = $items;
         /* ++++++++++ 片区 ++++++++++ */
         $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
         $datas['collectioncommunity_list'] = $collectioncommunitys;
@@ -128,12 +146,40 @@ class Assessestate extends Auth
         $companys = model('Companys')->field(['id','name'])->where('status',1)->where('type',0)->select();
         $datas['company_list'] = $companys;
         $this->assign($datas);
-        return view();
+        return view($view);
     }
 
     /* ========== 添加 ========== */
     public function add()
     {
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目信息 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
         if (request()->isPost()) {
             $model = new Assessestates();
             $datas = input();
@@ -359,6 +405,33 @@ class Assessestate extends Auth
     /* ========== 修改 ========== */
     public function edit()
     {
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目信息 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
         $datas = input();
         $rule = [
             ['report_at', 'require', '报告时间不能为空'],
@@ -444,6 +517,33 @@ class Assessestate extends Auth
     /* ========== 状态 ========== */
     public function status()
     {
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目信息 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
         $inputs = input();
         $id = isset($inputs['id']) ? $inputs['id'] : '';
 
@@ -485,6 +585,33 @@ class Assessestate extends Auth
 
     /* ========== 删除 ========== */
     public function delete(){
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目信息 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
         if(empty($ids)){
@@ -516,6 +643,33 @@ class Assessestate extends Auth
 
     /* ========== 恢复 ========== */
     public function restore(){
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目信息 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
@@ -548,6 +702,33 @@ class Assessestate extends Auth
 
     /* ========== 销毁 ========== */
     public function destroy(){
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目信息 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
