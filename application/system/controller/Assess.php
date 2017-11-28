@@ -7,11 +7,10 @@
  * | 删除
  * | 恢复
  * | 销毁
- * | 房产列表
- * | 资产列表
  * */
 namespace app\system\controller;
 use app\system\model\Assesss;
+use app\system\model\Items;
 use think\Db;
 
 class Assess extends Auth
@@ -28,14 +27,31 @@ class Assess extends Auth
         /* ********** 查询条件 ********** */
         $datas = [];
         $where = [];
-        $field = ['ass.id', 'i.name as item_name', 'cc.name as pq_name','c.building as c_building',
+        $field = ['ass.id','ass.item_id', 'i.name as item_name', 'cc.name as pq_name','c.building as c_building',
             'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number','c.id as c_id','ass.estate','ass.assets','ass.deleted_at'];
-        /* ++++++++++ 项目 ++++++++++ */
-        $item_id = input('item_id');
-        if (is_numeric($item_id)) {
-            $where['ass.item_id'] = $item_id;
-            $datas['item_id'] = $item_id;
+        /* ********** 是否弹出层 ********** */
+        $l=input('l');
+        $item_id=input('item_id');
+        if($l){
+            if(!$item_id){
+                return $this->error('错误操作','');
+            }
+            $view='index';
+            /* ++++++++++ 项目信息 ++++++++++ */
+            $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+            $datas['item_info']=$item_info;
+            $where['ass.item_id']=$item_id;
+        }else{
+            if($item_id){
+                $where['ass.item_id']=$item_id;
+                $datas['item_id']=$item_id;
+            }
+            $view='all';
+            /* ++++++++++ 项目列表 ++++++++++ */
+            $items=Items::field(['id','name','status','is_top'])->order('is_top desc')->select();
+            $datas['item_list']=$items;
         }
+
         /* ++++++++++ 片区 ++++++++++ */
         $community_id = input('community_id');
         if (is_numeric($community_id)) {
@@ -84,9 +100,6 @@ class Assess extends Auth
             ->paginate($display_num);
         $datas['assess_list'] = $assess_list;
 
-        /* ++++++++++ 项目列表 ++++++++++ */
-        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
-        $datas['item_list'] = $items;
         /* ++++++++++ 片区 ++++++++++ */
         $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
         $datas['collectioncommunity_list'] = $collectioncommunitys;
@@ -94,11 +107,39 @@ class Assess extends Auth
         $collections = model('Collections')->field(['id', 'building', 'unit','floor','number'])->select();
         $datas['collections_list'] = $collections;
         $this->assign($datas);
-        return view();
+        return view($view);
     }
 
     /* ========== 删除 ========== */
     public function delete(){
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目信息 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
         if(empty($ids)){
@@ -132,6 +173,33 @@ class Assess extends Auth
 
     /* ========== 恢复 ========== */
     public function restore(){
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目信息 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
@@ -166,6 +234,33 @@ class Assess extends Auth
 
     /* ========== 销毁 ========== */
     public function destroy(){
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目信息 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
@@ -198,82 +293,4 @@ class Assess extends Auth
         }
     }
 
-    /* ========== 房产列表 ========== */
-    public function assessestate_list()
-    {
-        /* ********** 查询条件 ********** */
-        $datas = [];
-        $where = [];
-        $field = ['ass.id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
-            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.deleted_at'];
-        $assess_id = input('assess_id');
-        $this->assign('assess_id',$assess_id);
-        $where['assess_id'] = $assess_id;
-
-        /* ++++++++++ 查询 ++++++++++ */
-        $assessestate_model = model('Assessestates');
-        $deleted = input('deleted');
-        if (is_numeric($deleted) && in_array($deleted, [0, 1])) {
-            $datas['deleted'] = $deleted;
-            if ($deleted == 1) {
-                $assessestate_model = $assessestate_model->onlyTrashed();
-            }
-        } else {
-            $assessestate_model = $assessestate_model->withTrashed();
-        }
-        $assessestate_list = $assessestate_model
-            ->alias('ass')
-            ->field($field)
-            ->join('item i', 'i.id=ass.item_id', 'left')
-            ->join('collection_community cc', 'cc.id=ass.community_id', 'left')
-            ->join('collection c', 'c.id=ass.collection_id', 'left')
-            ->join('assess ess', 'ess.id=ass.assess_id', 'left')
-            ->join('item_company ic', 'ic.id=ass.company_id', 'left')
-            ->join('company cy', 'cy.id=ic.company_id', 'left')
-            ->where($where)
-            ->order(['i.is_top' => 'desc'])
-            ->paginate(config('paginate.list_rows'));
-        $datas['assessestate_list'] = $assessestate_list;
-        $this->assign($datas);
-        return view();
-    }
-
-    /* ========== 资产列表 ========== */
-    public function assessassets_list()
-    {
-        /* ********** 查询条件 ********** */
-        $datas = [];
-        $where = [];
-        $field = ['ass.id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
-            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.deleted_at'];
-        $assess_id = input('assess_id');
-        $this->assign('assess_id',$assess_id);
-        $where['assess_id'] = $assess_id;
-        /* ++++++++++ 查询 ++++++++++ */
-        $assessassets_model = model('Assessassetss');
-        $deleted = input('deleted');
-        if (is_numeric($deleted) && in_array($deleted, [0, 1])) {
-            $datas['deleted'] = $deleted;
-            if ($deleted == 1) {
-                $assessassets_model = $assessassets_model->onlyTrashed();
-            }
-        } else {
-            $assessassets_model = $assessassets_model->withTrashed();
-        }
-        $assessassets_list = $assessassets_model
-            ->alias('ass')
-            ->field($field)
-            ->join('item i', 'i.id=ass.item_id', 'left')
-            ->join('collection_community cc', 'cc.id=ass.community_id', 'left')
-            ->join('collection c', 'c.id=ass.collection_id', 'left')
-            ->join('assess ess', 'ess.id=ass.assess_id', 'left')
-            ->join('item_company ic', 'ic.id=ass.company_id', 'left')
-            ->join('company cy', 'cy.id=ic.company_id', 'left')
-            ->where($where)
-            ->order(['i.is_top' => 'desc'])
-            ->paginate(config('paginate.list_rows'));
-        $datas['assessassets_list'] = $assessassets_list;
-        $this->assign($datas);
-        return view();
-    }
 }
