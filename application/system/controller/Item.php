@@ -15,6 +15,7 @@ namespace app\system\controller;
 
 use app\system\model\Items;
 use app\system\model\Itemstatuss;
+use app\system\model\Itemtimes;
 use think\Db;
 use think\Exception;
 
@@ -355,6 +356,68 @@ class Item extends Auth
             return $this->success($msg,'');
         }else{
             return $this->error($msg,'');
+        }
+    }
+
+    /* ========== 重要时间 ========== */
+    public function itemtime(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('非法访问');
+        }
+        $item_info=Items::where('id',$item_id)->field(['id','name','status'])->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+        if(request()->isPost()) {
+            $model=new Itemtimes();
+            Db::startTrans();
+            try{
+                if(input('id')){
+                    $model->save(input(),['id'=>input('id')]);
+                }else{
+                    $model->save(input());
+                }
+                $res=true;
+                $msg='保存成功';
+                Db::commit();
+            }catch (\Exception $exception){
+                $res=false;
+                $msg=$exception->getMessage();
+                Db::commit();
+            }
+            if($res){
+                return $this->success($msg,'');
+            }else{
+                return $this->error($msg,'');
+            }
+        }else{
+            $datas['item_info']=$item_info;
+            $infos=Itemtimes::where('item_id',$item_id)->find();
+            if($infos){
+                $datas['infos']=$infos;
+            }
+
+            $this->assign($datas);
+            return view('itemtime');
         }
     }
 }

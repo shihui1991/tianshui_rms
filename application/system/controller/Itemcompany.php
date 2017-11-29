@@ -113,6 +113,10 @@ class Itemcompany extends Auth
 
     /* ========== 添加 ========== */
     public function add(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
         $item_info=Items::where('id',input('item_id'))->field(['id','name','status'])->find();
         if(!$item_info){
             return $this->error('选择项目不存在');

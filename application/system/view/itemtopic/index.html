@@ -17,6 +17,8 @@
                 刷新
             </a>
         </li>
+
+        {if condition="$item_info->getData('status') eq 1"}
         <li class="fgf" onclick="layerIfWindow('添加项目风险评估话题','{:url('add',['item_id'=>$item_info->id])}','550','260')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
@@ -33,6 +35,7 @@
             <img src="__STATIC__/system/img/destroy.png"/>
             销毁
         </li>
+        {/if}
     </ul>
 </div>
 <form action="{:url('index',['item_id'=>$item_info->id])}" method="post" id="js-ajax-form">
