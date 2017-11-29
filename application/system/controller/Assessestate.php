@@ -136,9 +136,6 @@ class Assessestate extends Auth
             ->paginate($display_num);
         $datas['assessestate_list'] = $assessestate_list;
 
-        /* ++++++++++ 项目列表 ++++++++++ */
-        $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
-        $datas['item_list'] = $items;
         /* ++++++++++ 片区 ++++++++++ */
         $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
         $datas['collectioncommunity_list'] = $collectioncommunitys;
