@@ -12,7 +12,7 @@
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
         <li>
-            <a href="{:url('index')}">
+            <a href="{:url('index',['assess_id'=>$assess_id])}">
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
                 刷新
             </a>
@@ -24,7 +24,7 @@
 
     </ul>
 </div>
-<form action="{:url('index')}" method="post" id="js-ajax-form">
+<form action="{:url('index',['assess_id'=>$assess_id])}" method="post" id="js-ajax-form">
     <div class="tableCon">
         <em class="xian"></em>
         <table class="table" border="0" >
@@ -86,7 +86,7 @@
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
-    <form action="{:url('index')}" method="post" id="search-form">
+    <form action="{:url('index',['assess_id'=>$assess_id])}" method="post" id="search-form">
         <table class="layerTable">
             <tr class="h50">
                 <td><label for="item_id">项目：</label></td>

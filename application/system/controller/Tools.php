@@ -342,9 +342,10 @@ class Tools extends Auth
 
         /* ++++++++++ 片区 ++++++++++ */
         $community_id=input('community_id');
-        if(is_numeric($community_id)){
-            $where['community_id']=$community_id;
+        if(!is_numeric($community_id) || $community_id<1){
+            return $this->error('请先选择片区','');
         }
+        $where['community_id']=$community_id;
         $collections=Collections::alias('c')
             ->field($field)
             ->join('collection_community cc','cc.id=c.community_id','left')

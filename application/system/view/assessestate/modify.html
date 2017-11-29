@@ -7,7 +7,7 @@
     {include file="public/kindeditor" /}
 </head>
 <body>
-<form action="{:url('edit')}" method="post" class="js-ajax-form" onsubmit="return false;">
+<form action="{:url('edit',['item_id'=>$item_id])}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="tabs">
         <div class="item">
             <div class="homeTit bg_f5">

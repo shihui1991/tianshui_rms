@@ -134,12 +134,6 @@ class Assessassets extends Auth
             ->paginate($display_num);
         $datas['assessassets_list'] = $assessassets_list;
 
-        /* ++++++++++ 片区 ++++++++++ */
-        $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
-        $datas['collectioncommunity_list'] = $collectioncommunitys;
-        /* ++++++++++ 权属 ++++++++++ */
-        $collections = model('Collections')->field(['id', 'building', 'unit','floor','number'])->select();
-        $datas['collections_list'] = $collections;
         /* ++++++++++ 评估公司 ++++++++++ */
         $companys = model('Companys')->field(['id','name'])->where('status',1)->where('type',1)->select();
         $datas['company_list'] = $companys;
@@ -278,13 +272,27 @@ class Assessassets extends Auth
             }
         } else {
             /* ++++++++++ 项目列表 ++++++++++ */
-            $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
+            $items = model('Items')->field(['id', 'name', 'status'])->where('id', $item_id)->find();
             /* ++++++++++ 片区 ++++++++++ */
-            $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
+            $community_id = input('community_id');
+            $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->where('id',$community_id)->find();
 
+            /* ++++++++++ 权属 ++++++++++ */
+            $community_id=input('community_id');
+            $where['c.community_id']=$community_id;
+            $where['c.item_id']=$item_id;
+            $where['c.status']=1;
+            $field=['c.id','c.item_id','c.community_id','c.building','c.unit','c.floor','c.number','c.has_assets','c.status','cc.address','cc.name as cc_name'];
+            $collections=model('Collections')
+                ->alias('c')
+                ->field($field)
+                ->join('collection_community cc','cc.id=c.community_id','left')
+                ->where($where)
+                ->find();
             return view('add',
-                ['items' => $items,
-                    'collectioncommunitys' => $collectioncommunitys
+                ['item_info' => $items,
+                    'collectioncommunity_info' => $collectioncommunitys,
+                    'collection_info'=>$collections
                 ]);
         }
 
@@ -293,6 +301,7 @@ class Assessassets extends Auth
     /* ========== 详情 ========== */
     public function detail()
     {
+        $item_id = input('item_id');
         $id = input('id');
         if (!$id) {
             return $this->error('至少选中一项', '');
@@ -335,7 +344,8 @@ class Assessassets extends Auth
             [
                 'infos' => $assessassets_info,
                 'company_valuer_info' => $company_valuer,
-                'valuer_ids' => $valuer_ids
+                'valuer_ids' => $valuer_ids,
+                'item_id'=>$item_id
             ]);
     }
 

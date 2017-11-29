@@ -22,35 +22,30 @@
                     <div class="layerCon bg_f">
                         <table class="layerTable" border="0">
                             <tr class="h50">
-                                <td><label for="item_id">项目：</label></td>
+                                <td><label>项目：</label></td>
                                 <td>
-                                    <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
-                                        <option value="">--请选择项目--</option>
-                                        {volist name="items" id="item"}
-                                        <option value="{$item->id}" >{$item->name}（{$item->id}）</option>
-                                        {/volist}
-                                    </select>
+                                    <input type="hidden" name="item_id" id="item_id" value="{:isset($item_info)?$item_info->id:''}">
+                                    {$item_info->name}
                                 </td>
-                                <td><label for="community_id">片区：</label></td>
+                                <td><label for="community_id">片区(地址)：</label></td>
                                 <td>
-                                    <select name="community_id" id="community_id" class="chosen sear_collection_id" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
-                                        <option value="">--请选择片区--</option>
-                                        {volist name="collectioncommunitys" id="community"}
-                                        <option value="{$community->id}">{$community->name}</option>
-                                        {/volist}
-                                    </select>
+                                    <input type="hidden" name="community_id" id="community_id" value="{:isset($collectioncommunity_info)?$collectioncommunity_info->id:''}">
+                                  {$collectioncommunity_info->name}({$collectioncommunity_info->address})
                                 </td>
                             </tr>
                             <tr class="h70">
-                                <td ><label for="collection_id">权属：</label></td>
+                                <td ><label>权属：</label></td>
                                 <td id="collection_id_info" colspan="3">
-                                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
-                                        <option value="">--请先选择项目--</option>
-                                    </select>
+                                    <input type="hidden" name="collection_id" id="collection_id" value="{:isset($collection_info)?$collection_info->id:''}">
+                                    {if condition="$collection_info->building"}{$collection_info->building}栋{/if}
+                                    {if condition="$collection_info->unit"}{$collection_info->unit}单元{/if}
+                                    {if condition="$collection_info->floor"}{$collection_info->floor}楼{/if}
+                                    {if condition="$collection_info->number"}{$collection_info->number}号{/if}
+                                    ({$collection_info->id})
                                 </td>
                             </tr>
                             <tr class="h70">
-                                <td ><label for="collection_id">所有建筑：</label></td>
+                                <td ><label>所有建筑：</label></td>
                                 <td colspan="3" class="tableCons">
                                     <table class="table" border="0">
                                         <tbody>
@@ -165,95 +160,35 @@
         </div>
 </div>
 <script>
-    /* ===== 查询权属 及 评估公司 =====*/
-    $('.sear_collection_id').change(function () {
-        var _item_id=$("#item_id").find('option:selected').val();
-        var _community_id=$("#community_id").find('option:selected').val();
-        if(_item_id&&!_community_id){
-            var data = { 'item_id':_item_id};
-        }
-        if(_item_id&&_community_id){
-            var data = {
-                'item_id':_item_id,
-                'community_id':_community_id
-            };
-        }
-        if(_item_id){
-            $.ajax({
-                url:"{:url('Tools/collections')}",
-                data:data,
-                dataType:'json',
-                type:'post',
-                success:function (resp) {
-                    $('#collection_id_info').html('');
-                     var options = '';
-                    if(resp.code){
-                        options += '<select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">';
-                        options += ' <option value="">--请选择权属--</option>';
-                        $.each(resp.data,function (index,info) {
-                               var building = info.building?info.building+"栋":'';
-                               var unit = info.unit?info.unit+"单元":'';
-                               var floor = info.floor?info.floor+"楼":'';
-                               var number = info.number?info.number+"号":'';
-
-                            options += '<option value="'+info.id+'">'+building+unit+floor+number+'（'+info.id+'）'+'</option>';
-                        });
-                        options += '</select>';
-                    }else{
-                        options += '<select name="collection_id" id="collection_id" class="chosen" data-placeholder="暂无数据" data-no_results_text="没有匹配数据">';
-                        options += ' <option value="">--暂无数据--</option>';
-                        layer.msg(resp.msg,function(){});
-                    }
-                    options += '</select>';
-                    $('#collection_id_info').html(options);
-                    $("#collection_id").chosen();
-                },
-                error:function () {
-                    layer.msg('网络错误，请重试',function(){});
+    /* ===== 评估公司 =====*/
+        var _item_id=$("#item_id").val();
+        $.ajax({
+            url:"{:url('Tools/item_company')}",
+            data:{ 'item_id':_item_id,'type':0},
+            dataType:'json',
+            type:'post',
+            success:function (resp) {
+                $('#company_id').html('');
+                var options = '';
+                if(resp.code){
+                      options += '<option value="">--请选择评估公司--</option>';
+                    $.each(resp.data,function (index,info) {
+                        options += '<option value="'+info.company_id+'">'+info.company_name+'</option>';
+                    });
+                }else{
+                    options='<option value="">--暂无数据--</option>';
+                    layer.msg(resp.msg,function(){});
                 }
-            });
-            $.ajax({
-                url:"{:url('Tools/item_company')}",
-                data:{ 'item_id':_item_id,'type':0},
-                dataType:'json',
-                type:'post',
-                success:function (resp) {
-                    $('#company_id').html('');
-                    var options = '';
-                    if(resp.code){
-                          options += '<option value="">--请选择评估公司--</option>';
-                        $.each(resp.data,function (index,info) {
-                            options += '<option value="'+info.company_id+'">'+info.company_name+'</option>';
-                        });
-                    }else{
-                        options='<option value="">--暂无数据--</option>';
-                        layer.msg(resp.msg,function(){});
-                    }
-                    $('#company_id').html(options);
-                },
-                error:function () {
-                    layer.msg('网络错误，请重试',function(){});
-                }
-            });
-        }else{
-            var options = '';
-            options += '<select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">';
-            options += ' <option value="">--请先选择项目--</option>';
-            options += '</select>';
-            $('#collection_id_info').html(options);
-            $("#collection_id").chosen();
+                $('#company_id').html(options);
+            },
+            error:function () {
+                layer.msg('网络错误，请重试',function(){});
+            }
+        });
 
-            var options1='<option value="">--请先选择项目--</option>';
-            $('#company_id').html(options1);
-
-            layer.msg('请选择项目',function(){});
-        }
-    });
 
     /* ===== 查询评估建筑物 =====*/
-    $("#collection_id_info").on('change','#collection_id',function () {
-        var _collection_id = $("#collection_id").find("option:selected").val();
-        if(_collection_id){
+        var _collection_id = $("#collection_id").val();
             $.ajax({
                 url:"{:url('Tools/estate_building')}",
                 data:{ 'collection_id':_collection_id},
@@ -291,11 +226,8 @@
                     layer.msg('网络错误，请重试',function(){});
                 }
             });
-        }else{
-            $('.tableCons').find('tr:first').siblings().remove();
-            layer.msg('请选择权属',function(){});
-        }
-    });
+
+
     /* ===== 评估建筑物（单价变化获取总价） =====*/
     function  price_num(obj) {
         var _this = $(obj);

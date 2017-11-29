@@ -4,6 +4,7 @@
  * |------------------------------------------------------
  * | 初始化操作
  * | 列表
+ * | 添加
  * | 删除
  * | 恢复
  * | 销毁
@@ -27,8 +28,8 @@ class Assess extends Auth
         /* ********** 查询条件 ********** */
         $datas = [];
         $where = [];
-        $field = ['ass.id','ass.item_id', 'i.name as item_name', 'cc.name as pq_name','c.building as c_building',
-            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number','c.id as c_id','ass.estate','ass.assets','ass.deleted_at'];
+        $field = ['ass.*', 'i.name as item_name', 'cc.name as pq_name','c.building as c_building',
+            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number','c.id as c_id'];
         /* ********** 是否弹出层 ********** */
         $l=input('l');
         $item_id=input('item_id');
@@ -108,6 +109,88 @@ class Assess extends Auth
         $datas['collections_list'] = $collections;
         $this->assign($datas);
         return view($view);
+    }
+
+    /* ========== 添加 ========== */
+    public function add()
+    {
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目信息 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if(!$item_info){
+            return $this->error('选择项目不存在');
+        }
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
+        if (request()->isPost()) {
+            $datas = input();
+            $rule = [
+                ['community_id', 'require', '请选择片区'],
+                ['collection_id', 'require', '请选择权属']
+            ];
+            $result = $this->validate($datas, $rule);
+            if (true !== $result) {
+                return $this->error($result);
+            }
+
+            $collection_info=model('Collections')->field(['id','item_id','community_id'])->find(input('collection_id'));
+            if(!$collection_info){
+                return $this->error('选择权属不存在！');
+            }
+            if(input('item_id') != $collection_info->item_id || input('community_id') != $collection_info->community_id){
+                return $this->error('选择权属与项目片区不一致');
+            }
+            $assess_count = model('Assesss')
+                ->where('item_id', $datas['item_id'])
+                ->where('community_id', $datas['community_id'])
+                ->where('collection_id', $datas['collection_id'])
+                ->count();
+            if ($assess_count) {
+                return $this->error('数据重复,请不要重复添加', '');
+            }
+            $rs = model('Assesss')->save([
+                'item_id'=>$datas['item_id'],
+                'community_id'=>$datas['community_id'],
+                'collection_id'=>$datas['collection_id']
+                ]);
+
+            if ($rs) {
+                return $this->success('添加成功', '');
+            } else {
+                return $this->error('添加失败', '');
+            }
+        } else {
+            /* ++++++++++ 项目列表 ++++++++++ */
+            $items = model('Items')->field(['id', 'name', 'status'])->where('id', $item_id)->find();
+            /* ++++++++++ 片区 ++++++++++ */
+            $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
+
+            return view('add',
+                ['item_info' => $items,
+                    'collectioncommunitys' => $collectioncommunitys
+                ]);
+        }
+
     }
 
     /* ========== 删除 ========== */
