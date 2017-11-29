@@ -6,9 +6,9 @@
 
 return [
     // 应用调试模式
-    'app_debug'       => true,
+    'app_debug'       => false,
     // 应用Trace
-    'app_trace'       => true,
+    'app_trace'       => false,
     // 数据库配置
     'database'        =>[
         // 数据库类型
@@ -16,11 +16,11 @@ return [
         // 服务器地址
         'hostname'        => 'localhost',
         // 数据库名
-        'database'        => '',
+        'database'        => 'tianshui_rms',
         // 用户名
-        'username'        => '',
+        'username'        => 'tianshui_rms',
         // 密码
-        'password'        => '',
+        'password'        => 'tianshui_rms',
         // 端口
         'hostport'        => '3306',
         // 连接dsn

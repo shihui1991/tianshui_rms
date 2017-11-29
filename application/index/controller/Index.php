@@ -1,10 +1,12 @@
 <?php
 namespace app\index\controller;
 
-class Index
+use think\Controller;
+
+class Index extends Controller
 {
     public function index()
     {
-        return '首页';
+        return '<a href="/system">跳转到后台</a><br>演示账号：demo<br>密码：123456';
     }
 }

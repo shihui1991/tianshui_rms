@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>项目评估公司|后台管理系统</title>
+    <title>项目评估公司|房屋征收安置管理系统</title>
     {include file="public/head" /}
 
 </head>
@@ -21,7 +21,7 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        {if condition="$item_info->getData('status') eq 1 and $item_status neq 8"}
+        {if condition="$item_info->getData('status') eq 1"}
         <li class="fgf" onclick="layerIfWindow('添加项目评估公司','{:url('add',[\'item_id\'=>$item_info->id])}','800','600',true)">
             <img src="__STATIC__/system/img/add.png"/>
             添加

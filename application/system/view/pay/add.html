@@ -2,24 +2,18 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>项目兑付与协议|后台管理系统</title>
+    <title>项目兑付与协议|房屋征收安置管理系统</title>
     {include file="public/head" /}
 
 </head>
 <body>
 <form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <input type="hidden" name="item_id" value="{$item_info->id}">
     <div class="layerCon bg_f">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label for="item_id">项目：</label></td>
-                <td colspan="3">
-                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
-                        <option value="">--请选择项目--</option>
-                        {volist name="items" id="item"}
-                        <option value="{$item->id}" >{$item->name}（{$item->id}）</option>
-                        {/volist}
-                    </select>
-                </td>
+                <td colspan="3">{$item_info->name}</td>
             </tr>
             <tr class="h50">
                 <td><label for="community_id">片区：</label></td>
@@ -73,16 +67,11 @@
     /* ===== 项目改变->清空摸底->查询摸底 =====*/
     $('#item_id,#community_id,#select').change(function () {
         var _select=$('#select').find('option:selected').val();
-        var _item_id=$('#item_id').find('option:selected').val();
         var _community_id=$('#community_id').find('option:selected').val();
         var thead=$('#thead-collectionlist');
 
         thead.siblings().remove();
 
-        if(!_item_id){
-            layer.msg('请先选择项目',function(){});
-            return false;
-        }
         _community_id=_community_id?_community_id:'';
 
         if(_select=='1'){
@@ -91,7 +80,7 @@
 
         $.ajax({
             url:"{:url('Tools/collection')}",
-            data:{item_id:_item_id,community_id:_community_id,pay:1},
+            data:{item_id:{$item_info->id},community_id:_community_id,pay:1},
             dataType:'json',
             type:'get',
             success:function (resp) {
@@ -128,15 +117,9 @@
         var _url=_form.attr('action');
         var _data=_form.serialize();
 
-        if(!$('#item_id').find('option:selected').val()){
-            layer.msg('请选择项目',function(){});
-            return false;
-        }
-
         if($('#select').find('option:selected').val()=='0'){
             if(!$('input.ids:checked').length){
-                layer.msg('请选择被征户' +
-                    '',function(){});
+                layer.msg('请选择被征户',function(){});
                 return false;
             }
         }

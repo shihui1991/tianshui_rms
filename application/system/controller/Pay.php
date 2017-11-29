@@ -35,17 +35,37 @@ class Pay extends Auth
     /* ========== 列表 ========== */
     public function index()
     {
-        /* ********** 查询条件 ********** */
-        $datas=[];
         $where=[];
+        $datas=[];
+        /* ********** 是否弹出层 ********** */
+        $l=input('l');
+        $item_id=input('item_id');
+        if($l){
+            if(!$item_id){
+                return $this->error('错误操作','');
+            }
+
+            $view='index';
+            /* ++++++++++ 项目信息 ++++++++++ */
+            $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+            $datas['item_info']=$item_info;
+            $where['pay.item_id']=$item_id;
+        }else{
+            if($item_id){
+                $where['pay.item_id']=$item_id;
+                $datas['item_id']=$item_id;
+            }
+
+            $view='all';
+            /* ++++++++++ 项目列表 ++++++++++ */
+            $items=Items::field(['id','name','status','is_top'])->order('is_top desc')->select();
+            $datas['items']=$items;
+        }
+
+
+        /* ********** 查询条件 ********** */
         $field=['p.*','i.name as i_name','i.is_top','c.community_id','c.building','c.unit','c.floor','c.number','c.type','c.real_use','cc.address','cc.name as cc_name','bu.name as bu_name'];
 
-        /* ++++++++++ 项目 ++++++++++ */
-        $item_id=input('item_id');
-        if(is_numeric($item_id)){
-            $where['pay.item_id']=$item_id;
-            $datas['item_id']=$item_id;
-        }
         /* ++++++++++ 片区 ++++++++++ */
         $community_id=input('community_id');
         if(is_numeric($community_id)){
@@ -96,9 +116,6 @@ class Pay extends Auth
 
         $datas['pays']=$pays;
 
-        /* ++++++++++ 项目 ++++++++++ */
-        $items=Items::field(['id','name','status','is_top'])->order('is_top desc')->select();
-        $datas['items']=$items;
         /* ++++++++++ 片区 ++++++++++ */
         $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
         $datas['collectioncommunitys']=$collectioncommunitys;
@@ -108,19 +125,43 @@ class Pay extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($view);
     }
 
     /* ========== 添加 ========== */
     public function add(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
+
         $model=new Pays();
         if(request()->isPost()){
             $rules=[
-                'item_id'=>'require',
                 'ids'=>'requireIf:select,0',
             ];
             $msg=[
-                'item_id.require'=>'请选择项目',
                 'ids.requireIf'=>'请选择被征户',
             ];
 
@@ -315,14 +356,12 @@ class Pay extends Auth
                 return $this->error('添加失败');
             }
         }else{
-            /* ++++++++++ 项目 ++++++++++ */
-            $items=Items::field(['id','name','status','is_top'])->where(['status'=>1])->order('is_top desc')->select();
             /* ++++++++++ 片区 ++++++++++ */
             $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
 
             return view('add',[
                 'model'=>$model,
-                'items'=>$items,
+                'item_info'=>$item_info,
                 'collectioncommunitys'=>$collectioncommunitys,
             ]);
         }
@@ -357,6 +396,32 @@ class Pay extends Auth
 
     /* ========== 修改 ========== */
     public function edit(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
+
         $id=input('id');
         if(!$id){
             return $this->error('错误操作');
@@ -376,6 +441,32 @@ class Pay extends Auth
 
     /* ========== 删除 ========== */
     public function delete(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
@@ -392,6 +483,32 @@ class Pay extends Auth
 
     /* ========== 恢复 ========== */
     public function restore(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
@@ -409,6 +526,32 @@ class Pay extends Auth
 
     /* ========== 销毁 ========== */
     public function destroy(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
+
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 

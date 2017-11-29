@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50554
 File Encoding         : 65001
 
-Date: 2017-11-27 17:30:47
+Date: 2017-11-29 09:50:05
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -788,7 +788,7 @@ CREATE TABLE `house_resettle` (
   `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
   `collection_community_id` int(11) DEFAULT NULL COMMENT ' 片区ID',
   `pay_id` int(11) DEFAULT NULL COMMENT ' 兑付ID',
-  `holder_id` int(11) DEFAULT NULL COMMENT '产权人或承租人ID',
+  `collection_holder_id` int(11) DEFAULT NULL COMMENT '产权人或承租人ID',
   `house_id` int(11) DEFAULT NULL COMMENT ' 安置房源ID',
   `house_community_id` int(11) DEFAULT NULL COMMENT ' 房源小区ID',
   `start_at` int(11) DEFAULT NULL COMMENT ' 开始时间',
@@ -981,7 +981,7 @@ CREATE TABLE `item_process` (
 -- ----------------------------
 INSERT INTO `item_process` VALUES ('1', '2', '1', '1', '1', '1511417066', '1511504868', null);
 INSERT INTO `item_process` VALUES ('2', '2', '2', '2', '0', '1511417084', '1511419456', null);
-INSERT INTO `item_process` VALUES ('3', '2', '3', '3', '0', '1511417121', '1511421660', '1511421660');
+INSERT INTO `item_process` VALUES ('3', '2', '3', '3', '0', '1511417121', '1511835278', null);
 
 -- ----------------------------
 -- Table structure for item_status
@@ -1059,6 +1059,33 @@ INSERT INTO `item_subject` VALUES ('8', '2', '7', '1', '1510363380', '1510363380
 INSERT INTO `item_subject` VALUES ('9', '2', '8', '1', '1510363385', '1510363385', null);
 
 -- ----------------------------
+-- Table structure for item_time
+-- ----------------------------
+DROP TABLE IF EXISTS `item_time`;
+CREATE TABLE `item_time` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `collection_start` int(11) DEFAULT NULL COMMENT ' 入户摸底时间起',
+  `collection_end` int(11) DEFAULT NULL COMMENT ' 入户摸底时间止',
+  `vote_start` int(11) DEFAULT NULL COMMENT '投票评估公司时间起',
+  `vote_end` int(11) DEFAULT NULL COMMENT '投票评估公司时间止',
+  `assess_start` int(11) DEFAULT NULL COMMENT '入户评估时间起',
+  `assess_end` int(11) DEFAULT NULL COMMENT '入户评估时间止',
+  `risk_start` int(11) DEFAULT NULL COMMENT '风险评估时间起',
+  `risk_end` int(11) DEFAULT NULL COMMENT '风险评估时间止',
+  `sign_start` int(11) DEFAULT NULL COMMENT '签约时间起',
+  `sign_end` int(11) DEFAULT NULL COMMENT '签约时间止',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='项目重要时间';
+
+-- ----------------------------
+-- Records of item_time
+-- ----------------------------
+INSERT INTO `item_time` VALUES ('1', '2', null, null, null, null, null, null, null, null, null, null, '1511864473', '1511864473');
+
+-- ----------------------------
 -- Table structure for item_topic
 -- ----------------------------
 DROP TABLE IF EXISTS `item_topic`;
@@ -1119,7 +1146,7 @@ CREATE TABLE `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=357 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
+) ENGINE=InnoDB AUTO_INCREMENT=359 DEFAULT CHARSET=utf8 COMMENT='功能与菜单';
 
 -- ----------------------------
 -- Records of menu
@@ -1480,6 +1507,8 @@ INSERT INTO `menu` VALUES ('353', '348', '房价上浮修改', '3', '<img src=\"
 INSERT INTO `menu` VALUES ('354', '348', '房价上浮删除', '3', '<img src=\"/static/system/img/broom.png\" />', '0', '/system/itemhouseup/delete', null, '0', '1', '1508894998', '1508895558', null);
 INSERT INTO `menu` VALUES ('355', '348', '房价上浮恢复', '3', '<img src=\"/static/system/img/recycle.png\"/>', '0', '/system/itemhouseup/restore', null, '0', '1', '1508894998', '1508895590', null);
 INSERT INTO `menu` VALUES ('356', '348', '房价上浮销毁', '3', '<img src=\"/static/system/img/destroy.png\">', '0', '/system/itemhouseup/destroy', null, '0', '1', '1508894998', '1508895601', null);
+INSERT INTO `menu` VALUES ('357', '163', '项目重要时间', '3', '<img src=\"/static/system/img/chart_pie.png\"/>', '0', '/system/item/itemtime', '', '0', '1', '1511919590', '1511919590', null);
+INSERT INTO `menu` VALUES ('358', '163', '项目审核', '3', '<img src=\"/static/system/img/recommend.png\"/>', '0', '/system/item/check', '', '0', '1', '1511919672', '1511919672', null);
 
 -- ----------------------------
 -- Table structure for nation

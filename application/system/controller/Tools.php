@@ -233,10 +233,7 @@ class Tools extends Auth
             $where['is_public']=$is_public;
         }
         /* ++++++++++ 状态 ++++++++++ */
-        $status=input('status');
-        if(is_numeric($status) && in_array($status,[0,1,2,3])){
-            $where['house.status']=$status;
-        }
+        $where['house.status']=0;
         /* ++++++++++ 查询 ++++++++++ */
         $houses=model('Houses')
             ->alias('h')
