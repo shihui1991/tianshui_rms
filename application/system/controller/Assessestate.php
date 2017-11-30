@@ -136,6 +136,12 @@ class Assessestate extends Auth
             ->paginate($display_num);
         $datas['assessestate_list'] = $assessestate_list;
 
+        /* ++++++++++ 片区 ++++++++++ */
+        $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
+        $datas['collectioncommunity_list'] = $collectioncommunitys;
+        /* ++++++++++ 权属 ++++++++++ */
+        $collections = model('Collections')->field(['id', 'building', 'unit','floor','number'])->select();
+        $datas['collections_list'] = $collections;
         /* ++++++++++ 评估公司 ++++++++++ */
         $companys = model('Companys')->field(['id','name'])->where('status',1)->where('type',0)->select();
         $datas['company_list'] = $companys;
