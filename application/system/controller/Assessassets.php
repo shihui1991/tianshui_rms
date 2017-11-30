@@ -28,8 +28,8 @@ class Assessassets extends Auth
         /* ********** 查询条件 ********** */
         $datas = [];
         $where = [];
-        $field = ['ass.id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
-            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.deleted_at'];
+        $field = ['ass.*', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
+            'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name'];
         $assess_id = input('assess_id');
         $this->assign('assess_id',$assess_id);
         if($assess_id){
