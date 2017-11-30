@@ -21,6 +21,7 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
+        {if condition="$item_info->getData('status') eq 1"}
         <li class="fgf" onclick="layerIfWindow('添加入户评估','{:url('add',['item_id'=>$item_info->id,'l'=>1])}','650','300')">
             <img src="__STATIC__/system/img/add.png"/>
             添加
@@ -37,6 +38,7 @@
             <img src="__STATIC__/system/img/destroy.png"/>
             销毁
         </li>
+        {/if}
     </ul>
 </div>
 <form action="{:url('index',['item_id'=>$item_info->id,'l'=>1])}" method="post" id="js-ajax-form">
@@ -80,7 +82,9 @@
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('入户评估-房产评估列表',	'{:url('assessestate/index',['assess_id'=>$info->id,'community_id'=>$info->community_id,'collection_id'=>$info->collection_id,'item_id'=>$item_info->id,'l'=>1])}','1000','650',true)" >房产评估</button>
                     <button type="button" class="btn" onclick="layerIfWindow('入户评估-资产评估列表',	'{:url('assessassets/index',['assess_id'=>$info->id,'community_id'=>$info->community_id,'collection_id'=>$info->collection_id,'item_id'=>$item_info->id,'l'=>1])}','1000','650',true)" >资产评估</button>
+                    {if condition="$item_info->getData('status') eq 1"}
                     <button type="button" data-action="{:url('delete',['ids'=>$info->id,'item_id'=>$item_info->id,'l'=>1])}" class="btn js-ajax-form-btn">删除</button>
+                    {/if}
                 </td>
             </tr>
             {/volist}
