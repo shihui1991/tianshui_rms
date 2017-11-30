@@ -14,7 +14,7 @@
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label>项目：</label></td>
-                <td>{$item_info->name}</td>
+                <td>{:isset($infos)?$infos->item_name:$item_info->name}</td>
             </tr>
             <tr class="h50">
                 <td><label for="topic_id">风险评估话题：</label></td>

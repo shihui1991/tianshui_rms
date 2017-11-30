@@ -156,7 +156,10 @@ class Itemtopic extends Auth
         }
         $itemtopic_info = model('Itemtopics')
             ->withTrashed()
-            ->where('id',$id)
+            ->alias('t')
+            ->field(['t.*','i.name as item_name'])
+            ->join('item i', 'i.id=t.item_id', 'left')
+            ->where('t.id',$id)
             ->find();
 
         /* ++++++++++ 话题列表 ++++++++++ */
