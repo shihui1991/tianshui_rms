@@ -11,8 +11,6 @@
  * | 销毁
  * */
 namespace app\system\controller;
-
-
 use think\Db;
 
 class Houseresettle extends Auth
@@ -145,85 +143,6 @@ class Houseresettle extends Auth
             return view();
         }
 
-    }
-
-    /* ========== 兑付列表 ========== */
-    public function search_pay(){
-        /* ********** 查询条件 ********** */
-        $datas=[];
-        $where=[];
-        $field=['p.*','i.name as i_name','i.is_top','c.community_id','c.building','c.unit','c.floor','c.number','c.type','c.real_use','cc.address','cc.name as cc_name','bu.name as bu_name'];
-
-        /* ++++++++++ 项目 ++++++++++ */
-        $item_id=input('item_id');
-        $where['p.item_id']=$item_id;
-        $datas['item_id']=$item_id;
-        /* ++++++++++ 片区 ++++++++++ */
-        $community_id=input('community_id');
-        if(is_numeric($community_id)){
-            $where['pay.community_id']=$community_id;
-            $datas['community_id']=$community_id;
-        }
-        /* ++++++++++ 权属 ++++++++++ */
-        $collection_id=input('collection_id');
-        if(is_numeric($collection_id)){
-            $where['pay.collection_id']=$collection_id;
-            $datas['collection_id']=$collection_id;
-        }
-        /* ++++++++++ 排序 ++++++++++ */
-        $ordername=input('ordername');
-        $ordername=$ordername?$ordername:'id';
-        $datas['ordername']=$ordername;
-        $orderby=input('orderby');
-        $orderby=$orderby?$orderby:'asc';
-        $datas['orderby']=$orderby;
-        /* ++++++++++ 每页条数 ++++++++++ */
-        $nums=[config('paginate.list_rows'),30,50,100,200,500];
-        sort($nums);
-        $datas['nums']=$nums;
-        $display_num=input('display_num');
-        $display_num=$display_num?$display_num:config('paginate.list_rows');
-        $datas['display_num']=$display_num;
-        /* ++++++++++ 是否删除 ++++++++++ */
-        $deleted=input('deleted');
-        $pay_model=model('Pays');
-        if(is_numeric($deleted) && in_array($deleted,[0,1])){
-            $datas['deleted']=$deleted;
-            if($deleted==1){
-                $pay_model=$pay_model->onlyTrashed();
-            }
-        }else{
-            $pay_model=$pay_model->withTrashed();
-        }
-        /* ++++++++++ 查询所有的房源临时安置 ++++++++++ */
-        $housetransit_houseids = model('Houseresettles')->column('pay_id');
-        $where['pay.id']=array('not in',$housetransit_houseids);
-        $pays=$pay_model
-            ->alias('p')
-            ->field($field)
-            ->join('item i','i.id=p.item_id','left')
-            ->join('collection c','c.id=p.collection_id','left')
-            ->join('collection_community cc','cc.id=p.community_id','left')
-            ->join('building_use bu','bu.id=c.real_use','left')
-            ->where($where)
-            ->order(['item.is_top'=>'desc','pay.'.$ordername=>$orderby])
-            ->paginate($display_num);
-
-        $datas['pays']=$pays;
-
-        /* ++++++++++ 项目 ++++++++++ */
-        $items=model('Items')->field(['id','name','status','is_top'])->where(['status'=>1])->order('is_top desc')->select();
-        $datas['items']=$items;
-        /* ++++++++++ 片区 ++++++++++ */
-        $collectioncommunitys=model('Collectioncommunitys')->field(['id','address','name'])->select();
-        $datas['collectioncommunitys']=$collectioncommunitys;
-        /* ++++++++++ 权属 ++++++++++ */
-        $collections=model('Collections')->field(['id','building','unit','floor','number','status'])->where('status',1)->select();
-        $datas['collections']=$collections;
-
-        $this->assign($datas);
-
-        return view();
     }
 
     /* ========== 详情 ========== */

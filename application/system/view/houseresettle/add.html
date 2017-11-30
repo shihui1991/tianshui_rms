@@ -93,7 +93,7 @@
     /* ===== 查询兑付列表 =====*/
     function pay_id_list(_item_id){
         if(_item_id){
-            layerIfWindow('兑付及兑付安置房信息列表',"{:url('search_pay')}?item_id="+_item_id,'850','580')
+            layerIfWindow('兑付及兑付安置房信息列表',"{:url('Tools/houseresettle_search_pay')}?item_id="+_item_id,'850','580')
         }else{
             layer.msg('请选择项目',function(){});
         }

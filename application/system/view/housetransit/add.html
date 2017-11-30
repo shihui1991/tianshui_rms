@@ -7,7 +7,7 @@
 
 </head>
 <body>
-<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+<form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
         <table class="layerTable" border="0">
@@ -101,7 +101,7 @@
     /* ===== 查询兑付列表 =====*/
     function pay_id_list(_item_id){
         if(_item_id){
-            layerIfWindow('兑付列表',"{:url('search_pay')}?item_id="+_item_id,'850','580')
+            layerIfWindow('兑付列表',"{:url('Tools/housetransit_search_pay')}?item_id="+_item_id,'850','580')
         }else{
             layer.msg('请选择项目',function(){});
         }
@@ -155,7 +155,7 @@
     /* ===== 查询安置房源列表 =====*/
     function house_id_list(_item_id){
         if(_item_id){
-            layerIfWindow('安置房源列表',"{:url('search_house')}?item_id="+_item_id,'850','580')
+            layerIfWindow('安置房源列表',"{:url('Tools/housetransit_search_house')}?item_id="+_item_id,'850','580')
         }else{
             layer.msg('请选择项目',function(){});
         }
