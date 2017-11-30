@@ -32,7 +32,10 @@ class Assessassets extends Auth
             'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.deleted_at'];
         $assess_id = input('assess_id');
         $this->assign('assess_id',$assess_id);
-        $where['ass.assess_id'] = $assess_id;
+        if($assess_id){
+            $where['ass.assess_id'] = $assess_id;
+        }
+
         /* ********** 是否弹出层 ********** */
         $l=input('l');
         $item_id=input('item_id');

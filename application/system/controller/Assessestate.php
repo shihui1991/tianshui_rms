@@ -34,7 +34,10 @@ class Assessestate extends Auth
 
         $assess_id = input('assess_id');
         $this->assign('assess_id',$assess_id);
-        $where['ass.assess_id'] = $assess_id;
+        if($assess_id){
+            $where['ass.assess_id'] = $assess_id;
+        }
+
         /* ********** 是否弹出层 ********** */
         $l=input('l');
         $item_id=input('item_id');
