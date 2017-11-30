@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>后台管理系统</title>
+    <title>房屋征收安置管理系统</title>
     {include file="public/head" /}
 </head>
 <body style="min-width: 1000px;">
@@ -109,10 +109,8 @@
     }
 
     function delcache() {
-        $.get("{:url('delete_cache')}",function (e) {
-            if(e.code){
-                layer.msg(e.msg,function () {});
-            }
+        $.get("{:url('Tools/delete_cache')}",function (e) {
+            layer.msg(e.msg,function () {});
         },'json');
     }
 </script>

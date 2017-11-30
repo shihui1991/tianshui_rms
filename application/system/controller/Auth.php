@@ -116,36 +116,4 @@ class Auth extends Controller
         }
     }
 
-    /* ========== 清除缓存 ========== */
-    public function delete_cache()
-    {
-//        exec('rm -rf ../runtime/*');
-        $this->del_DirAndFile('../runtime');
-
-        if(request()->isAjax()){
-            $this->success('清除缓存完成！');
-            die;
-        }else{
-            die('清除缓存完成！');
-        }
-    }
-
-    /* ========== 清除目录下所有文件及目录 ========== */
-    public function del_DirAndFile($dirName){
-        if(is_dir($dirName)){
-            if ( $handle = opendir( "$dirName" ) ) {
-                while ( false !== ( $item = readdir( $handle ) ) ) {
-                    if ( $item != "." && $item != ".." ) {
-                        if ( is_dir( "$dirName/$item" ) ) {
-                            $this->del_DirAndFile( "$dirName/$item" );
-                        } else {
-                            unlink( "$dirName/$item" );
-                        }
-                    }
-                }
-                closedir($handle);
-                rmdir($dirName);
-            }
-        }
-    }
 }

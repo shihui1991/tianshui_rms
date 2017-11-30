@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>项目兑付与协议|后台管理系统</title>
+    <title>项目兑付与协议|房屋征收安置管理系统</title>
     {include file="public/head" /}
     {include file="public/kindeditor" /}
 
@@ -12,6 +12,7 @@
 <form action="{:url('edit')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <input type="hidden" name="id" value="{$infos->id}">
+        <input type="hidden" name="item_id" value="{$infos->item_id}">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td>名称：</td>

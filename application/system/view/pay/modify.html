@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>项目兑付与协议|后台管理系统</title>
+    <title>项目兑付与协议|房屋征收安置管理系统</title>
     {include file="public/head" /}
     {include file="public/kindeditor" /}
 
@@ -15,11 +15,11 @@
             <div class="fl"><img src="__STATIC__/system/img/server_database.png"/>项目兑付与协议管理</div>
             <ul class="homeTab">
                 <li class="on"><a href="javascript:location.reload();">兑付汇总</a></li>
-                <li><a href="{:url('Payholder/index',['pay_id'=>$infos->id])}">分权兑付</a></li>
-                <li><a href="{:url('Paysubject/index',['pay_id'=>$infos->id])}">补偿科目</a></li>
-                <li><a href="{:url('Payobject/index',['pay_id'=>$infos->id])}">补偿事项</a></li>
-                <li><a href="{:url('Payholderhouse/index',['pay_id'=>$infos->id])}">安置房</a></li>
-                <li><a href="{:url('Pact/index',['pay_id'=>$infos->id])}">补偿协议</a></li>
+                <li><a href="{:url('Payholder/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">分权兑付</a></li>
+                <li><a href="{:url('Paysubject/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">补偿科目</a></li>
+                <li><a href="{:url('Payobject/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">补偿事项</a></li>
+                <li><a href="{:url('Payholderhouse/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">安置房</a></li>
+                <li><a href="{:url('Pact/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">补偿协议</a></li>
             </ul>
         </div>
         <div class="homeCon">
@@ -27,6 +27,7 @@
                 <form action="{:url('edit')}" method="post" class="js-ajax-form" onsubmit="return false;">
                     <div class="layerCon bg_f">
                         <input type="hidden" name="id" value="{$infos->id}">
+                        <input type="hidden" name="item_id" value="{$infos->item_id}">
                         <table class="layerTable" border="0">
                             <tr class="h50">
                                 <td>项目：</td>

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>项目兑付与协议-安置房|后台管理系统</title>
+    <title>项目兑付与协议-安置房|房屋征收安置管理系统</title>
     {include file="public/head" /}
 
 </head>
@@ -10,6 +10,7 @@
 <form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <input type="hidden" name="pay_id" value="{$pay_id}">
+        <input type="hidden" name="item_id" value="{$pay_info->item_id}">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label for="pay_holder_id">被征收人：</label></td>

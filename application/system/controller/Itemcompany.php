@@ -45,9 +45,6 @@ class Itemcompany extends Auth
             $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
             $datas['item_info']=$item_info;
             $where['item_id']=$item_id;
-            /* ++++++++++ 项目状态 ++++++++++ */
-            $item_status=Itemstatuss::where(['keyname'=>'item_company_id','keyvalue'=>$item_id])->order('created_at desc')->value('status');
-            $datas['item_status']=$item_status;
 
         }else{
             if($item_id){
@@ -139,17 +136,6 @@ class Itemcompany extends Auth
             }
         }
 
-        /* ++++++++++ 项目状态 ++++++++++ */
-        $item_status=Itemstatuss::where(['keyname'=>'item_company_id','keyvalue'=>input('item_id')])->order('created_at desc')->value('status');
-        if($item_status == 8){
-            $msg='选定评估公司数据已审核通过，禁止操作！';
-            if(request()->isAjax()){
-                return $this->error($msg,'');
-            }else{
-                return $msg;
-            }
-        }
-
 
         $model=new Itemcompanys();
         if(request()->isPost()){
@@ -187,17 +173,6 @@ class Itemcompany extends Auth
                         $i++;
                     }
                 }
-
-                $status_data=[
-                    'keyname'=>'item_company_id',
-                    'keyvalue'=>input('item_id'),
-                    'user_id'=>session('userinfo.user_id'),
-                    'role_id'=>session('userinfo.role_id'),
-                    'role_parent_id'=>session('userinfo.role_parent_id'),
-                    'status'=>0
-                ];
-                $status_model=new Itemstatuss();
-                $status_model->save($status_data);
 
                 $icc_model=new Itemcompanycollections();
                 $icc_model->saveAll($icc_data);
@@ -303,16 +278,6 @@ class Itemcompany extends Auth
             }
         }
 
-        /* ++++++++++ 项目状态 ++++++++++ */
-        $item_status=Itemstatuss::where(['keyname'=>'item_company_id','keyvalue'=>input('item_id')])->order('created_at desc')->value('status');
-        if($item_status == 8){
-            $msg='选定评估公司数据已审核通过，禁止操作！';
-            if(request()->isAjax()){
-                return $this->error($msg,'');
-            }else{
-                return $msg;
-            }
-        }
 
 
         $model=new Itemcompanys();
@@ -334,17 +299,6 @@ class Itemcompany extends Auth
                     $i++;
                 }
             }
-
-            $status_data=[
-                'keyname'=>'item_company_id',
-                'keyvalue'=>input('item_id'),
-                'user_id'=>session('userinfo.user_id'),
-                'role_id'=>session('userinfo.role_id'),
-                'role_parent_id'=>session('userinfo.role_parent_id'),
-                'status'=>1
-            ];
-            $status_model=new Itemstatuss();
-            $status_model->save($status_data);
 
             $icc_model=new Itemcompanycollections();
             /* ++++++++++ 清空评估公司-被征户 ++++++++++ */
@@ -390,17 +344,6 @@ class Itemcompany extends Auth
             }
         }
 
-        /* ++++++++++ 项目状态 ++++++++++ */
-        $item_status=Itemstatuss::where(['keyname'=>'item_company_id','keyvalue'=>input('item_id')])->order('created_at desc')->value('status');
-        if($item_status == 8){
-            $msg='选定评估公司数据已审核通过，禁止操作！';
-            if(request()->isAjax()){
-                return $this->error($msg,'');
-            }else{
-                return $msg;
-            }
-        }
-
 
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
@@ -414,17 +357,6 @@ class Itemcompany extends Auth
             if(!$itemcompany_ids){
                 throw new Exception('数据不存在');
             }
-            $status_data[]=[
-                'keyname'=>'item_company_id',
-                'keyvalue'=>input('item_id'),
-                'user_id'=>session('userinfo.user_id'),
-                'role_id'=>session('userinfo.role_id'),
-                'role_parent_id'=>session('userinfo.role_parent_id'),
-                'status'=>2
-            ];
-
-            $status_model=new Itemstatuss();
-            $status_model->saveAll($status_data);
 
             Itemcompanycollections::whereIn('item_company_id',$itemcompany_ids)->delete();
             $model->whereIn('id',$itemcompany_ids)->delete();

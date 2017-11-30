@@ -142,6 +142,52 @@ class Tools extends Auth
         exit(json_encode($result));
     }
 
+
+    /* ========== 清除缓存 ========== */
+    public function delete_cache()
+    {
+        try{
+            exec('rm -rf ../runtime/*');
+//        $this->del_DirAndFile('../runtime');
+
+            $res=true;
+            $msg='清除缓存完成';
+        }catch(\Exception $exception){
+            $res=false;
+            $msg=$exception->getMessage();
+        }
+
+        if(request()->isAjax()){
+            if($res){
+                $this->success($msg,'');
+            }else{
+                $this->error($msg,'');
+            }
+        }else{
+            die($msg);
+        }
+    }
+
+    /* ========== 清除目录下所有文件及目录 ========== */
+    public function del_DirAndFile($dirName){
+        if(is_dir($dirName)){
+            if ( $handle = opendir( "$dirName" ) ) {
+                while ( false !== ( $item = readdir( $handle ) ) ) {
+                    if ( $item != "." && $item != ".." ) {
+                        if ( is_dir( "$dirName/$item" ) ) {
+                            $this->del_DirAndFile( "$dirName/$item" );
+                        } else {
+                            unlink( "$dirName/$item" );
+                        }
+                    }
+                }
+                closedir($handle);
+                rmdir($dirName);
+            }
+        }
+    }
+
+
     /* ========== 房源户型图 ========== */
     public function houselayoutpic(){
         $community_id=input('community_id');
@@ -233,10 +279,7 @@ class Tools extends Auth
             $where['is_public']=$is_public;
         }
         /* ++++++++++ 状态 ++++++++++ */
-        $status=input('status');
-        if(is_numeric($status) && in_array($status,[0,1,2,3])){
-            $where['house.status']=$status;
-        }
+        $where['house.status']=0;
         /* ++++++++++ 查询 ++++++++++ */
         $houses=model('Houses')
             ->alias('h')
