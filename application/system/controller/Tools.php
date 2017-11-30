@@ -142,6 +142,52 @@ class Tools extends Auth
         exit(json_encode($result));
     }
 
+
+    /* ========== 清除缓存 ========== */
+    public function delete_cache()
+    {
+        try{
+            exec('rm -rf ../runtime/*');
+//        $this->del_DirAndFile('../runtime');
+
+            $res=true;
+            $msg='清除缓存完成';
+        }catch(\Exception $exception){
+            $res=false;
+            $msg=$exception->getMessage();
+        }
+
+        if(request()->isAjax()){
+            if($res){
+                $this->success($msg,'');
+            }else{
+                $this->error($msg,'');
+            }
+        }else{
+            die($msg);
+        }
+    }
+
+    /* ========== 清除目录下所有文件及目录 ========== */
+    public function del_DirAndFile($dirName){
+        if(is_dir($dirName)){
+            if ( $handle = opendir( "$dirName" ) ) {
+                while ( false !== ( $item = readdir( $handle ) ) ) {
+                    if ( $item != "." && $item != ".." ) {
+                        if ( is_dir( "$dirName/$item" ) ) {
+                            $this->del_DirAndFile( "$dirName/$item" );
+                        } else {
+                            unlink( "$dirName/$item" );
+                        }
+                    }
+                }
+                closedir($handle);
+                rmdir($dirName);
+            }
+        }
+    }
+
+
     /* ========== 房源户型图 ========== */
     public function houselayoutpic(){
         $community_id=input('community_id');

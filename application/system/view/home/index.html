@@ -109,10 +109,8 @@
     }
 
     function delcache() {
-        $.get("{:url('delete_cache')}",function (e) {
-            if(e.code){
-                layer.msg(e.msg,function () {});
-            }
+        $.get("{:url('Tools/delete_cache')}",function (e) {
+            layer.msg(e.msg,function () {});
         },'json');
     }
 </script>
