@@ -6,19 +6,15 @@
     {include file="public/head" /}
 </head>
 <body>
-<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+<form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label for="item_id">项目：</label></td>
                 <td>
-                    <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
-                        <option value="">--请选择项目--</option>
-                        {volist name="items" id="item"}
-                        <option value="{$item->id}" >{$item->name}（{$item->id}）</option>
-                        {/volist}
-                    </select>
+                    <input type="hidden" name="item_id" id="item_id" value="{:isset($item_info)?$item_info->id:''}">
+                    {$item_info->name}
                 </td>
                 <td><label for="community_id">片区：</label></td>
                 <td>
@@ -34,7 +30,7 @@
                 <td ><label for="collection_id">权属：</label></td>
                 <td colspan="3" id="collection_id_info">
                     <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
-                        <option value="">--请先选择项目和片区--</option>
+                        <option value="">--请先选择片区--</option>
                     </select>
                 </td>
             </tr>
@@ -68,7 +64,7 @@
                 <td ><label for="topic_id">话题：</label></td>
                 <td colspan="3" id="topic_id_info">
                     <select name="topic_id" id="topic_id" class="chosen" data-placeholder="请选择话题" data-no_results_text="没有匹配数据">
-                        <option value="">--请先选择项目--</option>
+                        <option value="">--请先选择片区--</option>
                     </select>
                 </td>
             </tr>
@@ -88,18 +84,14 @@
 <script>
     /* ===== 查询权属 及 话题 =====*/
     $('.sear_collection_id').change(function () {
-        var _item_id=$("#item_id").find('option:selected').val();
+        var _item_id=$("#item_id").val();
         var _community_id=$("#community_id").find('option:selected').val();
-        if(_item_id&&!_community_id){
-            var data = { 'item_id':_item_id};
-        }
-        if(_item_id&&_community_id){
-            var data = {
-                'item_id':_item_id,
-                'community_id':_community_id
-            };
-        }
-        if(_item_id){
+        var data = {
+            'item_id':_item_id,
+            'community_id':_community_id
+        };
+
+        if(_community_id){
             $.ajax({
                 url:"{:url('Tools/collections')}",
                 data:data,
@@ -164,24 +156,24 @@
         }else{
             var options = '';
             options += '<select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">';
-            options += ' <option value="">--请先选择项目--</option>';
+            options += ' <option value="">--请先选择片区--</option>';
             options += '</select>';
             $('#collection_id_info').html(options);
             $("#collection_id").chosen();
             var options1 = '';
             options1 += '<select name="topic_id" id="topic_id" class="chosen" data-placeholder="请选择话题" data-no_results_text="没有匹配数据">';
-            options1 += ' <option value="">--请先选择项目--</option>';
+            options1 += ' <option value="">--请先选择片区--</option>';
             options1 += '</select>';
             $('#topic_id_info').html(options1);
             $("#topic_id").chosen();
-            layer.msg('请选择项目',function(){});
+            layer.msg('请先选择片区',function(){});
         }
     });
 
     /* ===== 查询风险评估 =====*/
     $("#collection_id_info").on('change',function () {
        var  _collection_id = $("#collection_id").find("option:selected").val();
-       var  _item_id = $("#item_id").find("option:selected").val();
+       var  _item_id = $("#item_id").val();
        var  _community_id = $("#community_id").find("option:selected").val();
       if(_collection_id){
           $.ajax({
