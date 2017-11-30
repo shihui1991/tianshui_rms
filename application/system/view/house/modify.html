@@ -72,9 +72,9 @@
                                 <td>总楼层：</td>
                                 <td><input type="number" name="total_floor" id="total_floor" value="{:isset($infos)?$infos->total_floor:''}" min="1"></td>
                                 <td>物业费：</td>
-                                <td><input type="number" name="property_manage_fee" id="property_manage_fee" value="{:isset($infos)?$infos->property_manage_fee:''}" min="0" placeholder="物业管理费单价（元/平米/月）"></td>
+                                <td><input type="number" name="manage_price" id="manage_price" value="{:isset($infos)?$infos->manage_price:''}" min="0" placeholder="物业管理费单价（元/平米/月）"></td>
                                 <td>公摊费：</td>
-                                <td><input type="number" name="public_fee" id="public_fee" value="{:isset($infos)?$infos->public_fee:''}" min="0" placeholder="公摊费单价（元/月）"></td>
+                                <td><input type="number" name="public_price" id="public_price" value="{:isset($infos)?$infos->public_price:''}" min="0" placeholder="公摊费单价（元/月）"></td>
                             </tr>
                             <tr class="h50">
                                 <td>类型：</td>
