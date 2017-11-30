@@ -14,10 +14,10 @@
             <div class="fl"><img src="__STATIC__/system/img/server_database.png"/>项目兑付与协议管理</div>
             <ul class="homeTab">
                 <li><a href="{:url('Pay/detail',['id'=>$pay_id])}">兑付汇总</a></li>
-                <li><a href="{:url('Payholder/index',['pay_id'=>$pay_id])}">分权兑付</a></li>
-                <li><a href="{:url('Paysubject/index',['pay_id'=>$pay_id])}">补偿科目</a></li>
-                <li><a href="{:url('Payobject/index',['pay_id'=>$pay_id])}">补偿事项</a></li>
-                <li><a href="{:url('Payholderhouse/index',['pay_id'=>$pay_id])}">安置房</a></li>
+                <li><a href="{:url('Payholder/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">分权兑付</a></li>
+                <li><a href="{:url('Paysubject/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿科目</a></li>
+                <li><a href="{:url('Payobject/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿事项</a></li>
+                <li><a href="{:url('Payholderhouse/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">安置房</a></li>
                 <li class="on"><a href="javascript:location.reload();">补偿协议</a></li>
             </ul>
         </div>
@@ -27,18 +27,20 @@
                     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
                     <ul>
                         <li>
-                            <a href="{:url('index',['pay_id'=>$pay_id])}">
+                            <a href="{:url('index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">
                                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
-                                重置</a>
+                                刷新
+                            </a>
                         </li>
-                        <li class="fgf" onclick="layerIfWindow('添加兑付协议','{:url('add',['pay_id'=>$pay_id])}','800','600')">
+                        {if condition="$item_info->getData('status') eq 1"}
+                        <li class="fgf" onclick="layerIfWindow('添加兑付协议','{:url('add',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}','800','600')">
                             <img src="__STATIC__/system/img/add.png"/>
                             添加
                         </li>
-                        
+                        {/if}
                     </ul>
                 </div>
-                <form action="{:url('index',['pay_id'=>$pay_id])}" method="post" id="js-ajax-form">
+                <form action="{:url('index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}" method="post" id="js-ajax-form">
                 <div class="tableCon">
                     <em class="xian"></em>
                     <table class="table" border="0" >

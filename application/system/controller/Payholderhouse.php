@@ -14,6 +14,7 @@ namespace app\system\controller;
 use app\system\model\Collectionholderhouses;
 use app\system\model\Houseprices;
 use app\system\model\Itemhouseups;
+use app\system\model\Items;
 use app\system\model\Payholderhouses;
 use app\system\model\Payholderhouseups;
 use app\system\model\Payholders;
@@ -29,6 +30,33 @@ class Payholderhouse extends Auth
 
     /* ========== 列表 ========== */
     public function index(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+        $datas['item_info']=$item_info;
+
+
+
         $pay_id=input('pay_id');
         if(!$pay_id){
             return $this->error('错误操作，请关闭后重试');
@@ -62,6 +90,30 @@ class Payholderhouse extends Auth
 
     /* ========== 添加 ========== */
     public function add(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+
 
         if(request()->isPost()){
             $rules=[
@@ -311,6 +363,34 @@ class Payholderhouse extends Auth
 
     /* ========== 排序 ========== */
     public function sort(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+        $datas['item_info']=$item_info;
+
+
+
+
         $inputs=input();
         $sorts=isset($inputs['sort'])?$inputs['sort']:[];
         if(!$sorts){
@@ -482,6 +562,34 @@ class Payholderhouse extends Auth
 
     /* ========== 删除 ========== */
     public function delete(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') !=1){
+            switch ($item_info->getData('status')){
+                case 2:
+                    $msg='项目已完成，禁止操作！';
+                    break;
+                case 3:
+                    $msg='项目已取消，禁止操作！';
+                    break;
+                default:
+                    $msg='项目未进行，禁止操作！';
+            }
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+        $datas['item_info']=$item_info;
+
+
+
+
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 

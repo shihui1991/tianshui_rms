@@ -11,6 +11,7 @@
 <form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <input type="hidden" name="pay_id" value="{$pay_id}">
+        <input type="hidden" name="item_id" value="{$item_info->id}">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label for="item_subject_id">补偿科目：</label></td>

@@ -15,10 +15,10 @@
             <ul class="homeTab">
                 <li><a href="{:url('Pay/detail',['id'=>$pay_id])}">兑付汇总</a></li>
                 <li class="on"><a href="javascript:location.reload();">分权兑付</a></li>
-                <li><a href="{:url('Paysubject/index',['pay_id'=>$pay_id])}">补偿科目</a></li>
-                <li><a href="{:url('Payobject/index',['pay_id'=>$pay_id])}">补偿事项</a></li>
-                <li><a href="{:url('Payholderhouse/index',['pay_id'=>$pay_id])}">安置房</a></li>
-                <li><a href="{:url('Pact/index',['pay_id'=>$pay_id])}">补偿协议</a></li>
+                <li><a href="{:url('Paysubject/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿科目</a></li>
+                <li><a href="{:url('Payobject/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿事项</a></li>
+                <li><a href="{:url('Payholderhouse/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">安置房</a></li>
+                <li><a href="{:url('Pact/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿协议</a></li>
             </ul>
         </div>
         <div class="homeCon">
