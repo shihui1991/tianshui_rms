@@ -13,6 +13,7 @@ use think\Session;
 
 class Auth extends Controller
 {
+    public $theme;
     /* ========== 初始化 ========== */
     public function _initialize()
     {
@@ -71,6 +72,13 @@ class Auth extends Controller
                 }
             }
         }
+
+
+//        if(request()->isMobile()){
+//            $this->theme='mobile';
+//        }else{
+//            $this->theme='pc';
+//        }
 
     }
 
