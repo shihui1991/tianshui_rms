@@ -13,6 +13,5 @@ class Statis extends Base
     public function _initialize()
     {
         parent::_initialize();
-
     }
 }
