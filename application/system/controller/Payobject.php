@@ -141,7 +141,7 @@ class Payobject extends Auth
         }
 
         $model=new Payobjects();
-        $model->startTrans();
+        Db::startTrans();
         try{
             /* ********** 更新补偿事项 ********** */
             foreach ($sqls as $sql){
@@ -183,10 +183,10 @@ class Payobject extends Auth
             $payholder_model=new Payholders();
             $payholder_model->isUpdate(true)->saveAll($pay_holder_data);
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;
-            $model->rollback();
+            Db::rollback();
         }
 
         if($res){
@@ -233,7 +233,7 @@ class Payobject extends Auth
         }
 
         $model=new Payobjects();
-        $model->startTrans();
+        Db::startTrans();
         try{
             /* ********** 删除补偿事项 ********** */
             Payobjects::destroy($ids);
@@ -275,10 +275,10 @@ class Payobject extends Auth
             $payholder_model=new Payholders();
             $payholder_model->isUpdate(true)->saveAll($pay_holder_data);
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;dump($exception);
-            $model->rollback();
+            Db::rollback();
         }
 
         if($res){
@@ -325,7 +325,7 @@ class Payobject extends Auth
         }
 
         $model=new Payobjects();
-        $model->startTrans();
+        Db::startTrans();
         try{
             /* ********** 恢复补偿事项 ********** */
             Db::table('pay_object')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
@@ -367,10 +367,10 @@ class Payobject extends Auth
             $payholder_model=new Payholders();
             $payholder_model->isUpdate(true)->saveAll($pay_holder_data);
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;dump($exception);
-            $model->rollback();
+            Db::rollback();
         }
 
         if($res){

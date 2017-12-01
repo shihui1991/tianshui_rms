@@ -187,7 +187,7 @@ class Itemhouse extends Auth
                 return $this->error($result);
             }
 
-            $model->startTrans();
+            Db::startTrans();
             try{
                 $item_id=$inputs['item_id'];
                 $ids=$inputs['ids'];
@@ -214,10 +214,10 @@ class Itemhouse extends Auth
                     Itemhouses::where('id','in',$update_ids)->update(['updated_at'=>time()]);
                 }
 
-                $model->commit();
+                Db::commit();
                 $res=true;
             }catch (\Exception $exception){
-                $model->rollback();
+                Db::rollback();
                 $res=false;
             }
 
