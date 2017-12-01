@@ -19,7 +19,7 @@ use app\system\model\Companys;
 use app\system\model\Companyvaluers;
 use app\system\model\Itemcompanys;
 
-class Tools extends Auth
+class Tools extends Base
 {
     /* ========== 默认上传 ========== */
     public function upl(){
