@@ -121,13 +121,6 @@ class Fundsout extends Auth
             if (true !== $result) {
                 return $this->error($result);
             }
-            $sear_fundsout = model('Fundsouts')
-                ->where('item_id',$datas['item_id'])
-                ->where('name_id',$datas['name_id'])
-                ->count();
-            if($sear_fundsout){
-                return $this->error('数据重复,该项目已添加此款项','');
-            }
             $pay_holder_ids = input('pay_holder_ids');
             if($pay_holder_ids){
                 $pay_holder_ids = explode(',',$pay_holder_ids);
