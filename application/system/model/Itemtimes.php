@@ -62,6 +62,46 @@ class Itemtimes extends Model
         return $value?strtotime($value):null;
     }
 
+    public function getCollectionStartAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getCollectionEndAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getVoteStartAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getVoteEndAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getAssessStartAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getAssessEndAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getRiskStartAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getRiskEndAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getSignStartAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getSignEndAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
 
     public function item(){
         return $this->belongsTo('Items','item_id','id')->field(['id','name','status']);

@@ -187,16 +187,12 @@ class Housetransit extends Auth
             ->join('layout l','h.layout_id=l.id','left')
             ->where('ih.id',$housetransit_info->house_id)
             ->find();
-        if($housetransit_info->end_at == '1970-01-01'){
-            $end_at = '';
-        }else{
-            $end_at = $housetransit_info->end_at;
-        }
+
         return view('modify',
             ['infos'=>$housetransit_info,
                 'pays'=>$pays,
                 'itemhouse'=>$itemhouses,
-                'end_at'=>$end_at]);
+                ]);
     }
 
     /* ========== 修改 ========== */

@@ -172,15 +172,10 @@ class Houseresettle extends Auth
             ->join('building_use bu','bu.id=c.real_use','left')
             ->where('p.id',$houseresettle_info->pay_id)
             ->find();
-        if($houseresettle_info->end_at == '1970-01-01'){
-            $end_at = '';
-        }else{
-            $end_at = $houseresettle_info->end_at;
-        }
+
         return view('modify', [
             'infos'=>$houseresettle_info,
             'pays'=>$pays,
-            'end_at'=>$end_at
         ]);
     }
 

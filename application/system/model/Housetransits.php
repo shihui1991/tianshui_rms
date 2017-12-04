@@ -22,4 +22,28 @@ class Housetransits extends Model
         'exp_end'=>'timestamp:Y-m-d',
         'end_at'=>'timestamp:Y-m-d'
     ];
+
+    public function setStartAtAttr($value){
+        return $value?strtotime($value):null;
+    }
+
+    public function setExpEndAtAttr($value){
+        return $value?strtotime($value):null;
+    }
+
+    public function setEndAtAttr($value){
+        return $value?strtotime($value):null;
+    }
+
+    public function getStartAtAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getExpEndAtAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
+
+    public function getEndAtAttr($value){
+        return $value?date('Y-m-d',$value):null;
+    }
 }

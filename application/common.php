@@ -82,7 +82,7 @@ function get_childs($list, $parent_id){
  * @param array $insert_columns 数据字段
  * @param array $values         原始数据
  * @param array|string $update_columns 更新字段
- * @return bool|string          返回false(条件不符)，返回string(sql语句)
+ * @return bool|array          返回false(条件不符)，返回array(sql语句)
  */
 function batch_update_or_insert_sql($table='', $insert_columns=[], $values=[], $update_columns=[]){
     if(empty($table) || empty($insert_columns) || empty($values) || empty($update_columns)){
@@ -101,24 +101,26 @@ function batch_update_or_insert_sql($table='', $insert_columns=[], $values=[], $
             return false;
         }
     }
+
     //数据字段
     $sql_insert_columns=[];
     foreach ($insert_columns as $insert_column){
         $sql_insert_columns[]='`'.$insert_column.'`';
     }
     $sql_insert_columns=implode(',',$sql_insert_columns);
-    //数据
-    $sql_values=[];
-    foreach ($values as $value){
+    //数据分页
+    $num=100;
+    $page_values=[];
+    foreach ($values as $k=>$value){
+        $p=ceil(($k+1)/$num);
         $temp_values=[];
         foreach ($insert_columns as $insert_column){
             $temp=(string)$value[$insert_column] or '';
             $temp_values[]="'".$temp."'";
         }
         $temp_values=implode(',',$temp_values);
-        $sql_values[]='('.$temp_values.')';
+        $page_values[$p][]='('.$temp_values.')';
     }
-    $sql_values=implode(',',$sql_values);
     //更新字段
     if(is_string($update_columns)){
         $sql_update_columns= ' `'.$update_columns.'` = values(`'.$update_columns.'`) ';
@@ -129,10 +131,15 @@ function batch_update_or_insert_sql($table='', $insert_columns=[], $values=[], $
         }
         $sql_update_columns=implode(',',$sql_update_columns);
     }
-    $sql='insert into `'.$table.'` ('.$sql_insert_columns.') values '.$sql_values.' on duplicate key update '.$sql_update_columns;
-    return $sql;
-}
+    // 生成sql
+    $sqls=[];
+    foreach($page_values as $p=>$value){
+        $sql_values=implode(',',$value);
+        $sqls[]='insert into `'.$table.'` ('.$sql_insert_columns.') values '.$sql_values.' on duplicate key update '.$sql_update_columns;
+    }
 
+    return $sqls;
+}
 
 /** 批量更新数据 sql
  * @param string $table         数据表名
@@ -172,11 +179,13 @@ function batch_update_sql($table='', $insert_columns=[], $values=[], $update_col
             return false;
         }
     }
+
     /* ++++++++++ 创建虚拟表 ++++++++++ */
     //创建虚拟表 表名
     $temp_table='`'.$table.'_temp`';
     //创建虚拟表 sql
-    $sql_create_temp_table='create temporary table '.$temp_table.' like `'.$table.'`';
+    $sqls[]='create temporary table '.$temp_table.' like `'.$table.'`';
+
     /* ++++++++++ 添加数据 ++++++++++ */
     //数据字段
     $sql_insert_columns=[];
@@ -184,20 +193,27 @@ function batch_update_sql($table='', $insert_columns=[], $values=[], $update_col
         $sql_insert_columns[]='`'.$insert_column.'`';
     }
     $sql_insert_columns=implode(',',$sql_insert_columns);
-    //数据
-    $sql_values=[];
-    foreach ($values as $value){
+    //数据分页
+    $num=100;
+    $page_values=[];
+    foreach ($values as $k=>$value){
+        $p=ceil(($k+1)/$num);
         $temp_values=[];
         foreach ($insert_columns as $insert_column){
             $temp=(string)$value[$insert_column] or '';
             $temp_values[]="'".$temp."'";
         }
         $temp_values=implode(',',$temp_values);
-        $sql_values[]='('.$temp_values.')';
+        $page_values[$p][]='('.$temp_values.')';
     }
-    $sql_values=implode(',',$sql_values);
+
     //插入数据 sql
-    $sql_insert_values='insert into '.$temp_table.' ('.$sql_insert_columns.') values '.$sql_values;
+    foreach($page_values as $p=>$value){
+        $sql_values=implode(',',$value);
+        $sqls[]='insert into '.$temp_table.' ('.$sql_insert_columns.') values '.$sql_values;
+    }
+
+
     /* ++++++++++ 批量更新 ++++++++++ */
     //更新字段
     if(is_string($update_columns)){
@@ -220,10 +236,11 @@ function batch_update_sql($table='', $insert_columns=[], $values=[], $update_col
         $sql_where_columns=implode(' and ',$sql_where_columns);
     }
     //更新数据 sql
-    $sql_update_values='update `'.$table.'`,'.$temp_table.' set '.$sql_update_columns.' where '.$sql_where_columns;
-    $sql= [$sql_create_temp_table,$sql_insert_values,$sql_update_values];
-    return $sql;
+    $sqls[]='update `'.$table.'`,'.$temp_table.' set '.$sql_update_columns.' where '.$sql_where_columns;
+
+    return $sqls;
 }
+
 
 /** 生成导航菜单树
  * @param array $menus      菜单数据
