@@ -171,7 +171,7 @@ class Pay extends Auth
             }
 
             $inputs=input();
-            $model->startTrans();
+            Db::startTrans();
             try{
                 /* ++++++++++ 查询选择的被征户 ++++++++++ */
                 $where['collection.item_id']=input('item_id');
@@ -344,10 +344,10 @@ class Pay extends Auth
                     },'collection.id');
 
                 $res=true;
-                $model->commit();
+                Db::commit();
             }catch (\Exception $exception){
                 $res=false;dump($exception);
-                $model->rollback();
+                Db::rollback();
             }
 
             if($res){

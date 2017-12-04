@@ -84,4 +84,9 @@ class Houses extends Model
         }
         return $data;
     }
+
+
+    public function community(){
+        return $this->belongsTo('Housecommunitys','community_id','id')->field(['id','address','name']);
+    }
 }

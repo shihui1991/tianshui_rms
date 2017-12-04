@@ -136,7 +136,7 @@ class Paysubject extends Auth
                 return $this->error($result);
             }
 
-            $model->startTrans();
+            Db::startTrans();
             try{
                 $other_datas=$model->other_data(input());
                 $datas=array_merge(input(),$other_datas);
@@ -180,10 +180,10 @@ class Paysubject extends Auth
                 $payholder_model=new Payholders();
                 $payholder_model->isUpdate(true)->saveAll($pay_holder_data);
                 $res=true;
-                $model->commit();
+                Db::commit();
             }catch (\Exception $exception){
                 $res=false;
-                $model->rollback();
+                Db::rollback();
             }
 
             if($res){
@@ -299,7 +299,7 @@ class Paysubject extends Auth
             return $this->error($result);
         }
         $model=new Paysubjects();
-        $model->startTrans();
+        Db::startTrans();
         try{
             $paysubject_model=$model;
             $other_datas=$paysubject_model->other_data(input());
@@ -344,10 +344,10 @@ class Paysubject extends Auth
             $payholder_model=new Payholders();
             $payholder_model->isUpdate(true)->saveAll($pay_holder_data);
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;dump($exception);
-            $model->rollback();
+            Db::rollback();
         }
 
         if($res){
@@ -393,7 +393,7 @@ class Paysubject extends Auth
         }
 
         $model=new Paysubjects();
-        $model->startTrans();
+        Db::startTrans();
         try{
             /* ********** 删除科目 ********** */
             Paysubjects::destroy($ids);
@@ -435,10 +435,10 @@ class Paysubject extends Auth
             $payholder_model=new Payholders();
             $payholder_model->isUpdate(true)->saveAll($pay_holder_data);
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;dump($exception);
-            $model->rollback();
+            Db::rollback();
         }
 
         if($res){
@@ -484,7 +484,7 @@ class Paysubject extends Auth
         }
 
         $model=new Paysubjects();
-        $model->startTrans();
+        Db::startTrans();
         try{
             /* ********** 恢复科目 ********** */
             Db::table('pay_subject')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
@@ -526,10 +526,10 @@ class Paysubject extends Auth
             $payholder_model=new Payholders();
             $payholder_model->isUpdate(true)->saveAll($pay_holder_data);
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;dump($exception);
-            $model->rollback();
+            Db::rollback();
         }
 
         if($res){

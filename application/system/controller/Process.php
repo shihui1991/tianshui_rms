@@ -93,7 +93,7 @@ class Process extends Auth
                 return $this->error($result);
             }
 
-            $model->startTrans();
+            Db::startTrans();
             $inputs=input();
             try{
                 $process_model=$model;
@@ -112,10 +112,10 @@ class Process extends Auth
                 $processurl_model=new Processurls();
                 $processurl_model->saveAll($url_data);
                 $res=true;
-                $model->commit();
+                Db::commit();
             }catch (\Exception $exception){
                 $res=false;
-                $model->rollback();
+                Db::rollback();
             }
 
             if($res){
@@ -173,7 +173,7 @@ class Process extends Auth
             return $this->error($result);
         }
         $model=new Processs();
-        $model->startTrans();
+        Db::startTrans();
         $inputs=input();
         try{
             $process_model=$model;
@@ -195,10 +195,10 @@ class Process extends Auth
             $processurl_model=new Processurls();
             $processurl_model->saveAll($url_data);
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;dump($exception);
-            $model->rollback();
+            Db::rollback();
         }
 
         if($res){
@@ -251,15 +251,15 @@ class Process extends Auth
             return $this->error('至少选择一项');
         }
         $model=new Processs();
-        $model->startTrans();
+        Db::startTrans();
         try{
             Processs::onlyTrashed()->whereIn('id',$ids)->delete(true);
             Processurls::whereIn('process_id',$ids)->delete(true);
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;
-            $model->rollback();
+            Db::rollback();
         }
 
         if($res){

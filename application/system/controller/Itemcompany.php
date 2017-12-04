@@ -18,6 +18,7 @@ use app\system\model\Itemcompanycollections;
 use app\system\model\Itemcompanys;
 use app\system\model\Items;
 use app\system\model\Itemstatuss;
+use think\Db;
 use think\Exception;
 
 class Itemcompany extends Auth
@@ -158,7 +159,7 @@ class Itemcompany extends Auth
             $other_datas=$model->other_data(input());
             $datas=array_merge(input(),$other_datas);
 
-            $model->startTrans();
+            Db::startTrans();
             try{
                 /* ++++++++++ 添加评估公司 ++++++++++ */
                 $model->save($datas);
@@ -177,10 +178,10 @@ class Itemcompany extends Auth
                 $icc_model=new Itemcompanycollections();
                 $icc_model->saveAll($icc_data);
                 $res=true;
-                $model->commit();
+                Db::commit();
             }catch (\Exception $exception){
                 $res=false;
-                $model->rollback();
+                Db::rollback();
             }
 
             if($res){
@@ -284,7 +285,7 @@ class Itemcompany extends Auth
         $other_datas=$model->other_data(input());
         $datas=array_merge(input(),$other_datas);
 
-        $model->startTrans();
+        Db::startTrans();
         try{
             $model->isUpdate(true)->allowField(['infos','updated_at'])->save($datas);
 
@@ -306,10 +307,10 @@ class Itemcompany extends Auth
             /* ++++++++++ 添加评估公司-被征户 ++++++++++ */
             $icc_model->saveAll($icc_data);
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;
-            $model->rollback();
+            Db::rollback();
         }
 
         if($res){

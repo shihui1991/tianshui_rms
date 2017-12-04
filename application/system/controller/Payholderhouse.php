@@ -19,6 +19,7 @@ use app\system\model\Payholderhouses;
 use app\system\model\Payholderhouseups;
 use app\system\model\Payholders;
 use app\system\model\Pays;
+use think\Db;
 
 class Payholderhouse extends Auth
 {
@@ -137,7 +138,7 @@ class Payholderhouse extends Auth
             }
 
             $model=new Payholderhouses();
-            $model->startTrans();
+            Db::startTrans();
             try{
                 /* ++++++++++ 兑付汇总 ++++++++++ */
                 $pay_info=Pays::alias('p')
@@ -297,10 +298,10 @@ class Payholderhouse extends Auth
                     }
                 }
                 $res=true;
-                $model->commit();
+                Db::commit();
             }catch (\Exception $exception){
                 $res=false;
-                $model->rollback();
+                Db::rollback();
             }
 
             if($res){
@@ -409,7 +410,7 @@ class Payholderhouse extends Auth
         $res=false;
         if($sqls){
             $model=new Payholderhouses();
-            $model->startTrans();
+            Db::startTrans();
             try{
                 foreach ($sqls as $sql){
                     db()->execute($sql);
@@ -547,10 +548,10 @@ class Payholderhouse extends Auth
                 }
 
                 $res=true;
-                $model->commit();
+                Db::commit();
             }catch (\Exception $exception){
                 $res=false;
-                $model->rollback();
+                Db::rollback();
             }
         }
         if($res){
@@ -598,7 +599,7 @@ class Payholderhouse extends Auth
         }
 
         $model=new Payholderhouses();
-        $model->startTrans();
+        Db::startTrans();
         try{
             Payholderhouseups::destroy($ids,true);
             Payholderhouses::where('id','in',$ids)->delete();
@@ -740,10 +741,10 @@ class Payholderhouse extends Auth
             }
 
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;
-            $model->rollback();
+            Db::rollback();
         }
 
         if($res){

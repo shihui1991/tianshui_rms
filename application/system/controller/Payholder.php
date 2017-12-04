@@ -11,6 +11,7 @@ namespace app\system\controller;
 
 use app\system\model\Items;
 use app\system\model\Payholders;
+use think\Db;
 
 
 class Payholder extends Auth
@@ -149,7 +150,7 @@ class Payholder extends Auth
         }
 
         $model=new Payholders();
-        $model->startTrans();
+        Db::startTrans();
         try{
             $payholder_model=Payholders::alias('ph')
                 ->field(['ph.*','p.estate_amount as estate_total','p.assets_amount as assets_total','p.subject_amount as subject_total','p.object_amount as object_total','c.type'])
@@ -187,10 +188,10 @@ class Payholder extends Auth
 
             $payholder_model->save();
             $res=true;
-            $model->commit();
+            Db::commit();
         }catch (\Exception $exception){
             $res=false;
-            $model->commit();
+            Db::commit();
         }
 
 
