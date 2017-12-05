@@ -41,6 +41,7 @@
         color: #333;
         transition: all  .3s;
         font-size: 15px;
+        text-decoration:none;
     }
     .hconRight>span:hover{
         cursor: pointer;
@@ -64,19 +65,10 @@
         display: inline-block;
         width: 22%;
         height: 260px;
-    }
-    .cssDiv>a:first-child{
         float: left;
+        margin: 15px;
     }
-    .cssDiv>a:nth-of-type(2){
-        margin-right: 1.5%;
-    }
-    .cssDiv>a:nth-of-type(3){
-        margin-left: 1.5%;
-    }
-    .cssDiv>a:last-child{
-        float: right;
-    }
+
     .divlist>div{
         width: 100%;
         height: 100%;
@@ -104,8 +96,29 @@
         left: 0px;
         z-index: 1;
     }
+    .divlist>div>div.box{
+        position: absolute;
+        bottom: -45px;
+        width: 100%;
+        height: 110px;
+        background: white;
+        z-index: 3;
+        transition: all .5s;
+
+        background: -webkit-linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.9)); /* Safari 5.1 - 6.0 */
+        background: -o-linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.9)); /* Opera 11.1 - 12.0 */
+        background: -moz-linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.9)); /* Firefox 3.6 - 15 */
+        background: linear-gradient(rgba(0,0,0,.3), rgba(0,0,0,.9)); /* 标准的语法 */
+
+    }
     .divlist>div:hover{
         cursor: pointer;
+    }
+    .divlist>div:hover div.box{
+        transform: translateY(-30px);
+        -webkit-transform: -webkit-translateY(-30px);
+        -moz-transform: -moz-translateY(-30px);
+        -ms-transform: -ms-translateY(-30px);
     }
     .divlist>div:hover img{
         transform: scale(1.2,1.2);
@@ -118,26 +131,23 @@
         position: relative;
         z-index: 2;
         padding: 0px 10px;
+        color: white;
     }
     .divlist p.titp{
         text-align: center;
-        margin-top: 50px;
         font-size: 18px;
-        color: #333333;
+        margin-top: 10px;
     }
     .divlist p.conp{
         text-align: center;
         font-size: 14px;
-        color: #444;
-        margin-top: 10px;
         overflow: hidden;
-        white-space: normal;
+        white-space: nowrap;
         text-overflow: ellipsis;
-        height: 116px;
+        padding: 5px 10px;
     }
     .divlist p.timep{
         text-align: right;
-        color: #23527C;
         font-size: 14px;
     }
     .mr5{
@@ -205,9 +215,9 @@
     <div class="contanier hcon">
         <div class="fl"><img src="__STATIC__/system/img/logo.png" /> </div>
         <div class="fr hconRight">
-            <a>被征收人端</a>
-            <a>政府端</a>
-            <a>评估端</a>
+            <a href="/holder">被征收人端</a>
+            <a href="/system">政府端</a>
+            <a href="/company">评估端</a>
         </div>
     </div>
 </div>
@@ -218,9 +228,11 @@
         <a class="divlist" href="{:url('detail',['id'=>$news->id])}" title="{$news->name}">
             <div class="">
                 <img src="{$news->title_page}"/>
-                <p class="titp">{$i}、{$news->name}</p>
-                <p class="conp">{$news->infos}</p>
-                <p class="timep">{$news->release_at}</p>
+                <div class="box">
+                    <p class="titp">{$i}、{$news->name}</p>
+                    <p class="conp">{$news->infos}</p>
+                    <p class="timep">{$news->release_at}</p>
+                </div>
             </div>
         </a>
         {/volist}
