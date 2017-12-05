@@ -21,15 +21,9 @@
             <img src="__STATIC__/system/img/page_white_magnify.png"/>
             查询
         </li>
-        <li>
-            <a href="{:url('add')}">
-                <img src="__STATIC__/system/img/add_on.png"/>
-                计算
-            </a>
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('add')}">
+        <li class="fgf" onclick="layerIfWindow('计算房源物业管理费','{:url('add')}','800','600')">
             <img src="__STATIC__/system/img/add_on.png"/>
-            继续计算
+            计算
         </li>
 
     </ul>
@@ -120,7 +114,7 @@
                     <select name="year" id="year">
                         <option value="">全部</option>
                         {for start="2010" end="2100"}
-                        <option value="{$i}">{$i}</option>
+                        <option value="{$i}" {if condition="isset($year) and $year eq $i"}selected{/if}>{$i}</option>
                         {/for}
                     </select>
                 </td>

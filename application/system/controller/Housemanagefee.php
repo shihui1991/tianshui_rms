@@ -13,6 +13,8 @@ namespace app\system\controller;
 use app\system\model\Housecommunitys;
 use app\system\model\Housemanagefees;
 use app\system\model\Houses;
+use app\system\model\Items;
+use app\system\model\Layouts;
 use think\Db;
 
 class Housemanagefee extends Auth
@@ -128,12 +130,12 @@ class Housemanagefee extends Auth
             if($house_ids){
                 $h_where['id']=['in',$house_ids];
             }
-            $h_where['deliver_at']=['gt',0];
+            $h_where['deliver_at']=['elt',strtotime($year.'-'.$month.' +1 month -1 day 23:59:59')];
             $h_where['is_buy']=1;
             $h_where['status']=['neq',3];
             Db::startTrans();
             try{
-                $houses=Houses::field(['id','area','manage_price','public_price','status'])
+                $houses=Houses::field(['id','area','manage_price','public_price','status','deliver_at'])
                     ->with(['resettle'=>function($query){
                         $query
                             ->where('(`start_at` < '.strtotime($GLOBALS['year'].'-'.$GLOBALS['month'].' +1 month -1 day 23:59:59').') AND (`end_at` IS NULL OR `end_at` > '.strtotime($GLOBALS['year'].'-01-01 00:00:00').')')
@@ -162,6 +164,7 @@ class Housemanagefee extends Auth
                 foreach($houses as $house){
                     for($i=1;$i<=$month;$i++){
                         $date_at=date('Y-m',strtotime($year.'-'.$i));
+
                         $nofee=false;
                         /* ++++++++++ 安置记录 ++++++++++ */
                         if($house->resettle){
@@ -198,6 +201,7 @@ class Housemanagefee extends Auth
                             }
                         }
 
+                        unset($fee_model);
                         /* ++++++++++ 获取已计算费用的模型 ++++++++++ */
                         if($house->managefee){
                             foreach ($house->managefee as $managefee){
@@ -213,6 +217,14 @@ class Housemanagefee extends Auth
                                 $del_ids[]=$fee_model->id;
                             }
                         }else{
+
+                            if(date('Y-m',$house->getData('deliver_at'))>$date_at){
+                                if(isset($fee_model)){
+                                    $del_ids[]=$fee_model->id;
+                                }
+                                continue;
+                            }
+
                             /* ++++++++++ 整理数据 ++++++++++ */
                             $fee_data[$j]=[
                                 'house_id'=>$house->id
@@ -227,7 +239,6 @@ class Housemanagefee extends Auth
                             $fee_data[$j]['id']=isset($fee_model)?$fee_model->id:null;
                             $j++;
                         }
-                        unset($fee_model);
                     }
                 }
 
@@ -239,7 +250,7 @@ class Housemanagefee extends Auth
 
                 $sqls=batch_update_or_insert_sql('house_manage_fee', ['id','house_id','area','manage_price','public_price','manage_fee','date_at','created_at','updated_at'], $fee_data, ['area','manage_price','public_price','manage_fee','updated_at']);
                 if(!$sqls){
-                    throw new \Exception('网络错误，请稍候重试');
+                    throw new \Exception('没有产生物业管理费');
                 }
                 foreach ($sqls as $sql){
                     db()->execute($sql);
@@ -249,7 +260,7 @@ class Housemanagefee extends Auth
                 $msg='计算完成';
                 Db::commit();
             }catch (\Exception $exception){
-                $res=false;dump($exception);
+                $res=false;
                 $msg=$exception->getMessage();
                 Db::rollback();
             }
@@ -260,12 +271,20 @@ class Housemanagefee extends Auth
                 return $this->error($msg);
             }
         }else{
+            /* ++++++++++ 小区列表 ++++++++++ */
+            $communitys=Housecommunitys::field(['id','name','status'])->where('status',1)->select();
+            /* ++++++++++ 户型列表 ++++++++++ */
+            $layouts=Layouts::field(['id','name','status'])->where('status',1)->select();
+            /* ++++++++++ 房源模型 ++++++++++ */
+            $model=new Houses();
 
-            dump(date('Y-m',strtotime('2017-08')));
-            dump(strtotime('2017-08'));
-            dump(strtotime('2017-2 +1 month -1 day 23:59:59'));
-            dump(strtotime('2017-2-29'));
-            dump(strtotime('2017-2-29 00:00:00'));
+            $this->assign([
+                'communitys'=>$communitys,
+                'layouts'=>$layouts,
+                'model'=>$model,
+            ]);
+
+            return view();
         }
 
     }
