@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>资金统计|房屋征收安置管理系统</title>
+    {include file="public/head" /}
+    <script src="__STATIC__/system/js/echarts.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<h4>资金统计</h4>
+<div class="tabs">
+    <div class="item">
+        <div class="homeTit bg_f5" style="height: 46px;">
+            <div class="toolsBar">
+                <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+                <ul>
+                    <li>
+                        <a href="{:url('index')}">
+                            <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                            刷新
+                        </a>
+                    </li>
+                    <li class="fgf" onclick="layerPage('查询',$('#search'),'650','200')" >
+                        <img src="__STATIC__/system/img/page_white_magnify.png"/>
+                        查询
+                    </li>
+                </ul>
+            </div>
+            <ul class="homeTab">
+                <li class="on">资金支出统计图</li>
+                <li class="">资金收入统计图</li>
+            </ul>
+        </div>
+        <div class="homeCon">
+            <div class="tabPage w_100 on">
+                <div class="layerCon bg_f" style="padding-bottom: 0;">
+                    <div id="fundsout_statis" style="width:1200px;height:500px;"></div>
+                </div>
+            </div>
+            <div class="tabPage w_100">
+                <div class="layerCon bg_f" style="padding-bottom: 0;">
+                    <div id="fundsin_statis" style="width:1200px;height:500px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 查询 -->
+<div id="search" class="layerCon bg_f hide">
+    <form action="{:url('index')}" method="post" id="search-form">
+        <table class="layerTable">
+            <tr class="h50">
+                <td><label for="item_id">项目：</label></td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择项目--</option>
+                        {volist name="item_list" id="item"}
+                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if} >{$item->name}（{$item->id}）</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>年份：</td>
+                <td>
+                    <select name="years" id="years">
+                        <option value="">--请选择年份--</option>
+                        {volist name="years_info" id="years"}
+                        <option value="{$years}" {if condition="isset($years_val) and $years_val eq $years"}selected{/if}>{$years}年</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">查询</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+</script>
+{if condition="isset($types) and $types eq 1"}
+<script>
+    var fundsout_statis=echarts.init(document.getElementById('fundsout_statis'));
+    var data = {$fundsout_info};
+    var dateList_out = data.map(function (item) {
+        return item['group_time']+'年';
+    });
+    var valueList_out = data.map(function (item) {
+        return item['amounts'];
+    });
+    var  option_out = {
+        title: {
+            text: '资金总支出变化统计图',
+            subtext: '',
+            x:'center'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: true},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            name:'时间段',
+            boundaryGap: false,
+            data: dateList_out
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} 元'
+            }
+        },
+        series: [
+            {
+                name:'资金支出变化',
+                type:'line',
+                data:valueList_out
+            }
+        ]
+    };
+    fundsout_statis.setOption(option_out);
+    var fundsin_statis=echarts.init(document.getElementById('fundsin_statis'));
+    var data = {$fundsin_info};
+    var dateList = data.map(function (item) {
+        return item['group_time']+'年';
+    });
+    var valueList = data.map(function (item) {
+        return item['amounts'];
+    });
+    var  option_in = {
+        title: {
+            text: '资金总收入变化统计图',
+            subtext: '',
+            x:'center'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: true},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            name:'时间段',
+            boundaryGap: false,
+            data: dateList
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} 元'
+            }
+        },
+        series: [
+            {
+                name:'资金收入变化',
+                type:'line',
+                data:valueList
+            }
+        ]
+    };
+    fundsin_statis.setOption(option_in);
+</script>
+{/if}
+{if condition="isset($types) and $types eq 2"}
+{if condition="!$fundsin_cont"}<script>layer.msg('暂无收入变化记录');</script>{/if}
+{if condition="!$fundsout_cont"}<script>layer.msg('暂无支出变化记录');</script>{/if}
+<script>
+    var fundsout_statis=echarts.init(document.getElementById('fundsout_statis'));
+    var  option_out = {
+        title: {
+            text: '资金年支出变化统计图',
+            subtext: '当前项目：{$item_name}'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:{$fundsout_titles}
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: true},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            name:'时间段',
+            boundaryGap: false,
+            data: {$fundsout_times}
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} 元'
+            }
+        },
+        series: [
+            {$fundsout_cont}
+        ]
+    };
+    fundsout_statis.setOption(option_out);
+    var fundsin_statis=echarts.init(document.getElementById('fundsin_statis'));
+    var  option_in = {
+        title: {
+            text: '资金年收入变化统计图',
+            subtext: '当前项目：{$item_name}'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        legend: {
+            data:{$fundsin_titles}
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: true},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            name:'时间段',
+            boundaryGap: false,
+            data: {$fundsin_times}
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} 元'
+            }
+        },
+        series: [
+            {$fundsin_cont}
+        ]
+    };
+    fundsin_statis.setOption(option_in);
+</script>
+{/if}
+{if condition="isset($types) and $types eq 3"}
+<script>
+    var fundsout_statis=echarts.init(document.getElementById('fundsout_statis'));
+    var option_out = {
+        title : {
+            text: '资金支出款项占比',
+            subtext: '当前项目:{$item_name}',
+            x:'center'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data:{$fundsout_titles}
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataView: {readOnly: true},
+                saveAsImage: {}
+            }
+        },
+        series : [
+            {
+                name: '占用比例',
+                type: 'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[  {$fundsout_vals}],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    fundsout_statis.setOption(option_out);
+    var fundsin_statis=echarts.init(document.getElementById('fundsin_statis'));
+    var option_in = {
+        title : {
+            text: '资金收入款项占比',
+            subtext: '当前项目:{$item_name}',
+            x:'center'
+        },
+        tooltip : {
+            trigger: 'item',
+            formatter: "{a} <br/>{b} : {c} ({d}%)"
+        },
+        legend: {
+            orient: 'vertical',
+            left: 'left',
+            data:{$fundsin_titles}
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataView: {readOnly: true},
+                saveAsImage: {}
+            }
+        },
+        series : [
+            {
+                name: '占用比例',
+                type: 'pie',
+                radius : '55%',
+                center: ['50%', '60%'],
+                data:[  {$fundsin_vals}],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    fundsin_statis.setOption(option_in);
+</script>
+{/if}
+{if condition="isset($types) and $types eq 4"}
+<script>
+    var fundsout_statis=echarts.init(document.getElementById('fundsout_statis'));
+    var data = {$fundsout_info};
+    var dateList_out = data.map(function (item) {
+        return item['group_time'];
+    });
+    var valueList_out = data.map(function (item) {
+        return item['amounts'];
+    });
+    var  option_out = {
+        title: {
+            text: '资金支出变化统计图',
+            subtext: '{$years_val}年',
+            x:'center'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: true},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            name:'时间段',
+            boundaryGap: false,
+            data: dateList_out
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} 元'
+            }
+        },
+        series: [
+            {
+                name:'资金支出变化',
+                type:'line',
+                data:valueList_out
+            }
+        ]
+    };
+    fundsout_statis.setOption(option_out);
+    var fundsin_statis=echarts.init(document.getElementById('fundsin_statis'));
+    var data = {$fundsin_info};
+    var dateList = data.map(function (item) {
+        return item['group_time'];
+    });
+    var valueList = data.map(function (item) {
+        return item['amounts'];
+    });
+    var  option_in = {
+        title: {
+            text: '资金收入变化统计图',
+            subtext: '{$years_val}年',
+            x:'center'
+        },
+        tooltip: {
+            trigger: 'axis'
+        },
+        toolbox: {
+            show: true,
+            feature: {
+                dataZoom: {
+                    yAxisIndex: 'none'
+                },
+                dataView: {readOnly: true},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+            }
+        },
+        xAxis:  {
+            type: 'category',
+            name:'时间段',
+            boundaryGap: false,
+            data: dateList
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                formatter: '{value} 元'
+            }
+        },
+        series: [
+            {
+                name:'资金收入变化',
+                type:'line',
+                data:valueList
+            }
+        ]
+    };
+    fundsin_statis.setOption(option_in);
+</script>
+{/if}
+</body>
+</html>
