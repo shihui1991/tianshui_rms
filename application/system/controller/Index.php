@@ -83,7 +83,7 @@ class Index extends Controller
 
     /* ========== 退出 ========== */
     public function logout(){
-        Session::clear();
+        session(null);
         $this->redirect('index');
     }
 }

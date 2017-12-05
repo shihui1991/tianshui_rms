@@ -1,12 +1,18 @@
 <?php
 namespace app\index\controller;
 
+use app\system\model\Newss;
 use think\Controller;
 
 class Index extends Controller
 {
     public function index()
     {
-        return '<a href="/system">跳转到后台</a><br>演示账号：demo<br>密码：123456';
+        $newss=Newss::with('item')->where('status',1)->order(['is_top'=>'desc','release_at'=>'desc'])->select();
+
+        $this->assign([
+            'newss'=>$newss
+        ]);
+        return view();
     }
 }

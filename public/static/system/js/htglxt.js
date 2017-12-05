@@ -3,10 +3,10 @@
 function leftNavToggle(e){
 	var nav2H = $(e).find('li').length*37+37;//二级导航总高度
 	if($(e).hasClass("open")){
-		$(e).removeClass("open").find(".leftNav_2").animate({height:'0px'},300);
+		$(e).removeClass("open").find(".leftNav_2").stop().animate({height:'0px'},300);
 	}else{
-		$(e).addClass("open").siblings().removeClass("open").find(".leftNav_2").animate({height:'0px'},300);
-		$(e).find(".leftNav_2").animate({height:nav2H+'px'},300);
+		$(e).addClass("open").siblings().removeClass("open").find(".leftNav_2").stop().animate({height:'0px'},300);
+		$(e).find(".leftNav_2").stop().animate({height:nav2H+'px'},300);
 	}
 }
 //左边二级导航管理

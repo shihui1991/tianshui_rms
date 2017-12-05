@@ -60,4 +60,13 @@ class Companys extends Model
         }
         return $data;
     }
+
+    public function itemcompany(){
+        return $this->hasMany('Itemcompanys','company_id','id');
+    }
+
+
+    public function valuer(){
+        return $this->hasMany('Companyvaluers','company_id','id');
+    }
 }

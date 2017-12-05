@@ -262,9 +262,9 @@ class Pay extends Auth
                                 $pay_data['subject_amount']=0;
                                 $pay_data['object_amount']=0;
                                 $pay_data['total']=($collection->estate+$collection->assets+$public_avg);
-                                $pay_data['compensate_way']=$holders[0]->compensate_way;
-                                $pay_data['transit_way']=$holders[0]->transit_way;
-                                $pay_data['move_way']=$holders[0]->move_way;
+                                $pay_data['compensate_way']=(int)$holders[0]->compensate_way;
+                                $pay_data['transit_way']=(int)$holders[0]->transit_way;
+                                $pay_data['move_way']=(int)$holders[0]->move_way;
                                 $pay_data['picture']=[];
                                 // 兑付添加
                                 $pay_model->save($pay_data);

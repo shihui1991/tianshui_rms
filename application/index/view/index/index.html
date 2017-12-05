@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>房屋征收安置管理系统</title>
+</head>
+<style type="text/css">
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .header{
+        width: 100%;
+        background: #2e3e4e;
+        padding: 10px 0px;
+        margin-bottom:20px;
+    }
+    .contanier{
+        width: 1170px;
+        margin: 0 auto;
+    }
+    .hcon{
+        height: 54px;
+    }
+    .hcon>div{
+        display: inline-block;
+    }
+    .fr{
+        float: right;
+    }
+    .fl{
+        float: left;
+    }
+    .hconRight>a{
+        display: inline-block;
+        padding: 5px 10px;
+        background: white;
+        border-radius: 5px;
+        margin-top: 12px;
+        margin-left: 10px;
+        color: #333;
+        transition: all  .3s;
+        font-size: 15px;
+    }
+    .hconRight>span:hover{
+        cursor: pointer;
+        background: #EEEEEE;
+        color: #999999;
+    }
+    .ccon>div.text{
+        background: white;
+        height: 40px;
+        box-shadow:4px 3px 8px rgba(0, 0, 0, 0.8);
+        border-radius: 5px;
+        text-indent: 20px;
+        line-height: 40px;
+        color: #3e4e5e;
+        margin-bottom: 20px;
+    }
+    .cssDiv{
+        text-align: center;
+    }
+    .cssDiv>a{
+        display: inline-block;
+        width: 22%;
+        height: 260px;
+    }
+    .cssDiv>a:first-child{
+        float: left;
+    }
+    .cssDiv>a:nth-of-type(2){
+        margin-right: 1.5%;
+    }
+    .cssDiv>a:nth-of-type(3){
+        margin-left: 1.5%;
+    }
+    .cssDiv>a:last-child{
+        float: right;
+    }
+    .divlist>div{
+        width: 100%;
+        height: 100%;
+        background: white;
+        display: inline-block;
+        box-shadow:4px 3px 8px rgba(0, 0, 0, 0.8);
+        text-align: center;
+        box-sizing: border-box;
+        overflow: hidden;
+        position: relative;
+    }
+    .imgBox{
+        height: 123px;
+        position: relative;
+    }
+    .divlist div img{
+        width: 100%;
+        height: 100%;
+        transition: transform .5s;
+        -webkit-transition: -webkit-transform .5s;
+        -moz-transition: -moz-transform .5s;
+        -ms-transition: -ms-transform .5s;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        z-index: 1;
+    }
+    .divlist>div:hover{
+        cursor: pointer;
+    }
+    .divlist>div:hover img{
+        transform: scale(1.2,1.2);
+        -webkit-transform: -webkit-scale(1.2,1.2);
+        -ms-transform: -ms-scale(1.2,1.2);
+        -moz-transform: -moz-scale(1.2,1.2);
+        box-shadow: 2px 2px 8px rgba(25,25,25,.5);
+    }
+    .divlist p{
+        position: relative;
+        z-index: 2;
+        padding: 0px 10px;
+    }
+    .divlist p.titp{
+        text-align: center;
+        margin-top: 50px;
+        font-size: 18px;
+        color: #333333;
+    }
+    .divlist p.conp{
+        text-align: center;
+        font-size: 14px;
+        color: #444;
+        margin-top: 10px;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis;
+        height: 116px;
+    }
+    .divlist p.timep{
+        text-align: right;
+        color: #23527C;
+        font-size: 14px;
+    }
+    .mr5{
+        margin-right: 5%;
+    }
+    .textcen{
+        text-align: center;
+    }
+    .scolDiv{
+        width: 100%;
+    }
+    .scolDiv>ul{
+        background: white;
+        overflow: hidden;
+        width: 100%;
+        margin-top: 20px;
+        border-radius: 5px;
+        box-shadow:4px 3px 8px rgba(0, 0, 0, 0.8);
+    }
+    .scolDiv>ul>li{
+        width: 50%;
+        height: 57px;
+        line-height: 57px;
+        border-bottom: 1px solid #EEEEEE;
+        list-style: none;
+        float: left;
+        box-sizing: border-box;
+        transition: all .3s;
+    }
+    .scolDiv>ul>li>span{
+        display: inline-block;
+        width: 50px;
+        text-align: center;
+        font-size: 18px;
+        font-style: oblique;
+        color: #333333;
+        float: left;
+    }
+    .scolDiv>ul>li>a{
+        color: #444;
+        display: inline-block;
+        width: calc( 100% - 140px);
+        width: -webkit-calc( 100% - 150px);
+        width: -moz-calc( 100% - 140px);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        float: left;
+    }
+    .scolDiv>ul>li:hover{
+        background: #f5fcfc;
+        cursor: pointer;
+    }
+    .scolDiv>ul>li>i{
+        display: inline-block;
+        width: 82px;
+        text-align: right;
+        font-style: normal;
+        font-size: 14px;
+        color: #999999;
+    }
+</style>
+<body style="background: #2e3e4e;">
+<div class="header">
+    <div class="contanier hcon">
+        <div class="fl"><img src="__STATIC__/system/img/logo.png" /> </div>
+        <div class="fr hconRight">
+            <a>被征收人端</a>
+            <a>政府端</a>
+            <a>评估端</a>
+        </div>
+    </div>
+</div>
+<div class="contanier ccon">
+    <div class="text">新闻与公告</div>
+    <div class="cssDiv">
+        {volist name="newss" id="news" offset="0" length="8"}
+        <a class="divlist" href="{:url('detail',['id'=>$news->id])}" title="{$news->name}">
+            <div class="">
+                <img src="{$news->title_page}"/>
+                <p class="titp">{$i}、{$news->name}</p>
+                <p class="conp">{$news->infos}</p>
+                <p class="timep">{$news->release_at}</p>
+            </div>
+        </a>
+        {/volist}
+
+    </div>
+    <div class="scolDiv">
+        <ul>
+            {volist name="newss" id="news" offset="8"}
+            <li><span>{$i}、</span><a href="{:url('detail',['id'=>$news->id])}" title="{$news->name}">{$news->name}</a><i>{$news->release_at}</i></li>
+            {/volist}
+        </ul>
+    </div>
+</div>
+</body>
+</html>

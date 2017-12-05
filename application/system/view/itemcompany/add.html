@@ -8,6 +8,7 @@
 </head>
 <body>
 <form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <input type="hidden" name="item_id" value="{$item_info->id}">
     <div class="layerCon bg_f">
         <table class="layerTable" border="0">
             <tr class="h50">

@@ -61,4 +61,12 @@ class Newss extends Model
         }
         return $data;
     }
+
+    public function item(){
+        return $this->belongsTo('Items','item_id','id');
+    }
+
+    public function cate(){
+        return $this->belongsTo('Newscates','cate_id','id');
+    }
 }
