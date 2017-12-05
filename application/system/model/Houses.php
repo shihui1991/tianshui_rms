@@ -89,4 +89,16 @@ class Houses extends Model
     public function community(){
         return $this->belongsTo('Housecommunitys','community_id','id')->field(['id','address','name']);
     }
+
+    public function resettle(){
+        return $this->hasMany('Houseresettles','house_id','id');
+    }
+
+    public function transit(){
+        return $this->hasMany('Housetransits','house_id','id');
+    }
+
+    public function managefee(){
+        return $this->hasMany('Housemanagefees','house_id','id');
+    }
 }
