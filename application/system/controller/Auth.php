@@ -16,16 +16,16 @@ class Auth extends Base
     public function _initialize()
     {
         parent::_initialize();
-//
-//        /* ++++++++++ 检查操作权限 ++++++++++ */
-//        $priv_res=$this->check_priv();
-//        if(!$priv_res){
-//            if(request()->isAjax()){
-//                $this->error('没有权限！');
-//            }else{
-//                die('没有权限！ <a href="javascript:window.history.back();">返回</a>');
-//            }
-//        }
+
+        /* ++++++++++ 检查操作权限 ++++++++++ */
+        $priv_res=$this->check_priv();
+        if(!$priv_res){
+            if(request()->isAjax()){
+                $this->error('没有权限！');
+            }else{
+                die('没有权限！ <a href="javascript:window.history.back();">返回</a>');
+            }
+        }
 
         $url=request()->path();
         $params=request()->route();

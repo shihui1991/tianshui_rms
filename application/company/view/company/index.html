@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>评估公司资料|房屋征收安置管理系统</title>
+    {include file="public/head" /}
+    {include file="public/kindeditor" /}
+
+</head>
+<body>
+<form action="url('index')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="tabs">
+        <div class="item">
+            <div class="homeTit bg_f5">
+                <div class="fl"><img src="__STATIC__/system/img/bricks.png"/>评估公司</div>
+                <ul class="homeTab">
+                    <li class="on">基本信息</li>
+                    <li>详细介绍</li>
+                    <li>相关图片</li>
+                </ul>
+            </div>
+            <div class="homeCon">
+                <div class="tabPage w_100 on">
+                    <div class="layerCon bg_f">
+                        <table class="layerTable" border="0">
+                            <tr class="h50">
+                                <td><label for="type">类型：</label></td>
+                                <td>{$infos->type}</td>
+                                <td><label for="short_name">简名：</label></td>
+                                <td>
+                                    <input id="short_name" type="text" name="short_name" value="{$infos->short_name}" required placeholder="输入简名"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="name">名称：</label></td>
+                                <td colspan="3">
+                                    <input id="name" class="must" type="text" name="name" value="{$infos->name}" required placeholder="输入唯一名称"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="address">地址：</label></td>
+                                <td colspan="3">
+                                    <input id="address" type="text" name="address" value="{$infos->address}"  placeholder="输入地址"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="phone">公司电话：</label></td>
+                                <td>
+                                    <input id="phone" type="text" name="phone" value="{$infos->phone}"  placeholder="输入公司电话"/>
+                                </td>
+                                <td><label for="fax">公司传真：</label></td>
+                                <td>
+                                    <input id="fax" type="text" name="fax" value="{$infos->fax}"  placeholder="输入公司传真"/>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="contact_man">联系人：</label></td>
+                                <td>
+                                    <input id="contact_man" type="text" name="contact_man" value="{$infos->contact_man}"  placeholder="输入联系人姓名"/>
+                                </td>
+                                <td><label for="contact_phone">联系电话：</label></td>
+                                <td>
+                                    <input id="contact_phone" type="text" name="contact_phone" value="{$infos->contact_phone}"  placeholder="输入联系电话"/>
+                                </td>
+                            </tr>
+                            <tr class="h70">
+                                <td>LOGO：</td>
+                                <td class="imgCon" colspan="3">
+                                    {if condition="$infos->logo"}
+                                    <div class="img">
+                                        <img src="{$infos->logo}" class="w_100 h_100" onclick="bigimg(this)">
+                                        <p><span onclick="picremove(this);">删除</span></p>
+                                        <input type="hidden" name="logo" value="{$infos->logo}"/>
+                                    </div>
+                                    {/if}
+                                    <div class="img btn-upload" data-type="image" data-hidename="logo"><a>+</a></div>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="infos">简介：</label></td>
+                                <td colspan="3">
+                                    <textarea id="infos" name="infos">{$infos->infos}</textarea>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="username">登录名：</label></td>
+                                <td>
+                                    <input id="username" type="text" name="username" value="{$infos->username}" required placeholder="输入评估平台登录名"/>
+                                </td>
+                                <td><label for="password">密码：</label></td>
+                                <td>
+                                    <input id="password" type="text" name="password" value="{$infos->password}" required placeholder="输入评估平台登录密码"/>
+                                </td>
+                            </tr>
+
+                            <tr class="h50">
+                                <td>操作时间：</td>
+                                <td colspan="3">
+                                    创建于：{$infos->created_at}<br/>
+                                    更新于：{$infos->updated_at}<br/>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </div>
+                </div>
+                <div class="tabPage w_100">
+                    <div class="layerCon bg_f">
+                        <textarea name="content" id="content" class="kindeditor">{$infos->content}</textarea>
+                    </div>
+                </div>
+
+                <div class="tabPage w_100">
+                    <div class="layerCon bg_f">
+                        <table class="layerTable" border="0" id="picture-table">
+                            {if condition="$infos->picture"}
+                            {volist name="$infos->picture" id="pics"}
+                            {php}$name=$key;{/php}
+                            <tr class="h70">
+                                <td><span>{$name}</span>：</td>
+                                <td class="imgCon">
+                                    {volist name="pics" id="pic" key="k"}
+                                    {if condition="$pic"}
+                                    <div class="img">
+                                        <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                    </div>
+                                    {/if}
+                                    {/volist}
+                                </td>
+                            </tr>
+                            {/volist}
+                            {/if}
+
+                        </table>
+                    </div>
+                </div>
+
+                <div class="layerBtns">
+                    <a class="btn js-ajax-form-btn" >立即提交</a>
+                    <button class="btn" type="reset">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+
+    /*----- 富文本编辑器 -----*/
+    KindEditor.ready(function(K) {
+        window.editor = K.create('.kindeditor',{
+            width : '100%',
+            minHeight:'300',
+            uploadJson : upload_url,
+            fileManagerJson : filemanager_url,
+            allowFileManager : false,
+            items:['source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '/',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'multiimage',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink', '|', 'about'],
+            afterBlur:function () {
+                editor.sync();
+            },
+            autoHeightMode : true,
+            afterCreate : function() {
+                this.loadPlugin('autoheight');
+            }
+        });
+    });
+</script>
+</body>
+</html>

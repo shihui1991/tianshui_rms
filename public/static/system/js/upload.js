@@ -4,7 +4,7 @@ KindEditor.ready(function(K) {
     var editor_uploads = K.editor({
         uploadJson : upload_url,
         fileManagerJson : filemanager_url,
-        allowFileManager : true
+        allowFileManager : filemanager_url?true:false
     });
     $('.imgCon').on('click','.btn-upload',function () {
         var btn=$(this);

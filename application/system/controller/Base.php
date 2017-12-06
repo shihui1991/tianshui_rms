@@ -27,11 +27,11 @@ class Base extends Controller
         }
 
 
-        if(request()->isMobile()){
-            $this->theme='mobile';
-        }else{
-            $this->theme='pc';
-        }
+//        if(request()->isMobile()){
+//            $this->theme='mobile';
+//        }else{
+//            $this->theme='pc';
+//        }
     }
 
 }
