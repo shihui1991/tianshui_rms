@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>评估项目|房屋征收安置管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+
+<form action="{:url('index')}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>序号<i class="stretch"></i></th>
+                <th>名称<i class="stretch"></i></th>
+                <th>征收范围<i class="stretch"></i></th>
+                <th>户数<i class="stretch"></i></th>
+                <th>操作<i class="stretch"></i></th>
+            </tr>
+            {volist name="items" id="item"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$item->id}" onclick="checkBoxOp(this)" id="check-{$item->id}"/>
+                </td>
+                <td>{$i}</td>
+                <td>{$item->name}</td>
+                <td>{$item->area|substr=0,80}</td>
+                <td>{$item->collection_count}</td>
+                <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('评估列表',	'{:url('Collection/index',['item'=>$item->id])}','800','600',true)">点击进入</button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+
+<script>
+
+
+
+</script>
+</body>
+</html>

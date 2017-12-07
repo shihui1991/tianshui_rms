@@ -57,4 +57,8 @@ class Items extends Model
         }
         return $data;
     }
+
+    public function collection(){
+        return $this->hasMany('Collections','item_id','id');
+    }
 }

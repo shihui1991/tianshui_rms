@@ -26,12 +26,6 @@ class Base extends Controller
             Session::set('company.time',time());
         }
 
-//
-//        if(request()->isMobile()){
-//            $this->theme='mobile';
-//        }else{
-//            $this->theme='pc';
-//        }
     }
 
 }

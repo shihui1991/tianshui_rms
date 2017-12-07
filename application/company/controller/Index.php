@@ -15,6 +15,7 @@ use think\Controller;
 
 class Index extends Controller
 {
+    /* ========== 登录入口 ========== */
     public function index(){
         return view();
     }
@@ -76,7 +77,7 @@ class Index extends Controller
 
     /* ========== 退出 ========== */
     public function logout(){
-        session(null);
+        session('company',null);
         $this->redirect('index');
     }
 }

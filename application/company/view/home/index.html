@@ -11,12 +11,14 @@
 <div class="header w_100 bg_black">
     <img class="h50 mt10 ml10" src="__STATIC__/system/img/logo.png"/>
     <ul class="fr f12 nav">
+        {if condition="session('company.item_ids')"}
         <li>
             <a onclick="leftSubNavManage(this,event)" data-src="{:url('Item/index')}" data-tit="评估项目">
                 <img src="__STATIC__/system/img/n2.png"/>
                 评估项目
             </a>
         </li>
+        {/if}
         <li>
             <a onclick="leftSubNavManage(this,event)" data-src="{:url('Companyvaluer/index')}" data-tit="评估师管理">
                 <img src="__STATIC__/system/img/n5.png"/>

@@ -41,4 +41,9 @@ class Companyvaluers extends Model
 
         return $data;
     }
+
+
+    public function company(){
+        return $this->belongsTo('Companys','company_id','id');
+    }
 }

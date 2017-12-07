@@ -114,4 +114,16 @@ class Collections extends Model
     public function realuse(){
         return $this->belongsTo('Buildinguses','real_use','id','building_use')->field('id,name');
     }
+
+    public function assess(){
+        return $this->hasOne('Assesss','collection_id','id');
+    }
+
+    public function assets(){
+        return $this->hasMany('Assessassetss','collection_id','id');
+    }
+
+    public function estate(){
+        return $this->hasMany('Assessestates','collection_id','id');
+    }
 }
