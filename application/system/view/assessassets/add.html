@@ -174,99 +174,84 @@
         var _company_id=$("#company_id").find('option:selected').val();
         $(".valuerid_list").attr('onclick','valuer_id_list('+_company_id+')');
     });
+    var valuers=null;
+    var valuer_ids=[];
+
     /* ===== 查询评估师 =====*/
-   function valuer_id_list(_company_id){
-       if(_company_id){
-           layerPage('评估师列表',$('#search'),'650','300');
-           $.ajax({
-               url:"{:url('Tools/item_company_valuer')}",
-               data:{ 'company_id':_company_id},
-               dataType:'json',
-               type:'post',
-               success:function (resp) {
-                   $('#valuer_id_infos').find('tr:first').siblings().remove();
-                   var options = '';
-
-                   var  idss = $("#pinggu_id").val();
-                   if(idss){
-                       idss = idss.split(",");
-                   }else{
-                       idss = [];
-                   }
-                   if(resp.code){
-                       $.each(resp.data,function (index,info) {
-                           var res=$.inArray(info.id.toString(),idss);
-                           var _checked='';
-                           if(res>-1){
-                               _checked='checked';
-                           }
-
-                           options += '<tr class="h50">';
-                           options += ' <td style="text-align: center;"><input class="va_m" type="checkbox" name="ids[]" value="'+info.id+'" onclick="checkBoxOp(this)" id="check-'+info.id+'" '+_checked+'/></td>';
-                           options += '<td style="text-align: center;">'+info.id+'</td>';
-                           options += '<td style="text-align: center;">'+info.name+'</td>';
-                           options += '<td style="text-align: center;">'+info.register_num+'</td>';
-                           options += '<td style="text-align: center;">'+info.valid_at+'</td>';
-                           options += '</tr>';
-                       });
-                       $('#valuer_id_infos').find('tbody').append(options);
-                   }else{
-                       layer.msg(resp.msg,function(){});
-                   }
-               },
-               error:function () {
-                   layer.msg('网络错误，请重试',function(){});
-               }
-           });
-
-       }else{
-           layer.msg('请选择评估公司',function(){});
-       }
-
-   }
-    /* ===== 选择评估师 =====*/
-    $("#btn-form-search").click(function () {
-        var ids = '';
-        var name_ids= $("input[name='ids[]']:checked");
-        for(var i = 0;i<name_ids.length;i++){
-            ids += $(name_ids[i]).val();
-            if (i < name_ids.length - 1) ids += ",";
-        }
-        $("#pinggu_id").val(ids);
-        $("#valuer_id").val(ids);
-        layer.closeAll();
+    function valuer_id_list(_company_id){
+        layerPage('评估师列表',$('#search'),'650','300');
         $.ajax({
             url:"{:url('Tools/item_company_valuer')}",
-            data:{ 'ids':ids},
+            data:{ 'company_id':_company_id},
             dataType:'json',
-            type:'post',
+            type:'get',
             success:function (resp) {
-                $('#valuer_id_lists').find('tr:first').siblings().remove();
+                $('#valuer_id_infos').find('tr:first').siblings().remove();
                 var options = '';
+
                 if(resp.code){
+                    valuers=resp.data;
                     $.each(resp.data,function (index,info) {
+                        var _checked='';
+                        var res=$.inArray(info.id,valuer_ids);
+                        if(res>-1){
+                            _checked='checked';
+                        }
+
                         options += '<tr class="h50">';
-                        options += '<td style="text-align: left;background: none;width: inherit !important;">'+info.id+'</td>';
-                        options += '<td style="text-align: left;background: none;">'+info.name+'</td>';
-                        options += '<td style="text-align: left;background: none;">'+info.register_num+'</td>';
-                        options += '<td style="text-align: left;background: none;">'+info.valid_at+'</td>';
+                        options += ' <td style="text-align: center;"><input class="va_m" type="checkbox" name="ids[]" value="'+info.id+'" onclick="checkBoxOp(this)" id="check-'+info.id+'" '+_checked+'/></td>';
+                        options += '<td style="text-align: center;">'+info.id+'</td>';
+                        options += '<td style="text-align: center;">'+info.name+'</td>';
+                        options += '<td style="text-align: center;">'+info.register_num+'</td>';
+                        options += '<td style="text-align: center;">'+info.valid_at+'</td>';
                         options += '</tr>';
                     });
-                    $('#valuer_id_lists').find('tbody').append(options);
+                    $('#valuer_id_infos').find('tbody').append(options);
                 }else{
+                    valuers=null;
                     layer.msg(resp.msg,function(){});
                 }
             },
             error:function () {
+                valuers=null;
                 layer.msg('网络错误，请重试',function(){});
             }
         });
+    }
+    /* ===== 选择评估师 =====*/
+    $("#btn-form-search").click(function () {
+        if(!valuers){
+            layer.msg('数据异常，请关闭后重试',function(){});
+            return false;
+        }
+        valuer_ids=[];
+        $('#valuer_id_lists').find('tr:first').siblings().remove();
+
+        var name_ids= $("input[name='ids[]']:checked");
+        if(!name_ids.length){
+            layer.msg('请选择评估师',function(){});
+            return false;
+        }
+        for(var i = 0;i<name_ids.length;i++){
+            valuer_ids[i]=parseInt($(name_ids[i]).val());
+        }
+
+        layer.closeAll();
+
+        var options='';
+        $.each(valuers,function (index,info) {
+            if($.inArray(info.id,valuer_ids)>-1){
+                options += '<tr class="h50">';
+                options += '<td style="text-align: left;background: none;width: inherit !important;">'+info.id+'<input type="hidden" name="ids[]" value="'+info.id+'"></td>';
+                options += '<td style="text-align: left;background: none;">'+info.name+'</td>';
+                options += '<td style="text-align: left;background: none;">'+info.register_num+'</td>';
+                options += '<td style="text-align: left;background: none;">'+info.valid_at+'</td>';
+                options += '</tr>';
+            }
+
+        });
+        $('#valuer_id_lists').find('tbody').append(options);
     });
-
-
-
-
-
 </script>
 </body>
 </html>

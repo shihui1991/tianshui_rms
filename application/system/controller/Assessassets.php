@@ -188,7 +188,7 @@ class Assessassets extends Auth
                 ['community_id', 'require', '请选择片区'],
                 ['collection_id', 'require', '请选择权属'],
                 ['company_id', 'require', '请选择评估公司'],
-                ['valuer_id', 'require', '请选择评估师'],
+                ['ids', 'require', '请选择评估师'],
                 ['method', 'require', '评估方法不能为空'],
                 ['total', 'require', '资产总额不能为空'],
                 ['report_at', 'require', '报告时间不能为空'],
@@ -253,14 +253,14 @@ class Assessassets extends Auth
                 ]);
                 $assets_id = $model->getLastInsID();
                 /*----- 添加资产评估--评估师 -----*/
-                $valuer_ids = explode(",", $datas['valuer_id']);
+                $valuer_ids = $datas['ids'];
                 $valuer_data = [];
                 foreach ($valuer_ids as $k => $v) {
                     $valuer_data[] = [
                         'item_id' => $datas['item_id'],
                         'collection_id' => $datas['collection_id'],
                         'assess_id' => $assess_id,
-                        'estate_id' => $assets_id,
+                        'assets_id' => $assets_id,
                         'company_id' => $datas['company_id'],
                         'valuer_id' => $v
                     ];
@@ -287,10 +287,8 @@ class Assessassets extends Auth
             $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->where('id',$community_id)->find();
 
             /* ++++++++++ 权属 ++++++++++ */
-            $community_id=input('community_id');
-            $where['c.community_id']=$community_id;
-            $where['c.item_id']=$item_id;
-            $where['c.status']=1;
+            $collection_id=input('collection_id');
+            $where['c.id']=$collection_id;
             $field=['c.id','c.item_id','c.community_id','c.building','c.unit','c.floor','c.number','c.has_assets','c.status','cc.address','cc.name as cc_name'];
             $collections=model('Collections')
                 ->alias('c')
@@ -338,7 +336,7 @@ class Assessassets extends Auth
         $assessassetsvaluer_ids = model('Assessassetsvaluers')
             ->where('collection_id', $assessassets_info['collection_id'])
             ->where('assess_id', $assessassets_info['assess_id'])
-            ->where('estate_id', $id)
+            ->where('assets_id', $id)
             ->where('company_id', $assessassets_info['company_id'])
             ->column('valuer_id');
         $company_valuer_where['id'] = array('in', $assessassetsvaluer_ids);
@@ -417,7 +415,7 @@ class Assessassets extends Auth
             $assessassetsvaluer_ids = model('Assessassetsvaluers')
                 ->where('collection_id', $assessassets_info['collection_id'])
                 ->where('assess_id', $assessassets_info['assess_id'])
-                ->where('estate_id', $assessassets_info['id'])
+                ->where('assets_id', $assessassets_info['id'])
                 ->where('company_id', $assessassets_info['company_id'])
                 ->column('id');
             $valuer_idss = implode(",", $assessassetsvaluer_ids);
@@ -429,7 +427,7 @@ class Assessassets extends Auth
                     'item_id' => $assessassets_info['item_id'],
                     'collection_id' => $assessassets_info['collection_id'],
                     'assess_id' => $assessassets_info['assess_id'],
-                    'estate_id' => $assessassets_info['id'],
+                    'assets_id' => $assessassets_info['id'],
                     'company_id' => $assessassets_info['company_id'],
                     'valuer_id' => $v
                 ];
@@ -557,7 +555,7 @@ class Assessassets extends Auth
         Db::startTrans();
         try{
             $rs = model('Assessassetss')->destroy($ids);
-            model('Assessassetsvaluers')->destroy(['estate_id'=>['in',$ids]]);
+            model('Assessassetsvaluers')->destroy(['assets_id'=>['in',$ids]]);
             if($rs){
                 $res=true;
                 Db::commit();
@@ -614,7 +612,7 @@ class Assessassets extends Auth
         Db::startTrans();
         try{
             $rs = db('assess_assets')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-            db('assess_assets_valuer')->whereIn('estate_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_assets_valuer')->whereIn('assets_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
             if($rs){
                 $res=true;
                 Db::commit();
@@ -670,7 +668,7 @@ class Assessassets extends Auth
         }
         Db::startTrans();
         try{
-            model('Assessassetsvaluers')->withTrashed()->whereIn('estate_id',$ids)->delete(true);
+            model('Assessassetsvaluers')->withTrashed()->whereIn('assets_id',$ids)->delete(true);
             $rs = model('Assessassetss')->onlyTrashed()->whereIn('id',$ids)->delete(true);
             if($rs){
                 $res=true;

@@ -12,7 +12,7 @@
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
         <li>
-            <a href="{:url('search_pay',['item_id'=>$item_id])}">
+            <a href="{:url('tools/housetransit_search_pay',['item_id'=>$item_id])}">
                 <img src="__STATIC__/system/img/arrow_refresh.png"/>
                 重置</a>
         </li>
@@ -93,7 +93,7 @@
 </div>
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
-    <form action="{:url('search_pay')}" method="post" id="search-form">
+    <form action="{:url('tools/housetransit_search_pay')}" method="post" id="search-form">
         <table class="layerTable">
             <input type="hidden" name="item_id" value="{$item_id}">
             <tr class="h50">
