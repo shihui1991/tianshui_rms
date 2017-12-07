@@ -20,15 +20,23 @@
                             刷新
                         </a>
                     </li>
-                    <li class="fgf" onclick="layerPage('查询',$('#search'),'650','200')" >
+                    <li class="fgf" onclick="layerPage('统计图查询',$('#search'),'650','200')" >
                         <img src="__STATIC__/system/img/page_white_magnify.png"/>
-                        查询
+                        统计图查询
                     </li>
+                    <form action="{:url('excel_statis')}" method="post">
+                        <input type="hidden" name="ids" id="ids1" value="">
+                    <li class="fgf" onclick="exceldaochu('all')" >
+                        <img src="__STATIC__/system/img/excel_exports.png"/>
+                        列表数据Excel导出
+                    </li>
+                    </form>
                 </ul>
             </div>
             <ul class="homeTab">
                 <li class="on">资金支出统计图</li>
                 <li class="">资金收入统计图</li>
+                <li class="">资金统计列表</li>
             </ul>
         </div>
         <div class="homeCon">
@@ -42,10 +50,52 @@
                     <div id="fundsin_statis" style="width:1200px;height:500px;"></div>
                 </div>
             </div>
+            <div class="tabPage w_100">
+                <form action="{:url('index')}" method="post" id="js-ajax-form">
+                    <div class="tableCon">
+                        <em class="xian"></em>
+                        <table class="table" border="0" >
+                            <tbody>
+                            <tr class="noSelect">
+                                <th class="tc" width="35px">
+                                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                                </th>
+                                <th>ID</th>
+                                <th>项目名称</th>
+                                {volist name="years_in" id="yearsin"}
+                                <th>收入情况({$yearsin}年)</th>
+                                {/volist}
+                                <th>收入合计</th>
+                                {volist name="fundsname_array" id="fundsname"}
+                                <th>支出款项({$fundsname})</th>
+                                {/volist}
+                                <th>支出合计</th>
+                                <th>结余</th>
+                            </tr>
+                            {volist name="statis_list" id="statis" key="k"}
+                            <tr>
+                                <td>
+                                    <input class="va_m" type="checkbox" name="ids[]" value="{$statis[1]}" onclick="checkBoxOp(this)" id="check-{$k}"/>
+                                </td>
+                                <td>{$k}</td>
+                                <td>{$statis[0]}</td>
+                                {volist name="statis[2]" id="v_in"}
+                                <td>{$v_in}</td>
+                                {/volist}
+                                {volist name="statis[3]" id="v_out"}
+                                <td>{$v_out}</td>
+                                {/volist}
+                                <td>{$statis[4]}</td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
-
 <!-- 查询 -->
 <div id="search" class="layerCon bg_f hide">
     <form action="{:url('index')}" method="post" id="search-form">
@@ -54,7 +104,7 @@
                 <td><label for="item_id">项目：</label></td>
                 <td>
                     <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
-                        <option value="">--请选择项目--</option>
+                        <option value="">--全部项目--</option>
                         {volist name="item_list" id="item"}
                         <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if} >{$item->name}（{$item->id}）</option>
                         {/volist}
@@ -65,7 +115,7 @@
                 <td>年份：</td>
                 <td>
                     <select name="years" id="years">
-                        <option value="">--请选择年份--</option>
+                        <option value="">--全部年份--</option>
                         {volist name="years_info" id="years"}
                         <option value="{$years}" {if condition="isset($years_val) and $years_val eq $years"}selected{/if}>{$years}年</option>
                         {/volist}
@@ -85,12 +135,27 @@
             var id=$(this).data('id');
             $('#check-'+id).attr('checked',true);
         }) ;
-
-        $('.pageCon').find('a').on('click',function () {
-            $('#search-form').attr('action',$(this).attr('href')).submit();
-            return false;
-        });
     });
+    /*excel导出*/
+    function exceldaochu(rs) {
+        var ids = "";
+        if (rs == "all") {
+            var checkedlist = $("input[name=\"ids[]\"]:checked");
+            for (var i = 0; i < checkedlist.length; i++) {
+                ids += $(checkedlist[i]).val();
+                if (i < checkedlist.length - 1) ids += ",";
+            }
+        } else {
+            ids = rs;
+        }
+        if (ids == "") {
+            layer.msg('请勾选要导出的项目!', { icon: 1, time: 1000 });
+            return;
+        }
+        $("#ids1").val(ids);
+        $("#ids1").parent('form').submit();
+
+    }
 </script>
 {if condition="isset($types) and $types eq 1"}
 <script>
