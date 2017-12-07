@@ -318,7 +318,6 @@ class Assessestate extends Auth
                 ->join('collection_community cc','cc.id=c.community_id','left')
                 ->where($where)
                 ->find();
-            dump($collections);
             return view('add',
                 ['item_info' => $items,
                     'collectioncommunity_info' => $collectioncommunitys,
