@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>入户评估-资产评估|房屋征收安置管理系统</title>
+    {include file="public/head" /}
+    {include file="public/kindeditor" /}
+</head>
+<body>
+<form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="report_at">报告时间：</label></td>
+                <td>
+                    <input type="text" class="laydate-icon" name="report_at" id="report_at" value="" placeholder="请输入报告时间">
+                </td>
+                <td><label for="valued_at">价值时点：</label></td>
+                <td>
+                    <input type="text" class="laydate-icon" name="valued_at" id="valued_at" value="" placeholder="请输入价值时点">
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="method">资产总额：</label></td>
+                <td>
+                    <input type="text" name="total" id="total" value="" placeholder="请输入资产总额">
+                </td>
+                <td><label for="method">评估方法：</label></td>
+                <td>
+                    <input type="text" name="method" id="method" value="" placeholder="请输入评估方法">
+                </td>
+            </tr>
+            <tr class="h70">
+                <td>评估报告：</td>
+                <td class="imgCon" colspan="3">
+                    <div class="img btn-upload" data-type="multiimage" data-hidename="picture[]"><a>+</a></div>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="valuer_id_info">评估师：</label>
+                    <button class="btn valuerid_list"  onclick="valuer_id_list()">选择评估师</button>
+                </td>
+                <td id="valuer_id_info" colspan="3">
+                    <table class="table" border="0" id="valuer_id_lists">
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: center;">ID</th>
+                            <th style="text-align: center;">姓名</th>
+                            <th style="text-align: center;">注册号</th>
+                            <th style="text-align: center;">有效期</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="layerBtns">
+        <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+        <button class="btn" type="reset">重置</button>
+    </div>
+
+</form>
+<!-- 查询评估师 -->
+<div id="search" class="bg_f hide">
+        <table class="table" border="0" style="width: 100% !important;" id="valuer_id_infos">
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th style="text-align: center;">ID</th>
+                <th style="text-align: center;">姓名</th>
+                <th style="text-align: center;">注册号</th>
+                <th style="text-align: center;">有效期</th>
+            </tr>
+            </tbody>
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="button" id="btn-form-search">选择</button>
+        </div>
+</div>
+<script>
+
+    var valuers=null;
+    var valuer_ids=[];
+
+    /* ===== 查询评估师 =====*/
+   function valuer_id_list(){
+       layerPage('评估师列表',$('#search'),'650','300');
+       $.ajax({
+           url:"{:url('Tools/item_company_valuer')}",
+           data:{ 'company_id':{$company_id}},
+           dataType:'json',
+           type:'get',
+           success:function (resp) {
+               $('#valuer_id_infos').find('tr:first').siblings().remove();
+               var options = '';
+
+               if(resp.code){
+                   valuers=resp.data;
+                   $.each(resp.data,function (index,info) {
+                       var _checked='';
+                       var res=$.inArray(info.id,valuer_ids);
+                       if(res>-1){
+                           _checked='checked';
+                       }
+
+                       options += '<tr class="h50">';
+                       options += ' <td style="text-align: center;"><input class="va_m" type="checkbox" name="ids[]" value="'+info.id+'" onclick="checkBoxOp(this)" id="check-'+info.id+'" '+_checked+'/></td>';
+                       options += '<td style="text-align: center;">'+info.id+'</td>';
+                       options += '<td style="text-align: center;">'+info.name+'</td>';
+                       options += '<td style="text-align: center;">'+info.register_num+'</td>';
+                       options += '<td style="text-align: center;">'+info.valid_at+'</td>';
+                       options += '</tr>';
+                   });
+                   $('#valuer_id_infos').find('tbody').append(options);
+               }else{
+                   valuers=null;
+                   layer.msg(resp.msg,function(){});
+               }
+           },
+           error:function () {
+               valuers=null;
+               layer.msg('网络错误，请重试',function(){});
+           }
+       });
+   }
+    /* ===== 选择评估师 =====*/
+    $("#btn-form-search").click(function () {
+        if(!valuers){
+            layer.msg('数据异常，请关闭后重试',function(){});
+            return false;
+        }
+        valuer_ids=[];
+        $('#valuer_id_lists').find('tr:first').siblings().remove();
+
+        var name_ids= $("input[name='ids[]']:checked");
+        if(!name_ids.length){
+            layer.msg('请选择评估师',function(){});
+            return false;
+        }
+        for(var i = 0;i<name_ids.length;i++){
+            valuer_ids[i]=parseInt($(name_ids[i]).val());
+        }
+
+        layer.closeAll();
+
+        var options='';
+        $.each(valuers,function (index,info) {
+            if($.inArray(info.id,valuer_ids)>-1){
+                options += '<tr class="h50">';
+                options += '<td style="text-align: left;background: none;width: inherit !important;">'+info.id+'<input type="hidden" name="ids[]" value="'+info.id+'"></td>';
+                options += '<td style="text-align: left;background: none;">'+info.name+'</td>';
+                options += '<td style="text-align: left;background: none;">'+info.register_num+'</td>';
+                options += '<td style="text-align: left;background: none;">'+info.valid_at+'</td>';
+                options += '</tr>';
+            }
+
+        });
+        $('#valuer_id_lists').find('tbody').append(options);
+    });
+
+
+
+
+
+</script>
+</body>
+</html>

@@ -186,7 +186,7 @@
                success:function (resp) {
                    $('#valuer_id_infos').find('tr:first').siblings().remove();
                    var options = '';
-                   var _checked='';
+
                    var  idss = $("#pinggu_id").val();
                    if(idss){
                        idss = idss.split(",");
@@ -196,6 +196,7 @@
                    if(resp.code){
                        $.each(resp.data,function (index,info) {
                            var res=$.inArray(info.id.toString(),idss);
+                           var _checked='';
                            if(res>-1){
                                _checked='checked';
                            }

@@ -55,15 +55,15 @@
                 <td>
                     {if condition="session('company.type')"}
                     {if condition="$collection->assess and $collection->assets_count"}
-                    <button type="button" class="btn" onclick="layerIfWindow('查看评估报告',	'{:url('Assessassets/index',['collection_id'=>$collection->id])}','800','600',true)" >评估报告</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('查看评估报告',	'{:url('Assessassets/index',['item_id'=>$item_id,'collection_id'=>$collection->id])}','800','600',true)" >评估报告</button>
                     {else/}
-                    <button type="button" class="btn" onclick="layerIfWindow('添加评估报告',	'{:url('Assessassets/add',['id'=>$collection->id])}','800','600',true)" >添加评估报告</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('添加评估报告',	'{:url('Assessassets/add',['item_id'=>$item_id,'collection_id'=>$collection->id])}','800','600',true)" >添加评估报告</button>
                     {/if}
                     {else/}
                     {if condition="$collection->assess and $collection->estate_count"}
-                    <button type="button" class="btn" onclick="layerIfWindow('查看评估报告',	'{:url('Assessestate/index',['id'=>$collection->id])}','800','600',true)" >评估报告</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('查看评估报告',	'{:url('Assessestate/index',['item_id'=>$item_id,'collection_id'=>$collection->id])}','800','600',true)" >评估报告</button>
                     {else/}
-                    <button type="button" class="btn" onclick="layerIfWindow('添加评估报告',	'{:url('Assessestate/add',['id'=>$collection->id])}','800','600',true)" >添加评估报告</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('添加评估报告',	'{:url('Assessestate/add',['item_id'=>$item_id,'collection_id'=>$collection->id])}','800','600',true)" >添加评估报告</button>
                     {/if}
                     {/if}
 

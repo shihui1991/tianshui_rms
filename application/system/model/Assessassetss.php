@@ -30,4 +30,24 @@ class Assessassetss extends Model
             return $array;
         }
     }
+
+    public function item(){
+        return $this->belongsTo('Items','item_id','id');
+    }
+
+    public function community(){
+        return $this->belongsTo('Collectioncommunitys','community_id','id');
+    }
+
+    public function collection(){
+        return $this->belongsTo('Collections','collection_id','id');
+    }
+
+    public function assess(){
+        return $this->belongsTo('Assesss','assess_id','id');
+    }
+
+    public function company(){
+        return $this->belongsTo('Companys','company_id','id')->field(['id','type','name','short_name']);
+    }
 }

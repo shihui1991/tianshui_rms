@@ -169,6 +169,8 @@ class Itemcompany extends Auth
                 $input=input();
                 foreach ($input['ids'] as $collection_id){
                     if($collection_id){
+                        $icc_data[$i]['item_id']=$model->item_id;
+                        $icc_data[$i]['company_id']=$model->company_id;
                         $icc_data[$i]['item_company_id']=$model->id;
                         $icc_data[$i]['collection_id']=$collection_id;
                         $i++;
@@ -287,6 +289,7 @@ class Itemcompany extends Auth
 
         Db::startTrans();
         try{
+            $model->find($id);
             $model->isUpdate(true)->allowField(['infos','updated_at'])->save($datas);
 
             /* ++++++++++ 评估公司-被征户 ++++++++++ */
@@ -295,6 +298,8 @@ class Itemcompany extends Auth
             $input=input();
             foreach ($input['ids'] as $collection_id){
                 if($collection_id){
+                    $icc_data[$i]['item_id']=$model->item_id;
+                    $icc_data[$i]['company_id']=$model->company_id;
                     $icc_data[$i]['item_company_id']=$model->id;
                     $icc_data[$i]['collection_id']=$collection_id;
                     $i++;

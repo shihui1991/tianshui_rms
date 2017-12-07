@@ -9,6 +9,7 @@ namespace app\company\controller;
 
 use app\system\model\Collectioncommunitys;
 use app\system\model\Collections;
+use app\system\model\Itemcompanycollections;
 
 class Collection extends Base
 {
@@ -29,6 +30,10 @@ class Collection extends Base
         $where['item_id']=$item_id;
         $datas['item_id']=$item_id;
         $where['status']=1;
+
+        $collection_ids=Itemcompanycollections::where(['item_id'=>$item_id,'company_id'=>session('company.company_id')])->column('collection_id');
+        $where['id']=['in',$collection_ids];
+
         /* ++++++++++ 片区 ++++++++++ */
         $community_id=input('community_id');
         if(is_numeric($community_id)){

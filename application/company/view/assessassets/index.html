@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>入户评估-资产评估|房屋征收安置管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<h4>入户评估-资产评估管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index',['item_id'=>$item_id,'collection_id'=>$collection_id])}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                刷新
+            </a>
+        </li>
+
+        <li class="fgf" onclick="layerIfWindow('添加入户评估-资产评估','{:url('add',['item_id'=>$item_id,'collection_id'=>$collection_id])}','800','600',true)">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+
+    </ul>
+</div>
+<form action="{:url('index',['item_id'=>$item_id,'collection_id'=>$collection_id])}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>序号</th>
+                <th>评估公司</th>
+                <th>报告时间</th>
+                <th>价值时点</th>
+                <th>评估方法</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            {volist name="assetss" id="assets"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$assets->id}" onclick="checkBoxOp(this)" id="check-{$assets->id}"/>
+                </td>
+                <td>{$i}</td>
+                <td>{if condition="$assets->deleted_at"}<del>{$assets->company->name}</del>{else/}{$assets->company->name}{/if}</td>
+                <td>{if condition="$assets->deleted_at"}<del>{$assets->report_at}</del>{else/}{$assets->report_at}{/if}</td>
+                <td>{if condition="$assets->deleted_at"}<del>{$assets->valued_at}</del>{else/}{$assets->valued_at}{/if}</td>
+                <td>{if condition="$assets->deleted_at"}<del>{$assets->method}</del>{else/}{$assets->method}{/if}</td>
+                <td>{if condition="$assets->deleted_at"}<del>{$assets->status}</del>{else/}{$assets->status}{/if}</td>
+                <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户评估-资产评估信息',	'{:url('detail',['id'=>$assets->id])}','800','600',true)" >详情</button>
+                    {if condition="$assets->company_id eq $company_id"}
+                    {if condition="$assets->deleted_at"}
+                    <button type="button" data-action="{:url('restore',['ids'=>$assets->id])}" class="btn js-ajax-form-btn">恢复</button>
+                    <button type="button" data-action="{:url('destroy',['ids'=>$assets->id])}" class="btn js-ajax-form-btn">销毁</button>
+                    {else/}
+                    <button type="button" data-action="{:url('delete',['ids'=>$assets->id])}" class="btn js-ajax-form-btn">删除</button>
+                    {/if}
+                    {/if}
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+</body>
+</html>

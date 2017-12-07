@@ -5,7 +5,9 @@
  * | 默认上传
  * | kindeditor 上传
  * */
-namespace app\system\controller;
+namespace app\company\controller;
+
+use app\system\model\Companyvaluers;
 
 class Tools extends Base
 {
@@ -49,5 +51,29 @@ class Tools extends Base
             $data['message']='请选择上传文件！';
         }
         exit(json_encode($data));
+    }
+
+
+    /* ========== 查询项目评估公司-->评估师 ========== */
+    public function item_company_valuer(){
+        $field=['id','name','register_num','valid_at'];
+
+        $company_id=input('company_id');
+        if(!is_numeric($company_id) || $company_id<1){
+            return $this->error('请先选择评估公司','');
+        }
+        $where['company_id']=$company_id;
+        $where['status']='1';
+
+        $company_valuer=Companyvaluers::field($field)
+            ->where($where)
+            ->select();
+
+
+        if($company_valuer){
+            return $this->success('获取成功','',$company_valuer);
+        }else{
+            return $this->error('没有数据','');
+        }
     }
 }
