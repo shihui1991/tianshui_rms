@@ -188,7 +188,7 @@ class Assessassets extends Auth
                 ['community_id', 'require', '请选择片区'],
                 ['collection_id', 'require', '请选择权属'],
                 ['company_id', 'require', '请选择评估公司'],
-                ['valuer_id', 'require', '请选择评估师'],
+                ['ids', 'require', '请选择评估师'],
                 ['method', 'require', '评估方法不能为空'],
                 ['total', 'require', '资产总额不能为空'],
                 ['report_at', 'require', '报告时间不能为空'],
@@ -253,7 +253,7 @@ class Assessassets extends Auth
                 ]);
                 $assets_id = $model->getLastInsID();
                 /*----- 添加资产评估--评估师 -----*/
-                $valuer_ids = explode(",", $datas['valuer_id']);
+                $valuer_ids = $datas['ids'];
                 $valuer_data = [];
                 foreach ($valuer_ids as $k => $v) {
                     $valuer_data[] = [
@@ -287,10 +287,8 @@ class Assessassets extends Auth
             $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->where('id',$community_id)->find();
 
             /* ++++++++++ 权属 ++++++++++ */
-            $community_id=input('community_id');
-            $where['c.community_id']=$community_id;
-            $where['c.item_id']=$item_id;
-            $where['c.status']=1;
+            $collection_id=input('collection_id');
+            $where['c.id']=$collection_id;
             $field=['c.id','c.item_id','c.community_id','c.building','c.unit','c.floor','c.number','c.has_assets','c.status','cc.address','cc.name as cc_name'];
             $collections=model('Collections')
                 ->alias('c')
