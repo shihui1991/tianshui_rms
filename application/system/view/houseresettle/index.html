@@ -28,7 +28,10 @@
             <img src="__STATIC__/system/img/broom.png"/>
             销毁
         </li>
-
+        <li class="fgf" onclick="layerPage('安置房屋使用情况明细Excel导出',$('#search_excel'),'700','215')" >
+            <img src="__STATIC__/system/img/excel_exports.png"/>
+            Excel导出
+        </li>
     </ul>
 </div>
 <form action="{:url('delete')}" method="post" id="js-ajax-form">
@@ -140,7 +143,28 @@
         </div>
     </form>
 </div>
+<!-- 导出 -->
+<div id="search_excel" class="layerCon bg_f hide">
+    <form action="{:url('statis')}" method="post" id="search-forms">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>项目：</td>
+                <td>
+                    <select name="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}">{$item->name}</option>
+                        {/volist}
+                    </select>
+                </td>
 
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">导出</button>
+        </div>
+    </form>
+</div>
 <script>
 
     $(function () {

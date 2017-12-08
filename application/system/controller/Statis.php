@@ -468,9 +468,6 @@ class Statis extends Base
                 $new_title_a[$fundin_cout+$k] = '';
             }
             $new_title_b[$fundin_cout+$k] = $v;
-//            if($k!=0) {
-//                $new_title_b[$fundin_cout + $k-1] = $v;
-//            }
             $new_title_a[$fundin_cout+$k+1] = '支出合计';
             $new_title_b[$fundin_cout+$k+1] = '支出合计';
             $new_title_a[$fundin_cout+$k+2] = '结余';
@@ -489,8 +486,10 @@ class Statis extends Base
         $cd2 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)+1];
         $cd3 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)+2];
         $cd4 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)+3];
-        if ($statis_list){
+        if ($fundsin_array&&$fundsout_array){
             create_xls($cd1,$cd2,$cd3,$cd4,$ColumnDimension1,$ColumnDimension2,$ColumnDimension3,$datas_excel,date('Ymd'));
+        }else{
+            return $this->error('暂无数据');
         }
     }
 
