@@ -42,7 +42,7 @@ class Assessassets extends Base
         $where['collection_id']=$collection_id;
         $where['company_id']=session('company.company_id');
 
-        $assetss=Assessassetss::with('company')->where($where)->select();
+        $assetss=Assessassetss::withTrashed()->with('company')->where($where)->select();
 
         $datas['assetss']=$assetss;
 
@@ -246,6 +246,69 @@ class Assessassets extends Base
             return $this->success($msg,'');
         }else{
             return $this->error($msg,'');
+        }
+    }
+
+
+    /* ========== 删除 ========== */
+    public function delete(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        $res=Assessassetss::destroy($ids);
+        if($res){
+            return $this->success('删除成功','');
+        }else{
+            return $this->error('删除失败');
+        }
+    }
+
+    /* ========== 恢复 ========== */
+    public function restore(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+
+        $res=Db::table('assess_assets')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+        if($res){
+            return $this->success('恢复成功','');
+        }else{
+            return $this->error('恢复失败');
+        }
+    }
+
+    /* ========== 销毁 ========== */
+    public function destroy(){
+        $inputs=input();
+        $ids=isset($inputs['ids'])?$inputs['ids']:'';
+
+        if(empty($ids)){
+            return $this->error('至少选择一项');
+        }
+        Db::startTrans();
+        try{
+            Assessassetss::onlyTrashed()->whereIn('id',$ids)->delete(true);
+            Assessassetsvaluers::whereIn('assets_id',$ids)->delete(true);
+
+            $res=true;
+            $msg='操作成功';
+            Db::commit();
+        }catch (\Exception $exception){
+            $res=false;
+            $msg='操作失败';
+            Db::rollback();
+        }
+
+        if($res){
+            return $this->success($msg,'');
+        }else{
+            return $this->error($msg);
         }
     }
 }
