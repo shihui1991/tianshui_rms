@@ -54,6 +54,7 @@
                                             <th>位置</th>
                                             <th>性质</th>
                                             <th>结构</th>
+                                            <th>状况</th>
                                             <th>数量</th>
                                             <th>计量单位</th>
                                             <th>单价</th>
@@ -209,6 +210,7 @@
                             options += '<td  class="nowrap" style="text-align: left;background: none;">'+info.address+'</td>';
                             options += '<td style="text-align: center;background: none;">'+info.bu_name+'</td>';
                             options += '<td style="text-align: center;background: none;">'+info.bs_name+'</td>';
+                            options += '<td style="text-align: center;background: none;">'+info.s_name+'</td>';
                             options += '<td style="text-align: left;background: none;">'+info.real_num+'</td>';
                             options += '<td style="text-align: center;background: none;">'+info.real_unit+'</td>';
                             options += '<td style="text-align: left;background: none;"><input type="text" name="price['+info.id+']" class="price" value="" data-real_num="'+info.real_num+'" data-id="'+info.id+'" onkeyup="price_num(this)"  onchange="price_num(this)"></td>';

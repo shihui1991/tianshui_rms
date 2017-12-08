@@ -20,7 +20,7 @@ class Base extends Controller
     {
         /* ++++++++++ 未登录或操作超时 ++++++++++ */
         $userinfo=Session::get('userinfo');
-        if(!$userinfo || time()-$userinfo['time']>1800){
+        if(!$userinfo || time()-$userinfo['time']>7200){
             $this->redirect('Index/index');
         }else{
             Session::set('userinfo.time',time());

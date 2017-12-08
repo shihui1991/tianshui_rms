@@ -462,6 +462,12 @@ class Tools extends Base
         if(!is_numeric($collection_id) || $collection_id<1){
             return $this->error('请先选择权属','');
         }
+
+        $count=Collectionbuildings::where('collection_id',$collection_id)->where('status_id',0)->count();
+        if($count){
+            return $this->error('房屋合法性认定未完成，暂时不能评估！','');
+        }
+
         $where['collection_id']=$collection_id;
         $field=['cb.id','cb.item_id','cb.community_id','cb.collection_id','cb.building','cb.unit','cb.floor','cb.number',
             'cb.real_num','cb.real_unit','cb.use_id','cb.struct_id','cb.status_id','cb.build_year','cb.remark','cb.deleted_at','i.name as i_name','i.is_top',
@@ -484,7 +490,7 @@ class Tools extends Base
         if($collectionbuildings){
             return $this->success('获取成功','',$collectionbuildings);
         }else{
-            return $this->error('没有数据','');
+            return $this->error('没有房屋数据','');
         }
     }
 

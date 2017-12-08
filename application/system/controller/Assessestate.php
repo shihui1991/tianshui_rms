@@ -11,6 +11,7 @@
  * */
 namespace app\system\controller;
 use app\system\model\Assessestates;
+use app\system\model\Collectionbuildings;
 use app\system\model\Items;
 use think\Db;
 use think\Exception;
@@ -182,6 +183,12 @@ class Assessestate extends Auth
             }
         }
 
+        $collection_id=input('collection_id');
+        $count=Collectionbuildings::where('collection_id',$collection_id)->where('status_id',0)->count();
+        if($count){
+            return $this->error('房屋合法性认定未完成，暂时不能评估！','');
+        }
+
 
         if (request()->isPost()) {
             $model = new Assessestates();
@@ -189,7 +196,7 @@ class Assessestate extends Auth
             $rule = [
                 ['community_id', 'require', '请选择片区'],
                 ['collection_id', 'require', '请选择权属'],
-                ['price', 'require', '建筑不能为空'],
+                ['price', 'require', '建筑数据不能为空'],
                 ['company_id', 'require', '请选择评估公司'],
                 ['ids', 'require', '请选择评估师'],
                 ['report_at', 'require', '报告时间不能为空'],
@@ -309,7 +316,6 @@ class Assessestate extends Auth
             $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->where('id',$community_id)->find();
 
             /* ++++++++++ 权属 ++++++++++ */
-            $collection_id=input('collection_id');
             $where['c.id']=$collection_id;
             $field=['c.id','c.item_id','c.community_id','c.building','c.unit','c.floor','c.number','c.has_assets','c.status','cc.address','cc.name as cc_name'];
             $collections=model('Collections')
@@ -383,6 +389,7 @@ class Assessestate extends Auth
                 $options .= '<td class="nowrap"  style="text-align: left;background: none;">' . $v['address'] . '</td>';
                 $options .= '<td style="text-align: center;background: none;">' . $v['bu_name'] . '</td>';
                 $options .= '<td style="text-align: center;background: none;">' . $v['bs_name'] . '</td>';
+                $options .= '<td style="text-align: center;background: none;">' . $v['s_name'] . '</td>';
                 $options .= '<td style="text-align: left;background: none;">' . $v['real_num'] . '</td>';
                 $options .= '<td style="text-align: center;background: none;">' . $v['real_unit'] . '</td>';
                 $options .= '<td style="text-align: left;background: none;"><input type="text" name="price[' . $building_price[$k]->id . ']" class="price" value="' . $building_price[$k]->price . '" data-real_num="' . $v['real_num'] . '" data-id="' . $v['id'] . '" onkeyup="price_num(this)" onchange="price_num(this)"></td>';

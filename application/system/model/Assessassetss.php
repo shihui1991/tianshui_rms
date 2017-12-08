@@ -31,6 +31,15 @@ class Assessassetss extends Model
         }
     }
 
+
+    public function other_data($input){
+        $datas=[];
+        if(!isset($input['picture'])){
+            $datas['picture']=[];
+        }
+        return $datas;
+    }
+
     public function item(){
         return $this->belongsTo('Items','item_id','id');
     }

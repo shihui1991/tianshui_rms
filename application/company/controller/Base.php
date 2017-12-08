@@ -20,7 +20,7 @@ class Base extends Controller
     {
         /* ++++++++++ 未登录或操作超时 ++++++++++ */
         $company=Session::get('company');
-        if(!$company || time()-$company['time']>1800){
+        if(!$company || time()-$company['time']>7200){
             $this->redirect('Index/index');
         }else{
             Session::set('company.time',time());

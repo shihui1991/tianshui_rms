@@ -17,4 +17,9 @@ class Assessestatevaluers extends Model
     protected $deleteTime='deleted_at';
     protected $autoWriteTimestamp = true;
     protected $field=true;
+
+
+    public function valuer(){
+        return $this->belongsTo('Companyvaluers','valuer_id','id');
+    }
 }

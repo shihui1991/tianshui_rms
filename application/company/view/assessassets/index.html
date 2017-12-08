@@ -22,7 +22,18 @@
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
-
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+            <img src="__STATIC__/system/img/recycle.png"/>
+            恢复
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+            <img src="__STATIC__/system/img/destroy.png"/>
+            销毁
+        </li>
     </ul>
 </div>
 <form action="{:url('index',['item_id'=>$item_id,'collection_id'=>$collection_id])}" method="post" id="js-ajax-form">
@@ -39,6 +50,7 @@
                 <th>报告时间</th>
                 <th>价值时点</th>
                 <th>评估方法</th>
+                <th>评估总价</th>
                 <th>状态</th>
                 <th>操作</th>
             </tr>
@@ -52,6 +64,7 @@
                 <td>{if condition="$assets->deleted_at"}<del>{$assets->report_at}</del>{else/}{$assets->report_at}{/if}</td>
                 <td>{if condition="$assets->deleted_at"}<del>{$assets->valued_at}</del>{else/}{$assets->valued_at}{/if}</td>
                 <td>{if condition="$assets->deleted_at"}<del>{$assets->method}</del>{else/}{$assets->method}{/if}</td>
+                <td>{if condition="$assets->deleted_at"}<del>{$assets->total|number_format=2}</del>{else/}{$assets->total|number_format=2}{/if}</td>
                 <td>{if condition="$assets->deleted_at"}<del>{$assets->status}</del>{else/}{$assets->status}{/if}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('入户评估-资产评估信息',	'{:url('detail',['id'=>$assets->id])}','800','600',true)" >详情</button>

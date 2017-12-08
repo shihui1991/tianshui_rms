@@ -7,6 +7,7 @@
  * */
 namespace app\company\controller;
 
+use app\system\model\Collectionbuildings;
 use app\system\model\Companyvaluers;
 
 class Tools extends Base
@@ -74,6 +75,41 @@ class Tools extends Base
             return $this->success('获取成功','',$company_valuer);
         }else{
             return $this->error('没有数据','');
+        }
+    }
+
+
+    /* ========== 评估建筑物 ========== */
+    public function estate_building(){
+        $collection_id=input('collection_id');
+        if(!is_numeric($collection_id) || $collection_id<1){
+            return $this->error('请先选择权属','');
+        }
+
+        $count=Collectionbuildings::where('collection_id',$collection_id)->where('status_id',0)->count();
+        if($count){
+            return $this->error('房屋合法性认定未完成，暂时不能评估！','');
+        }
+
+        $where['collection_id']=$collection_id;
+        $field=['cb.id','cb.item_id','cb.community_id','cb.collection_id','cb.building','cb.unit','cb.floor','cb.number',
+            'cb.real_num','cb.real_unit','cb.use_id','cb.struct_id','cb.status_id','cb.build_year','cb.remark','cb.deleted_at',
+            'bu.name as bu_name','bs.name as bs_name','s.name as s_name'];
+
+        $collectionbuildings=Collectionbuildings::alias('cb')
+            ->field($field)
+            ->join('building_use bu','bu.id=cb.use_id','left')
+            ->join('building_struct bs','bs.id=cb.struct_id','left')
+            ->join('building_status s','s.id=cb.status_id','left')
+            ->where($where)
+            ->where('status_id', 'not in', '0,5')
+            ->order(['cb.register' => 'desc', 'cb.use_id' => 'asc'])
+            ->select();
+
+        if($collectionbuildings){
+            return $this->success('获取成功','',$collectionbuildings);
+        }else{
+            return $this->error('没有房屋数据','');
         }
     }
 }

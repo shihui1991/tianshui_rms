@@ -189,11 +189,11 @@ class Pay extends Auth
                     ->join('pay p','p.item_id=c.item_id and p.collection_id=c.id','left')
                     ->where($where)
                     ->chunk(100,function ($collections){
-                        $pay_model=new Pays();
                         static $public=[];
 
                         foreach($collections as $collection){
                             unset($pay_data);
+                            $pay_model=new Pays();
                             /* ********** 兑付基本数据 ********** */
                             $pay_data['item_id']=$collection->item_id;
                             $pay_data['community_id']=$collection->community_id;
