@@ -1,21 +1,21 @@
 <?php
 /* |------------------------------------------------------
- * | 资产评估
+ * | 房产评估
  * |------------------------------------------------------
  * */
 
 namespace app\company\controller;
 
 
-use app\system\model\Assessassetss;
-use app\system\model\Assessassetsvaluers;
+use app\system\model\Assessestatebuildings;
+use app\system\model\Assessestates;
+use app\system\model\Assessestatevaluers;
 use app\system\model\Assesss;
+use app\system\model\Collectionbuildings;
 use app\system\model\Collections;
 use think\Db;
-use think\Exception;
-use think\Request;
 
-class Assessassets extends Base
+class Assessestate extends Base
 {
     /* ========== 初始化 ========== */
     public function _initialize(){
@@ -42,9 +42,9 @@ class Assessassets extends Base
         $where['collection_id']=$collection_id;
         $where['company_id']=session('company.company_id');
 
-        $assetss=Assessassetss::withTrashed()->with('company')->where($where)->select();
+        $estates=Assessestates::withTrashed()->with('company')->where($where)->select();
 
-        $datas['assetss']=$assetss;
+        $datas['estates']=$estates;
 
         $this->assign($datas);
 
@@ -67,13 +67,12 @@ class Assessassets extends Base
             $inputs=input();
             $rules=[
                 'report_at'=>'require',
-                'total'=>'require|min:0',
+                'price'=>'require',
                 'ids'=>'require',
             ];
             $msg=[
                 'report_at.require'=>'请输入报告时间',
-                'total.require'=>'请输入评估总额',
-                'total.min'=>'评估总额不能少于0',
+                'price.require'=>'建筑数据不能为空',
                 'ids.require'=>'请评估师',
             ];
 
@@ -82,12 +81,26 @@ class Assessassets extends Base
                 return $this->error($result);
             }
 
+            $prices=$inputs['price'];
+            $values=array_filter(array_values($inputs['price']));
+            if(empty($values)){
+                return $this->error('请输入评估单价','');
+            }
+
             Db::startTrans();
             try{
                 $collection_info=Collections::field(['id','item_id','community_id','status'])->where('id',$collection_id)->find();
                 if(!$collection_info){
                     throw new \Exception('数据异常，请关闭后重试',404404);
                 }
+
+
+                $building_ids=array_keys($prices);
+                $building_areas=Collectionbuildings::whereIn('id',$building_ids)->column('real_num','id');
+                if(!$building_areas){
+                    throw new \Exception('数据异常，请关闭后重试',404404);
+                }
+
                 $assess=Assesss::where(['item_id'=>$item_id,'collection_id'=>$collection_id])->find();
                 if(!$assess){
                     $assess=Assesss::create([
@@ -99,17 +112,40 @@ class Assessassets extends Base
                     ]);
                 }
 
-                $model=new Assessassetss();
+                $model=new Assessestates();
 
                 $other_datas=$model->other_data($inputs);
                 $datas=array_merge(input(),$other_datas);
 
                 $datas['status']=0;
+                $datas['total']=0;
                 $datas['community_id']=$collection_info->community_id;
                 $datas['assess_id']=$assess->id;
                 $datas['company_id']=session('company.company_id');
 
                 $model->save($datas);
+
+                $building_data=[];
+                $total=0;
+                foreach ($building_areas as $building_id => $area){
+                    $building_data[]=[
+                        'item_id'=>$item_id,
+                        'community_id'=>$collection_info->community_id,
+                        'collection_id'=>$collection_id,
+                        'assess_id'=>$assess->id,
+                        'estate_id'=>$model->id,
+                        'building_id'=>$building_id,
+                        'price'=>$prices[$building_id],
+                        'amount'=>$prices[$building_id]*$area,
+                    ];
+                    $total +=$prices[$building_id]*$area;
+                }
+                $building_model=new Assessestatebuildings();
+                $building_model->saveAll($building_data);
+
+                $model->total=$total;
+                $model->save();
+
 
                 $valuer_data=[];
                 foreach ($inputs['ids'] as $valuer_id){
@@ -117,12 +153,12 @@ class Assessassets extends Base
                         'item_id'=>$item_id,
                         'collection_id'=>$collection_id,
                         'assess_id'=>$assess->id,
-                        'assets_id'=>$model->id,
+                        'estate_id'=>$model->id,
                         'company_id'=>session('company.company_id'),
                         'valuer_id'=>$valuer_id,
                     ];
                 }
-                $valuer_model=new Assessassetsvaluers();
+                $valuer_model=new Assessestatevaluers();
                 $valuer_model->saveAll($valuer_data);
 
                 $res=true;
@@ -151,7 +187,7 @@ class Assessassets extends Base
             $datas['company_id']=session('company.company_id');
             $this->assign($datas);
 
-            return view('modify');
+            return view('add');
         }
     }
 
@@ -163,13 +199,16 @@ class Assessassets extends Base
         if(!$id){
             return $this->error('非法访问','');
         }
-        $model=new Assessassetss();
+        $model=new Assessestates();
         $datas['model']=$model;
 
-        $infos=Assessassetss::withTrashed()->find($id);
+        $infos=Assessestates::withTrashed()->find($id);
         $datas['infos']=$infos;
 
-        $valuers=Assessassetsvaluers::with('valuer')->where(['assets_id'=>$id])->select();
+        $buildings=Assessestatebuildings::with(['collectionbuilding'=>['realuse','buildingstruct','buildingstatus']])->where(['estate_id'=>$id])->select();
+        $datas['buildings']=$buildings;
+
+        $valuers=Assessestatevaluers::with('valuer')->where(['estate_id'=>$id])->select();
         $datas['valuers']=$valuers;
         $datas['valuer_ids']=[];
 
@@ -188,13 +227,12 @@ class Assessassets extends Base
         $inputs=input();
         $rules=[
             'report_at'=>'require',
-            'total'=>'require|min:0',
+            'price'=>'require',
             'ids'=>'require',
         ];
         $msg=[
             'report_at.require'=>'请输入报告时间',
-            'total.require'=>'请输入评估总额',
-            'total.min'=>'评估总额不能少于0',
+            'price.require'=>'建筑数据不能为空',
             'ids.require'=>'请评估师',
         ];
 
@@ -203,18 +241,53 @@ class Assessassets extends Base
             return $this->error($result);
         }
 
+        $prices=$inputs['price'];
+        $values=array_filter(array_values($inputs['price']));
+        if(empty($values)){
+            return $this->error('请输入评估单价','');
+        }
+
         Db::startTrans();
         try{
-            $model=Assessassetss::withTrashed()->find($id);
+            $building_ids=array_keys($prices);
+            $building_areas=Collectionbuildings::whereIn('id',$building_ids)->column('real_num','id');
+            if(!$building_areas){
+                throw new \Exception('数据异常，请关闭后重试',404404);
+            }
+
+            $model=Assessestates::withTrashed()->find($id);
             if(!$model){
+                throw new \Exception('数据异常，请关闭后重试',404404);
+            }
+
+            $building_data=[];
+            $total=0;
+            foreach ($building_areas as $building_id => $area){
+                $building_data[]=[
+                    'estate_id'=>$model->id,
+                    'building_id'=>$building_id,
+                    'price'=>$prices[$building_id],
+                    'amount'=>$prices[$building_id]*$area,
+                    'updated_at'=>time()
+                ];
+                $total +=$prices[$building_id]*$area;
+            }
+
+            $sqls=batch_update_sql('assess_estate_building',['estate_id','building_id','price','amount','updated_at'],$building_data,['price','amount','updated_at'],['estate_id','building_id']);
+            if(!$sqls){
                 throw new \Exception('数据异常',404404);
             }
+            foreach ($sqls as $sql){
+                db()->execute($sql);
+            }
+
             $other_datas=$model->other_data($inputs);
             $datas=array_merge(input(),$other_datas);
-
+            $datas['total']=$total;
             $model->isUpdate(true)->allowField(['report_at','method','total','picture','updated_at'])->save($datas,['id'=>$id]);
+
             if($model->getData('status')){
-                Assesss::where(['id'=>$model->assess_id])->update(['assets'=>$datas['total']]);
+                Assesss::where(['id'=>$model->assess_id])->update(['estate'=>$total]);
             }
 
             $valuer_data=[];
@@ -223,14 +296,15 @@ class Assessassets extends Base
                     'item_id'=>$model->item_id,
                     'collection_id'=>$model->collection_id,
                     'assess_id'=>$model->assess_id,
-                    'assets_id'=>$id,
+                    'estate_id'=>$id,
                     'company_id'=>session('company.company_id'),
                     'valuer_id'=>$valuer_id,
                 ];
             }
-            Assessassetsvaluers::withTrashed()->where('assets_id',$id)->delete(true);
-            $valuer_model=new Assessassetsvaluers();
+            Assessestatevaluers::withTrashed()->where('estate_id',$id)->delete(true);
+            $valuer_model=new Assessestatevaluers();
             $valuer_model->saveAll($valuer_data);
+
 
             $res=true;
             $msg='保存成功';
@@ -261,7 +335,7 @@ class Assessassets extends Base
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Assessassetss::where('status',0)->whereIn('id',$ids)->update(['deleted_at'=>time(),'updated_at'=>time()]);
+        $res=Assessestates::where('status',0)->whereIn('id',$ids)->update(['deleted_at'=>time(),'updated_at'=>time()]);
         if($res){
             return $this->success('删除成功','');
         }else{
@@ -278,7 +352,7 @@ class Assessassets extends Base
             return $this->error('至少选择一项');
         }
 
-        $res=Db::table('assess_assets')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+        $res=Db::table('assess_estate')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
         if($res){
             return $this->success('恢复成功','');
         }else{
@@ -296,8 +370,9 @@ class Assessassets extends Base
         }
         Db::startTrans();
         try{
-            Assessassetss::onlyTrashed()->whereIn('id',$ids)->delete(true);
-            Assessassetsvaluers::whereIn('assets_id',$ids)->delete(true);
+            Assessestates::onlyTrashed()->whereIn('id',$ids)->delete(true);
+            Assessestatevaluers::whereIn('estate_id',$ids)->delete(true);
+            Collectionbuildings::whereIn('estate_id',$ids)->delete(true);
 
             $res=true;
             $msg='操作成功';

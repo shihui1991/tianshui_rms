@@ -17,4 +17,22 @@ class Assessestatebuildings extends Model
     protected $deleteTime='deleted_at';
     protected $autoWriteTimestamp = true;
     protected $field=true;
+
+    public function item(){
+        return $this->belongsTo('Items','item_id','id');
+    }
+
+    public function community(){
+        return $this->belongsTo('Collectioncommunitys','community_id','id');
+    }
+
+    public function collection(){
+        return $this->belongsTo('Collections','collection_id','id');
+    }
+
+    public function collectionbuilding(){
+        return $this->belongsTo('Collectionbuildings','building_id','id');
+    }
+
+
 }

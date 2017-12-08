@@ -126,4 +126,8 @@ class Collections extends Model
     public function estate(){
         return $this->hasMany('Assessestates','collection_id','id');
     }
+
+    public function collectionbuilding(){
+        return $this->hasMany('Collectionbuildings','collection_id','id');
+    }
 }

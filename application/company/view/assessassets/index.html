@@ -50,6 +50,7 @@
                 <th>报告时间</th>
                 <th>价值时点</th>
                 <th>评估方法</th>
+                <th>评估总价</th>
                 <th>状态</th>
                 <th>操作</th>
             </tr>
@@ -63,6 +64,7 @@
                 <td>{if condition="$assets->deleted_at"}<del>{$assets->report_at}</del>{else/}{$assets->report_at}{/if}</td>
                 <td>{if condition="$assets->deleted_at"}<del>{$assets->valued_at}</del>{else/}{$assets->valued_at}{/if}</td>
                 <td>{if condition="$assets->deleted_at"}<del>{$assets->method}</del>{else/}{$assets->method}{/if}</td>
+                <td>{if condition="$assets->deleted_at"}<del>{$assets->total|number_format=2}</del>{else/}{$assets->total|number_format=2}{/if}</td>
                 <td>{if condition="$assets->deleted_at"}<del>{$assets->status}</del>{else/}{$assets->status}{/if}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('入户评估-资产评估信息',	'{:url('detail',['id'=>$assets->id])}','800','600',true)" >详情</button>
