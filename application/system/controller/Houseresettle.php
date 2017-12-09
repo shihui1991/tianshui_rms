@@ -283,4 +283,71 @@ class Houseresettle extends Auth
         }
     }
 
+    /* ========== 安置房屋使用情况明细Excel导出 ========== */
+    public function  statis(){
+        $where = [];
+        $item_id = input('item_id');
+        if($item_id){
+            $where['hs.item_id'] = $item_id;
+            $orders = 'hs.start_at asc';
+        }else{
+            $orders = 'hs.item_id asc,hs.start_at asc';
+        }
+        $houseresettle_list = model('Houseresettles')
+            ->alias('hs')
+            ->field(['i.name as item_name','hc.address','hc.name as hc_name','h.building','h.unit','h.floor','h.number','l.name as l_name','h.area',
+                'phh.amount as phh_amount','phh.amount_up','phh.total as phh_total','ch.name as ch_name','ch.holder','hs.start_at','h.layout_id'])
+            ->join('collection_holder ch','ch.id=hs.collection_holder_id','left')
+            ->join('item i', 'i.id=hs.item_id', 'left')
+            ->join('house h','hs.house_id=h.id','left')
+            ->join('house_community hc','h.community_id=hc.id','left')
+            ->join('layout l','h.layout_id=l.id','left')
+            ->join('pay_holder_house phh','phh.house_id=hs.house_id','left')
+            ->where($where)
+            ->order($orders)
+            ->select();
+        $houseresettle_title[0][0] = '序号';
+        $houseresettle_title[0][1] = '项目名称';
+        $houseresettle_title[0][2] = '地点(小区名称)';
+        $houseresettle_title[0][3] = '房号';
+        $houseresettle_title[0][4] = '户型';
+        $houseresettle_title[0][5] = '面积(㎡)';
+        $houseresettle_title[0][6] = '安置优惠价';
+        $houseresettle_title[0][7] = '房屋上浮总额';
+        $houseresettle_title[0][8] = '房屋总价';
+        $houseresettle_title[0][9] = '安置人';
+        $houseresettle_title[0][10] = '安置时间';
+        $houseresettle_data = [];
+        foreach ($houseresettle_list as $k=>$v){
+            if($v->holder==1){
+                $holder = '产权人';
+            }
+            if($v->holder==2){
+                $holder = '承租人';
+            }
+            $building = $v->building?$v->building.'栋':'';
+            $unit = $v->unit?$v->unit.'单元':'';
+            $floor =  $v->floor?$v->floor.'楼':'';
+            $number = $v->number?$v->number.'号':'';
+            $houseresettle_data[$k][] = $k+1;
+            $houseresettle_data[$k][] = $v->item_name;
+            $houseresettle_data[$k][] = $v->hc_name.'('.$v->address.')';
+            $houseresettle_data[$k][] = $building.$unit.$floor.$number;
+            $houseresettle_data[$k][] = $v->l_name;
+            $houseresettle_data[$k][] = $v->area;
+            $houseresettle_data[$k][] = $v->phh_amount;
+            $houseresettle_data[$k][] = $v->amount_up;
+            $houseresettle_data[$k][] = $v->phh_total;
+            $houseresettle_data[$k][] = $v->ch_name.'【'.$holder.'】';
+            $houseresettle_data[$k][] = $v->start_at;
+        }
+
+        $datas_houseresettle = array_merge(array_values($houseresettle_title),$houseresettle_data);
+        if($houseresettle_list){
+            create_houseresettle_xls($datas_houseresettle,date('Ymd'));
+        }else{
+            return $this->error('暂无数据');
+        }
+    }
+
 }

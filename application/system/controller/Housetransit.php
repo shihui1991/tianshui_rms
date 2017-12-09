@@ -93,13 +93,16 @@ class Housetransit extends Auth
             }
             $house_info = model('Itemhouses')
                 ->alias('i')
-                ->field(['i.id','h.community_id as h_community_id'])
+                ->field(['i.id','h.community_id as h_community_id','h.is_transit'])
                 ->join('house h','h.id = i.house_id','left')
                 ->where('i.house_id',$datas['house_id'])
                 ->where('i.item_id',$datas['item_id'])
                 ->find();
             if(!$house_info->id){
                 return $this->error('安置房源不存在');
+            }
+            if($house_info->getData('is_transit')==0){
+                return $this->error('安置房源类型为非过渡');
             }
 
             $start_at = strtotime(input('start_at'));
@@ -185,9 +188,8 @@ class Housetransit extends Auth
             ->join('house h','ih.house_id=h.id','left')
             ->join('house_community c','h.community_id=c.id','left')
             ->join('layout l','h.layout_id=l.id','left')
-            ->where('ih.id',$housetransit_info->house_id)
+            ->where('ih.house_id',$housetransit_info->house_id)
             ->find();
-
         return view('modify',
             ['infos'=>$housetransit_info,
                 'pays'=>$pays,
@@ -300,5 +302,85 @@ class Housetransit extends Auth
         }else{
             return $this->error('销毁失败！');
         }
+    }
+
+    /* ========== 过渡房屋使用情况明细Excel导出 ========== */
+    public function statis(){
+        $where = [];
+        $item_id = input('item_id');
+        if($item_id){
+            $where['hs.item_id'] = $item_id;
+            $orders = 'hs.house_id asc,hs.start_at asc';
+        }else{
+            $orders = 'hs.item_id asc,hs.house_id asc,hs.start_at asc';
+        }
+        /*++++++++++ 查询值 ++++++++++*/
+        $houseresettle_list = model('Housetransits')
+            ->alias('hs')
+            ->field(['i.name as item_name','hc.address','hc.name as hc_name','h.building','h.unit','h.floor','h.number','l.name as l_name','h.area',
+               'hs.start_at','hs.end_at','hs.house_id','ch.name as collection_holder_name','hs.pay_id as hpay_id'])
+            ->join('item i', 'i.id=hs.item_id', 'left')
+            ->join('house h','hs.house_id=h.id','left')
+            ->join('house_community hc','h.community_id=hc.id','left')
+            ->join('layout l','h.layout_id=l.id','left')
+            ->join('item_house phh','phh.house_id=hs.house_id','left')
+            ->join('pay_holder ph','ph.pay_id = hs.pay_id','left')
+            ->join('collection_holder ch','ch.id = ph.collection_holder_id','left')
+            ->where($where)
+            ->order($orders)
+            ->select();
+        /*++++++++++ 【拼装数据】 ++++++++++*/
+        /*++++++++++ 归类分组++++++++++*/
+        $new_array = [];
+        foreach ($houseresettle_list as $k=>$v){
+            $new_array[$v->house_id][$v->hpay_id][] = $v;
+        }
+        /*++++++++++ 拼装值++++++++++*/
+        $datas_array = [];
+        $i = 0;
+        foreach ($new_array as $k=>$v){
+            $i++;
+            foreach ($v as $key=>$val){
+                $building = $val[0]->building?$val[0]->building.'栋':'';
+                $unit = $val[0]->unit?$val[0]->unit.'单元':'';
+                $floor =  $val[0]->floor?$val[0]->floor.'楼':'';
+                $number = $val[0]->number?$val[0]->number.'号':'';
+                $end_at = $val[0]->end_at?'---'.$val[0]->end_at:'';
+                   $datas_array[$k]['xuhao'] = $i;
+                   $datas_array[$k]['item_name'] = $val[0]->item_name;
+                   $datas_array[$k]['pq_address'] = $val[0]->hc_name.'('.$val[0]->address.')';
+                   $datas_array[$k]['building_num'] = $building.$unit.$floor.$number;
+                   $datas_array[$k]['l_name'] = $val[0]->l_name;
+                   $datas_array[$k]['area'] = $val[0]->area;
+                   $datas_array[$k]['collection_holder_name'.$key] = $val[0]->collection_holder_name;
+                   $datas_array[$k]['start_at'.$key] = $val[0]->start_at.$end_at;
+             }
+        }
+
+       /*---------- 过渡次数 ----------*/
+        $count_data = [];
+      foreach ($datas_array as $k=>$v){
+          $count_data[] = count($v);
+      }
+        arsort($count_data);
+        $count_data = array_values($count_data)[0]-6;
+        /*---------- 标题 ----------*/
+        $housetransit_title = [];
+        $housetransit_title[0][0] = '序号';
+        $housetransit_title[0][1] = '项目名称';
+        $housetransit_title[0][2] = '地点(小区名称)';
+        $housetransit_title[0][3] = '房号';
+        $housetransit_title[0][4] = '户型';
+        $housetransit_title[0][5] = '面积(㎡)';
+        for ($i=1;$i<=$count_data/2;$i++){
+            if($i==1){
+                $housetransit_title[0][6] = '过渡人(第1次过渡)';
+            }else{
+                $housetransit_title[0][4+$i*2] = '过渡人(第'.$i.'次过渡)';
+            }
+            $housetransit_title[0][5+$i*2] = '过渡时间(第'.$i.'次过渡)';
+        }
+        $xls_data = array_merge($housetransit_title,$datas_array);
+        create_housetransit_xls($xls_data,date('Ymd'));
     }
 }
