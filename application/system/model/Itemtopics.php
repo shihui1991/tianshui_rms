@@ -9,7 +9,7 @@ use traits\model\SoftDelete;
 
 class Itemtopics extends Model
 {
-    use SoftDelete;
+
     protected $table='item_topic';
     protected $pk='id';
     protected $createTime='created_at';
