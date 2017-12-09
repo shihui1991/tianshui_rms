@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net
 --
 -- 主机: localhost
--- 生成日期: 2017-12-01 02:24:06
+-- 生成日期: 2017-12-09 01:29:32
 -- 服务器版本: 5.5.54
 -- PHP 版本: 5.5.38
 
@@ -45,11 +45,6 @@ CREATE TABLE IF NOT EXISTS `api` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='接口文档' AUTO_INCREMENT=3 ;
 
 --
--- 插入之前先把表清空（truncate） `api`
---
-
-TRUNCATE TABLE `api`;
---
 -- 转存表中的数据 `api`
 --
 
@@ -77,11 +72,6 @@ CREATE TABLE IF NOT EXISTS `assess` (
   UNIQUE KEY `collection_id` (`collection_id`,`item_id`,`community_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='入户评估' AUTO_INCREMENT=2 ;
 
---
--- 插入之前先把表清空（truncate） `assess`
---
-
-TRUNCATE TABLE `assess`;
 --
 -- 转存表中的数据 `assess`
 --
@@ -114,11 +104,6 @@ CREATE TABLE IF NOT EXISTS `assess_assets` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估-资产评估' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `assess_assets`
---
-
-TRUNCATE TABLE `assess_assets`;
 -- --------------------------------------------------------
 
 --
@@ -130,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `assess_assets_valuer` (
   `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
   `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
   `assess_id` int(11) DEFAULT NULL COMMENT ' 入户评估ID',
-  `estate_id` int(11) DEFAULT NULL COMMENT ' 房产评估ID',
+  `assets_id` int(11) DEFAULT NULL COMMENT '资产评估ID',
   `company_id` int(11) DEFAULT NULL COMMENT ' 评估公司ID',
   `valuer_id` int(11) DEFAULT NULL COMMENT ' 评估师ID',
   `created_at` int(11) DEFAULT NULL,
@@ -139,11 +124,6 @@ CREATE TABLE IF NOT EXISTS `assess_assets_valuer` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估-资产评估-评估师' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `assess_assets_valuer`
---
-
-TRUNCATE TABLE `assess_assets_valuer`;
 -- --------------------------------------------------------
 
 --
@@ -169,11 +149,6 @@ CREATE TABLE IF NOT EXISTS `assess_estate` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估-房产评估' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `assess_estate`
---
-
-TRUNCATE TABLE `assess_estate`;
 -- --------------------------------------------------------
 
 --
@@ -196,11 +171,6 @@ CREATE TABLE IF NOT EXISTS `assess_estate_building` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估-房产评估-建筑评估' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `assess_estate_building`
---
-
-TRUNCATE TABLE `assess_estate_building`;
 -- --------------------------------------------------------
 
 --
@@ -221,11 +191,6 @@ CREATE TABLE IF NOT EXISTS `assess_estate_valuer` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='入户评估-房产评估-评估师' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `assess_estate_valuer`
---
-
-TRUNCATE TABLE `assess_estate_valuer`;
 -- --------------------------------------------------------
 
 --
@@ -244,11 +209,6 @@ CREATE TABLE IF NOT EXISTS `bank` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='常用银行列表' AUTO_INCREMENT=2 ;
 
---
--- 插入之前先把表清空（truncate） `bank`
---
-
-TRUNCATE TABLE `bank`;
 --
 -- 转存表中的数据 `bank`
 --
@@ -274,11 +234,6 @@ CREATE TABLE IF NOT EXISTS `building_status` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='建筑状态' AUTO_INCREMENT=6 ;
 
---
--- 插入之前先把表清空（truncate） `building_status`
---
-
-TRUNCATE TABLE `building_status`;
 --
 -- 转存表中的数据 `building_status`
 --
@@ -309,11 +264,6 @@ CREATE TABLE IF NOT EXISTS `building_struct` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='建筑结构' AUTO_INCREMENT=4 ;
 
 --
--- 插入之前先把表清空（truncate） `building_struct`
---
-
-TRUNCATE TABLE `building_struct`;
---
 -- 转存表中的数据 `building_struct`
 --
 
@@ -340,11 +290,6 @@ CREATE TABLE IF NOT EXISTS `building_use` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='建筑使用性质' AUTO_INCREMENT=7 ;
 
---
--- 插入之前先把表清空（truncate） `building_use`
---
-
-TRUNCATE TABLE `building_use`;
 --
 -- 转存表中的数据 `building_use`
 --
@@ -399,16 +344,11 @@ CREATE TABLE IF NOT EXISTS `collection` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='入户摸底' AUTO_INCREMENT=3 ;
 
 --
--- 插入之前先把表清空（truncate） `collection`
---
-
-TRUNCATE TABLE `collection`;
---
 -- 转存表中的数据 `collection`
 --
 
 INSERT INTO `collection` (`id`, `item_id`, `community_id`, `building`, `unit`, `floor`, `number`, `type`, `land_prop`, `land_source`, `land_status`, `default_use`, `real_use`, `has_assets`, `is_agree`, `compensate_way`, `compensate_price`, `rebuild_addr`, `rebuild_layout_id`, `rebuild_area`, `rebuild_price`, `opinion`, `receive_addr`, `receive_man`, `receive_phone`, `picture`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 0, 1, 0, 0, '渝北区杨柳北路9号', 0, 0, 0, '', '', '', '', '[]', 1, 1509932860, 1511601196, NULL),
+(1, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 0, 1, 0, 0, '渝北区杨柳北路9号', 0, 0, 0, '', '', '', '', '[]', 1, 1509932860, 1512530987, NULL),
 (2, 2, 1, 1, 1, 2, 3, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, '', 0, 0, 0, '', '', '', '', '[]', 1, 1510196915, 1510883562, NULL);
 
 -- --------------------------------------------------------
@@ -448,11 +388,6 @@ CREATE TABLE IF NOT EXISTS `collection_building` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='入户摸底-建筑' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `collection_building`
---
-
-TRUNCATE TABLE `collection_building`;
---
 -- 转存表中的数据 `collection_building`
 --
 
@@ -476,11 +411,6 @@ CREATE TABLE IF NOT EXISTS `collection_community` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='入户摸底-片区' AUTO_INCREMENT=2 ;
 
---
--- 插入之前先把表清空（truncate） `collection_community`
---
-
-TRUNCATE TABLE `collection_community`;
 --
 -- 转存表中的数据 `collection_community`
 --
@@ -519,11 +449,6 @@ CREATE TABLE IF NOT EXISTS `collection_holder` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='入户摸底-产权人及承租家庭' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `collection_holder`
---
-
-TRUNCATE TABLE `collection_holder`;
---
 -- 转存表中的数据 `collection_holder`
 --
 
@@ -552,11 +477,6 @@ CREATE TABLE IF NOT EXISTS `collection_holder_crowd` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='入户摸底-家庭成员-特殊人群' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `collection_holder_crowd`
---
-
-TRUNCATE TABLE `collection_holder_crowd`;
---
 -- 转存表中的数据 `collection_holder_crowd`
 --
 
@@ -584,11 +504,6 @@ CREATE TABLE IF NOT EXISTS `collection_holder_house` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='产权人或承租人选择安置房' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `collection_holder_house`
---
-
-TRUNCATE TABLE `collection_holder_house`;
---
 -- 转存表中的数据 `collection_holder_house`
 --
 
@@ -615,11 +530,6 @@ CREATE TABLE IF NOT EXISTS `collection_object` (
   UNIQUE KEY `object_id` (`object_id`,`item_id`,`collection_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='入户摸底-其他补偿事项' AUTO_INCREMENT=5 ;
 
---
--- 插入之前先把表清空（truncate） `collection_object`
---
-
-TRUNCATE TABLE `collection_object`;
 --
 -- 转存表中的数据 `collection_object`
 --
@@ -659,21 +569,17 @@ CREATE TABLE IF NOT EXISTS `company` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `short_name` (`short_name`,`type`)
+  UNIQUE KEY `short_name` (`short_name`,`type`),
+  UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='评估公司' AUTO_INCREMENT=3 ;
 
---
--- 插入之前先把表清空（truncate） `company`
---
-
-TRUNCATE TABLE `company`;
 --
 -- 转存表中的数据 `company`
 --
 
 INSERT INTO `company` (`id`, `type`, `name`, `short_name`, `logo`, `address`, `contact_man`, `contact_phone`, `phone`, `fax`, `infos`, `content`, `picture`, `username`, `password`, `secret_key`, `sort`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (1, 0, '重庆市步联科技有限公司', '步联科技', '', '重庆市渝北区杨柳北路9号力华科谷A区203', '步联科技', '步联科技', '02363624610', '02363624610', '步联科技', '<br />', '[]', 'buliankeji', '123456', '9600173F-AB5C-3DDD-0EEA-C204D1887295', 0, 1, 1509435208, 1509672112, NULL),
-(2, 0, '重庆市贤盾科技有限公司', '贤盾科技', '/uploads/20171031/fca9277be78db5eabf5cc6e244a38230.png', '重庆市贤盾科技有限公司', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '', '[]', 'xiandunkeji', '123456', '24D564C3-7865-774D-9B37-E67CE60E89BD', 0, 1, 1509435817, 1510902738, NULL);
+(2, 0, '重庆市贤盾科技有限公司', '贤盾科技', '/uploads/20171031/fca9277be78db5eabf5cc6e244a38230.png', '重庆市贤盾科技有限公司', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '贤盾科技', '', '[]', 'xiandunkeji', '123456', '24D564C3-7865-774D-9B37-E67CE60E89BD', 0, 1, 1509435817, 1512525217, 1512525217);
 
 -- --------------------------------------------------------
 
@@ -697,11 +603,6 @@ CREATE TABLE IF NOT EXISTS `company_valuer` (
   UNIQUE KEY `register_num` (`register_num`,`company_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='评估师' AUTO_INCREMENT=2 ;
 
---
--- 插入之前先把表清空（truncate） `company_valuer`
---
-
-TRUNCATE TABLE `company_valuer`;
 --
 -- 转存表中的数据 `company_valuer`
 --
@@ -729,11 +630,6 @@ CREATE TABLE IF NOT EXISTS `crowd` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='特殊人群分类' AUTO_INCREMENT=12 ;
 
---
--- 插入之前先把表清空（truncate） `crowd`
---
-
-TRUNCATE TABLE `crowd`;
 --
 -- 转存表中的数据 `crowd`
 --
@@ -773,11 +669,6 @@ CREATE TABLE IF NOT EXISTS `dept` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='组织与部门' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `dept`
---
-
-TRUNCATE TABLE `dept`;
---
 -- 转存表中的数据 `dept`
 --
 
@@ -806,13 +697,15 @@ CREATE TABLE IF NOT EXISTS `funds_in` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='资金收入' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='资金收入' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `funds_in`
+-- 转存表中的数据 `funds_in`
 --
 
-TRUNCATE TABLE `funds_in`;
+INSERT INTO `funds_in` (`id`, `item_id`, `pay_id`, `pay_holder_id`, `name_id`, `voucher`, `entry_at`, `payer`, `amount`, `bank`, `account`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 2, NULL, NULL, 1, '1', 1513699200, '12', '234.00', '农村商业银行', '1232324343434333', 1512356267, 1512356267, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -831,11 +724,6 @@ CREATE TABLE IF NOT EXISTS `funds_name` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='资金款项' AUTO_INCREMENT=2 ;
 
---
--- 插入之前先把表清空（truncate） `funds_name`
---
-
-TRUNCATE TABLE `funds_name`;
 --
 -- 转存表中的数据 `funds_name`
 --
@@ -865,13 +753,15 @@ CREATE TABLE IF NOT EXISTS `funds_out` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='资金支出' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='资金支出' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `funds_out`
+-- 转存表中的数据 `funds_out`
 --
 
-TRUNCATE TABLE `funds_out`;
+INSERT INTO `funds_out` (`id`, `item_id`, `pay_id`, `pay_holder_id`, `name_id`, `voucher`, `outlay_at`, `payee`, `amount`, `bank`, `account`, `created_at`, `updated_at`, `deleted_at`) VALUES
+(1, 2, 1, 1, 1, '123123123', 1512316800, '安置', '5000000000.00', '农村商业银行', '123123123123123123123123', 1512380758, 1512380758, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -907,11 +797,6 @@ CREATE TABLE IF NOT EXISTS `house` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='安置房源' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `house`
---
-
-TRUNCATE TABLE `house`;
---
 -- 转存表中的数据 `house`
 --
 
@@ -936,11 +821,6 @@ CREATE TABLE IF NOT EXISTS `house_community` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='安置房源小区' AUTO_INCREMENT=3 ;
 
---
--- 插入之前先把表清空（truncate） `house_community`
---
-
-TRUNCATE TABLE `house_community`;
 --
 -- 转存表中的数据 `house_community`
 --
@@ -971,19 +851,34 @@ CREATE TABLE IF NOT EXISTS `house_layout_pic` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='安置房源户型图' AUTO_INCREMENT=5 ;
 
 --
--- 插入之前先把表清空（truncate） `house_layout_pic`
---
-
-TRUNCATE TABLE `house_layout_pic`;
---
 -- 转存表中的数据 `house_layout_pic`
 --
 
 INSERT INTO `house_layout_pic` (`id`, `community_id`, `layout_id`, `remark`, `picture`, `infos`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, 1, 'A', '/uploads/image/20171103/45840845ae0baad45f51372b2395d2c3.jpg', '', 1, 1509345081, 1509679524, NULL),
+(1, 1, 1, 'A', '/uploads/image/20171201/6a1c8fd92a39ef26456ca5dd1d1be372.jpg', '', 1, 1509345081, 1512110780, NULL),
 (2, 1, 1, 'B', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', 1, 1509345103, 1509374240, NULL),
 (3, 2, 1, 'A', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', 1, 1509345280, 1509345364, NULL),
 (4, 2, 2, 'C', '/uploads/20171030/0ebb38a09a84b424391c472569a76edc.jpg', '', 1, 1509367040, 1509526375, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `house_manage_fee`
+--
+
+CREATE TABLE IF NOT EXISTS `house_manage_fee` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `house_id` int(11) DEFAULT NULL COMMENT '房源ID',
+  `area` decimal(30,2) DEFAULT NULL COMMENT '面积',
+  `manage_price` decimal(10,2) DEFAULT NULL COMMENT ' 管理费单价，元/平米/月',
+  `public_price` decimal(10,2) DEFAULT NULL COMMENT '公摊费单价，元/月',
+  `manage_fee` decimal(30,2) DEFAULT NULL COMMENT ' 管理费，元/月',
+  `date_at` varchar(255) DEFAULT NULL COMMENT '计算时间，年月',
+  `created_at` int(11) DEFAULT NULL,
+  `updated_at` int(11) DEFAULT NULL,
+  `deleted_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='房源物业管理费' AUTO_INCREMENT=25 ;
 
 -- --------------------------------------------------------
 
@@ -1005,11 +900,6 @@ CREATE TABLE IF NOT EXISTS `house_price` (
   UNIQUE KEY `start_at` (`start_at`,`house_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='房源价格' AUTO_INCREMENT=4 ;
 
---
--- 插入之前先把表清空（truncate） `house_price`
---
-
-TRUNCATE TABLE `house_price`;
 --
 -- 转存表中的数据 `house_price`
 --
@@ -1042,11 +932,6 @@ CREATE TABLE IF NOT EXISTS `house_resettle` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='房源安置' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `house_resettle`
---
-
-TRUNCATE TABLE `house_resettle`;
 -- --------------------------------------------------------
 
 --
@@ -1059,6 +944,7 @@ CREATE TABLE IF NOT EXISTS `house_transit` (
   `collection_id` int(11) DEFAULT NULL COMMENT '入户摸底ID',
   `collection_community_id` int(11) DEFAULT NULL COMMENT ' 片区ID',
   `pay_id` int(11) DEFAULT NULL COMMENT ' 兑付ID',
+  `collection_holder_id` int(11) NOT NULL COMMENT '产权人或承租人ID',
   `house_id` int(11) DEFAULT NULL COMMENT ' 安置房源ID',
   `house_community_id` int(11) DEFAULT NULL COMMENT ' 房源小区ID',
   `start_at` int(11) DEFAULT NULL COMMENT ' 开始时间',
@@ -1070,11 +956,6 @@ CREATE TABLE IF NOT EXISTS `house_transit` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='房源临时安置' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `house_transit`
---
-
-TRUNCATE TABLE `house_transit`;
 -- --------------------------------------------------------
 
 --
@@ -1102,17 +983,12 @@ CREATE TABLE IF NOT EXISTS `item` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='项目基本信息' AUTO_INCREMENT=3 ;
 
 --
--- 插入之前先把表清空（truncate） `item`
---
-
-TRUNCATE TABLE `item`;
---
 -- 转存表中的数据 `item`
 --
 
 INSERT INTO `item` (`id`, `name`, `record_num`, `area`, `household`, `funds`, `house`, `picture`, `infos`, `is_top`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '西关片区棚户区改造', '0123456', '东至，西至，', 200, '200000.00', 300, NULL, '', 0, 3, 1509531788, 1511573608, NULL),
-(2, '永庆路北侧片区土地熟化', '32141654', '东至，西至，北至，南至', 100, '2000000.00', 200, '[]', '', 1, 1, 1509606705, 1511887648, NULL);
+(1, '西关片区棚户区改造', '0123456', '东至，西至，', 200, '200000.00', 300, NULL, '', 1, 0, 1509531788, 1512722109, NULL),
+(2, '永庆路北侧片区土地熟化', '32141654', '东至，西至，北至，南至', 100, '2000000.00', 200, '[]', '', 1, 1, 1509606705, 1512716286, NULL);
 
 -- --------------------------------------------------------
 
@@ -1130,20 +1006,14 @@ CREATE TABLE IF NOT EXISTS `item_company` (
   `deleted_at` int(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `company_id` (`company_id`,`item_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='项目评估公司' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='项目评估公司' AUTO_INCREMENT=2 ;
 
---
--- 插入之前先把表清空（truncate） `item_company`
---
-
-TRUNCATE TABLE `item_company`;
 --
 -- 转存表中的数据 `item_company`
 --
 
 INSERT INTO `item_company` (`id`, `item_id`, `company_id`, `infos`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 2, 1, '', 1510198009, 1510198009, NULL),
-(2, 2, 2, '', 1510198020, 1510198020, NULL);
+(1, 2, 1, '', 1512723056, 1512723056, NULL);
 
 -- --------------------------------------------------------
 
@@ -1153,26 +1023,22 @@ INSERT INTO `item_company` (`id`, `item_id`, `company_id`, `infos`, `created_at`
 
 CREATE TABLE IF NOT EXISTS `item_company_collection` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `item_company_id` int(11) DEFAULT NULL,
-  `collection_id` int(11) DEFAULT NULL,
+  `item_id` int(11) DEFAULT NULL COMMENT '项目ID',
+  `company_id` int(11) DEFAULT NULL COMMENT '评估公司ID',
+  `item_company_id` int(11) DEFAULT NULL COMMENT ' 选定评估公司ID',
+  `collection_id` int(11) DEFAULT NULL COMMENT ' 入户摸底ID',
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `collection_id` (`collection_id`,`item_company_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='项目评估公司-被征户' AUTO_INCREMENT=3 ;
 
---
--- 插入之前先把表清空（truncate） `item_company_collection`
---
-
-TRUNCATE TABLE `item_company_collection`;
 --
 -- 转存表中的数据 `item_company_collection`
 --
 
-INSERT INTO `item_company_collection` (`id`, `item_company_id`, `collection_id`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 1510198009, 1510198009),
-(2, 2, 2, 1510198020, 1510198020);
+INSERT INTO `item_company_collection` (`id`, `item_id`, `company_id`, `item_company_id`, `collection_id`, `created_at`, `updated_at`) VALUES
+(1, 2, 1, 1, 1, 1512723056, 1512723056),
+(2, 2, 1, 1, 2, 1512723056, 1512723056);
 
 -- --------------------------------------------------------
 
@@ -1194,11 +1060,6 @@ CREATE TABLE IF NOT EXISTS `item_company_vote` (
   UNIQUE KEY `company_id` (`company_id`,`item_id`,`community_id`,`collection_id`,`collection_holder_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评估公司选票' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `item_company_vote`
---
-
-TRUNCATE TABLE `item_company_vote`;
 -- --------------------------------------------------------
 
 --
@@ -1213,19 +1074,14 @@ CREATE TABLE IF NOT EXISTS `item_house` (
   `updated_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `house_id` (`house_id`,`item_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='冻结安置房' AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='冻结安置房' AUTO_INCREMENT=3 ;
 
---
--- 插入之前先把表清空（truncate） `item_house`
---
-
-TRUNCATE TABLE `item_house`;
 --
 -- 转存表中的数据 `item_house`
 --
 
 INSERT INTO `item_house` (`id`, `item_id`, `house_id`, `created_at`, `updated_at`) VALUES
-(1, 2, 1, 1509610556, 1509610591);
+(2, 2, 1, 1512111570, 1512111570);
 
 -- --------------------------------------------------------
 
@@ -1245,11 +1101,6 @@ CREATE TABLE IF NOT EXISTS `item_house_up` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='项目安置房上浮比例' AUTO_INCREMENT=6 ;
 
---
--- 插入之前先把表清空（truncate） `item_house_up`
---
-
-TRUNCATE TABLE `item_house_up`;
 --
 -- 转存表中的数据 `item_house_up`
 --
@@ -1278,13 +1129,8 @@ CREATE TABLE IF NOT EXISTS `item_process` (
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `process_id` (`process_id`,`item_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='项目流程' AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='项目流程' AUTO_INCREMENT=5 ;
 
---
--- 插入之前先把表清空（truncate） `item_process`
---
-
-TRUNCATE TABLE `item_process`;
 --
 -- 转存表中的数据 `item_process`
 --
@@ -1292,7 +1138,8 @@ TRUNCATE TABLE `item_process`;
 INSERT INTO `item_process` (`id`, `item_id`, `process_id`, `sort`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (1, 2, 1, 1, 1, 1511417066, 1511504868, NULL),
 (2, 2, 2, 2, 0, 1511417084, 1511419456, NULL),
-(3, 2, 3, 3, 0, 1511417121, 1511835278, NULL);
+(3, 2, 3, 3, 1, 1511417121, 1512723031, NULL),
+(4, 1, 1, 0, 0, 1512724301, 1512724319, NULL);
 
 -- --------------------------------------------------------
 
@@ -1312,11 +1159,6 @@ CREATE TABLE IF NOT EXISTS `item_status` (
   `deleted_at` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目动态';
 
---
--- 插入之前先把表清空（truncate） `item_status`
---
-
-TRUNCATE TABLE `item_status`;
 --
 -- 转存表中的数据 `item_status`
 --
@@ -1348,7 +1190,17 @@ INSERT INTO `item_status` (`keyname`, `keyvalue`, `user_id`, `role_id`, `role_pa
 ('collection_id', '1', 1, 1, NULL, 1, 1511601182, 1511601182, NULL),
 ('collection_id', '1', 1, 1, NULL, 1, 1511601196, 1511601196, NULL),
 ('collection_id', '1', 1, 1, NULL, 8, 1511601751, 1511601751, NULL),
-('collection_id', '1', 1, 1, NULL, 9, 1511601768, 1511601768, NULL);
+('collection_id', '1', 1, 1, NULL, 9, 1511601768, 1511601768, NULL),
+('collection_id', '1', 1, 1, 0, 8, 1512527612, 1512527612, NULL),
+('collection_id', '1', 1, 1, 0, 9, 1512530961, 1512530961, NULL),
+('collection_id', '1', 1, 1, 0, 1, 1512530987, 1512530987, NULL),
+('collection_id', '1', 1, 1, 0, 9, 1512531358, 1512531358, NULL),
+('collection_id', '1', 1, 1, 0, 8, 1512531364, 1512531364, NULL),
+('item_id', '2', 1, 1, 0, 1, 1512548051, 1512548051, NULL),
+('item_id', '2', 1, 1, 0, 1, 1512716286, 1512716286, NULL),
+('collection_id', '1', 1, 1, 0, 9, 1512716299, 1512716299, NULL),
+('item_id', '1', 1, 1, 0, 1, 1512721635, 1512721635, NULL),
+('item_id', '1', 1, 1, 0, 1, 1512722109, 1512722109, NULL);
 
 -- --------------------------------------------------------
 
@@ -1368,11 +1220,6 @@ CREATE TABLE IF NOT EXISTS `item_subject` (
   UNIQUE KEY `subject_id` (`subject_id`,`item_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='项目可变补偿科目' AUTO_INCREMENT=10 ;
 
---
--- 插入之前先把表清空（truncate） `item_subject`
---
-
-TRUNCATE TABLE `item_subject`;
 --
 -- 转存表中的数据 `item_subject`
 --
@@ -1414,11 +1261,6 @@ CREATE TABLE IF NOT EXISTS `item_time` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='项目重要时间' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `item_time`
---
-
-TRUNCATE TABLE `item_time`;
---
 -- 转存表中的数据 `item_time`
 --
 
@@ -1442,11 +1284,6 @@ CREATE TABLE IF NOT EXISTS `item_topic` (
   UNIQUE KEY `topic_id` (`topic_id`,`item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目风险评估话题' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `item_topic`
---
-
-TRUNCATE TABLE `item_topic`;
 -- --------------------------------------------------------
 
 --
@@ -1465,11 +1302,6 @@ CREATE TABLE IF NOT EXISTS `layout` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='房屋户型' AUTO_INCREMENT=6 ;
 
---
--- 插入之前先把表清空（truncate） `layout`
---
-
-TRUNCATE TABLE `layout`;
 --
 -- 转存表中的数据 `layout`
 --
@@ -1502,13 +1334,8 @@ CREATE TABLE IF NOT EXISTS `menu` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='功能与菜单' AUTO_INCREMENT=411 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='功能与菜单' AUTO_INCREMENT=413 ;
 
---
--- 插入之前先把表清空（truncate） `menu`
---
-
-TRUNCATE TABLE `menu`;
 --
 -- 转存表中的数据 `menu`
 --
@@ -1924,7 +1751,9 @@ INSERT INTO `menu` (`id`, `parent_id`, `name`, `level`, `icon`, `sort`, `url`, `
 (407, 260, '修改风险评估-自选话题', 3, '<img src="/static/system/img/richtext_editor.png"/>', 0, '/system/risktopic/edit', '', 0, 1, 1512033453, 1512033453, NULL),
 (408, 260, '删除风险评估-自选话题', 3, '<img src="/static/system/img/broom.png"/>', 0, '/system/risktopic/delete', '', 0, 1, 1512033508, 1512033508, NULL),
 (409, 260, '恢复风险评估-自选话题', 3, '<img src="/static/system/img/recycle.png"/>', 0, '/system/risktopic/restore', '', 0, 1, 1512033558, 1512033558, NULL),
-(410, 260, '销毁风险评估-自选话题', 3, '<img src="/static/system/img/destroy.png"/>', 0, '/system/risktopic/destroy', '', 0, 1, 1512033608, 1512033608, NULL);
+(410, 260, '销毁风险评估-自选话题', 3, '<img src="/static/system/img/destroy.png"/>', 0, '/system/risktopic/destroy', '', 0, 1, 1512033608, 1512033608, NULL),
+(411, 141, '资金统计', 2, '<img src="/static/system/img/icon_funds.png"/>', 0, '/system/statis/index', '', 0, 1, 1512100621, 1512107159, NULL),
+(412, 389, '计算物业管理费', 3, '<img src="/static/system/img/add_on.png"/>', 0, '/system/housemanagefee/add', '', 0, 1, 1512438650, 1512438650, NULL);
 
 -- --------------------------------------------------------
 
@@ -1944,11 +1773,6 @@ CREATE TABLE IF NOT EXISTS `nation` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='常用民族列表' AUTO_INCREMENT=2 ;
 
---
--- 插入之前先把表清空（truncate） `nation`
---
-
-TRUNCATE TABLE `nation`;
 --
 -- 转存表中的数据 `nation`
 --
@@ -1985,16 +1809,11 @@ CREATE TABLE IF NOT EXISTS `news` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='新闻公告' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `news`
---
-
-TRUNCATE TABLE `news`;
---
 -- 转存表中的数据 `news`
 --
 
 INSERT INTO `news` (`id`, `cate_id`, `name`, `item_id`, `release_at`, `keywords`, `infos`, `content`, `picture`, `title_page`, `url`, `url_name`, `sort`, `is_top`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 1, '征收范围的公告', 0, 1509552000, '', '', '', '[]', '/uploads/image/20171103/4b46efc8f273e72e169c846ad5c90b54.jpg', '', '', 0, 0, 1, 1509531194, 1509694473, NULL);
+(1, 1, '征收范围的公告', 0, 1509552000, '', '', '', '[]', '/uploads/image/20171103/4b46efc8f273e72e169c846ad5c90b54.jpg', '', '', 0, 0, 1, 1509531194, 1512456401, NULL);
 
 -- --------------------------------------------------------
 
@@ -2014,11 +1833,6 @@ CREATE TABLE IF NOT EXISTS `news_cate` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='新闻公告分类' AUTO_INCREMENT=2 ;
 
---
--- 插入之前先把表清空（truncate） `news_cate`
---
-
-TRUNCATE TABLE `news_cate`;
 --
 -- 转存表中的数据 `news_cate`
 --
@@ -2043,11 +1857,6 @@ CREATE TABLE IF NOT EXISTS `object` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='其他补偿事项' AUTO_INCREMENT=9 ;
 
---
--- 插入之前先把表清空（truncate） `object`
---
-
-TRUNCATE TABLE `object`;
 --
 -- 转存表中的数据 `object`
 --
@@ -2084,11 +1893,6 @@ CREATE TABLE IF NOT EXISTS `pact` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='兑付协议' AUTO_INCREMENT=2 ;
 
---
--- 插入之前先把表清空（truncate） `pact`
---
-
-TRUNCATE TABLE `pact`;
 --
 -- 转存表中的数据 `pact`
 --
@@ -2129,11 +1933,6 @@ CREATE TABLE IF NOT EXISTS `pay` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='兑付' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `pay`
---
-
-TRUNCATE TABLE `pay`;
---
 -- 转存表中的数据 `pay`
 --
 
@@ -2173,11 +1972,6 @@ CREATE TABLE IF NOT EXISTS `pay_holder` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='兑付-产权人或承租人' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `pay_holder`
---
-
-TRUNCATE TABLE `pay_holder`;
---
 -- 转存表中的数据 `pay_holder`
 --
 
@@ -2211,11 +2005,6 @@ CREATE TABLE IF NOT EXISTS `pay_holder_house` (
   UNIQUE KEY `house_id` (`house_id`,`pay_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付-安置房' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `pay_holder_house`
---
-
-TRUNCATE TABLE `pay_holder_house`;
 -- --------------------------------------------------------
 
 --
@@ -2237,11 +2026,6 @@ CREATE TABLE IF NOT EXISTS `pay_holder_house_up` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付房屋-上浮' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `pay_holder_house_up`
---
-
-TRUNCATE TABLE `pay_holder_house_up`;
 -- --------------------------------------------------------
 
 --
@@ -2265,11 +2049,6 @@ CREATE TABLE IF NOT EXISTS `pay_object` (
   UNIQUE KEY `collection_object_id` (`collection_object_id`,`pay_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='兑付-补偿事项' AUTO_INCREMENT=3 ;
 
---
--- 插入之前先把表清空（truncate） `pay_object`
---
-
-TRUNCATE TABLE `pay_object`;
 --
 -- 转存表中的数据 `pay_object`
 --
@@ -2302,11 +2081,6 @@ CREATE TABLE IF NOT EXISTS `pay_subject` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='兑付-项目重要补偿科目' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `pay_subject`
---
-
-TRUNCATE TABLE `pay_subject`;
 -- --------------------------------------------------------
 
 --
@@ -2322,21 +2096,18 @@ CREATE TABLE IF NOT EXISTS `process` (
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='控制流程' AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='控制流程' AUTO_INCREMENT=6 ;
 
---
--- 插入之前先把表清空（truncate） `process`
---
-
-TRUNCATE TABLE `process`;
 --
 -- 转存表中的数据 `process`
 --
 
 INSERT INTO `process` (`id`, `name`, `infos`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '入户摸底', '', 1511416268, 1511416362, NULL),
+(1, '入户摸底', '', 1511416268, 1512727397, NULL),
 (2, '投票评估公司', '', 1511416973, 1511416973, NULL),
-(3, '选定评估公司', '', 1511417039, 1511417039, NULL);
+(3, '选定评估公司', '', 1511417039, 1511417039, NULL),
+(4, '房屋合法性认定', '', 1512727434, 1512727466, NULL),
+(5, '入户评估', '', 1512782135, 1512782135, NULL);
 
 -- --------------------------------------------------------
 
@@ -2352,35 +2123,50 @@ CREATE TABLE IF NOT EXISTS `process_url` (
   `updated_at` int(11) DEFAULT NULL,
   `deleted_at` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='控制流程-操作地址' AUTO_INCREMENT=24 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='控制流程-操作地址' AUTO_INCREMENT=56 ;
 
---
--- 插入之前先把表清空（truncate） `process_url`
---
-
-TRUNCATE TABLE `process_url`;
 --
 -- 转存表中的数据 `process_url`
 --
 
 INSERT INTO `process_url` (`id`, `process_id`, `url`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(7, 1, '/system/collectionbuilding/destroy', 1511416362, 1511416362, NULL),
-(8, 1, '/system/collectionbuilding/restore', 1511416362, 1511416362, NULL),
-(9, 1, '/system/collectionbuilding/delete', 1511416362, 1511416362, NULL),
-(10, 1, '/system/collectionbuilding/status', 1511416362, 1511416362, NULL),
-(11, 1, '/system/collectionbuilding/edit', 1511416362, 1511416362, NULL),
-(12, 1, '/system/collectionbuilding/add', 1511416362, 1511416362, NULL),
-(13, 1, '/system/collection/destroy', 1511416362, 1511416362, NULL),
-(14, 1, '/system/collection/restore', 1511416362, 1511416362, NULL),
-(15, 1, '/system/collection/delete', 1511416362, 1511416362, NULL),
-(16, 1, '/system/collection/status', 1511416362, 1511416362, NULL),
-(17, 1, '/system/collection/edit', 1511416362, 1511416362, NULL),
-(18, 1, '/system/collection/add', 1511416362, 1511416362, NULL),
 (19, 2, '/system/itemcompanyvote/delete', 1511416973, 1511416973, NULL),
 (20, 2, '/system/itemcompanyvote/add', 1511416973, 1511416973, NULL),
 (21, 3, '/system/itemcompany/delete', 1511417039, 1511417039, NULL),
 (22, 3, '/system/itemcompany/edit', 1511417039, 1511417039, NULL),
-(23, 3, '/system/itemcompany/add', 1511417039, 1511417039, NULL);
+(23, 3, '/system/itemcompany/add', 1511417039, 1511417039, NULL),
+(24, 1, '/system/collectionobject/destroy', 1512727397, 1512727397, NULL),
+(25, 1, '/system/collectionobject/restore', 1512727397, 1512727397, NULL),
+(26, 1, '/system/collectionobject/delete', 1512727397, 1512727397, NULL),
+(27, 1, '/system/collectionobject/edit', 1512727397, 1512727397, NULL),
+(28, 1, '/system/collectionobject/add', 1512727397, 1512727397, NULL),
+(29, 1, '/system/collectionholdercrowd/destroy', 1512727397, 1512727397, NULL),
+(30, 1, '/system/collectionholdercrowd/restore', 1512727397, 1512727397, NULL),
+(31, 1, '/system/collectionholdercrowd/delete', 1512727397, 1512727397, NULL),
+(32, 1, '/system/collectionholdercrowd/edit', 1512727397, 1512727397, NULL),
+(33, 1, '/system/collectionholdercrowd/add', 1512727397, 1512727397, NULL),
+(34, 1, '/system/collectionholder/destroy', 1512727397, 1512727397, NULL),
+(35, 1, '/system/collectionholder/restore', 1512727397, 1512727397, NULL),
+(36, 1, '/system/collectionholder/delete', 1512727397, 1512727397, NULL),
+(37, 1, '/system/collectionholder/edit', 1512727397, 1512727397, NULL),
+(38, 1, '/system/collectionholder/add', 1512727397, 1512727397, NULL),
+(39, 1, '/system/collection/check', 1512727397, 1512727397, NULL),
+(40, 1, '/system/collectionbuilding/destroy', 1512727397, 1512727397, NULL),
+(41, 1, '/system/collectionbuilding/restore', 1512727397, 1512727397, NULL),
+(42, 1, '/system/collectionbuilding/delete', 1512727397, 1512727397, NULL),
+(43, 1, '/system/collectionbuilding/edit', 1512727397, 1512727397, NULL),
+(44, 1, '/system/collectionbuilding/add', 1512727397, 1512727397, NULL),
+(45, 1, '/system/collection/destroy', 1512727397, 1512727397, NULL),
+(46, 1, '/system/collection/restore', 1512727397, 1512727397, NULL),
+(47, 1, '/system/collection/delete', 1512727397, 1512727397, NULL),
+(48, 1, '/system/collection/status', 1512727397, 1512727397, NULL),
+(49, 1, '/system/collection/edit', 1512727397, 1512727397, NULL),
+(50, 1, '/system/collection/add', 1512727397, 1512727397, NULL),
+(51, 4, '/system/collectionbuilding/status', 1512727466, 1512727466, NULL),
+(52, 5, '/system/assess/destroy', 1512782135, 1512782135, NULL),
+(53, 5, '/system/assess/restore', 1512782135, 1512782135, NULL),
+(54, 5, '/system/assess/delete', 1512782135, 1512782135, NULL),
+(55, 5, '/system/assess/add', 1512782135, 1512782135, NULL);
 
 -- --------------------------------------------------------
 
@@ -2409,11 +2195,6 @@ CREATE TABLE IF NOT EXISTS `risk` (
   UNIQUE KEY `holder_id` (`holder_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='风险评估' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `risk`
---
-
-TRUNCATE TABLE `risk`;
 -- --------------------------------------------------------
 
 --
@@ -2435,11 +2216,6 @@ CREATE TABLE IF NOT EXISTS `risk_topic` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='风险评估话题结果' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `risk_topic`
---
-
-TRUNCATE TABLE `risk_topic`;
 -- --------------------------------------------------------
 
 --
@@ -2462,11 +2238,6 @@ CREATE TABLE IF NOT EXISTS `role` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='权限与角色' AUTO_INCREMENT=2 ;
 
---
--- 插入之前先把表清空（truncate） `role`
---
-
-TRUNCATE TABLE `role`;
 --
 -- 转存表中的数据 `role`
 --
@@ -2492,11 +2263,6 @@ CREATE TABLE IF NOT EXISTS `subject` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='补偿科目' AUTO_INCREMENT=9 ;
 
---
--- 插入之前先把表清空（truncate） `subject`
---
-
-TRUNCATE TABLE `subject`;
 --
 -- 转存表中的数据 `subject`
 --
@@ -2526,11 +2292,6 @@ CREATE TABLE IF NOT EXISTS `topic` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='调查话题' AUTO_INCREMENT=1 ;
 
---
--- 插入之前先把表清空（truncate） `topic`
---
-
-TRUNCATE TABLE `topic`;
 -- --------------------------------------------------------
 
 --
@@ -2561,16 +2322,11 @@ CREATE TABLE IF NOT EXISTS `user` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='系统用户' AUTO_INCREMENT=2 ;
 
 --
--- 插入之前先把表清空（truncate） `user`
---
-
-TRUNCATE TABLE `user`;
---
 -- 转存表中的数据 `user`
 --
 
 INSERT INTO `user` (`id`, `dept_id`, `role_id`, `name`, `signature`, `phone`, `office_phone`, `email`, `infos`, `username`, `password`, `secret_key`, `login_at`, `login_ip`, `status`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, 0, 1, '', '/uploads/image/20171103/1be724c55dcc9ee0f62fb14b170ab0d1.png', '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', 'E2DB6AF6-D1C9-68FF-816D-0D8CDA322FFA', 1512094796, '113.250.252.132', 1, 1509544403, 1512029489, NULL);
+(1, 0, 1, '', '/uploads/image/20171103/1be724c55dcc9ee0f62fb14b170ab0d1.png', '', '', '', '', 'demo', 'e10adc3949ba59abbe56e057f20f883e', 'E2DB6AF6-D1C9-68FF-816D-0D8CDA322FFA', 1512781758, '113.250.251.130', 1, 1509544403, 1512029489, NULL);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

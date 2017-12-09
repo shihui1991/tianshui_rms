@@ -10,6 +10,7 @@
 <form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     {if condition="isset($infos)"}
     <input type="hidden" name="id" value="{$infos->id}">
+    <input type="hidden" name="item_id" value="{$infos->item_id}">
     {else/}
     <input type="hidden" name="item_id" value="{$item_id}">
     <input type="hidden" name="collection_id" value="{$collection_id}">

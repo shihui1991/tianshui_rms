@@ -38,11 +38,11 @@ class Itemcompanys extends Model
     }
 
     public function item(){
-        return $this->belongsTo('Items','item_id','id','item')->field('id,name,status');
+        return $this->belongsTo('Items','item_id','id')->field('id,name,status');
     }
 
     public function company(){
-        return $this->belongsTo('Companys','company_id','id','company')->field('id,name,type,status');
+        return $this->belongsTo('Companys','company_id','id')->field('id,name,type,status');
     }
 
     public function companycollectin(){

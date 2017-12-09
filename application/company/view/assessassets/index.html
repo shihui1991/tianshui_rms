@@ -22,15 +22,15 @@
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$item_id])}">
             <img src="__STATIC__/system/img/broom.png"/>
             删除
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$item_id])}">
             <img src="__STATIC__/system/img/recycle.png"/>
             恢复
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$item_id])}" data-notice="确定要彻底删除吗？">
             <img src="__STATIC__/system/img/destroy.png"/>
             销毁
         </li>
@@ -70,10 +70,10 @@
                     <button type="button" class="btn" onclick="layerIfWindow('入户评估-资产评估信息',	'{:url('detail',['id'=>$assets->id])}','800','600',true)" >详情</button>
                     {if condition="$assets->company_id eq $company_id"}
                     {if condition="$assets->deleted_at"}
-                    <button type="button" data-action="{:url('restore',['ids'=>$assets->id])}" class="btn js-ajax-form-btn">恢复</button>
-                    <button type="button" data-action="{:url('destroy',['ids'=>$assets->id])}" class="btn js-ajax-form-btn">销毁</button>
+                    <button type="button" data-action="{:url('restore',['item_id'=>$item_id,'ids'=>$assets->id])}" class="btn js-ajax-form-btn">恢复</button>
+                    <button type="button" data-action="{:url('destroy',['item_id'=>$item_id,'ids'=>$assets->id])}" class="btn js-ajax-form-btn">销毁</button>
                     {else/}
-                    <button type="button" data-action="{:url('delete',['ids'=>$assets->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" data-action="{:url('delete',['item_id'=>$item_id,'ids'=>$assets->id])}" class="btn js-ajax-form-btn">删除</button>
                     {/if}
                     {/if}
                 </td>
