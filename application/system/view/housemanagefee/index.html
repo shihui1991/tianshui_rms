@@ -25,7 +25,10 @@
             <img src="__STATIC__/system/img/add_on.png"/>
             计算
         </li>
-
+        <li class="fgf" onclick="layerPage('安置物业服务费明细---Excel导出',$('#search_excel'),'700','215')" >
+            <img src="__STATIC__/system/img/excel_exports.png"/>
+            Excel导出
+        </li>
     </ul>
 </div>
 
@@ -134,7 +137,27 @@
         </div>
     </form>
 </div>
-
+<!-- 导出 -->
+<div id="search_excel" class="layerCon bg_f hide">
+    <form action="{:url('statis')}" method="post" id="search-forms">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>年份：</td>
+                <td>
+                    <select name="year" id="years">
+                        <option value="">全部</option>
+                        {for start="2010" end="2100"}
+                        <option value="{$i}" {if condition="isset($year) and $year eq $i"}selected{/if}>{$i}</option>
+                        {/for}
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">导出</button>
+        </div>
+    </form>
+</div>
 <script>
 
     $(function () {

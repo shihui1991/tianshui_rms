@@ -7,101 +7,157 @@
 </head>
 <body>
 <form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
-    <div class="layerCon bg_f">
-        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
-        <table class="layerTable" border="0">
-            <tr class="h50">
-                <td><label for="item_id">项目：</label></td>
-                <td>
-                    <input type="hidden" name="item_id" id="item_id" value="{:isset($item_info)?$item_info->id:''}">
-                    {$item_info->name}
-                </td>
-                <td><label for="community_id">片区：</label></td>
-                <td>
-                    <select name="community_id" id="community_id" class="chosen sear_collection_id" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
-                        <option value="">--请选择片区--</option>
-                        {volist name="collectioncommunitys" id="community"}
-                        <option value="{$community->id}">{$community->name}</option>
-                        {/volist}
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td ><label for="collection_id">权属：</label></td>
-                <td colspan="3" id="collection_id_info">
-                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
-                        <option value="">--请先选择项目和片区--</option>
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td ><label for="holder_id">成员：</label></td>
-                <td colspan="3" id="holder_id_info">
-                    <select name="holder_id" id="holder_id" class="chosen" data-placeholder="请选择成员" data-no_results_text="没有匹配数据">
-                        <option value="">--请先选择权属--</option>
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td ><label for="recommemd_holder_id"> 推荐代表成员：</label></td>
-                <td colspan="3" id="recommemd_holder_id_info">
-                    <select name="recommemd_holder_id" id="recommemd_holder_id" class="chosen" data-placeholder="请选择推荐代表成员" data-no_results_text="没有匹配数据">
-                        <option value="">--请先选择成员--</option>
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td ><label>群众代表：</label></td>
-                <td>
-                    <label><input class="va_m" name="deputy" type="radio"  value="1" checked>同意</label>
-                    <label><input class="va_m" name="deputy" type="radio"  value="0">拒绝</label>
-                </td>
-                <td ><label>方案意见：</label></td>
-                <td>
-                    <label><input class="va_m" name="is_agree" type="radio"  value="1" checked>同意</label>
-                    <label><input class="va_m" name="is_agree" type="radio"  value="0">反对</label>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td ><label>补偿方式：</label></td>
-                <td>
-                    <label><input class="va_m" name="compensate_way" type="radio"  value="1" checked>产权置换</label>
-                    <label><input class="va_m" name="compensate_way" type="radio"  value="0">货币补偿</label>
-                </td>
-                <td ><label for="compensate_price">补偿单价：</label></td>
-                <td>
-                    <input type="text" name="compensate_price" id="compensate_price" value="" placeholder="请输入补偿单价">
-                </td>
-            </tr>
-            <tr class="h50">
-                <td ><label>过渡方式：</label></td>
-                <td>
-                    <label><input class="va_m" name="transit_way" type="radio"  value="1" checked>周转房临时安置</label>
-                    <label><input class="va_m" name="transit_way" type="radio"  value="0">货币过渡</label>
-                </td>
-                <td ><label>搬迁方式：</label></td>
-                <td>
-                    <label><input class="va_m" name="move_way" type="radio"  value="1" checked>政府负责</label>
-                    <label><input class="va_m" name="move_way" type="radio"  value="0">自行搬迁</label>
-                </td>
-            </tr>
-            <tr class="h70">
-                <td><label>其他意见：</label></td>
-                <td colspan="3">
-                    <textarea name="opinion" id="opinion" cols="10" rows="3"></textarea>
-                </td>
-            </tr>
-        </table>
-        <div class="layerBtns">
-            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
-            <button class="btn" type="reset">重置</button>
+    <div class="tabs">
+        <div class="item">
+            <div class="homeTit bg_f5">
+                <div class="fl"><img src="__STATIC__/system/img/books.png"/>风险评估管理</div>
+                <ul class="homeTab">
+                    <li class="on">风险评估</li>
+                    <li>话题结果</li>
+                </ul>
+            </div>
+            <div class="homeCon">
+                <div class="tabPage w_100 on">
+                    <div class="layerCon bg_f">
+                        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                        <table class="layerTable" border="0">
+                            <tr class="h50">
+                                <td><label for="item_id">项目：</label></td>
+                                <td>
+                                    <input type="hidden" name="item_id" id="item_id" value="{:isset($item_info)?$item_info->id:''}">
+                                    {$item_info->name}
+                                </td>
+                                <td><label for="community_id">片区：</label></td>
+                                <td>
+                                    <select name="community_id" id="community_id" class="chosen sear_collection_id" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                                        <option value="">--请选择片区--</option>
+                                        {volist name="collectioncommunitys" id="community"}
+                                        <option value="{$community->id}">{$community->name}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td ><label for="collection_id">权属：</label></td>
+                                <td colspan="3" id="collection_id_info">
+                                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
+                                        <option value="">--请先选择项目和片区--</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td ><label for="holder_id">成员：</label></td>
+                                <td colspan="3" id="holder_id_info">
+                                    <select name="holder_id" id="holder_id" class="chosen" data-placeholder="请选择成员" data-no_results_text="没有匹配数据">
+                                        <option value="">--请先选择权属--</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td ><label for="recommemd_holder_id"> 推荐代表成员：</label></td>
+                                <td colspan="3" id="recommemd_holder_id_info">
+                                    <select name="recommemd_holder_id" id="recommemd_holder_id" class="chosen" data-placeholder="请选择推荐代表成员" data-no_results_text="没有匹配数据">
+                                        <option value="">--请先选择成员--</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td ><label>群众代表：</label></td>
+                                <td>
+                                    <label><input class="va_m" name="deputy" type="radio"  value="1" checked>同意</label>
+                                    <label><input class="va_m" name="deputy" type="radio"  value="0">拒绝</label>
+                                </td>
+                                <td ><label>方案意见：</label></td>
+                                <td>
+                                    <label><input class="va_m" name="is_agree" type="radio"  value="1" checked>同意</label>
+                                    <label><input class="va_m" name="is_agree" type="radio"  value="0">反对</label>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td ><label>补偿方式：</label></td>
+                                <td>
+                                    <label><input class="va_m" name="compensate_way" type="radio"  value="1" checked>产权置换</label>
+                                    <label><input class="va_m" name="compensate_way" type="radio"  value="0">货币补偿</label>
+                                </td>
+                                <td ><label for="compensate_price">补偿单价：</label></td>
+                                <td>
+                                    <input type="text" name="compensate_price" id="compensate_price" value="" placeholder="请输入补偿单价">
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td ><label>过渡方式：</label></td>
+                                <td>
+                                    <label><input class="va_m" name="transit_way" type="radio"  value="1" checked>周转房临时安置</label>
+                                    <label><input class="va_m" name="transit_way" type="radio"  value="0">货币过渡</label>
+                                </td>
+                                <td ><label>搬迁方式：</label></td>
+                                <td>
+                                    <label><input class="va_m" name="move_way" type="radio"  value="1" checked>政府负责</label>
+                                    <label><input class="va_m" name="move_way" type="radio"  value="0">自行搬迁</label>
+                                </td>
+                            </tr>
+                            <tr class="h70">
+                                <td><label>其他意见：</label></td>
+                                <td colspan="3">
+                                    <textarea name="opinion" id="opinion" cols="10" rows="3"></textarea>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="tabPage w_100">
+                    <table class="layerTable" border="0" id="risk_topic_val">
+
+                    </table>
+                    <br/>
+                </div>
+                <div class="layerBtns">
+                    <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+                    <button class="btn" type="reset">重置</button>
+                </div>
+            </div>
         </div>
     </div>
+
 </form>
 <script>
+    var _item_id=$("#item_id").val();
+    $.ajax({
+        url:"{:url('Tools/sear_item_topic')}",
+        data:{'item_id':_item_id},
+        dataType:'json',
+        type:'post',
+        success:function (resp) {
+            $('#risk_topic_val').html('');
+            var options = '';
+
+            if(resp.code){
+                $.each(resp.data,function (index,info) {
+                    console.log(info);
+                    options += ' <tr class="h50">\n' +
+                        '    <td ><label>话题'+info.id+'：</label></td>\n' +
+                        '    <td colspan="3">\n' +info.topic_name+
+                        '        <input type="hidden" name="topic_id[]" class="topic_id" value="'+info.topic_name_id+'">\n' +
+                        '    </td>\n' +
+                        '</tr>\n' +
+                        '<tr class="h70">\n' +
+                        '    <td><label>话题'+info.id+'回答：</label></td>\n' +
+                        '    <td colspan="3">\n' +
+                        '        <textarea name="answer[]" id="answer" cols="10" rows="3"></textarea>\n' +
+                        '    </td>\n' +
+                        '</tr>';
+                });
+            }else{
+                layer.msg(resp.msg,function(){});
+            }
+            $('#risk_topic_val').html(options);
+        },
+        error:function () {
+            layer.msg('网络错误，请重试',function(){});
+        }
+    });
     /* ===== 查询权属 =====*/
     $('.sear_collection_id').change(function () {
-        var _item_id=$("#item_id").val();
         var _community_id=$("#community_id").find('option:selected').val();
         var data = {
             'item_id':_item_id,
@@ -142,6 +198,7 @@
                     layer.msg('网络错误，请重试',function(){});
                 }
             });
+
         }else{
             var options = '';
             options += '<select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">';

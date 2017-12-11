@@ -5,6 +5,7 @@
  * | 初始化操作
  * | 列表 index
  * | 物业费计算 add
+ * | excel导出 statis
  * */
 
 namespace app\system\controller;
@@ -289,4 +290,47 @@ class Housemanagefee extends Auth
 
     }
 
+    /* ========== excel导出 ========== */
+    public function statis(){
+        $where = [];
+        $years = input('year');
+        if($years){
+            $where['date_at']=['like',$years.'-%'];
+        }
+       $housefee =  model('Housemanagefees')
+           ->where($where)
+           ->with('house,house.community')
+           ->order('house_id asc,date_at asc')
+           ->select();
+        $new_data = [];
+      foreach ($housefee as $k=>$v){
+          $building = $v->house->building?$v->house->building.'栋':'';
+          $unit = $v->house->unit?$v->house->unit.'单元':'';
+          $floor = $v->house->floor?$v->house->floor.'楼':'';
+          $number = $v->house->number?$v->house->number.'号':'';
+          $new_data[$k][] = $k+1;
+          $new_data[$k][] = $v->house->community->name.'('.$v->house->community->address.')';
+          $new_data[$k][] = $building.$unit.$floor.$number;
+          $new_data[$k][] = $v->area;
+          $new_data[$k][] = $v->date_at;
+          $new_data[$k][] = $v->manage_price;
+          $new_data[$k][] = $v->manage_fee;
+          $new_data[$k][] = $v->public_price;
+      }
+        $new_title[0][0] = '序号';
+        $new_title[0][1] = '小区名称(地点)';
+        $new_title[0][2] = '房号';
+        $new_title[0][3] = '面积(㎡)';
+        $new_title[0][4] = '空置期(月)';
+        $new_title[0][5] = '物业服务费单价（元/㎡/月）';
+        $new_title[0][6] = '物业服务费（元/月）';
+        $new_title[0][7] = '公摊费（元/月）';
+       $new_data_array = array_merge($new_title,$new_data);
+        if($housefee){
+            create_housemanagefee_xls($new_data_array,date('Ymd'));
+        }else{
+            return $this->error('暂无数据');
+        }
+
+    }
 }

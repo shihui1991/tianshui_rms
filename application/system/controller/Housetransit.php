@@ -368,7 +368,7 @@ class Housetransit extends Auth
         $housetransit_title = [];
         $housetransit_title[0][0] = '序号';
         $housetransit_title[0][1] = '项目名称';
-        $housetransit_title[0][2] = '地点(小区名称)';
+        $housetransit_title[0][2] = '小区名称(地点)';
         $housetransit_title[0][3] = '房号';
         $housetransit_title[0][4] = '户型';
         $housetransit_title[0][5] = '面积(㎡)';

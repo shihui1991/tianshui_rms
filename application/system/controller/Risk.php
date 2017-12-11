@@ -14,6 +14,8 @@
 namespace app\system\controller;
 use app\system\model\Items;
 use app\system\model\Risks;
+use think\Db;
+use think\Exception;
 
 class Risk extends Auth
 {
@@ -153,7 +155,8 @@ class Risk extends Auth
                 ['is_agree', 'require', '请选择方案意见'],
                 ['compensate_way', 'require', '请选择补偿方式'],
                 ['transit_way', 'require', '请选择过渡方式'],
-                ['move_way', 'require', '请选择搬迁方式']
+                ['move_way', 'require', '请选择搬迁方式'],
+                ['topic_id', 'require', '项目话题不存在']
             ];
             $result = $this->validate($datas, $rule);
             if (true !== $result) {
@@ -175,8 +178,34 @@ class Risk extends Auth
             if($sear_rickid){
                 return $this->error('数据重复,只能参加一次评估','');
             }
-            $rs = model('Risks')->save($datas);
-            if ($rs) {
+            Db::startTrans();
+            try{
+                $rs = model('Risks')->save($datas);
+                $risk_id = model('Risks')->getLastInsID();
+                $topic_count = model('Itemtopics')->where('item_id',$datas['item_id'])->count();
+              $risktopic_datas = [];
+               for ($i=0;$i<$topic_count;$i++){
+                   $risktopic_datas[$i]['item_id'] = $datas['item_id'];
+                   $risktopic_datas[$i]['community_id'] = $datas['community_id'];
+                   $risktopic_datas[$i]['collection_id'] = $datas['collection_id'];
+                   $risktopic_datas[$i]['holder_id'] = $datas['holder_id'];
+                   $risktopic_datas[$i]['risk_id'] = $risk_id;
+                   $risktopic_datas[$i]['topic_id'] = $datas['topic_id'][$i];
+                   $risktopic_datas[$i]['answer'] = $datas['answer'][$i];
+               }
+                model('Risktopics')->saveAll($risktopic_datas);
+                if(!$rs){
+                    $res = false;
+                    Db::rollback();
+                }else{
+                    $res = true;
+                    Db::commit();
+                }
+            }catch (\Exception $e){
+                $res = false;
+                Db::rollback();
+            }
+            if ($res) {
                 return $this->success('添加成功', '');
             } else {
                 return $this->error('添加失败', '');
@@ -213,9 +242,30 @@ class Risk extends Auth
             ->join('collection_holder chr', 'chr.id=ass.recommemd_holder_id', 'left')
             ->where($where)
             ->find();
+        $risktopic_infos = model('Risktopics')
+            ->alias('rt')
+            ->field(['rt.id','rt.topic_id','rt.answer','t.name as topic_name'])
+            ->join('topic t','t.id = rt.topic_id','left')
+            ->where('rt.risk_id',$id)
+            ->select();
+        $topic_ids = [];
+        foreach ($risktopic_infos as $k=>$v){
+            $topic_ids[] = $v->topic_id;
+        }
+        $item_topic = model('Itemtopics')
+            ->alias('rt')
+            ->field(['rt.topic_id','t.name as topic_name'])
+            ->join('topic t','t.id = rt.topic_id','left')
+            ->where('rt.item_id',$item_id)
+            ->where('rt.topic_id','not in',$topic_ids)
+            ->select();
+        $risktopic_count = count($risktopic_infos);
         return view('modify',[
             'infos'=>$risk_info,
-            'item_id'=>$item_id
+            'item_id'=>$item_id,
+            'risktopic_infos'=>$risktopic_infos,
+            'item_topic'=>$item_topic,
+            'risktopic_count'=>$risktopic_count
         ]);
     }
 
@@ -260,21 +310,60 @@ class Risk extends Auth
         if (true !== $result) {
             return $this->error($result);
         }
-
-       $rs =  model('Risks')->save([
-            'deputy'=>$datas['deputy'],
-            'is_agree'=>$datas['is_agree'],
-            'compensate_way'=>$datas['compensate_way'],
-            'compensate_price'=>$datas['compensate_price'],
-            'transit_way'=>$datas['transit_way'],
-            'move_way'=>$datas['move_way'],
-            'opinion'=>$datas['opinion']
-            ],['id'=>$datas['id']]
-            );
-        if($rs){
-            return $this->success('修改成功','');
+        Db::startTrans();
+        try{
+            if(isset($datas['new_topic_id'])){
+                $risk_data =  model('Risks')
+                    ->field(['item_id','community_id','collection_id','holder_id'])
+                    ->where('id',$datas['id'])
+                    ->find();
+                $new_topic_data = [];
+                  foreach ($datas['new_topic_id'] as $k=>$v){
+                      $new_topic_data[$k]['item_id'] = $risk_data->item_id;
+                      $new_topic_data[$k]['community_id'] = $risk_data->community_id;
+                      $new_topic_data[$k]['collection_id'] = $risk_data->collection_id;
+                      $new_topic_data[$k]['holder_id'] = $risk_data->holder_id;
+                      $new_topic_data[$k]['risk_id'] = $datas['id'];
+                      $new_topic_data[$k]['topic_id'] = $v;
+                      $new_topic_data[$k]['answer'] = $datas['new_answer'][$k];
+                  }
+                $risktopic_rs = model('Risktopics')->saveAll($new_topic_data);
+                if(!$risktopic_rs){
+                    throw new \think\Exception('数据异常，请刷新重试', 100006);
+                }
+            }
+            $rs =  model('Risks')->save([
+                'deputy'=>$datas['deputy'],
+                'is_agree'=>$datas['is_agree'],
+                'compensate_way'=>$datas['compensate_way'],
+                'compensate_price'=>$datas['compensate_price'],
+                'transit_way'=>$datas['transit_way'],
+                'move_way'=>$datas['move_way'],
+                'opinion'=>$datas['opinion']
+            ],['id'=>$datas['id']]);
+            foreach ($datas['risktopic_id'] as $k=>$v){
+                model('Risktopics')->isUpdate(true)->save(['answer'=>$datas['answer'][$k]],['id'=>$v]);
+            }
+            if(!$rs){
+                throw new \think\Exception('数据异常，请刷新重试', 100006);
+            }else{
+                $msg = '修改成功';
+                $res = true;
+                Db::commit();
+            }
+        }catch (\Exception $e){
+            if($e->getCode()==100006){
+                $msg = $e->getMessage();
+            }else{
+                $msg = '网络异常,请稍后重试';
+            }
+            $res = false;
+            Db::rollback();
+        }
+        if($res){
+            return $this->success($msg,'');
         }else{
-            return $this->error('添加失败','');
+            return $this->error($msg,'');
         }
     }
 
@@ -312,7 +401,21 @@ class Risk extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res = model('Risks')->destroy($ids);
+        Db::startTrans();
+        try{
+            $rs = model('Risks')->destroy($ids);
+            model('Risktopics')->destroy(['risk_id'=>['in',$ids]]);
+            if(!$rs){
+                $res = false;
+                Db::rollback();
+            }else{
+                $res = true;
+                Db::commit();
+            }
+        }catch (\Exception $e){
+            $res = false;
+            Db::rollback();
+        }
         if($res){
             return $this->success('删除成功','');
         }else{
@@ -355,7 +458,22 @@ class Risk extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res = db('risk')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+        Db::startTrans();
+        try{
+            $rs = db('risk')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('risk_topic')->whereIn('risk_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            if(!$rs){
+                $res = false;
+                Db::rollback();
+            }else{
+                $res = true;
+                Db::commit();
+            }
+        }catch (\Exception $e){
+            $res = false;
+            Db::rollback();
+        }
+
         if($res){
             return $this->success('恢复成功','');
         }else{
@@ -398,7 +516,22 @@ class Risk extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res = model('Risks')->onlyTrashed()->whereIn('id',$ids)->delete(true);
+        Db::startTrans();
+        try{
+            $rs = model('Risks')->onlyTrashed()->whereIn('id',$ids)->delete(true);
+            model('Risktopics')->withTrashed()->whereIn('risk_id',$ids)->delete(true);
+
+            if(!$rs){
+                $res = false;
+                Db::rollback();
+            }else{
+                $res = true;
+                Db::commit();
+            }
+        }catch (\Exception $e){
+            $res = false;
+            Db::rollback();
+        }
         if($res){
             return $this->success('销毁成功','');
         }else{

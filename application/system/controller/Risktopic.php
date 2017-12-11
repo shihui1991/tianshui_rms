@@ -222,7 +222,6 @@ class Risktopic extends Auth
             ->join('topic tc', 'tc.id=ass.topic_id', 'left')
             ->where('ass.id',$id)
             ->find();
-//        dump($risktopic_info);die;
         $fields = ['ass.*', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
             'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id','ch.name as holder_name','ch.id as holder_name_id','chr.name as recommemd_holder_name','chr.id as recommemd_holder_name_id'];
         $risk_info = model('Risks')
