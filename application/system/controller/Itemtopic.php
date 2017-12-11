@@ -14,6 +14,7 @@
 namespace app\system\controller;
 use app\system\model\Items;
 use app\system\model\Itemtopics;
+use think\Db;
 
 class Itemtopic extends Auth
 {
