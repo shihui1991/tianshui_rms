@@ -308,7 +308,7 @@ class Houseresettle extends Auth
             ->select();
         $houseresettle_title[0][0] = '序号';
         $houseresettle_title[0][1] = '项目名称';
-        $houseresettle_title[0][2] = '地点(小区名称)';
+        $houseresettle_title[0][2] = '小区名称(地点)';
         $houseresettle_title[0][3] = '房号';
         $houseresettle_title[0][4] = '户型';
         $houseresettle_title[0][5] = '面积(㎡)';
