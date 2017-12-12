@@ -1,13 +1,14 @@
 <?php
 /* |------------------------------------------------------
- * | 入户摸底 产权人及家庭成员
+ * | 入户摸底 建筑
  * |------------------------------------------------------
  * */
 namespace app\holder\controller;
 
-use app\system\model\Collectionholders;
+use app\system\model\Collectionbuildings;
+use app\system\model\Collectionobjects;
 
-class Collectionholder extends Base
+class Collectionobject extends Base
 {
     /* ========== 初始化 ========== */
     public function _initialize()
@@ -29,17 +30,20 @@ class Collectionholder extends Base
             return $this->error('非法访问','');
         }
 
-        $collectionholders=Collectionholders::where([
-            'item_id'=>$item_id,
-            'collection_id'=>$collection_id
-        ])
-            ->order(['portion'=>'desc'])
+        $field=['co.*','o.name','o.infos'];
+        $collectionobjects=Collectionobjects::alias('co')
+            ->field($field)
+            ->join('object o','o.id=co.object_id','left')
+            ->where([
+                'item_id'=>$item_id,
+                'collection_id'=>$collection_id
+            ])
             ->select();
 
         $datas=[
             'item_id'=>$item_id,
             'collection_id'=>$collection_id,
-            'collectionholders'=>$collectionholders
+            'collectionobjects'=>$collectionobjects
         ];
 
         $this->assign($datas);
@@ -55,7 +59,14 @@ class Collectionholder extends Base
             return $this->error('非法访问','');
         }
 
-        $infos=Collectionholders::find($id);
+        $infos=Collectionbuildings::alias('cb')
+            ->field(['cb.*','du.name du_name','ru.name as ru_name','bst.name as struct_name','bss.name as status_name'])
+            ->join('building_use du','du.id=cb.default_use','left')
+            ->join('building_use ru','ru.id=cb.use_id','left')
+            ->join('building_struct bst','bst.id=cb.struct_id','left')
+            ->join('building_status bss','bss.id=cb.status_id','left')
+            ->where('cb.id',$id)
+            ->find();
         if(!$infos){
             return $this->error('不存在');
         }
