@@ -25,7 +25,7 @@ class Collection extends Base
         }
         $collection_holders=session('holderinfo.collection_holders');
         $collection_ids=array_keys($collection_holders);
-        $collections=Collections::field(['id','item_id','community_id','building','unit','floor','number','type','status'])
+        $collections=Collections::field(['id','item_id','community_id','building','unit','floor','number','type','status','has_assets'])
             ->with('community')
             ->where([
                 'item_id'=>$item_id,

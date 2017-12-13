@@ -33,6 +33,10 @@
             <td>{$collection->type}</td>
             <td>
                 <button type="button" class="btn" onclick="layerIfWindow('房产信息',	'{:url('detail',['id'=>$collection->id])}','800','600',true)">房产信息</button>
+                <button type="button" class="btn" onclick="layerIfWindow('房产评估报告',	'{:url('Assessestate/detail',['item_id'=>$collection->item_id,'collection_id'=>$collection->id])}','800','600',true)">房产评估</button>
+                {if condition="$collection->getData('has_assets')"}
+                <button type="button" class="btn" onclick="layerIfWindow('资产评估报告',	'{:url('Assessassets/detail',['item_id'=>$collection->item_id,'collection_id'=>$collection->id])}','800','600',true)">资产评估</button>
+                {/if}
             </td>
         </tr>
         {/volist}

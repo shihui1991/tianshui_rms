@@ -209,6 +209,11 @@ class Assessestate extends Auth
                 return $this->error($result);
             }
 
+            $values=array_filter(array_values($datas['price']));
+            if(empty($values)){
+                return $this->error('请输入评估单价','');
+            }
+
             $collection_info=model('Collections')->field(['id','item_id','community_id'])->find(input('collection_id'));
             if(!$collection_info){
                 return $this->error('选择权属不存在！');
