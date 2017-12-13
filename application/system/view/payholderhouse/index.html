@@ -98,26 +98,28 @@
                                     优惠总价：{$payholderhouse->amount|number_format=2} 元<br>
                                     {if condition="$payholderhouse->amount_up"}
                                     {php}
-                                    $payholderhouseups=$payholderhouse->payholderhouseups();
+                                    $payholderhouseups=$payholderhouse->payholderhouseups;
                                     $num=count($payholderhouseups);
                                     {/php}
-                                    <table class="layerTable" border="0">
+                                    {if condition="$num"}
+                                    <table class="layerTable" border="0" style="width: inherit !important;">
                                         <tr class="h50">
-                                            <td rowspan="{$num+1}">上浮</td>
-                                            <td>面积(㎡)</td>
-                                            <td>单价</td>
-                                            <td>上浮比例(%)</td>
-                                            <td>上浮小计(元)</td>
+                                            <td style="background: #f7f7f7;text-align: center;padding:0 10px;" rowspan="{$num+1}">上浮</td>
+                                            <td style="background: #f7f7f7;text-align: center;padding:0 10px;">面积(㎡)</td>
+                                            <td style="background: #f7f7f7;text-align: center;padding:0 10px;">单价</td>
+                                            <td style="background: #f7f7f7;text-align: center;padding:0 10px;">上浮比例(%)</td>
+                                            <td style="background: #f7f7f7;text-align: center;padding:0 10px;">上浮小计(元)</td>
                                         </tr>
                                         {volist name="payholderhouseups" id="up"}
                                         <tr class="h50">
-                                            <td>{$up->up_area}</td>
-                                            <td>{$up->price}</td>
-                                            <td>{$up->up_rate?$up->up_rate:'-'}</td>
-                                            <td>{$up->amount}</td>
+                                            <td style="background: none;text-align: center;">{$up->up_area}</td>
+                                            <td style="background: none;text-align: center;">{$up->price}</td>
+                                            <td style="background: none;text-align: center;">{$up->up_rate?$up->up_rate:'-'}</td>
+                                            <td style="background: none;text-align: center;">{$up->amount}</td>
                                         </tr>
                                         {/volist}
                                     </table>
+                                    {/if}
                                     {/if}
                                     上浮总额：{$payholderhouse->amount_up|number_format=2} 元<br>
                                     安置房价：{$payholderhouse->total|number_format=2} 元<br>

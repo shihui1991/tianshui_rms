@@ -184,32 +184,30 @@ class Payholderhouse extends Auth
                 /* ++++++++++ 安置房价上浮设置 ++++++++++ */
                 $itemhouseups=Itemhouseups::where('item_id',$pay_info->item_id)->order('up_start asc')->select();
                 $last=$pay_info->total;
+                $discount_area=0;
                 /* ++++++++++ 兑付-产权人或承租人 ++++++++++ */
                 foreach ($payholders as $payholder){
                     /* ++++++++++ 有选择安置房，公产承租人或私产产权人 ++++++++++ */
                     if($payholder->house_amount && (($pay_info->getData('type') && $payholder->getData('holder')==2) || (!$pay_info->getData('type')&& $payholder->getData('holder')==1))){
                         /* ++++++++++ 安置房 ++++++++++ */
-                        $payholderhouses=Payholderhouses::alias('phh')
-                            ->field(['phh.*','h.community_id as house_community_id','h.building','h.unit','h.floor','h.number','h.layout_id','h.area','h.status as house_status','hc.address','hc.name as hc_name','l.name as l_name'])
-                            ->join('house h','h.id=phh.house_id','left')
-                            ->join('house_community hc','hc.id=h.community_id','left')
-                            ->join('layout l','l.id=h.layout_id','left')
-                            ->where('phh.pay_holder_id',$payholder->id)
-                            ->order('phh.sort asc')
+                        $payholderhouses=Payholderhouses::where('pay_holder_id',$payholder->id)
+                            ->order('sort asc,id asc')
                             ->select();
 
                         /* ++++++++++ 计算上浮 ++++++++++ */
                         if($pay_info->getData('type') || !$pay_info->getData('pay_way')){
                             /* ++++++++++ 公产或分权兑付，重置补偿款 ++++++++++ */
                             $last=$payholder->total_amount;
+                            $discount_area=0;
                         }
 
                         $house_amount=0;
                         if($payholderhouses) {
                             foreach ($payholderhouses as $payholderhouse) {
-                                Payholderhouseups::destroy($payholderhouse->id, true);
+                                Payholderhouseups::destroy(['pay_holder_house_id'=>$payholderhouse->id], true);
                                 /* ++++++++++ 安置房价值与补偿款差额 ++++++++++ */
                                 $last = $last - $payholderhouse->amount;
+                                $up_area=$discount_area;
                                 /* ++++++++++ 安置房价值低于补偿款，无上浮 ++++++++++ */
                                 if ($last >= 0) {
                                     $payholderhouse->amount_up = 0;
@@ -226,31 +224,39 @@ class Payholderhouse extends Auth
                                     /* ++++++++++ 上浮计算 ++++++++++ */
                                     foreach ($itemhouseups as $itemhouseup) {
                                         /* ++++++++++ 在上浮区间 ++++++++++ */
-                                        if ($itemhouseup->up_end && $itemhouseup->up_rate) {
+                                        if ($itemhouseup->up_end !=0 && $itemhouseup->up_rate !=0) {
+                                            if($discount_area >= $itemhouseup->up_end){
+                                                continue;
+                                            }
+
                                             /* ++++++++++ 超出当前上浮区间 ++++++++++ */
                                             if ($last_area > $itemhouseup->up_end) {
                                                 $up_datas[] = [
                                                     'pay_holder_house_id' => $payholderhouse->id,
                                                     'up_start' => $itemhouseup->up_start,
                                                     'up_end' => $itemhouseup->up_end,
-                                                    'up_area' => ($itemhouseup->up_end - $itemhouseup->up_start),
+                                                    'up_area' => ($itemhouseup->up_end - $discount_area),
                                                     'up_rate' => $itemhouseup->up_rate,
                                                     'price' => $payholderhouse->price,
-                                                    'amount' => $payholderhouse->price * ($itemhouseup->up_rate/100) * ($itemhouseup->up_end - $itemhouseup->up_start),
+                                                    'amount' => $payholderhouse->price * ($itemhouseup->up_rate/100) * ($itemhouseup->up_end - $discount_area),
                                                 ];
-                                                $up_amount += $payholderhouse->price * ($itemhouseup->up_rate/100) * ($itemhouseup->up_end - $itemhouseup->up_start);
+                                                $up_amount += $payholderhouse->price * ($itemhouseup->up_rate/100) * ($itemhouseup->up_end - $discount_area);
+
+                                                $discount_area +=$itemhouseup->up_end - $itemhouseup->up_start;
                                             } /* ++++++++++ 在当前上浮区间 ++++++++++ */
                                             else {
                                                 $up_datas[] = [
                                                     'pay_holder_house_id' => $payholderhouse->id,
                                                     'up_start' => $itemhouseup->up_start,
                                                     'up_end' => $itemhouseup->up_end,
-                                                    'up_area' => ($last_area - $itemhouseup->up_start),
+                                                    'up_area' => ($last_area - $discount_area),
                                                     'up_rate' => $itemhouseup->up_rate,
                                                     'price' => $payholderhouse->price,
-                                                    'amount' => $payholderhouse->price * ($itemhouseup->up_rate/100) * ($last_area - $itemhouseup->up_start),
+                                                    'amount' => $payholderhouse->price * ($itemhouseup->up_rate/100) * ($last_area - $discount_area),
                                                 ];
-                                                $up_amount += $payholderhouse->price * ($itemhouseup->up_rate/100) * ($last_area - $itemhouseup->up_start);
+                                                $up_amount += $payholderhouse->price * ($itemhouseup->up_rate/100) * ($last_area - $discount_area);
+
+                                                $discount_area +=$last_area - $itemhouseup->up_start;
                                                 break;
                                             }
                                         } /* ++++++++++ 超出上浮区间，按市场评估单价计算差额 ++++++++++ */
@@ -266,12 +272,12 @@ class Payholderhouse extends Auth
                                                 'pay_holder_house_id' => $payholderhouse->id,
                                                 'up_start' => $itemhouseup->up_start,
                                                 'up_end' => $itemhouseup->up_end,
-                                                'up_area' => ($last_area - $itemhouseup->up_start),
+                                                'up_area' => ($last_area - $discount_area + $up_area),
                                                 'up_rate' => $itemhouseup->up_rate,
                                                 'price' => ($marketprice - $payholderhouse->price),
-                                                'amount' => ($marketprice - $payholderhouse->price) * ($last_area - $itemhouseup->up_start),
+                                                'amount' => ($marketprice - $payholderhouse->price) * ($last_area - $discount_area + $up_area),
                                             ];
-                                            $up_amount += ($marketprice - $payholderhouse->price) * ($last_area - $itemhouseup->up_start);
+                                            $up_amount += ($marketprice - $payholderhouse->price) * ($last_area - $discount_area + $up_area);
                                         }
                                     }
                                     $payholderhouseup_model = new Payholderhouseups();
@@ -292,7 +298,7 @@ class Payholderhouse extends Auth
                         $payholder->save();
                         $payholderhouse_ids=Payholderhouses::where('pay_holder_id',$payholder->id)->column('id');
                         if($payholderhouse_ids){
-                            Payholderhouseups::destroy($payholderhouse_ids,true);
+                            Payholderhouseups::destroy(['pay_holder_house_id'=>['in',$payholderhouse_ids]],true);
                             Payholderhouses::where('id','in',$payholderhouse_ids)->delete();
                         }
                     }
@@ -433,32 +439,30 @@ class Payholderhouse extends Auth
                 /* ++++++++++ 安置房价上浮设置 ++++++++++ */
                 $itemhouseups=Itemhouseups::where('item_id',$pay_info->item_id)->order('up_start asc')->select();
                 $last=$pay_info->total;
+                $discount_area=0;
                 /* ++++++++++ 兑付-产权人或承租人 ++++++++++ */
                 foreach ($payholders as $payholder){
                     /* ++++++++++ 有选择安置房，公产承租人或私产产权人 ++++++++++ */
                     if($payholder->house_amount && (($pay_info->getData('type') && $payholder->getData('holder')==2) || (!$pay_info->getData('type')&& $payholder->getData('holder')==1))){
                         /* ++++++++++ 安置房 ++++++++++ */
-                        $payholderhouses=Payholderhouses::alias('phh')
-                            ->field(['phh.*','h.community_id as house_community_id','h.building','h.unit','h.floor','h.number','h.layout_id','h.area','h.status as house_status','hc.address','hc.name as hc_name','l.name as l_name'])
-                            ->join('house h','h.id=phh.house_id','left')
-                            ->join('house_community hc','hc.id=h.community_id','left')
-                            ->join('layout l','l.id=h.layout_id','left')
-                            ->where('phh.pay_holder_id',$payholder->id)
-                            ->order('phh.sort asc')
+                        $payholderhouses=Payholderhouses::where('pay_holder_id',$payholder->id)
+                            ->order('sort asc,id asc')
                             ->select();
 
                         /* ++++++++++ 计算上浮 ++++++++++ */
                         if($pay_info->getData('type') || !$pay_info->getData('pay_way')){
                             /* ++++++++++ 公产或分权兑付，重置补偿款 ++++++++++ */
                             $last=$payholder->total_amount;
+                            $discount_area=0;
                         }
 
                         $house_amount=0;
                         if($payholderhouses) {
                             foreach ($payholderhouses as $payholderhouse) {
-                                Payholderhouseups::destroy($payholderhouse->id, true);
+                                Payholderhouseups::destroy(['pay_holder_house_id'=>$payholderhouse->id], true);
                                 /* ++++++++++ 安置房价值与补偿款差额 ++++++++++ */
                                 $last = $last - $payholderhouse->amount;
+                                $up_area=$discount_area;
                                 /* ++++++++++ 安置房价值低于补偿款，无上浮 ++++++++++ */
                                 if ($last >= 0) {
                                     $payholderhouse->amount_up = 0;
@@ -475,31 +479,39 @@ class Payholderhouse extends Auth
                                     /* ++++++++++ 上浮计算 ++++++++++ */
                                     foreach ($itemhouseups as $itemhouseup) {
                                         /* ++++++++++ 在上浮区间 ++++++++++ */
-                                        if ($itemhouseup->up_end && $itemhouseup->up_rate) {
+                                        if ($itemhouseup->up_end !=0 && $itemhouseup->up_rate !=0) {
+                                            if($discount_area >= $itemhouseup->up_end){
+                                                continue;
+                                            }
+
                                             /* ++++++++++ 超出当前上浮区间 ++++++++++ */
                                             if ($last_area > $itemhouseup->up_end) {
                                                 $up_datas[] = [
                                                     'pay_holder_house_id' => $payholderhouse->id,
                                                     'up_start' => $itemhouseup->up_start,
                                                     'up_end' => $itemhouseup->up_end,
-                                                    'up_area' => ($itemhouseup->up_end - $itemhouseup->up_start),
+                                                    'up_area' => ($itemhouseup->up_end - $discount_area),
                                                     'up_rate' => $itemhouseup->up_rate,
                                                     'price' => $payholderhouse->price,
-                                                    'amount' => $payholderhouse->price * ($itemhouseup->up_rate/100) * ($itemhouseup->up_end - $itemhouseup->up_start),
+                                                    'amount' => $payholderhouse->price * ($itemhouseup->up_rate/100) * ($itemhouseup->up_end - $discount_area),
                                                 ];
-                                                $up_amount += $payholderhouse->price * ($itemhouseup->up_rate/100) * ($itemhouseup->up_end - $itemhouseup->up_start);
+                                                $up_amount += $payholderhouse->price * ($itemhouseup->up_rate/100) * ($itemhouseup->up_end - $discount_area);
+
+                                                $discount_area +=$itemhouseup->up_end - $itemhouseup->up_start;
                                             } /* ++++++++++ 在当前上浮区间 ++++++++++ */
                                             else {
                                                 $up_datas[] = [
                                                     'pay_holder_house_id' => $payholderhouse->id,
                                                     'up_start' => $itemhouseup->up_start,
                                                     'up_end' => $itemhouseup->up_end,
-                                                    'up_area' => ($last_area - $itemhouseup->up_start),
+                                                    'up_area' => ($last_area - $discount_area),
                                                     'up_rate' => $itemhouseup->up_rate,
                                                     'price' => $payholderhouse->price,
-                                                    'amount' => $payholderhouse->price * ($itemhouseup->up_rate/100) * ($last_area - $itemhouseup->up_start),
+                                                    'amount' => $payholderhouse->price * ($itemhouseup->up_rate/100) * ($last_area - $discount_area),
                                                 ];
-                                                $up_amount += $payholderhouse->price * ($itemhouseup->up_rate/100) * ($last_area - $itemhouseup->up_start);
+                                                $up_amount += $payholderhouse->price * ($itemhouseup->up_rate/100) * ($last_area - $discount_area);
+
+                                                $discount_area +=$last_area - $itemhouseup->up_start;
                                                 break;
                                             }
                                         } /* ++++++++++ 超出上浮区间，按市场评估单价计算差额 ++++++++++ */
@@ -515,12 +527,12 @@ class Payholderhouse extends Auth
                                                 'pay_holder_house_id' => $payholderhouse->id,
                                                 'up_start' => $itemhouseup->up_start,
                                                 'up_end' => $itemhouseup->up_end,
-                                                'up_area' => ($last_area - $itemhouseup->up_start),
+                                                'up_area' => ($last_area - $discount_area + $up_area),
                                                 'up_rate' => $itemhouseup->up_rate,
                                                 'price' => ($marketprice - $payholderhouse->price),
-                                                'amount' => ($marketprice - $payholderhouse->price) * ($last_area - $itemhouseup->up_start),
+                                                'amount' => ($marketprice - $payholderhouse->price) * ($last_area - $discount_area + $up_area),
                                             ];
-                                            $up_amount += ($marketprice - $payholderhouse->price) * ($last_area - $itemhouseup->up_start);
+                                            $up_amount += ($marketprice - $payholderhouse->price) * ($last_area - $discount_area + $up_area);
                                         }
                                     }
                                     $payholderhouseup_model = new Payholderhouseups();
@@ -541,7 +553,7 @@ class Payholderhouse extends Auth
                         $payholder->save();
                         $payholderhouse_ids=Payholderhouses::where('pay_holder_id',$payholder->id)->column('id');
                         if($payholderhouse_ids){
-                            Payholderhouseups::destroy($payholderhouse_ids,true);
+                            Payholderhouseups::destroy(['pay_holder_house_id'=>['in',$payholderhouse_ids]],true);
                             Payholderhouses::where('id','in',$payholderhouse_ids)->delete();
                         }
                     }
@@ -601,7 +613,7 @@ class Payholderhouse extends Auth
         $model=new Payholderhouses();
         Db::startTrans();
         try{
-            Payholderhouseups::destroy($ids,true);
+            Payholderhouseups::destroy(['pay_holder_house_id'=>['in',$ids]], true);
             Payholderhouses::where('id','in',$ids)->delete();
 
             /* ++++++++++ 兑付汇总 ++++++++++ */
@@ -622,109 +634,111 @@ class Payholderhouse extends Auth
             /* ++++++++++ 安置房价上浮设置 ++++++++++ */
             $itemhouseups=Itemhouseups::where('item_id',$pay_info->item_id)->order('up_start asc')->select();
             $last=$pay_info->total;
+            $discount_area=0;
             /* ++++++++++ 兑付-产权人或承租人 ++++++++++ */
             foreach ($payholders as $payholder){
                 /* ++++++++++ 有选择安置房，公产承租人或私产产权人 ++++++++++ */
                 if($payholder->house_amount && (($pay_info->getData('type') && $payholder->getData('holder')==2) || (!$pay_info->getData('type')&& $payholder->getData('holder')==1))){
                     /* ++++++++++ 安置房 ++++++++++ */
-                    $payholderhouses=Payholderhouses::alias('phh')
-                        ->field(['phh.*','h.community_id as house_community_id','h.building','h.unit','h.floor','h.number','h.layout_id','h.area','h.status as house_status','hc.address','hc.name as hc_name','l.name as l_name'])
-                        ->join('house h','h.id=phh.house_id','left')
-                        ->join('house_community hc','hc.id=h.community_id','left')
-                        ->join('layout l','l.id=h.layout_id','left')
-                        ->where('phh.pay_holder_id',$payholder->id)
-                        ->order('phh.sort asc')
+                    $payholderhouses=Payholderhouses::where('pay_holder_id',$payholder->id)
+                        ->order('sort asc,id asc')
                         ->select();
 
                     /* ++++++++++ 计算上浮 ++++++++++ */
                     if($pay_info->getData('type') || !$pay_info->getData('pay_way')){
                         /* ++++++++++ 公产或分权兑付，重置补偿款 ++++++++++ */
                         $last=$payholder->total_amount;
+                        $discount_area=0;
                     }
 
                     $house_amount=0;
-                    if($payholderhouses){
-                        foreach ($payholderhouses as $payholderhouse){
-                            Payholderhouseups::destroy($payholderhouse->id,true);
+                    if($payholderhouses) {
+                        foreach ($payholderhouses as $payholderhouse) {
+                            Payholderhouseups::destroy(['pay_holder_house_id'=>$payholderhouse->id], true);
                             /* ++++++++++ 安置房价值与补偿款差额 ++++++++++ */
-                            $last=$last-$payholderhouse->amount;
+                            $last = $last - $payholderhouse->amount;
+                            $up_area=$discount_area;
                             /* ++++++++++ 安置房价值低于补偿款，无上浮 ++++++++++ */
-                            if($last>=0){
-                                $payholderhouse->amount_up=0;
-                                $payholderhouse->total=$payholderhouse->amount;
+                            if ($last >= 0) {
+                                $payholderhouse->amount_up = 0;
+                                $payholderhouse->total = $payholderhouse->amount;
                                 $payholderhouse->save();
-                            }
-                            /* ++++++++++ 安置房价值高于补偿款，计算上浮 ++++++++++ */
-                            else{
+                            } /* ++++++++++ 安置房价值高于补偿款，计算上浮 ++++++++++ */
+                            else {
                                 /* ++++++++++ 剩余补偿款可换安置房面积 ++++++++++ */
-                                $default_area=($last+$payholderhouse->amount)/$payholderhouse->price;
+                                $default_area = ($last + $payholderhouse->amount) / $payholderhouse->price;
                                 /* ++++++++++ 上浮面积 ++++++++++ */
-                                $last_area=$payholderhouse->area-$default_area;
-                                $up_datas=[];
-                                $up_amount=0;
+                                $last_area = $payholderhouse->area - $default_area;
+                                $up_datas = [];
+                                $up_amount = 0;
                                 /* ++++++++++ 上浮计算 ++++++++++ */
-                                foreach ($itemhouseups as $itemhouseup){
+                                foreach ($itemhouseups as $itemhouseup) {
                                     /* ++++++++++ 在上浮区间 ++++++++++ */
-                                    if($itemhouseup->up_end && $itemhouseup->up_rate){
-                                        /* ++++++++++ 超出当前上浮区间 ++++++++++ */
-                                        if($last_area>$itemhouseup->up_end){
-                                            $up_datas[]=[
-                                                'pay_holder_house_id'=>$payholderhouse->id,
-                                                'up_start'=>$itemhouseup->up_start,
-                                                'up_end'=>$itemhouseup->up_end,
-                                                'up_area'=>($itemhouseup->up_end-$itemhouseup->up_start),
-                                                'up_rate'=>$itemhouseup->up_rate,
-                                                'price'=>$payholderhouse->price,
-                                                'amount'=>$payholderhouse->price* ($itemhouseup->up_rate/100) *($itemhouseup->up_end-$itemhouseup->up_start),
-                                            ];
-                                            $up_amount +=$payholderhouse->price* ($itemhouseup->up_rate/100) *($itemhouseup->up_end-$itemhouseup->up_start);
+                                    if ($itemhouseup->up_end !=0 && $itemhouseup->up_rate !=0) {
+                                        if($discount_area >= $itemhouseup->up_end){
+                                            continue;
                                         }
-                                        /* ++++++++++ 在当前上浮区间 ++++++++++ */
-                                        else{
-                                            $up_datas[]=[
-                                                'pay_holder_house_id'=>$payholderhouse->id,
-                                                'up_start'=>$itemhouseup->up_start,
-                                                'up_end'=>$itemhouseup->up_end,
-                                                'up_area'=>($last_area-$itemhouseup->up_start),
-                                                'up_rate'=>$itemhouseup->up_rate,
-                                                'price'=>$payholderhouse->price,
-                                                'amount'=>$payholderhouse->price* ($itemhouseup->up_rate/100) *($last_area-$itemhouseup->up_start),
+
+                                        /* ++++++++++ 超出当前上浮区间 ++++++++++ */
+                                        if ($last_area > $itemhouseup->up_end) {
+                                            $up_datas[] = [
+                                                'pay_holder_house_id' => $payholderhouse->id,
+                                                'up_start' => $itemhouseup->up_start,
+                                                'up_end' => $itemhouseup->up_end,
+                                                'up_area' => ($itemhouseup->up_end - $discount_area),
+                                                'up_rate' => $itemhouseup->up_rate,
+                                                'price' => $payholderhouse->price,
+                                                'amount' => $payholderhouse->price * ($itemhouseup->up_rate/100) * ($itemhouseup->up_end - $discount_area),
                                             ];
-                                            $up_amount +=$payholderhouse->price* ($itemhouseup->up_rate/100) *($last_area-$itemhouseup->up_start);
+                                            $up_amount += $payholderhouse->price * ($itemhouseup->up_rate/100) * ($itemhouseup->up_end - $discount_area);
+
+                                            $discount_area +=$itemhouseup->up_end - $itemhouseup->up_start;
+                                        } /* ++++++++++ 在当前上浮区间 ++++++++++ */
+                                        else {
+                                            $up_datas[] = [
+                                                'pay_holder_house_id' => $payholderhouse->id,
+                                                'up_start' => $itemhouseup->up_start,
+                                                'up_end' => $itemhouseup->up_end,
+                                                'up_area' => ($last_area - $discount_area),
+                                                'up_rate' => $itemhouseup->up_rate,
+                                                'price' => $payholderhouse->price,
+                                                'amount' => $payholderhouse->price * ($itemhouseup->up_rate/100) * ($last_area - $discount_area),
+                                            ];
+                                            $up_amount += $payholderhouse->price * ($itemhouseup->up_rate/100) * ($last_area - $discount_area);
+
+                                            $discount_area +=$last_area - $itemhouseup->up_start;
                                             break;
                                         }
-                                    }
-                                    /* ++++++++++ 超出上浮区间，按市场评估单价计算差额 ++++++++++ */
-                                    else{
+                                    } /* ++++++++++ 超出上浮区间，按市场评估单价计算差额 ++++++++++ */
+                                    else {
                                         /* ++++++++++ 安置房市场评估单价 ++++++++++ */
-                                        $marketprice=Houseprices::where([
-                                            'house_id'=>$payholderhouse->house_id,
-                                            'start_at'=>['<=',$pay_info->item_time],
-                                            'end_at'=>['>=',$pay_info->item_time],
+                                        $marketprice = Houseprices::where([
+                                            'house_id' => $payholderhouse->house_id,
+                                            'start_at' => ['<=', $pay_info->item_time],
+                                            'end_at' => ['>=', $pay_info->item_time],
                                         ])->value('market_price');
 
-                                        $up_datas[]=[
-                                            'pay_holder_house_id'=>$payholderhouse->id,
-                                            'up_start'=>$itemhouseup->up_start,
-                                            'up_end'=>$itemhouseup->up_end,
-                                            'up_area'=>($last_area-$itemhouseup->up_start),
-                                            'up_rate'=>$itemhouseup->up_rate,
-                                            'price'=>($marketprice-$payholderhouse->price),
-                                            'amount'=>($marketprice-$payholderhouse->price)*($last_area-$itemhouseup->up_start),
+                                        $up_datas[] = [
+                                            'pay_holder_house_id' => $payholderhouse->id,
+                                            'up_start' => $itemhouseup->up_start,
+                                            'up_end' => $itemhouseup->up_end,
+                                            'up_area' => ($last_area - $discount_area + $up_area),
+                                            'up_rate' => $itemhouseup->up_rate,
+                                            'price' => ($marketprice - $payholderhouse->price),
+                                            'amount' => ($marketprice - $payholderhouse->price) * ($last_area - $discount_area + $up_area),
                                         ];
-                                        $up_amount +=($marketprice-$payholderhouse->price)*($last_area-$itemhouseup->up_start);
+                                        $up_amount += ($marketprice - $payholderhouse->price) * ($last_area - $discount_area + $up_area);
                                     }
                                 }
-                                $payholderhouseup_model=new Payholderhouseups();
+                                $payholderhouseup_model = new Payholderhouseups();
                                 $payholderhouseup_model->saveAll($up_datas);
-                                $payholderhouse->amount_up=$up_amount;
-                                $payholderhouse->total=$payholderhouse->amount+$payholderhouse->amount_up;
+                                $payholderhouse->amount_up = $up_amount;
+                                $payholderhouse->total = $payholderhouse->amount + $payholderhouse->amount_up;
                             }
                             $payholderhouse->save();
-                            $house_amount+=$payholderhouse->total;
+                            $house_amount += $payholderhouse->total;
                         }
                     }
-
                     $payholder->house_amount=$house_amount;
                     $payholder->save();
                 }
@@ -734,7 +748,7 @@ class Payholderhouse extends Auth
                     $payholder->save();
                     $payholderhouse_ids=Payholderhouses::where('pay_holder_id',$payholder->id)->column('id');
                     if($payholderhouse_ids){
-                        Payholderhouseups::destroy($payholderhouse_ids,true);
+                        Payholderhouseups::destroy(['pay_holder_house_id'=>['in',$payholderhouse_ids]],true);
                         Payholderhouses::where('id','in',$payholderhouse_ids)->delete();
                     }
                 }
