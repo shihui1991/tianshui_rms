@@ -189,7 +189,7 @@ class Fundsname extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Fundsnames::destroy($ids);
+        $res=Fundsnames::destroy(['id'=>['in',$ids]]);
         if($res){
             return $this->success('删除成功','');
         }else{

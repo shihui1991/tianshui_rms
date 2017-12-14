@@ -488,7 +488,7 @@ class Collection extends Auth
             $status_model=new Itemstatuss();
             $status_model->saveAll($status_data);
 
-            Collections::destroy($ids);
+            Collections::destroy(['id'=>['in',$ids]]);
 
             $res=true;
             $msg='删除成功';

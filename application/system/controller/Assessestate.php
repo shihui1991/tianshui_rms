@@ -648,7 +648,7 @@ class Assessestate extends Auth
 
         Db::startTrans();
         try{
-            $rs = model('Assessestates')->destroy($ids);
+            $rs = model('Assessestates')->destroy(['id'=>['in',$ids]]);
             model('Assessestatebuildings')->destroy(['estate_id'=>['in',$ids]]);
             model('Assessestatevaluers')->destroy(['estate_id'=>['in',$ids]]);
             if($rs){

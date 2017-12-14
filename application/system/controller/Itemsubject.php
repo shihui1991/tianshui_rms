@@ -170,7 +170,7 @@ class Itemsubject extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Itemsubjects::destroy($ids);
+        $res=Itemsubjects::destroy(['id'=>['in',$ids]]);
         if($res){
             return $this->success('删除成功','');
         }else{

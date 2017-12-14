@@ -274,7 +274,7 @@ class Crowd extends Auth
             if($count){
                 return $this->error('其下存在子分类，请先删除全部子分类后重试！');
             }
-            $res=Crowds::destroy($ids);
+            $res=Crowds::destroy(['id'=>['in',$ids]]);
             if($res){
                 return $this->success('删除成功','');
             }else{

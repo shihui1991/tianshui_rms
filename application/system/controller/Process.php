@@ -217,7 +217,7 @@ class Process extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Processs::destroy($ids);
+        $res=Processs::destroy(['id'=>['in',$ids]]);
         if($res){
             return $this->success('删除成功','');
         }else{

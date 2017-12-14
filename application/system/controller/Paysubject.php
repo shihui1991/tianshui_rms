@@ -398,7 +398,7 @@ class Paysubject extends Auth
         Db::startTrans();
         try{
             /* ********** 删除科目 ********** */
-            Paysubjects::destroy($ids);
+            Paysubjects::destroy(['id'=>['in',$ids]]);
 
             /* ********** 获取兑付基本数据 ********** */
             $pay_info=Paysubjects::withTrashed()

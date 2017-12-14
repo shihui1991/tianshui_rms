@@ -156,7 +156,7 @@ class Itemhouseup extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Itemhouseups::destroy($ids);
+        $res=Itemhouseups::destroy(['id'=>['in',$ids]]);
         if($res){
             return $this->success('删除成功','');
         }else{

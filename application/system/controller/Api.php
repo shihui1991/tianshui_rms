@@ -306,7 +306,7 @@ class Api extends Auth
                     $del_ids[]=$id;
                 }
             }
-            $res=Apis::destroy($del_ids);
+            $res=Apis::destroy(['id'=>['in',$del_ids]]);
             $fail_num=count($fail_ids);
             if($res){
                 if($fail_num){
@@ -322,7 +322,7 @@ class Api extends Auth
             if($count){
                 return $this->error('其下存在子接口，请先删除全部子接口后重试！');
             }
-            $res=Apis::destroy($ids);
+            $res=Apis::destroy(['id'=>['in',$ids]]);
             if($res){
                 return $this->success('删除成功','');
             }else{

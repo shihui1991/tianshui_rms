@@ -39,6 +39,7 @@
                 {/if}
                 <button type="button" class="btn" onclick="layerIfWindow('兑付与协议','{:url('pay/detail',['item_id'=>$collection->item_id,'collection_id'=>$collection->id])}','800','600',true)">兑付与协议</button>
                 <button type="button" class="btn" onclick="layerIfWindow('评估公司投票','{:url('Itemcompanyvote/index',['item_id'=>$collection->item_id,'collection_id'=>$collection->id])}','800','600',true)">评估公司投票</button>
+                <button type="button" class="btn" onclick="layerIfWindow('风险评估调查','{:url('Risk/detail',['item_id'=>$collection->item_id,'collection_id'=>$collection->id])}','800','600',true)">风险评估调查</button>
             </td>
         </tr>
         {/volist}

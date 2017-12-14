@@ -189,7 +189,7 @@ class Layout extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Layouts::destroy($ids);
+        $res=Layouts::destroy(['id'=>['in',$ids]]);
         if($res){
             return $this->success('删除成功','');
         }else{
