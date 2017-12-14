@@ -17,4 +17,14 @@ class Itemtopics extends Model
     protected $deleteTime='deleted_at';
     protected $autoWriteTimestamp = true;
     protected $field=true;
+
+
+    public function item(){
+        return $this->belongsTo('Items','item_id','id')->field(['id','name','status']);
+    }
+
+
+    public function topic(){
+        return $this->belongsTo('Topics','topic_id','id');
+    }
 }

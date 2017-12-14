@@ -96,7 +96,7 @@ class Itemcompanyvote extends Base
                 $itemcompanyvote->company_id=$company_id;
                 $itemcompanyvote->save();
             }else{
-                $community_id=Collections::where(['item_id'=>$item_id,'collection_id'=>$collection_id])->value('community_id');
+                $community_id=Collections::where(['item_id'=>$item_id,'id'=>$collection_id])->value('community_id');
 
                 $itemcompanyvote=new Itemcompanyvotes();
                 $itemcompanyvote->save([

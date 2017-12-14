@@ -57,4 +57,13 @@ class Risks extends Model
             return $array;
         }
     }
+
+
+    public function risktopic(){
+        return $this->hasMany('Risktopics','risk_id','id');
+    }
+
+    public function recommendholder(){
+        return $this->belongsTo('Collectionholders','recommemd_holder_id','id')->field(['id','name','address','phone']);
+    }
 }
