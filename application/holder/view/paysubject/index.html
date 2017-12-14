@@ -42,11 +42,11 @@
                             <td>{$i}</td>
                             <td>{$paysubject->name}</td>
                             <td>{$paysubject->num_from}</td>
-                            <td>$paysubject->number|number_format=2}</td>
+                            <td>{$paysubject->number|number_format=2}</td>
                             <td>{$paysubject->unit}</td>
                             <td>{$paysubject->price|number_format=2}</td>
                             <td>{$paysubject->times}</td>
-                            <td>$paysubject->amount|number_format=2}</td>
+                            <td>{$paysubject->amount|number_format=2}</td>
                         </tr>
                         {/volist}
                         </tbody>

@@ -62,7 +62,7 @@
             </div>
             <div class="tabPage w_100">
                 <div class="layerCon bg_f">
-                    <textarea name="content" id="content" class="kindeditor">{:isset($infos)?$infos->content:''}</textarea>
+                    <textarea name="" id="" class="kindeditor">{$infos->content}</textarea>
                 </div>
             </div>
         </div>
@@ -78,9 +78,10 @@
             minHeight:'300',
             uploadJson : '',
             fileManagerJson : '',
-            allowFileManager : false
+            allowFileManager : false,
+            readonlyMode : true,
+            items:[]
         });
-        editor.readOnly(true);
     });
 </script>
 </body>

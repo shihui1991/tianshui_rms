@@ -165,6 +165,7 @@ class Paysubject extends Auth
                 $i=0;
                 $pay_holder_data=[];
                 foreach ($payholders as $payholder){
+                    $pay_holder_data[$i]['id']=$payholder->id;
                     if($pay_info->getData('type')){
                         if($payholder->getData('holder')==1){
                             $pay_holder_data[$i]['subject_amount']=0;
@@ -328,6 +329,7 @@ class Paysubject extends Auth
             $i=0;
             $pay_holder_data=[];
             foreach ($payholders as $payholder){
+                $pay_holder_data[$i]['id']=$payholder->id;
                 if($pay_info->getData('type')){
                     if($payholder->getData('holder')==1){
                         $pay_holder_data[$i]['subject_amount']=0;
@@ -419,6 +421,7 @@ class Paysubject extends Auth
             $i=0;
             $pay_holder_data=[];
             foreach ($payholders as $payholder){
+                $pay_holder_data[$i]['id']=$payholder->id;
                 if($pay_info->getData('type')){
                     if($payholder->getData('holder')==1){
                         $pay_holder_data[$i]['subject_amount']=0;
@@ -510,6 +513,7 @@ class Paysubject extends Auth
             $i=0;
             $pay_holder_data=[];
             foreach ($payholders as $payholder){
+                $pay_holder_data[$i]['id']=$payholder->id;
                 if($pay_info->getData('type')){
                     if($payholder->getData('holder')==1){
                         $pay_holder_data[$i]['subject_amount']=0;
