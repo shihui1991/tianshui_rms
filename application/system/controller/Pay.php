@@ -346,7 +346,7 @@ class Pay extends Auth
                 $res=true;
                 Db::commit();
             }catch (\Exception $exception){
-                $res=false;dump($exception);
+                $res=false;
                 Db::rollback();
             }
 
