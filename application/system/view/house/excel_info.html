@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>安置房源--->导入提示|房屋征收安置管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+
+    <div class="tableCon" style="padding-top: 10px;padding-left: 20px;">
+        <h1>安置房源管理(导入结果)</h1><br/>
+        <h2>导入数据：共<span style="color: red;">{$data_count}</span>条</h2>
+        <h5>符合格式数据： <span style="color: red;">{$success_count}</span>条
+            (已添加<span style="color: red;">{$add_count}</span>条,重复数据<span style="color: red;">{$unique_count}</span>条[已过滤])</h5>
+        <h5>不符合格式数据： <span style="color: red;">{$error_count}</span>条</h5><br/>
+        <p><a href="{:url('house/index')}"><button type="button" class="btn">返回列表</button></a>&nbsp;<br/><br/>
+        {if condition="$error_count>0"}<form action="{:url('excel_export_error')}?file_url={$error_data_file}" method="post">
+        <button type="submit" class="btn">导出不合格数据</button>
+        </form>{/if}</p>
+    </div>
+
+</body>
+</html>
