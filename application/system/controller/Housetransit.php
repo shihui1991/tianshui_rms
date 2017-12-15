@@ -329,6 +329,9 @@ class Housetransit extends Auth
             ->where($where)
             ->order($orders)
             ->select();
+        if(empty($houseresettle_list)){
+            return $this->error('暂无数据');
+        }
         /*++++++++++ 【拼装数据】 ++++++++++*/
         /*++++++++++ 归类分组++++++++++*/
         $new_array = [];
@@ -381,6 +384,6 @@ class Housetransit extends Auth
             $housetransit_title[0][5+$i*2] = '过渡时间(第'.$i.'次过渡)';
         }
         $xls_data = array_merge($housetransit_title,$datas_array);
-        create_housetransit_xls($xls_data,date('Ymd'));
+        create_housetransit_xls($xls_data,'过渡房屋使用情况明细'.date('Ymd'));
     }
 }

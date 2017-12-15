@@ -56,6 +56,9 @@ class Collection extends Auth
             $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
             $datas['item_info']=$item_info;
             $where['item_id']=$item_id;
+            /* ++++++++++ 项目列表 ++++++++++ */
+            $items=Items::field(['id','name','status','is_top'])->order('is_top desc')->select();
+            $datas['items']=$items;
         }else{
             if($item_id){
                 $where['item_id']=$item_id;
@@ -678,5 +681,23 @@ class Collection extends Auth
         }else{
             return $this->error($msg,'');
         }
+    }
+
+    /* ========== 房屋征收摸底汇总----Excel导出 ========== */
+    public function statis(){
+        $item_id = input('item_id');
+        if(!$item_id){
+            return $this->error('请先选择项目');
+        }
+
+       $collections =  model('Collections')
+           ->alias('c')
+           ->field(['ch.name as holder_name','count(ch.id) as holder_count','ch.cardnum','ch.gender','ch.nation'])
+           ->join('collection_holder ch','ch.collection_id = c.id','left')
+           ->join('collection_holder_crowd chc','chc.holder_id = chc.id','left')
+            ->where('c.item_id',$item_id)
+           ->group('c.id')
+           ->select();
+        dump($collections);
     }
 }

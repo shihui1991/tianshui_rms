@@ -455,7 +455,9 @@ class Statis extends Base
         $new_title_b[1] = '项目名称';
         foreach ($datas['years_in'] as $k=>$v){
             $new_title_a[2] = '收入情况';
-            $new_title_a[2+$k] = '';
+            if($k!=0) {
+                $new_title_a[2 + $k] = '';
+            }
             $new_title_b[2+$k] = $v.'年';
             $new_title_a[2+$k+1] = '收入合计';
             $new_title_b[2+$k+1] = '收入合计';
@@ -487,7 +489,7 @@ class Statis extends Base
         $cd3 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)+2];
         $cd4 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)+3];
         if ($fundsin_array&&$fundsout_array){
-            create_xls($cd1,$cd2,$cd3,$cd4,$ColumnDimension1,$ColumnDimension2,$ColumnDimension3,$datas_excel,date('Ymd'));
+            create_xls($cd1,$cd2,$cd3,$cd4,$ColumnDimension1,$ColumnDimension2,$ColumnDimension3,$datas_excel,'项目资金明细'.date('Ymd'));
         }else{
             return $this->error('暂无数据');
         }

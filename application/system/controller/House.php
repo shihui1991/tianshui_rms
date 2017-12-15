@@ -355,4 +355,176 @@ class House extends Auth
             return $this->error('销毁失败，请先删除！');
         }
     }
+
+    /* ========== Excel导出---房源 ========== */
+    public function excel_export(){
+        $ids = input('ids');
+        if(!$ids){
+            return $this->error('请勾选要导出的房源');
+        }
+      $house_info = model('Houses')
+          ->alias('h')
+          ->field(['h.*','hc.name as hc_name','l.name as l_name','hlp.remark as hlp_remark'])
+          ->join('house_community hc','hc.id = h.community_id','left')
+          ->join('house_layout_pic hlp','hlp.id = h.layout_pic_id','left')
+          ->join('layout l','l.id = h.layout_id','left')
+          ->whereIn('h.id',$ids)
+          ->select();
+        $new_title = [];
+        $new_title[0][0] = '序号';
+        $new_title[0][1] = '小区';
+        $new_title[0][2] = '房号';
+        $new_title[0][3] = '交付时间';
+        $new_title[0][4] = '户型';
+        $new_title[0][5] = '户型标识';
+        $new_title[0][6] = '面积(㎡)';
+        $new_title[0][7] = '有无电梯';
+        $new_title[0][8] = '类型';
+        $new_title[0][9] = '状态';
+        $new_data = [];
+       foreach ($house_info as $k=>$v){
+           $building = $v->building?$v->building.'栋':'';
+           $unit = $v->unit?$v->unit.'单元':'';
+           $floor =  $v->floor?$v->floor.'楼':'';
+           $number = $v->number?$v->number.'号':'';
+           $new_data[$k][] = $k+1;
+           $new_data[$k][] = $v->hc_name;
+           $new_data[$k][] = $building.$unit.$floor.$number;
+           $new_data[$k][] = $v->deliver_at;
+           $new_data[$k][] = $v->l_name;
+           $new_data[$k][] = $v->hlp_remark;
+           $new_data[$k][] = $v->area;
+           $new_data[$k][] = $v->has_lift;
+           $new_data[$k][] = $v->is_real.'|'.$v->is_buy.'|'.$v->is_transit.'|'.$v->is_public;
+           $new_data[$k][] = $v->status;
+       }
+       $datas = array_merge($new_title,$new_data);
+        if($house_info){
+            create_house_xls($datas,'房源'.date('Ymd'));
+        }else{
+            return $this->error('暂无数据');
+        }
+    }
+
+    /* ========== Excel表头导出---房源 ========== */
+    public function excel_export_title(){
+        $new_title = [];
+        $new_title[0][0] = '小区';
+        $new_title[0][1] = '小区地址';
+        $new_title[0][2] = '栋';
+        $new_title[0][3] = '单元';
+        $new_title[0][4] = '楼';
+        $new_title[0][5] = '号';
+        $new_title[0][6] = '交付时间';
+        $new_title[0][7] = '户型';
+        $new_title[0][8] = '户型标识';
+        $new_title[0][9] = '面积(㎡)';
+        $new_title[0][10] = '有无电梯';
+        $new_title[0][11] = '是否现房';
+        $new_title[0][12] = '是否购置房';
+        $new_title[0][13] = '是否可过渡';
+        $new_title[0][14] = '是否专用';
+        $new_title[0][15] = '物业管理费单价(元/平米/月)';
+        $new_title[0][16] = '公摊费单价(元/月)';
+        $excel_data = [];
+        $excel_data[1][0] = '(所有列必须设置数字格式为文本)例如：幸福小区';
+        $excel_data[1][1] = '例如：幸福大道1号';
+        $excel_data[1][2] = '例如：1';
+        $excel_data[1][3] = '例如：1';
+        $excel_data[1][4] = '例如：1';
+        $excel_data[1][5] = '例如：1';
+        $excel_data[1][6] = '例如：2017-1-1';
+        $excel_data[1][7] = '例如：一室一厅';
+        $excel_data[1][8] = '例如：A';
+        $excel_data[1][9] = '例如：100';
+        $excel_data[1][10] = '有(填1) 或者 无(填0)';
+        $excel_data[1][11] = '现房(填1) 或者 期房(填0)';
+        $excel_data[1][12] = '是(填1) 或者 否(填0)';
+        $excel_data[1][13] = '可作临时安置房(填1) 或者 不可作临时安置房(填0)';
+        $excel_data[1][14] = '项目共用房(填1) 或者 项目专用房(填0)';
+        $excel_data[1][15] = '例如：1';
+        $excel_data[1][16] = '例如：10';
+       $new_data = array_merge($new_title,$excel_data);
+        create_houses_xls($new_data,'导入数据格式(保留表头第一行)');
+
+    }
+
+    /* ========== Excel导入---房源 ========== */
+    public function excel_import(){
+        $files=request()->file();
+        $key=array_keys($files);
+        $file = $files[$key[0]];
+        if($file){
+            $info = $file->move( './uploads/files');
+            if($info){
+                $file_name=str_replace('\\','/',$info->getSaveName());
+                $datas = './uploads/files/'.$file_name;
+                $excel_datas = import_excel($datas);
+                $add_data_array = $excel_datas['add_datas'];
+                foreach ($add_data_array as $k=>$v){
+                    $house_rs = db('house')
+                        ->where('community_id',$v['community_id'])
+                        ->where('building',$v['building'])
+                        ->where('unit',$v['unit'])
+                        ->where('floor',$v['floor'])
+                        ->where('number',$v['number'])
+                        ->count();
+                    if($house_rs){
+                        unset($add_data_array[$k]);
+                    }
+                }
+                $rs = model('Houses')->saveAll($add_data_array);
+                if($rs){
+                  return view('excel_info',[
+                      'data_count'=>$excel_datas['data_count'],
+                      'success_count'=>$excel_datas['success_count'],
+                      'error_count'=>$excel_datas['error_count'],
+                      'error_data_file'=>$datas,
+                      'unique_count'=>$excel_datas['success_count']-count($add_data_array),
+                      'add_count'=>count($add_data_array)
+                  ]);
+                }else{
+                    return view('excel_info',[
+                        'data_count'=>$excel_datas['data_count'],
+                        'success_count'=>$excel_datas['success_count'],
+                        'error_count'=>$excel_datas['error_count'],
+                        'error_data_file'=>$datas,
+                        'unique_count'=>$excel_datas['success_count']-count($add_data_array),
+                        'add_count'=>count($add_data_array)
+                    ]);
+                }
+
+            }else{
+                return $this->error('文件导入失败','index');
+            }
+        }
+    }
+
+    /* ========== Excel导出---不符合格式数据 ========== */
+    public function excel_export_error(){
+        $new_title = [];
+        $new_title[0][0] = '小区';
+        $new_title[0][1] = '小区地址';
+        $new_title[0][2] = '栋';
+        $new_title[0][3] = '单元';
+        $new_title[0][4] = '楼';
+        $new_title[0][5] = '号';
+        $new_title[0][6] = '交付时间';
+        $new_title[0][7] = '户型';
+        $new_title[0][8] = '户型标识';
+        $new_title[0][9] = '面积(㎡)';
+        $new_title[0][10] = '有无电梯';
+        $new_title[0][11] = '是否现房';
+        $new_title[0][12] = '是否购置房';
+        $new_title[0][13] = '是否可过渡';
+        $new_title[0][14] = '是否专用';
+        $new_title[0][15] = '物业管理费单价(元/平米/月)';
+        $new_title[0][16] = '公摊费单价(元/月)';
+            $datas = input('file_url');
+       $error_array =  create_error_excel($datas);
+        $new_data = array_merge($new_title,$error_array);
+//          exec('rm -rf '.$datas);
+//           unlink($datas);
+        create_houses_xls($new_data,'错误格式数据'.date('Ymd'));
+    }
 }

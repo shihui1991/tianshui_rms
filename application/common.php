@@ -642,3 +642,545 @@ function create_housemanagefee_xls($data,$filename='simple.xls'){
     $objwriter->save('php://output');
     exit;
 }
+function create_house_xls($data,$filename='simple.xls'){
+
+    ini_set('max_execution_time', '0');
+    vendor("PHPExcels.PHPExcel");
+    $filename=str_replace('.xls', '', $filename).'.xls';
+    $filename = iconv("utf-8", "gb2312", $filename);
+    $phpexcel = new \PHPExcel();
+    $phpexcel->getProperties()
+        ->setCreator("Maarten Balliauw")
+        ->setLastModifiedBy("Maarten Balliauw")
+        ->setTitle("Office 2007 XLSX Test Document")
+        ->setSubject("Office 2007 XLSX Test Document")
+        ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+        ->setKeywords("office 2007 openxml php")
+        ->setCategory("Test result file");
+
+    // 设置个表格宽度
+    $phpexcel->getActiveSheet()->getColumnDimension('A')->setWidth(10);
+    $phpexcel->getActiveSheet()->getColumnDimension('B')->setWidth(16);
+    $phpexcel->getActiveSheet()->getColumnDimension('C')->setWidth(30);
+    $phpexcel->getActiveSheet()->getColumnDimension('D')->setWidth(15);
+    $phpexcel->getActiveSheet()->getColumnDimension('E')->setWidth(15);
+    $phpexcel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
+    $phpexcel->getActiveSheet()->getColumnDimension('G')->setWidth(18);
+    $phpexcel->getActiveSheet()->getColumnDimension('H')->setWidth(16);
+    $phpexcel->getActiveSheet()->getColumnDimension('I')->setWidth(30);
+    $phpexcel->getActiveSheet()->getColumnDimension('J')->setWidth(16);
+
+    // 水平居中（位置很重要，建议在最初始位置）
+    $phpexcel->setActiveSheetIndex(0)->getStyle('A')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('B')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('C')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('D')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('E')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('F')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('G')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('H')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('I')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('J')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+//    设置单元格的值
+    $phpexcel->getActiveSheet()->getStyle('G')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_NUMBER_00);
+    $phpexcel->getActiveSheet()->fromArray($data);
+    $phpexcel->getActiveSheet()->setTitle('Sheet1');
+    $phpexcel->setActiveSheetIndex(0);
+    ob_end_clean();
+    header('Content-Type: application/vnd.ms-excel');
+    header("Content-Disposition: attachment;filename=$filename");
+    header('Cache-Control: max-age=0');
+    header('Cache-Control: max-age=1');
+    header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+    header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+    header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+    header ('Pragma: public'); // HTTP/1.0
+    $objwriter = PHPExcel_IOFactory::createWriter($phpexcel, 'Excel5');
+    $objwriter->save('php://output');
+    exit;
+}
+function create_houses_xls($data,$filename='simple.xls'){
+
+    ini_set('max_execution_time', '0');
+    vendor("PHPExcels.PHPExcel");
+    $filename=str_replace('.xls', '', $filename).'.xls';
+    $filename = iconv("utf-8", "gb2312", $filename);
+    $phpexcel = new \PHPExcel();
+    $phpexcel->getProperties()
+        ->setCreator("Maarten Balliauw")
+        ->setLastModifiedBy("Maarten Balliauw")
+        ->setTitle("Office 2007 XLSX Test Document")
+        ->setSubject("Office 2007 XLSX Test Document")
+        ->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")
+        ->setKeywords("office 2007 openxml php")
+        ->setCategory("Test result file");
+
+    // 设置个表格宽度
+    $phpexcel->getActiveSheet()->getColumnDimension('A')->setWidth(16);
+    $phpexcel->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+    $phpexcel->getActiveSheet()->getColumnDimension('C')->setWidth(8);
+    $phpexcel->getActiveSheet()->getColumnDimension('D')->setWidth(8);
+    $phpexcel->getActiveSheet()->getColumnDimension('E')->setWidth(8);
+    $phpexcel->getActiveSheet()->getColumnDimension('F')->setWidth(8);
+    $phpexcel->getActiveSheet()->getColumnDimension('G')->setWidth(18);
+    $phpexcel->getActiveSheet()->getColumnDimension('H')->setWidth(16);
+    $phpexcel->getActiveSheet()->getColumnDimension('I')->setWidth(16);
+    $phpexcel->getActiveSheet()->getColumnDimension('J')->setWidth(16);
+    $phpexcel->getActiveSheet()->getColumnDimension('K')->setWidth(20);
+    $phpexcel->getActiveSheet()->getColumnDimension('L')->setWidth(24);
+    $phpexcel->getActiveSheet()->getColumnDimension('M')->setWidth(20);
+    $phpexcel->getActiveSheet()->getColumnDimension('N')->setWidth(46);
+    $phpexcel->getActiveSheet()->getColumnDimension('O')->setWidth(40);
+    $phpexcel->getActiveSheet()->getColumnDimension('P')->setWidth(40);
+    $phpexcel->getActiveSheet()->getColumnDimension('Q')->setWidth(40);
+
+    // 水平居中（位置很重要，建议在最初始位置）
+    $phpexcel->setActiveSheetIndex(0)->getStyle('A')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('B')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('C')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('D')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('E')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('F')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('G')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('H')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('I')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('J')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('K')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('L')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('M')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('N')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('O')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('P')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+    $phpexcel->setActiveSheetIndex(0)->getStyle('Q')->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+    //    设置单元格的值
+    $phpexcel->getActiveSheet()->getStyle('A')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('B')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('C')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('D')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('E')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('F')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('G')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('H')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('I')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('J')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('K')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('L')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('M')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('N')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('O')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('P')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+    $phpexcel->getActiveSheet()->getStyle('Q')->getNumberFormat()->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_TEXT);
+
+    $phpexcel->getActiveSheet()->fromArray($data);
+    $phpexcel->getActiveSheet()->setTitle('Sheet1');
+    $phpexcel->setActiveSheetIndex(0);
+    ob_end_clean();
+    header('Content-Type: application/vnd.ms-excel');
+    header("Content-Disposition: attachment;filename=$filename");
+    header('Cache-Control: max-age=0');
+    header('Cache-Control: max-age=1');
+    header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+    header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+    header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+    header ('Pragma: public'); // HTTP/1.0
+    $objwriter = PHPExcel_IOFactory::createWriter($phpexcel, 'Excel5');
+    $objwriter->save('php://output');
+    exit;
+}
+/**
+ * 导入excel文件
+ * @param  string $file excel文件路径
+ * @return array        excel文件内容数组
+ * data_count     总条数
+ * success_count  成功条数
+ * error_count    失败条数
+ * add_count      可添加条数
+ * add_datas      可添加数组
+ */
+function import_excel($file){
+    // 判断文件是什么格式
+    $type = pathinfo($file);
+    $type = strtolower($type["extension"]);
+    $type=$type==='csv' ? $type : 'Excel5';
+    ini_set('max_execution_time', '0');
+    vendor("PHPExcels.PHPExcel");
+    vendor("PHPExcels.PHPExcel.IOFactory");
+    // 判断使用哪种格式
+    $objReader = PHPExcel_IOFactory::createReader($type);
+    $objPHPExcel = $objReader->load($file,$encode='utf-8');
+    $sheet = $objPHPExcel->getSheet(0);
+    // 取得总行数
+    $highestRow = $sheet->getHighestRow();
+    // 取得总列数
+    $highestColumn = $sheet->getHighestColumn();
+    //循环读取excel文件,读取一条,插入一条
+    $data=array();
+    /* 获取表头数组*/
+        $title = [
+          'name'=>'小区',
+          'address'=>'小区地址',
+          'building'=>'栋',
+          'unit'=>'单元',
+          'floor'=>'楼',
+          'number'=>'号',
+          'deliver_at'=>'交付时间',
+          'layout_name'=>'户型',
+          'remark'=>'户型标识',
+          'area'=>'面积(㎡)',
+          'has_lift'=>'有无电梯',
+          'is_real'=>'是否现房',
+          'is_buy'=>'是否购置房',
+          'is_transit'=>'是否可过渡',
+          'is_public'=>'是否专用',
+          'manage_price'=>'物业管理费单价(元/平米/月)',
+          'public_price'=>'公摊费单价(元/月)',
+        ];
+
+
+    /*数据拼装*/
+    $keys_array = [];
+    //从第二行开始读取数据
+    for($j=2;$j<=$highestRow;$j++){
+        //从A列读取数据
+        for($k='A';$k<=$highestColumn;$k++){
+            // 读取单元格
+            $vals =$objPHPExcel->getActiveSheet()->getCell($k.'1')->getValue();
+            $keys=array_search($vals,$title);
+            $cell = $objPHPExcel->getActiveSheet()->getCell("$k$j")->getValue();
+            // 转字符型
+            if($cell instanceof PHPExcel_RichText){
+                $cell = $cell->__toString();
+            }
+            $data[$j][$keys]=$cell;
+        }
+
+        // 数据验证及查询
+        /*小区ID*/
+        if(isset($data[$j]['name'])&&isset($data[$j]['address'])){
+            $community_id = db('house_community')
+                ->where('name',$data[$j]['name'])
+                ->where('address',$data[$j]['address'])
+                ->value('id');
+            if(isset($community_id)){
+                $data[$j]['community_id']=$community_id;
+            }else{
+                $keys_array[] = $j; dump($keys_array);
+                continue;
+            }
+        }
+        /*户型ID 户型图ID*/
+        if(isset($data[$j]['layout_name'])&&isset($data[$j]['remark'])){
+            $layout_id = db('layout')
+                ->where('name',$data[$j]['layout_name'])
+                ->value('id');
+            $layout_pic_id =db('house_layout_pic')
+                ->where('layout_id',$layout_id)
+                ->where('remark',$data[$j]['remark'])
+                ->value('id');
+            if(isset($layout_id)&&isset($layout_pic_id)){
+                $data[$j]['layout_id']=$layout_id;
+                $data[$j]['layout_pic_id']=$layout_pic_id;
+            }else{
+                $keys_array[] = $j;
+                continue;
+            }
+        }
+        /*交付时间*/
+        if(isset($data[$j]['deliver_at'])){
+            $deliver_at =  strtotime($data[$j]['deliver_at']);
+            if($deliver_at==false){
+                $keys_array[] = $j;
+                continue;
+            }
+        }
+        /*栋*/
+        if(isset($data[$j]['building'])&&!is_numeric($data[$j]['building'])){
+                $keys_array[] = $j;
+                continue;
+        }
+        /*单元*/
+        if(isset($data[$j]['unit'])&&!is_numeric($data[$j]['unit'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*楼*/
+        if(isset($data[$j]['floor'])&&!is_numeric($data[$j]['floor'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*号*/
+        if(isset($data[$j]['number'])&&!is_numeric($data[$j]['number'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*面积*/
+        if(isset($data[$j]['area'])&&!is_numeric($data[$j]['area'])){
+            $keys_array[] = $j;
+            continue;
+        }
+
+        /*有无电梯*/
+        if(isset($data[$j]['has_lift'])&&!in_array($data[$j]['is_real'],['0','1'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*是否现房*/
+        if(isset($data[$j]['is_real'])&&!in_array($data[$j]['is_real'],['0','1'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*是否购置房*/
+        if(isset($data[$j]['is_buy'])&&!in_array($data[$j]['is_buy'],['0','1'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*是否可过渡*/
+        if(isset($data[$j]['is_transit'])&&!in_array($data[$j]['is_transit'],['0','1'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*是否项目专用*/
+        if(isset($data[$j]['is_public'])&&!in_array($data[$j]['is_public'],['0','1'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*物业管理费单价*/
+        if(isset($data[$j]['manage_price'])&&!is_numeric($data[$j]['manage_price'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*公摊费单价*/
+        if(isset($data[$j]['public_price'])&&!is_numeric($data[$j]['public_price'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        if(empty($data[$j]['deliver_at'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        $data[$j]['picture']=[];
+        $data[$j]['total_floor']=0;
+        unset($data[$j]['name']);
+        unset($data[$j]['address']);
+        unset($data[$j]['layout_name']);
+        unset($data[$j]['remark']);
+    }
+    /*
+     * data_count     总条数
+     * success_count  成功条数
+     * error_count    失败条数
+     * add_count      可添加条数
+     * add_datas      可添加数组*/
+    $data_count = count($data);
+    $error_count = count($keys_array);
+    $success_count = $data_count-$error_count;
+    // 去除不符合格式的数据
+    if($error_count>0){
+        foreach ($keys_array as $k=>$v){
+            unset($data[$v]['community_id']);
+            unset($data[$v]['layout_id']);
+            unset($data[$v]['layout_pic_id']);
+            unset($data[$v]);
+        }
+    }
+    /*符合格式的数据去重复*/
+    $data_unique = [];
+    foreach ($data as $k=>$v){
+        $data_unique[$k] =  $v['community_id'].'|'.$v['building'].'|'.$v['unit'].'|'.$v['floor'].'|'.$v['number'];
+    }
+    /*合格数据键名*/
+    $add_keys = array_keys(array_unique($data_unique));
+    $add_count = count($add_keys);
+    $add_datas = [];
+    foreach ($add_keys as $k=>$v){
+        $add_datas[] = $data[$v];
+    };
+    $new_data = [
+        'data_count'=>$data_count,
+        'success_count'=>$success_count,
+        'error_count'=>$error_count,
+        'add_count'=>$add_count,
+        'add_datas'=>$add_datas
+    ];
+    return $new_data;
+}
+/*导出失败数据*/
+function create_error_excel($file){
+    // 判断文件是什么格式
+    $type = pathinfo($file);
+    $type = strtolower($type["extension"]);
+    $type=$type==='csv' ? $type : 'Excel5';
+    ini_set('max_execution_time', '0');
+    vendor("PHPExcels.PHPExcel");
+    vendor("PHPExcels.PHPExcel.IOFactory");
+    // 判断使用哪种格式
+    $objReader = PHPExcel_IOFactory::createReader($type);
+    $objPHPExcel = $objReader->load($file,$encode='utf-8');
+    $sheet = $objPHPExcel->getSheet(0);
+    // 取得总行数
+    $highestRow = $sheet->getHighestRow();
+    // 取得总列数
+    $highestColumn = $sheet->getHighestColumn();
+    //循环读取excel文件,读取一条,插入一条
+    $data=array();
+    /* 获取表头数组*/
+    $title = [
+        'name'=>'小区',
+        'address'=>'小区地址',
+        'building'=>'栋',
+        'unit'=>'单元',
+        'floor'=>'楼',
+        'number'=>'号',
+        'deliver_at'=>'交付时间',
+        'layout_name'=>'户型',
+        'remark'=>'户型标识',
+        'area'=>'面积(㎡)',
+        'has_lift'=>'有无电梯',
+        'is_real'=>'是否现房',
+        'is_buy'=>'是否购置房',
+        'is_transit'=>'是否可过渡',
+        'is_public'=>'是否专用',
+        'manage_price'=>'物业管理费单价(元/平米/月)',
+        'public_price'=>'公摊费单价(元/月)',
+    ];
+
+
+    /*数据拼装*/
+    $keys_array = [];
+    //从第二行开始读取数据
+    for($j=2;$j<=$highestRow;$j++){
+        //从A列读取数据
+        for($k='A';$k<=$highestColumn;$k++){
+            // 读取单元格
+            $vals =$objPHPExcel->getActiveSheet()->getCell($k.'1')->getValue();
+            $keys=array_search($vals,$title);
+            $cell = $objPHPExcel->getActiveSheet()->getCell("$k$j")->getValue();
+            // 转字符型
+            if($cell instanceof PHPExcel_RichText){
+                $cell = $cell->__toString();
+            }
+            $data[$j][$keys]=$cell;
+        }
+
+        // 数据验证及查询
+        /*小区ID*/
+        if(isset($data[$j]['name'])&&isset($data[$j]['address'])){
+            $community_id = db('house_community')
+                ->where('name',$data[$j]['name'])
+                ->where('address',$data[$j]['address'])
+                ->value('id');
+            if(isset($community_id)){
+                $data[$j]['community_id']=$community_id;
+            }else{
+                $keys_array[] = $j; dump($keys_array);
+                continue;
+            }
+        }
+        /*户型ID 户型图ID*/
+        if(isset($data[$j]['layout_name'])&&isset($data[$j]['remark'])){
+            $layout_id = db('layout')
+                ->where('name',$data[$j]['layout_name'])
+                ->value('id');
+            $layout_pic_id =db('house_layout_pic')
+                ->where('layout_id',$layout_id)
+                ->where('remark',$data[$j]['remark'])
+                ->value('id');
+            if(isset($layout_id)&&isset($layout_pic_id)){
+                $data[$j]['layout_id']=$layout_id;
+                $data[$j]['layout_pic_id']=$layout_pic_id;
+            }else{
+                $keys_array[] = $j;
+                continue;
+            }
+        }
+        /*交付时间*/
+        if(isset($data[$j]['deliver_at'])){
+            $deliver_at =  strtotime($data[$j]['deliver_at']);
+            if($deliver_at==false){
+                $keys_array[] = $j;
+                continue;
+            }
+        }
+
+        /*栋*/
+        if(isset($data[$j]['building'])&&!is_numeric($data[$j]['building'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*单元*/
+        if(isset($data[$j]['unit'])&&!is_numeric($data[$j]['unit'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*楼*/
+        if(isset($data[$j]['floor'])&&!is_numeric($data[$j]['floor'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*号*/
+        if(isset($data[$j]['number'])&&!is_numeric($data[$j]['number'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*面积*/
+        if(isset($data[$j]['area'])&&!is_numeric($data[$j]['area'])){
+            $keys_array[] = $j;
+            continue;
+        }
+
+        /*有无电梯*/
+        if(isset($data[$j]['has_lift'])&&!in_array($data[$j]['is_real'],['0','1'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*是否现房*/
+        if(isset($data[$j]['is_real'])&&!in_array($data[$j]['is_real'],['0','1'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*是否购置房*/
+        if(isset($data[$j]['is_buy'])&&!in_array($data[$j]['is_buy'],['0','1'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*是否可过渡*/
+        if(isset($data[$j]['is_transit'])&&!in_array($data[$j]['is_transit'],['0','1'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*是否项目专用*/
+        if(isset($data[$j]['is_public'])&&!in_array($data[$j]['is_public'],['0','1'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*物业管理费单价*/
+        if(isset($data[$j]['manage_price'])&&!is_numeric($data[$j]['manage_price'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        /*公摊费单价*/
+        if(isset($data[$j]['public_price'])&&!is_numeric($data[$j]['public_price'])){
+            $keys_array[] = $j;
+            continue;
+        }
+        unset($data[$j]['name']);
+        unset($data[$j]['address']);
+        unset($data[$j]['layout_name']);
+        unset($data[$j]['remark']);
+    }
+    /*
+     * error_data     失败数组
+  */
+    $error_data = [];
+    // 获取错误数组
+    foreach ($keys_array as $k=>$v){
+        unset($data[$v]['community_id']);
+        unset($data[$v]['layout_id']);
+        unset($data[$v]['layout_pic_id']);
+        $error_data[] = $data[$v];
+    }
+
+    return $error_data;
+}

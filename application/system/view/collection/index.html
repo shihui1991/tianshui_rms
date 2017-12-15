@@ -39,6 +39,10 @@
             销毁
         </li>
         {/if}
+      <!--  <li class="fgf" onclick="layerPage('房屋征收摸底汇总-&#45;&#45;Excel导出',$('#search_excel'),'700','215')" >
+            <img src="__STATIC__/system/img/excel_exports.png"/>
+            Excel导出
+        </li>-->
     </ul>
 </div>
 <form action="{:url('index',['item_id'=>$item_info->id])}" method="post" id="js-ajax-form">
@@ -216,7 +220,28 @@
         </div>
     </form>
 </div>
+<!-- 导出 -->
+<div id="search_excel" class="layerCon bg_f hide">
+    <form action="{:url('statis')}" method="post" id="search-forms">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>项目：</td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请先选择项目--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}">{$item->name}</option>
+                        {/volist}
+                    </select>
+                </td>
 
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <button class="btn excel_collection" >导出</button>
+        </div>
+    </form>
+</div>
 <script>
 
     $(function () {
@@ -228,6 +253,14 @@
         $('.pageCon').find('a').on('click',function () {
             $('#search-form').attr('action',$(this).attr('href')).submit();
             return false;
+        });
+        $(".excel_collection").click(function () {
+            var item_ids = $("#item_ids").find('option:selected').val();
+            if(!item_ids){
+                layer.msg('请先选择项目');
+                return false;
+            }
+            $("#item_ids").parent('form').submit();
         });
     });
 
