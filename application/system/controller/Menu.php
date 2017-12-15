@@ -332,7 +332,7 @@ class Menu extends Auth
                     $del_ids[]=$id;
                 }
             }
-            $res=Menus::destroy($del_ids);
+            $res=Menus::destroy(['id'=>['in',$del_ids]]);
             $fail_num=count($fail_ids);
             if($res){
                 if($fail_num){
@@ -348,7 +348,7 @@ class Menu extends Auth
             if($count){
                 return $this->error('其下存在子菜单，请先删除全部子菜单后重试！');
             }
-            $res=Menus::destroy($ids);
+            $res=Menus::destroy(['id'=>['in',$ids]]);
             if($res){
                 return $this->success('删除成功','');
             }else{

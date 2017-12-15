@@ -403,7 +403,7 @@ class Risk extends Auth
         }
         Db::startTrans();
         try{
-            $rs = model('Risks')->destroy($ids);
+            $rs = model('Risks')->destroy(['id'=>['in',$ids]]);
             model('Risktopics')->destroy(['risk_id'=>['in',$ids]]);
             if(!$rs){
                 $res = false;

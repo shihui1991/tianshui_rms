@@ -314,7 +314,7 @@ class Role extends Auth
                     $del_ids[]=$id;
                 }
             }
-            $res=Roles::destroy($del_ids);
+            $res=Roles::destroy(['id'=>['in',$del_ids]]);
             $fail_num=count($fail_ids);
             if($res){
                 if($fail_num){
@@ -330,7 +330,7 @@ class Role extends Auth
             if($count){
                 return $this->error('其下存在下级角色，请先删除全部下级角色后重试！');
             }
-            $res=Roles::destroy($ids);
+            $res=Roles::destroy(['id'=>['in',$ids]]);
             if($res){
                 return $this->success('删除成功','');
             }else{

@@ -189,7 +189,7 @@ class Bank extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Banks::destroy($ids);
+        $res=Banks::destroy(['id'=>['in',$ids]]);
         if($res){
             return $this->success('删除成功','');
         }else{

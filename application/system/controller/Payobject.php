@@ -236,7 +236,7 @@ class Payobject extends Auth
         Db::startTrans();
         try{
             /* ********** 删除补偿事项 ********** */
-            Payobjects::destroy($ids);
+            Payobjects::destroy(['id'=>['in',$ids]]);
 
             /* ********** 获取兑付基本数据 ********** */
             $pay_info=Payobjects::withTrashed()
@@ -277,7 +277,7 @@ class Payobject extends Auth
             $res=true;
             Db::commit();
         }catch (\Exception $exception){
-            $res=false;dump($exception);
+            $res=false;
             Db::rollback();
         }
 
@@ -369,7 +369,7 @@ class Payobject extends Auth
             $res=true;
             Db::commit();
         }catch (\Exception $exception){
-            $res=false;dump($exception);
+            $res=false;
             Db::rollback();
         }
 

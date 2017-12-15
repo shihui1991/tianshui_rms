@@ -346,7 +346,7 @@ class Pay extends Auth
                 $res=true;
                 Db::commit();
             }catch (\Exception $exception){
-                $res=false;dump($exception);
+                $res=false;
                 Db::rollback();
             }
 
@@ -473,7 +473,7 @@ class Pay extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Pays::destroy($ids);
+        $res=Pays::destroy(['id'=>['in',$ids]]);
         if($res){
             return $this->success('删除成功','');
         }else{

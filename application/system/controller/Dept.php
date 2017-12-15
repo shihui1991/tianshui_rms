@@ -280,7 +280,7 @@ class Dept extends Auth
                     $del_ids[]=$id;
                 }
             }
-            $res=Depts::destroy($del_ids);
+            $res=Depts::destroy(['id'=>['in',$del_ids]]);
             $fail_num=count($fail_ids);
             if($res){
                 if($fail_num){
@@ -296,7 +296,7 @@ class Dept extends Auth
             if($count){
                 return $this->error('其下存在下级部门，请先删除全部下级部门后重试！');
             }
-            $res=Depts::destroy($ids);
+            $res=Depts::destroy(['id'=>['in',$ids]]);
             if($res){
                 return $this->success('删除成功','');
             }else{

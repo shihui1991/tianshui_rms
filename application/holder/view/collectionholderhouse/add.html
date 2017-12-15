@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>安置房选择|房屋征收安置管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('add',['item_id'=>$item_id,'collection_id'=>$collection_id])}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                重置</a>
+        </li>
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','400')" >
+            <img src="__STATIC__/system/img/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('add',['item_id'=>$item_id,'collection_id'=>$collection_id])}" data-layer="true">
+            <img src="__STATIC__/system/img/checked.png"/>
+            提交
+        </li>
+    </ul>
+</div>
+<form action="{:url('add',['item_id'=>$item_id,'collection_id'=>$collection_id])}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>序号</th>
+                <th>小区</th>
+                <th>房号</th>
+                <th>户型</th>
+                <th>面积(㎡)</th>
+                <th>类型</th>
+                <th>市场评估价</th>
+                <th>安置优惠价</th>
+                <th>总楼层</th>
+                <th>有无电梯</th>
+                <th>图片</th>
+            </tr>
+            {volist name="houses" id="house"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$house->id}" onclick="checkBoxOp(this)" id="check-{$house->id}"/>
+                </td>
+                <td>{$house->id}</td>
+                <td title="{$house->address}">{$house->c_name}</td>
+                <td>
+                    {if condition="$house->building"}{$house->building}栋{/if}
+                    {if condition="$house->unit"}{$house->unit}单元{/if}
+                    {if condition="$house->floor"}{$house->floor}楼{/if}
+                    {if condition="$house->number"}{$house->number}号{/if}
+                </td>
+                <td>{$house->l_name}</td>
+                <td>{$house->area|number_format=2}</td>
+                <td>{$house->is_real}</td>
+                <td>{$house->market_price|number_format}</td>
+                <td>{$house->price|number_format}</td>
+                <td>{$house->total_floor}</td>
+                <td>{$house->has_lift}</td>
+                <td>
+                    <button type="button" class="btn" onclick="showpics('#house-pics-{$house->id}')">点击查看</button>
+                    <div class="hide layer-photos" id="house-pics-{$house->id}">
+                        {if condition="$house->l_pic"}
+                        <img data-pid="{$i}" src="{$house->l_pic}" alt="户型图">
+                        {/if}
+                        {if condition="$house->picture"}
+                        {volist name="house->picture" id="pictures"}
+                        {php}$name=$key;{/php}
+                        {volist name="pictures" id="pic"}
+                        <img data-pid="{$i}" src="{$pic}" alt="{$name}">
+                        {/volist}
+                        {/volist}
+                        {/if}
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+<div class="pageCon">
+    {$houses->render()}
+</div>
+<!-- 查询 -->
+<div id="search" class="layerCon bg_f hide">
+    <form action="{:url('add',['item_id'=>$item_id,'collection_id'=>$collection_id])}" method="get" id="search-form">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>小区：</td>
+                <td>
+                    <select name="community_id" id="c_name" class="chosen" data-placeholder="请选择小区" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="communitys" id="community"}
+                        <option value="{$community->id}" {if condition="isset($community_id) and $community_id eq $community->id"}selected{/if}>{$community->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>户型：</td>
+                <td>
+                    <select name="layout_id" id="layout_id" class="chosen" data-placeholder="请选择户型" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="layouts" id="layout"}
+                        <option value="{$layout->id}" {if condition="isset($layout_id) and $layout->id eq $layout_id"}selected{/if}>{$layout->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>面积起：</td>
+                <td><input type="number" name="area_start" id="area_start" value="{$area_start?:''}"></td>
+                <td>面积止：</td>
+                <td><input type="number" name="area_end" id="area_end" value="{$area_end?:''}"></td>
+            </tr>
+            <tr class="h50">
+                <td>有无电梯：</td>
+                <td>
+                    <select name="has_lift" id="has_lift">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($has_lift) and $has_lift eq 1"}selected{/if}>--有电梯--</option>
+                        <option value="0" {if condition="isset($has_lift) and $has_lift eq 0"}selected{/if}>--无电梯--</option>
+                    </select>
+                </td>
+                <td>类型：</td>
+                <td>
+                    <select name="is_real" id="is_real">
+                        <option value="">--全部--</option>
+                        {volist name="model->is_real" id="value"}
+                        <option value="{$key}" {if condition="isset($is_real) and $is_real eq $key"}selected{/if}>{$value}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+
+            <tr class="h50">
+                <td>排序：</td>
+                <td>
+                    <select name="ordername" id="ordername">
+                        <option value="id">--默认--</option>
+                        <option value="area" {if condition="isset($ordername) and $ordername eq 'area'"}selected{/if}>--面积--</option>
+                    </select>
+                </td>
+                <td>方式：</td>
+                <td>
+                    <select name="orderby" id="orderby">
+                        <option value="asc">--升序--</option>
+                        <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">查询</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+    function showpics(obj){
+        var pics=$(obj).find('img');
+        if(pics.length){
+            var imgs=[];
+            $.each(pics,function (index,info) {
+                var p=$(info);
+                imgs[index]={
+                    "alt": p.attr('alt'),
+                    "pid": p.data('pid'),
+                    "src": p.attr('src'),
+                    "thumb": p.attr('src')
+                };
+            });
+        }
+        layer.photos({
+            photos: {
+                "title": "房源图片", //相册标题
+                "id": obj, //相册id
+                "start": 0, //初始显示的图片序号，默认0
+                "data": imgs
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

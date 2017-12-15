@@ -17,4 +17,9 @@ class Risktopics extends Model
     protected $deleteTime='deleted_at';
     protected $autoWriteTimestamp = true;
     protected $field=true;
+
+
+    public function topic(){
+        return $this->belongsTo('Topics','topic_id','id');
+    }
 }
