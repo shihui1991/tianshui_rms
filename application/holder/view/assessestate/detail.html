@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>房产评估|房屋征收安置管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<div class="layerCon bg_f">
+    <table class="layerTable" border="0">
+        <tr class="h50">
+            <td><label for="">报告时间：</label></td>
+            <td>{$assessestate->report_at}</td>
+            <td><label for="">价值时点：</label></td>
+            <td>{$assessestate->valued_at}</td>
+        </tr>
+        <tr class="h50">
+            <td><label>评估公司：</label></td>
+            <td>{$assessestate->name}</td>
+            <td><label for="">评估方法：</label></td>
+            <td>{$assessestate->method}</td>
+        </tr>
+
+        <tr class="h70">
+            <td ><label>所有建筑：</label></td>
+            <td colspan="3">
+                <table class="table" border="0">
+                    <tbody>
+                    <tr class="noSelect">
+                        <th>序号</th>
+                        <th>位置</th>
+                        <th>性质</th>
+                        <th>结构</th>
+                        <th>状况</th>
+                        <th>数量</th>
+                        <th>计量单位</th>
+                        <th>单价</th>
+                        <th>总价</th>
+                        <th>备注</th>
+                    </tr>
+                    {volist name="assessestatebuildings" id="building"}
+                    <tr class="h30">
+                        <td style="text-align: center;background: none;width: inherit !important;">{$i}</td>
+                        <td style="text-align: left;background: none;">
+                            {if condition="$building->building"}{$building->building}栋{/if}
+                            {if condition="$building->unit"}{$building->unit}单元{/if}
+                            {if condition="$building->floor"}{$building->floor}楼{/if}
+                            {if condition="$building->number"}{$building->number}号{/if}
+                        </td>
+                        <td style="text-align: center;background: none;">{$building->bu_name}</td>
+                        <td style="text-align: center;background: none;">{$building->bs_name}</td>
+                        <td style="text-align: center;background: none;">{$building->bss_name}</td>
+                        <td style="text-align: center;background: none;">{$building->real_num|number_format=2}</td>
+                        <td style="text-align: center;background: none;">{$building->real_unit}</td>
+                        <td style="text-align: center;background: none;">{$building->price|number_format=2}</td>
+                        <td style="text-align: center;background: none;">{$building->amount|number_format=2}</td>
+                        <td style="text-align: center;background: none;">{$building->remark}</td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr class="h50">
+            <td>合计：</td>
+            <td colspan="3">{$assessestate->total|number_format=2} 元</td>
+        </tr>
+        <tr class="h50">
+            <td><label for="valuer_id_info">评估师：</label></td>
+            <td id="valuer_id_info" colspan="3">
+                <table class="table" border="0" id="valuer_id_lists">
+                    <tbody>
+                    <tr class="noSelect">
+                        <th>序号</th>
+                        <th>姓名</th>
+                        <th>注册号</th>
+                        <th>有效期</th>
+                    </tr>
+                    {volist name="assessestatevaluers" id="valuer"}
+                    <tr class="h30">
+                        <td style="text-align: center;background: none;width: inherit !important;">{$i}</td>
+                        <td style="text-align: center;background: none;">{$valuer->name}</td>
+                        <td style="text-align: center;background: none;">{$valuer->register_num}</td>
+                        <td style="text-align: center;background: none;">{$valuer->valid_at|date='Y-m-d',###}</td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+
+        <tr class="h70">
+            <td>评估报告：</td>
+            <td class="imgCon" colspan="3">
+                {if condition="$assessestate->picture"}
+                {volist name="assessestate->picture" id="pic"}
+                <div class="img">
+                    <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                </div>
+                {/volist}
+                {/if}
+            </td>
+        </tr>
+
+        <tr class="h50">
+            <td>合计：</td>
+            <td colspan="3">
+                房产评估：{$assessestate->estate|number_format=2} 元<br/>
+                资产评估：{$assessestate->assets|number_format=2} 元<br/>
+                评估总额：{:number_format($assessestate->estate+$assessestate->assets,2)} 元
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

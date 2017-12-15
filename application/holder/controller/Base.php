@@ -32,6 +32,14 @@ class Base extends Controller
 //        }else{
 //            $this->theme='pc';
 //        }
+
+        session('holderinfo',[
+            'name'=>'xxxxxx',
+            'phone'=>'123456',
+            'cardnum'=>'1231231',
+            'item_ids'=>[1,2,3],
+            'collection_holders'=>[2=>1],
+        ]);
     }
 
 }

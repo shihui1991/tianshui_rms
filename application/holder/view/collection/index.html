@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>房屋征收安置管理系统</title>
+    {include file="public/head" /}
+
+</head>
+<body>
+<div class="tableCon">
+    <em class="xian"></em>
+    <table class="table" border="0" >
+        <tbody>
+        <tr class="noSelect">
+            <th>序号<i class="stretch"></i></th>
+            <th>地址<i class="stretch"></i></th>
+            <th>片区<i class="stretch"></i></th>
+            <th>房号<i class="stretch"></i></th>
+            <th>类型<i class="stretch"></i></th>
+            <th>操作<i class="stretch"></i></th>
+        </tr>
+        {volist name="collections" id="collection"}
+        <tr>
+            <td>{$i}</td>
+            <td>{$collection->community->address}</td>
+            <td>{$collection->community->name}</td>
+            <td>
+                {if condition="$collection->building"}{$collection->building}栋{/if}
+                {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                {if condition="$collection->number"}{$collection->number}号{/if}
+            </td>
+            <td>{$collection->type}</td>
+            <td>
+                <button type="button" class="btn" onclick="layerIfWindow('房产信息',	'{:url('detail',['id'=>$collection->id])}','800','600',true)">房产信息</button>
+                <button type="button" class="btn" onclick="layerIfWindow('房产评估报告',	'{:url('Assessestate/detail',['item_id'=>$collection->item_id,'collection_id'=>$collection->id])}','800','600',true)">房产评估</button>
+                {if condition="$collection->getData('has_assets')"}
+                <button type="button" class="btn" onclick="layerIfWindow('资产评估报告',	'{:url('Assessassets/detail',['item_id'=>$collection->item_id,'collection_id'=>$collection->id])}','800','600',true)">资产评估</button>
+                {/if}
+                <button type="button" class="btn" onclick="layerIfWindow('兑付与协议',	'{:url('pay/detail',['item_id'=>$collection->item_id,'collection_id'=>$collection->id])}','800','600',true)">兑付与协议</button>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

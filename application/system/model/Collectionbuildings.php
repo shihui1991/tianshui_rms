@@ -52,6 +52,10 @@ class Collectionbuildings extends Model
         return $this->belongsTo('Collections','collection_id','id','collection')->field('id,building,unit,floor,number,type');
     }
 
+    public function defaultuse(){
+        return $this->belongsTo('Buildinguses','default_use','id')->field('id,name');
+    }
+
     public function realuse(){
         return $this->belongsTo('Buildinguses','use_id','id','realuse')->field('id,name');
     }

@@ -23,18 +23,11 @@
             <img src="__STATIC__/system/img/add.png"/>
             添加
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$item_info->id])}">
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$item_info->id])}" data-notice="确定要彻底删除吗？">
             <img src="__STATIC__/system/img/broom.png"/>
             删除
         </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$item_info->id])}">
-            <img src="__STATIC__/system/img/recycle.png"/>
-            恢复
-        </li>
-        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$item_info->id])}" data-notice="确定要彻底删除吗？">
-            <img src="__STATIC__/system/img/destroy.png"/>
-            销毁
-        </li>
+
         {/if}
     </ul>
 </div>
@@ -49,18 +42,17 @@
                 </th>
                 <th>ID</th>
                 <th>风险评估话题</th>
-                <th>操作</th>
+                <th></th>
             </tr>
             {volist name="itemtopic_list" id="info"}
             <tr>
                 <td>
                     <input class="va_m" type="checkbox" name="ids[]" value="{$info->id}" onclick="checkBoxOp(this)" id="check-{$info->id}"/>
                 </td>
-                <td>{if condition="$info->deleted_at"}<del>{$info->id}</del>{else/}{$info->id}{/if}</td>
-                <td>{if condition="$info->deleted_at"}<del>{$info->topic_name}</del>{else/}{$info->topic_name}{/if}</td>
+                <td>{$info->id}</td>
+                <td>{$info->topic_name}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('项目风险评估话题基本信息','{:url('detail',['id'=>$info->id])}','550','260')" >详细信息</button>
-                    <button type="button" data-action="{:url('delete',['item_id'=>$item_info->id,'ids'=>$info->id])}" class="btn js-ajax-form-btn">删除</button>
+                    <button type="button" data-action="{:url('delete',['item_id'=>$item_info->id,'ids'=>$info->id])}" class="btn js-ajax-form-btn" data-notice="确定要彻底删除吗？">删除</button>
                 </td>
             </tr>
             {/volist}

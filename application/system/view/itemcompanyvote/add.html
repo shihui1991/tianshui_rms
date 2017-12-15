@@ -9,11 +9,13 @@
 <body>
 <form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
-        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <input type="hidden" name="item_id" value="{$item_info->id}">
         <table class="layerTable" border="0">
             <tr class="h50">
                 <td><label for="item_id">项目：</label></td>
-                <td>{$item_info->name}</td>
+                <td>{$item_info->name}
+
+                </td>
             </tr>
             <tr class="h50">
                 <td><label for="community_id">片区：</label></td>

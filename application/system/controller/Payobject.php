@@ -64,7 +64,7 @@ class Payobject extends Auth
         /* ********** 查询条件 ********** */
         $datas['pay_id']=$pay_id;
         $where['pay_object.pay_id']=$pay_id;
-        $field=['po.*','co.object_id','co.number','o.name'];
+        $field=['po.*','co.object_id','o.name'];
 
         $payobjects=Payobjects::withTrashed()
             ->alias('po')
