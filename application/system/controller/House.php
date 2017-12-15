@@ -400,7 +400,7 @@ class House extends Auth
        }
        $datas = array_merge($new_title,$new_data);
         if($house_info){
-            create_house_xls($datas,date('Ymd'));
+            create_house_xls($datas,'房源'.date('Ymd'));
         }else{
             return $this->error('暂无数据');
         }
@@ -525,6 +525,6 @@ class House extends Auth
         $new_data = array_merge($new_title,$error_array);
 //          exec('rm -rf '.$datas);
 //           unlink($datas);
-        create_houses_xls($new_data,'导入数据格式(保留表头第一行)');
+        create_houses_xls($new_data,'错误格式数据'.date('Ymd'));
     }
 }

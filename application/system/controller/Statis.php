@@ -487,7 +487,7 @@ class Statis extends Base
         $cd3 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)+2];
         $cd4 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)+3];
         if ($fundsin_array&&$fundsout_array){
-            create_xls($cd1,$cd2,$cd3,$cd4,$ColumnDimension1,$ColumnDimension2,$ColumnDimension3,$datas_excel,date('Ymd'));
+            create_xls($cd1,$cd2,$cd3,$cd4,$ColumnDimension1,$ColumnDimension2,$ColumnDimension3,$datas_excel,'项目资金明细'.date('Ymd'));
         }else{
             return $this->error('暂无数据');
         }

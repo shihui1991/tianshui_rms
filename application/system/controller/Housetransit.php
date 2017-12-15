@@ -381,6 +381,6 @@ class Housetransit extends Auth
             $housetransit_title[0][5+$i*2] = '过渡时间(第'.$i.'次过渡)';
         }
         $xls_data = array_merge($housetransit_title,$datas_array);
-        create_housetransit_xls($xls_data,date('Ymd'));
+        create_housetransit_xls($xls_data,'过渡房屋使用情况明细'.date('Ymd'));
     }
 }

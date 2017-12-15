@@ -344,7 +344,7 @@ class Houseresettle extends Auth
 
         $datas_houseresettle = array_merge(array_values($houseresettle_title),$houseresettle_data);
         if($houseresettle_list){
-            create_houseresettle_xls($datas_houseresettle,date('Ymd'));
+            create_houseresettle_xls($datas_houseresettle,'安置房屋使用情况明细'.date('Ymd'));
         }else{
             return $this->error('暂无数据');
         }
