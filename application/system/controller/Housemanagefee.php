@@ -327,7 +327,7 @@ class Housemanagefee extends Auth
         $new_title[0][7] = '公摊费（元/月）';
        $new_data_array = array_merge($new_title,$new_data);
         if($housefee){
-            create_housemanagefee_xls($new_data_array,date('Ymd'));
+            create_housemanagefee_xls($new_data_array,'房源管理费'.date('Ymd'));
         }else{
             return $this->error('暂无数据');
         }

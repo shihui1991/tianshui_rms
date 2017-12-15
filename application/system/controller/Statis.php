@@ -455,7 +455,9 @@ class Statis extends Base
         $new_title_b[1] = '项目名称';
         foreach ($datas['years_in'] as $k=>$v){
             $new_title_a[2] = '收入情况';
-            $new_title_a[2+$k] = '';
+            if($k!=0) {
+                $new_title_a[2 + $k] = '';
+            }
             $new_title_b[2+$k] = $v.'年';
             $new_title_a[2+$k+1] = '收入合计';
             $new_title_b[2+$k+1] = '收入合计';

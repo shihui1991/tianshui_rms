@@ -329,6 +329,9 @@ class Housetransit extends Auth
             ->where($where)
             ->order($orders)
             ->select();
+        if(empty($houseresettle_list)){
+            return $this->error('暂无数据');
+        }
         /*++++++++++ 【拼装数据】 ++++++++++*/
         /*++++++++++ 归类分组++++++++++*/
         $new_array = [];

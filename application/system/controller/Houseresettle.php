@@ -306,6 +306,9 @@ class Houseresettle extends Auth
             ->where($where)
             ->order($orders)
             ->select();
+        if(empty($houseresettle_list)){
+            return $this->error('暂无数据');
+        }
         $houseresettle_title[0][0] = '序号';
         $houseresettle_title[0][1] = '项目名称';
         $houseresettle_title[0][2] = '小区名称(地点)';
@@ -318,6 +321,7 @@ class Houseresettle extends Auth
         $houseresettle_title[0][9] = '安置人';
         $houseresettle_title[0][10] = '安置时间';
         $houseresettle_data = [];
+
         foreach ($houseresettle_list as $k=>$v){
             if($v->holder==1){
                 $holder = '产权人';
@@ -341,13 +345,8 @@ class Houseresettle extends Auth
             $houseresettle_data[$k][] = $v->ch_name.'【'.$holder.'】';
             $houseresettle_data[$k][] = $v->start_at;
         }
-
         $datas_houseresettle = array_merge(array_values($houseresettle_title),$houseresettle_data);
-        if($houseresettle_list){
-            create_houseresettle_xls($datas_houseresettle,'安置房屋使用情况明细'.date('Ymd'));
-        }else{
-            return $this->error('暂无数据');
-        }
+         create_houseresettle_xls($datas_houseresettle,'安置房屋使用情况明细'.date('Ymd'));
     }
 
 }
