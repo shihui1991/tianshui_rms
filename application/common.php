@@ -866,7 +866,7 @@ function import_excel($file){
             if(isset($community_id)){
                 $data[$j]['community_id']=$community_id;
             }else{
-                $keys_array[] = $j; dump($keys_array);
+                $keys_array[] = $j;
                 continue;
             }
         }

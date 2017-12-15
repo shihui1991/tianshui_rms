@@ -224,7 +224,7 @@ class Statis extends Base
         $fundsout_array=model('Fundsouts')
             ->withTrashed()
             ->alias('fi')
-            ->field(['i.name as item_name','fn.name as fundsname','sum(amount) as amounts_out'])
+            ->field(['fi.item_id','i.name as item_name','fn.name as fundsname','sum(amount) as amounts_out'])
             ->join('funds_name fn', 'fn.id=fi.name_id', 'left')
             ->join('item i', 'i.id=fi.item_id', 'left')
             ->group('item_id,fundsname')
@@ -235,14 +235,15 @@ class Statis extends Base
         foreach ($datas['years_in'] as $k=>$v){
             $new_years[$v] = $v;
         }
-        /* 项目->收入所有年份(年份收入) */
+        /* 项目->收入所有年份(年份收入)
+        *$new_array_in 年份收入分组
+        *$item_id_arr 项目=>项目ID*/
        $new_array_in = [];
        $item_id_arr = [];
        foreach ($fundsin_array as $k=>$v){
            $new_array_in[$v['item_name']][$v['group_time']] = $v['amounts_in'];
            $item_id_arr[$v['item_name']] = $v['item_id'];
        }
-
         $fundsin_year_val = [];
         foreach ($new_array_in as $k=>$v){
                $new_filed = array_diff_key($new_years,$v);
@@ -262,10 +263,13 @@ class Statis extends Base
         foreach ($fundsname_array as $k=>$v){
             $new_fundsname[$v] = $v;
         }
-        /* 项目->支出所有款项(款项支出) */
+        /* 项目->支出所有款项(款项支出)
+        *$item_id_arrout 项目=>项目ID*/
         $new_array_out = [];
+        $item_id_arrout = [];
         foreach ($fundsout_array as $k=>$v){
             $new_array_out[$v['item_name']][$v['fundsname']] = $v['amounts_out'];
+            $item_id_arrout[$v['item_name']] = $v['item_id'];
         }
 
         $fundsout_fundsname_val = [];
@@ -281,18 +285,37 @@ class Statis extends Base
             $v['sums'] = array_sum(array_values($v));
             $fundsout_fundsname_val[$k][] = array_values($v);
         }
-
+        /* ++++++++++ 拼装数据(项目支出收入) ++++++++++ */
         $new_array = [];
-        foreach ($fundsin_year_val as $k=>$v){
-            foreach ($fundsout_fundsname_val as $key=>$val){
-                if($k==$key){
-                    $new_array[$k] = $v;
-                    foreach ($val as $keys=>$vals){
-                        $new_array[$k][] = $vals;
+        if(isset($fundsin_year_val)&&isset($fundsout_fundsname_val)){
+            foreach ($fundsin_year_val as $k=>$v){
+                foreach ($fundsout_fundsname_val as $key=>$val){
+                    if($k==$key){
+                        $new_array[$k] = $v;
+                        foreach ($val as $keys=>$vals){
+                            $new_array[$k][] = $vals;
+                        }
                     }
                 }
             }
         }
+        if(isset($fundsin_year_val)&&empty($fundsout_fundsname_val)){
+            foreach ($fundsin_year_val as $k=>$v) {
+                $new_array[$k] = $v;
+                $new_array[$k][] = ['0'];
+            }
+        }
+        if(empty($fundsin_year_val)&&isset($fundsout_fundsname_val)){
+            foreach ($fundsout_fundsname_val as $k=>$v) {
+                $new_array[$k][0] = $k;
+                $new_array[$k][1] = $item_id_arrout[$k];
+                $new_array[$k][2] = ['0'];
+                foreach ($v as $keys=>$vals){
+                    $new_array[$k][3] = $vals;
+                }
+            }
+        }
+        /*计算项目结余*/
        $statis_list = [];
       foreach ($new_array as $k=>$v){
           $a = array_sum($v[2])/2;
@@ -410,14 +433,32 @@ class Statis extends Base
             $fundsout_fundsname_val[$k][] = array_values($v);
         }
 
+        /* ++++++++++ 拼装数据(项目支出收入) ++++++++++ */
         $new_array = [];
-        foreach ($fundsin_year_val as $k=>$v){
-            foreach ($fundsout_fundsname_val as $key=>$val){
-                if($k==$key){
-                    $new_array[$k] = $v;
-                    foreach ($val as $keys=>$vals){
-                        $new_array[$k][] = $vals;
+        if(isset($fundsin_year_val)&&isset($fundsout_fundsname_val)){
+            foreach ($fundsin_year_val as $k=>$v){
+                foreach ($fundsout_fundsname_val as $key=>$val){
+                    if($k==$key){
+                        $new_array[$k] = $v;
+                        foreach ($val as $keys=>$vals){
+                            $new_array[$k][] = $vals;
+                        }
                     }
+                }
+            }
+        }
+        if(isset($fundsin_year_val)&&empty($fundsout_fundsname_val)){
+            foreach ($fundsin_year_val as $k=>$v) {
+                $new_array[$k] = $v;
+                $new_array[$k][] = ['0'];
+            }
+        }
+        if(empty($fundsin_year_val)&&isset($fundsout_fundsname_val)){
+            foreach ($fundsout_fundsname_val as $k=>$v) {
+                $new_array[$k][0] = $k;
+                $new_array[$k][1] = ['0'];
+                foreach ($v as $keys=>$vals){
+                    $new_array[$k][2] = $vals;
                 }
             }
         }
@@ -431,6 +472,7 @@ class Statis extends Base
 
             $statis_list[$k][] = $ks;
             $statis_list[$k][] = $v[0];
+
             foreach ($v[1] as $key=>$val){
                 if($val==0){
                     $val = '0';
@@ -446,49 +488,78 @@ class Statis extends Base
             $statis_list[$k][] = $v['diffs'];
         }
 
-
         $new_title_a = [];
         $new_title_b = [];
         $new_title_a[0] = '序号';
         $new_title_b[0] = '序号';
         $new_title_a[1] = '项目名称';
         $new_title_b[1] = '项目名称';
-        foreach ($datas['years_in'] as $k=>$v){
-            $new_title_a[2] = '收入情况';
-            if($k!=0) {
-                $new_title_a[2 + $k] = '';
+        if($datas['years_in']){
+            foreach ($datas['years_in'] as $k=>$v){
+                $new_title_a[2] = '收入情况';
+                if($k!=0) {
+                    $new_title_a[2 + $k] = '';
+                }
+                $new_title_b[2+$k] = $v.'年';
+                $new_title_a[2+$k+1] = '收入合计';
+                $new_title_b[2+$k+1] = '收入合计';
             }
-            $new_title_b[2+$k] = $v.'年';
-            $new_title_a[2+$k+1] = '收入合计';
-            $new_title_b[2+$k+1] = '收入合计';
+        }else{
+            $new_title_a[2] = '收入合计';
+            $new_title_b[2] = '收入合计';
         }
         $fundin_cout = count($new_title_a);
 
-        foreach(array_values($fundsname_array) as $k=>$v ){
-            $new_title_a[$fundin_cout] = '支出情况';
-            if($k!=0){
-                $new_title_a[$fundin_cout+$k] = '';
-            }
-            $new_title_b[$fundin_cout+$k] = $v;
-            $new_title_a[$fundin_cout+$k+1] = '支出合计';
-            $new_title_b[$fundin_cout+$k+1] = '支出合计';
-            $new_title_a[$fundin_cout+$k+2] = '结余';
-            $new_title_b[$fundin_cout+$k+2] = '结余';
-            $new_title_a[$fundin_cout+$k+3] = '备注';
-            $new_title_b[$fundin_cout+$k+3] = '备注';
+        if($fundsname_array){
+            foreach(array_values($fundsname_array) as $k=>$v ){
+                $new_title_a[$fundin_cout] = '支出情况';
+                if($k!=0){
+                    $new_title_a[$fundin_cout+$k] = '';
+                }
+                $new_title_b[$fundin_cout+$k] = $v;
+                $new_title_a[$fundin_cout+$k+1] = '支出合计';
+                $new_title_b[$fundin_cout+$k+1] = '支出合计';
+                $new_title_a[$fundin_cout+$k+2] = '结余';
+                $new_title_b[$fundin_cout+$k+2] = '结余';
+                $new_title_a[$fundin_cout+$k+3] = '备注';
+                $new_title_b[$fundin_cout+$k+3] = '备注';
+            }   
+        }else{
+            $new_title_a[$fundin_cout] = '支出合计';
+            $new_title_b[$fundin_cout] = '支出合计';
+            $new_title_a[$fundin_cout+1] = '结余';
+            $new_title_b[$fundin_cout+1] = '结余';
+            $new_title_a[$fundin_cout+2] = '备注';
+            $new_title_b[$fundin_cout+2] = '备注';
         }
+       
+
         $datas_title = [$new_title_a,$new_title_b];
         $datas_excel = array_merge($datas_title,array_values($statis_list));
         $ColumnDimension_array = range('A','Z');
-        $ColumnDimension1 = $ColumnDimension_array[2+count($datas['years_in'])-1];
-        $ColumnDimension2 = $ColumnDimension_array[2+count($datas['years_in'])+1];
-        $ColumnDimension3 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)];
+        if($datas['years_in']){
+            if($fundsname_array){
+                $ColumnDimension1 = $ColumnDimension_array[2+count($datas['years_in'])-1];
+                $ColumnDimension2 = $ColumnDimension_array[2+count($datas['years_in'])+1];
+                $ColumnDimension3 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)];
+            }else{
+                $ColumnDimension1 = $ColumnDimension_array[2+count($datas['years_in'])-1];
+                $ColumnDimension2 = $ColumnDimension_array[2+count($datas['years_in'])+1];
+                $ColumnDimension3 = $ColumnDimension_array[2+count($datas['years_in'])+1];
+            }
+
+        }else{
+            $ColumnDimension1 = $ColumnDimension_array[2+count($datas['years_in'])];
+            $ColumnDimension2 = $ColumnDimension_array[2+count($datas['years_in'])+2];
+            $ColumnDimension3 = $ColumnDimension_array[3+count($datas['years_in'])+count($fundsname_array)];
+        }
 
         $cd1 = $ColumnDimension_array[2+count($datas['years_in'])];
         $cd2 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)+1];
         $cd3 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)+2];
         $cd4 = $ColumnDimension_array[2+count($datas['years_in'])+count($fundsname_array)+3];
-        if ($fundsin_array&&$fundsout_array){
+
+        if ($fundsin_array||$fundsout_array){
             create_xls($cd1,$cd2,$cd3,$cd4,$ColumnDimension1,$ColumnDimension2,$ColumnDimension3,$datas_excel,'项目资金明细'.date('Ymd'));
         }else{
             return $this->error('暂无数据');
