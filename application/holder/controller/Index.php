@@ -71,6 +71,7 @@ class Index extends Controller
             'cardnum'=>input('cardnum'),
             'item_ids'=>$item_ids,
             'collection_holders'=>$collection_holders,
+            'time'=>time()
         ]);
 
 
