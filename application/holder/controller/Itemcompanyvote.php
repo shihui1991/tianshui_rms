@@ -74,14 +74,14 @@ class Itemcompanyvote extends Base
         if(!$collection_id){
             return $this->error('非法访问','');
         }
-        $holder_id=input('holder_id');
-        if(!$holder_id){
-            return $this->error('非法访问','');
-        }
+
         $company_id=input('company_id');
         if(!$company_id){
             return $this->error('非法访问','');
         }
+
+        $holders=session('holderinfo.collection_holders');
+        $holder_id=$holders[$collection_id];
 
         Db::startTrans();
         try{
