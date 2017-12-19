@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/sysmobile/css/jquery.treetable.theme.default.css"/>
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                <p>
+                    <span>上级角色：</span>
+                    <select name="parent_id" id="parent_id" class="chosen" data-placeholder="请选择上级角色" data-no_results_text="没有匹配数据">
+                        <option value="0">--作为一级角色--</option>
+                        {$options_roles}
+                    </select>
+                </p>
+                <p>
+                    <span>角色名称：<i>* </i></span>
+                    <input id="name" type="text" name="name" value="{$infos->name?:''}" required placeholder="输入唯一名称"/>
+                </p>
+                <p>
+                    <span>类型：</span>
+                    <select name="is_admin" id="is_admin">
+                        {volist name="model->is_admin" id="value"}
+                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->is_admin eq $value)"} selected{/if} >{$value}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <p>部门描述：</p>
+                    <textarea class="flex" id="infos" name="infos">{$infos->infos?:''}</textarea>
+                </div>
+                <p>
+                    <span>状态：</span>
+                    <select name="status" id="status">
+                        {volist name="model->status" id="value"}
+                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $value)"} selected{/if} >{$value}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <p style="height: auto;line-height: inherit;">
+                    <span>权限设置：</span>
+                <table id="example-advanced" class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect">
+                        <th style="width: inherit !important;">
+                            <input class="va_m" type="checkbox" id="allCheck" data-role="checkall"/>
+                            <span>功能与菜单</span>
+                        </th>
+                    </tr>
+                    {$tree_menus}
+                    </tbody>
+                </table>
+                </p>
+                {if condition="isset($infos)"}
+                <p style="height: auto;line-height: inherit;">
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </p>
+                {/if}
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back();">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+<script src="__STATIC__/sysmobile/js/jquery.treetable.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    $("#example-advanced").treetable({
+        expandable : true
+    });
+
+    $('input.priv_detail').on('change',function () {
+        checkbox_change($(this));
+    }) ;
+
+    /* 权限树的冒泡与捕获 */
+    function checkbox_change(obj) {
+        var _this=obj,
+            _id=_this.data('id'),
+            parent_id=_this.data('parent-id'),
+            parent_obj=$('#id-'+parent_id),
+            child_obj=$('input[data-parent-id='+_id+']');
+        if(_this.prop('checked') && parent_id){
+            parent_obj.prop("checked", true);
+            checkbox_change(parent_obj);
+        }else if(!_this.prop('checked') && child_obj.length){
+            $.each(child_obj,function (index,info) {
+                $(info).prop('checked',false);
+                checkbox_change($(info));
+            })
+        }
+    }
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_num=$('table').find('input[data-role="check"]').length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+
+</script>
+
+</body>
+</html>

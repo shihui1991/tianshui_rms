@@ -41,7 +41,30 @@ class Role extends Auth
                 $role->delete_url=url('delete',['ids'=>$role->id]);
                 $array[]=$role;
             }
-            $str = "
+            if(request()->isMobile()) {
+                $str = "
+                    <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
+                        <td style='text-align: left;'>
+                            <label>
+                            <input class='va_m' type='checkbox' name='ids[]' value='\$id' id='check-\$id' data-role='check'/>
+                             \$name
+                            </label>
+                        </td>
+                        <td>\$id</td>
+                        <td>\$is_admin</td>
+                        <td>\$status</td>
+                        <td class='shezhi'><i class='iconfont icon-shezhi2'></i>
+                            <div class='hide'>
+                                <img src='__STATIC__/sysmobile/img/sanjiao.png' />
+                                <a href='\$add_url'><i class='iconfont icon-iconjia'></i></a>
+                                <a href='\$detail_url'><i class='iconfont icon-xiugai'></i></a>
+                                <a data-action='\$delete_url' class='js-ajax-form-btn'><i class='iconfont icon-lajitong'></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    ";
+            }else{
+                $str = "
                     <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
                         <td>
                             <input class='va_m' type='checkbox' name='ids[]' value='\$id' onclick='checkBoxOp(this)' id='check-\$id'/>
@@ -57,6 +80,8 @@ class Role extends Auth
                         </td>
                     </tr>
                     ";
+            }
+
             $table_roles=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
         }
         return view($this->theme.'/role/index',['table_roles'=>$table_roles]);
@@ -103,6 +128,8 @@ class Role extends Auth
         /* ++++++++++ 是否删除 ++++++++++ */
         $deleted=input('deleted');
         $role_model=new Roles();
+        $datas['model']=$role_model;
+
         if(is_numeric($deleted) && in_array($deleted,[0,1])){
             $datas['deleted']=$deleted;
             if($deleted==1){
@@ -165,7 +192,18 @@ class Role extends Auth
                 ->select();
             $tree_menus='';
             if($menus){
-                $str = "
+                if(request()->isMobile()) {
+                    $str = "
+                        <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id'>
+                            <td style='text-align: left;'>
+                            <label>
+                             <input id='id-\$id' data-id='\$id' data-parent-id='\$parent_id' class='va_m priv_detail' data-role='check' type='checkbox' name='menuids[]' value='\$id'/>
+                            \$icon \$name</label>
+                            </td>
+                        </tr>
+                        ";
+                }else{
+                    $str = "
                         <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id'>
                             <td>
                                 <input id='id-\$id' data-id='\$id' data-parent-id='\$parent_id' onclick='checkBoxOp(this)' class='va_m priv_detail' type='checkbox' name='menuids[]' value='\$id'/>
@@ -175,6 +213,8 @@ class Role extends Auth
                             </td>
                         </tr>
                         ";
+                }
+
                 $tree_menus=get_tree($menus,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
             }
 
