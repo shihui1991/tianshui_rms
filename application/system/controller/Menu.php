@@ -46,8 +46,10 @@ class Menu extends Auth
                 $str = "
                     <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
                         <td style='text-align: left;'>
+                            <label>
                             <input class='va_m' type='checkbox' name='ids[]' value='\$id' id='check-\$id' data-role='check'/>
                             \$icon \$name
+                            </label>
                         </td>
                         <td>\$id</td>
                         <td>\$display|\$status</td>

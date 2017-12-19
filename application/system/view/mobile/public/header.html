@@ -1,0 +1,14 @@
+<!--头部-->
+<div class="header">
+    <span class="cd caidan"><i class="iconfont icon-caidan"></i></span>
+    <p class="margin0 f18">{$cur_menu->name|default=''}</p>
+    <span class="yh"><a><i class="iconfont icon-gerenzhongxin"></i> </a></span>
+    <div class="cd_list backCo_w hide" style="width: 190px;">
+        {$nav_menus}
+    </div>
+</div>
+<div class="gerenList">
+    <a href="{:url('User/info')}" class="on">个人中心</a>
+    <a href="{:url('User/password')}">修改密码</a>
+    <a href="{:url('Index/logout')}">退出登录</a>
+</div>

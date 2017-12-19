@@ -6,41 +6,24 @@
     <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
 
     {include file="mobile/public/head"/}
+    <style type="text/css">
+        .queryCon>:last-child {
+            height: 52px;
+        }
+
+        .queryCon {
+            padding-bottom: 0;
+        }
+    </style>
 </head>
 <body>
 <div class="page">
-    <!--头部-->
-    <div class="header">
-        <span class="cd caidan"><i class="iconfont icon-caidan"></i></span>
-        <p class="margin0 f18">{$cur_menu->name|default=''}</p>
-        <span class="yh"><a href="{:url('User/info')}"><i class="iconfont icon-gerenzhongxin"></i> </a></span>
-        <div class="cd_list backCo_w hide" style="width: 190px;">
-            {$nav_menus}
-        </div>
-    </div>
+
+    {include file="mobile/public/header"/}
 
     <div class="w_100">
 
-        <p class="titP f14 padding_left13 backCo_f2 margin0 h_50">
-            {if condition="$cur_menu"}
-            <a href="{:url('Home/index')}"><img src="__STATIC__/system/img/house.png"></a>
-            {volist name="parents_menus" id="pmenu"}
-            <span class="f13">&gt;</span>
-            {if condition="is_numeric(stripos($pmenu->url,'#'))"}
-            <span>{$pmenu->icon} {$pmenu->name}</span>
-            {else/}
-            <a href="{$pmenu->url}">{$pmenu->icon} {$pmenu->name}</a>
-            {/if}
-            {/volist}
-
-            <span class="f13">&gt;</span>
-            {$cur_menu->icon} {$cur_menu->name}
-
-            {else/}
-            <a href="javascript:window.history.back();">&lt; 返回</a>
-            {/if}
-        </p>
-
+        {include file="mobile/public/breadnav"/}
 
         <div class="w_100">
             <!--按钮组合-->
@@ -54,6 +37,7 @@
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}" >删除</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">恢复</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">销毁</a>
+                <span class="xiaMore"><em>更多</em><i class=" xiaMore iconfont icon-gongyongshuangjiantouxia"></i> </span>
             </div>
             <div class="w_100">
                 <table id="example-advanced" class="table treetable w_100" border="0" >
@@ -91,7 +75,7 @@
                 </table>
             </div>
 
-            <div>
+            <div class="pageCon">
                 {$apis->render()}
             </div>
 
@@ -148,12 +132,12 @@
                                     <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
                                 </select>
                             </p>
-                            <!--提交按钮-->
-                            <p class="Btnform align_cen bor_none maT20">
-                                <button class="submit button maR17" type="submit">查询</button>
-                                <span class="reset close button maL17">取消</span>
-                            </p>
                         </div>
+                        <!--提交按钮-->
+                        <p class="Btnform align_cen bor_none maT20">
+                            <button class="submit button maR17" type="submit">查询</button>
+                            <span class="reset close button maL17">取消</span>
+                        </p>
                     </div>
                 </form>
             </div>
@@ -187,31 +171,5 @@
 
 </script>
 
-<script>
-    $("#showQuery").click(function(){
-        setTimeout(function(){
-            for(var i=0 ; i<$("[type='text']").length ; i++){
-                $("[type='text']").eq(i).css("width",$("[type='text']").eq(i).parent().width()-$("[type='text']").eq(i).siblings().width());
-            }
-            for(var i=0 ; i<$("[type='number']").length ; i++){
-                $("[type='number']").eq(i).css("width",$("[type='number']").eq(i).parent().width()-$("[type='number']").eq(i).siblings().width());
-            }
-            for(var i=0 ; i<$("[type='date']").length ; i++){
-                $("[type='date']").eq(i).css("width",$("[type='date']").eq(i).parent().width()-$("[type='date']").eq(i).siblings().width());
-            }
-            for(var i=0 ; i<$("select").length ; i++){
-                $("select").eq(i).css("width",$("select").eq(i).parent().width()-$("select").eq(i).siblings().width());
-            }
-        },300)
-    });
-
-    $("#ImportantData").click(function(){
-        $(".ImportantData").fadeIn(300);
-    });
-    $(".iconfont.icon-guanbi").click(function(){
-        $(".ImportantData").fadeOut(300);
-    })
-
-</script>
 </body>
 </html>

@@ -1,0 +1,19 @@
+<p class="titP f14 padding_left13 backCo_f2 margin0 h_50">
+    {if condition="$cur_menu"}
+    <a href="{:url('Home/index')}"><img src="__STATIC__/system/img/house.png"></a>
+    {volist name="parents_menus" id="pmenu"}
+    <span class="f13">&gt;</span>
+    {if condition="is_numeric(stripos($pmenu->url,'#'))"}
+    <span>{$pmenu->icon} {$pmenu->name}</span>
+    {else/}
+    <a href="{$pmenu->url}">{$pmenu->icon} {$pmenu->name}</a>
+    {/if}
+    {/volist}
+
+    <span class="f13">&gt;</span>
+    {$cur_menu->icon} {$cur_menu->name}
+
+    {else/}
+    <a href="javascript:window.history.back();">< 返回</a>
+    {/if}
+</p>

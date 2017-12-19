@@ -8,75 +8,72 @@
     {include file="mobile/public/head"/}
 
 </head>
-
+<body>
 <div class="page">
-    <!--头部-->
-    <div class="header">
-        <span class="cd caidan"><i class="iconfont icon-caidan"></i></span>
-        <p class="margin0 f18">{$cur_menu->name}</p>
-        <span class="yh"><a href="{:url('User/info')}"><i class="iconfont icon-gerenzhongxin"></i> </a></span>
-        <div class="cd_list backCo_w hide" style="width: 190px;">
-            {$nav_menus}
-        </div>
-    </div>
+
+    {include file="mobile/public/header"/}
 
     <div class="w_100 backCo_w">
-        <form class="backCo_w add_menu padLR12 js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
-            <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
-            <p>
-                <span>上级菜单：</span>
-                <select name="parent_id" id="parent_id" class="chosen" data-no_results_text="没有匹配数据" data-placeholder="请选择上级菜单">
-                    <option value="0">--作为一级菜单--</option>
-                    {$options_menus}
-                </select>
-            </p>
-            <p>
-                <span><i>*  </i>菜单名称：</span>
-                <input id="name" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入唯一名称"/>
-            </p>
-            <p>
-                <span><i>*  </i>路由地址：</span>
-                <input id="url" class="must" type="text" name="url" value="{:isset($infos)?$infos->url:''}" required/>
-            </p>
-            <p>
-                <span>显示排序：</span>
-                <input id="sort" type="number" name="sort" value="{:isset($infos)?$infos->sort:''}" />
-            </p>
-            <p>
-                <span>菜单图标：</span>
-                <input id="icon" type="text" name="icon" value="{:isset($infos)?$infos->icon:''}" />
-            </p>
-            <div class="w_100 backCo_f2 add_menu_textarea">
-                <p>菜单描述</p>
-                <textarea class="flex" placeholder="菜单描述" id="infos" name="infos">{:isset($infos)?$infos->infos:''}</textarea>
-            </div>
-            <p>
-                <span>显示状态：</span>
-                <select name="display" id="display">
-                    {volist name="model->display" id="value"}
-                    <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->display eq $value)"} selected{/if} >{$value}</option>
-                    {/volist}
-                </select>
-            </p>
-            <p>
-                <span>状态：</span>
-                <select name="status" id="status">
-                    {volist name="model->status" id="value"}
-                    <option value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $value)"} selected{/if} >{$value}</option>
-                    {/volist}
-                </select>
-            </p>
-            {if condition="isset($infos)"}
-            <p>
-                <span>
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                <p>
+                    <span>上级菜单：</span>
+                    <select name="parent_id" id="parent_id" class="chosen" data-no_results_text="没有匹配数据" data-placeholder="请选择上级菜单">
+                        <option value="0">--作为一级菜单--</option>
+                        {$options_menus}
+                    </select>
+                </p>
+                <p>
+                    <span>菜单名称：<i>* </i></span>
+                    <input id="name" type="text" name="name" value="{$infos->name?:''}" required placeholder="输入唯一名称"/>
+                </p>
+                <p>
+                    <span>路由地址：<i>* </i></span>
+                    <input id="url" class="must" type="text" name="url" value="{$infos->url?:''}" required/>
+                </p>
+                <p>
+                    <span>显示排序：</span>
+                    <input id="sort" type="number" name="sort" value="{$infos->sort?:''}" />
+                </p>
+                <p>
+                    <span>菜单图标：</span>
+                    <input id="icon" type="text" name="icon" value="{$infos->icon|default=''|htmlspecialchars}" />
+                </p>
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <p>菜单描述：</p>
+                    <textarea class="flex" id="infos" name="infos">{$infos->infos?:''}</textarea>
+                </div>
+                <p>
+                    <span>显示状态：</span>
+                    <select name="display" id="display">
+                        {volist name="model->display" id="value"}
+                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->display eq $value)"} selected{/if} >{$value}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <p>
+                    <span>状态：</span>
+                    <select name="status" id="status">
+                        {volist name="model->status" id="value"}
+                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $value)"} selected{/if} >{$value}</option>
+                        {/volist}
+                    </select>
+                </p>
+                {if condition="isset($infos)"}
+                <p style="height: auto;line-height: inherit;">
                     创建于：{$infos->created_at}<br/>
                     更新于：{$infos->updated_at}<br/>
                     {if condition="isset($infos) and $infos->deleted_at"}
                     删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
                     {/if}
-                </span>
-            </p>
-            {/if}
+                </p>
+                {/if}
+            </div>
+
             <!--提交按钮-->
             <p class="Btnform align_cen bor_none maT20">
                 <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
@@ -92,19 +89,5 @@
 
 </script>
 
-<script>
-    for(var i=0 ; i<$("[type='text']").length ; i++){
-        $("[type='text']").eq(i).css("width",$("[type='text']").eq(i).parent().width()-$("[type='text']").eq(i).siblings().width());
-    };
-    for(var i=0 ; i<$("[type='number']").length ; i++){
-        $("[type='text']").eq(i).css("width",$("[type='text']").eq(i).parent().width()-$("[type='text']").eq(i).siblings().width());
-    };
-    for(var i=0 ; i<$("[type='date']").length ; i++){
-        $("[type='text']").eq(i).css("width",$("[type='text']").eq(i).parent().width()-$("[type='text']").eq(i).siblings().width());
-    };
-    for(var i=0 ; i<$("select").length ; i++){
-        $("select").eq(i).css("width",$("select").eq(i).parent().width()-$("select").eq(i).siblings().width());
-    };
-</script>
 </body>
 </html>

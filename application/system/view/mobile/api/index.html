@@ -11,37 +11,12 @@
 </head>
 <body>
 <div class="page">
-    <!--头部-->
-    <div class="header">
-        <span class="cd caidan"><i class="iconfont icon-caidan"></i></span>
-        <p class="margin0 f18">{$cur_menu->name}</p>
-        <span class="yh"><a href="{:url('User/info')}"><i class="iconfont icon-gerenzhongxin"></i> </a></span>
-        <div class="cd_list backCo_w hide" style="width: 190px;">
-            {$nav_menus}
-        </div>
-    </div>
+
+    {include file="mobile/public/header"/}
 
     <div class="w_100">
 
-        <p class="titP f14 padding_left13 backCo_f2 margin0 h_50">
-            {if condition="$cur_menu"}
-            <a href="{:url('Home/index')}"><img src="__STATIC__/system/img/house.png"></a>
-            {volist name="parents_menus" id="pmenu"}
-            <span class="f13">&gt;</span>
-            {if condition="is_numeric(stripos($pmenu->url,'#'))"}
-            <span>{$pmenu->icon} {$pmenu->name}</span>
-            {else/}
-            <a href="{$pmenu->url}">{$pmenu->icon} {$pmenu->name}</a>
-            {/if}
-            {/volist}
-
-            <span class="f13">&gt;</span>
-            {$cur_menu->icon} {$cur_menu->name}
-
-            {else/}
-            <a href="javascript:window.history.back();">< 返回</a>
-            {/if}
-        </p>
+        {include file="mobile/public/breadnav"/}
 
         <div class="w_100">
             <!--按钮组合-->
@@ -52,6 +27,7 @@
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">启用</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">禁用</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}" title="删除">删除</a>
+                <span class="xiaMore"><em>更多</em><i class=" xiaMore iconfont icon-gongyongshuangjiantouxia"></i> </span>
             </div>
             <div class="w_100">
                 <table id="example-advanced" class="table treetable w_100" border="0" >

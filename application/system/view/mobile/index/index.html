@@ -16,5 +16,14 @@
         <a class="submit_p js-ajax-login">立即提交</a>
     </form>
 </div>
+<script>
+    $('#name').focus();
+    $(document).on('keydown',function (e) {
+        if (!e) e = window.event; //火狐中是 window.event
+        if ((e.keyCode || e.which) == 13) {
+            $('.js-ajax-login').click();
+        }
+    });
+</script>
 </body>
 </html>
