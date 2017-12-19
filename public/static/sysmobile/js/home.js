@@ -1,12 +1,12 @@
 //菜单栏收缩与展开
 $(function() {
 	$(".caidan").click(function() {
-		$(".cd_list").slideToggle();
+		$(".cd_list").stop().slideToggle();
 	});
 	$(".link").click(function() {
 		$(this).addClass('open').parent().siblings().children('div').removeClass("open");
-		$(this).siblings('ul').slideToggle();
-		$(this).parent().siblings().children('ul').slideUp();
+		$(this).siblings('ul').stop().slideToggle();
+		$(this).parent().siblings().children('ul').stop().slideUp();
 	});
 	$(".two>li").click(function() {
 		$(this).addClass('open_li').siblings().removeClass('open_li');
@@ -18,7 +18,7 @@ $(function() {
 
 	//表个更多内容展示
 	$(".more>i").click(function() {
-		$(this).parent("td").parent("tr").next("tr").slideToggle();
+		$(this).parent("td").parent("tr").next("tr").stop().slideToggle();
 	});
 	//操作
 	$(".shezhi").click(function() {
@@ -39,7 +39,7 @@ $(function() {
 
 	});
 	$(".yh").click(function() {
-		$(".gerenList").slideToggle();
+		$(".gerenList").stop().slideToggle();
 	});
 
 	//查询
@@ -66,7 +66,7 @@ $(function() {
 		}
 		if($(e.target).closest(".caidan").length == 0 && $(e.target).closest(".cd_list>ul>li>div").length == 0) {
 			//点击id为menu之外且id不是不是open，则触发
-			$(".cd_list").slideUp(300);
+			$(".cd_list").stop().slideUp(300);
 		}
 	});
 	var winW = $(window).width();
@@ -98,7 +98,7 @@ $(function() {
 	$("#add_rowName").focus(function() {
 		$(this).val('');
 		$(this).css("color", "#333333")
-	})
+	});
 	$("#add_row").click(function() {
 		var rowName = $("#add_rowName").val();
 		var cols = '';
@@ -107,7 +107,7 @@ $(function() {
 				var txt = $(this).children("p").text();
 				cols += txt + "|";
 			}
-		})
+		});
 		if(rowName == '此处不能为空且不能重复') {
 			return false;
 		}
@@ -119,19 +119,19 @@ $(function() {
 			var tr = "<tr><td colspan='2' style='height:15px;background:white;border:none'></td></tr><tr><td><p>" + rowName + "</p><span class='dele_row' onclick='deleRow(this);'>删除</span></td><td><ul class='hxt_ul add_tu'><li><input type='file' /><a>+</a></li><li><img src='img/4.jpg' /><em class='em' onclick='delepic(this);'>删除</em></li></ul></td></tr>"
 			$("#dong_table").append(tr);
 		}
-	})
+	});
 
 	$(".jbxx_tit").click(function() {
 		$(this).addClass("on_p").siblings().removeClass("on_p");
 		$(".jbxx_con").css("display", "block");
 		$(".spwj_con").css("display", "none");
-	})
+	});
 	$(".spwj_tit").click(function() {
 		$(this).addClass("on_p").siblings().removeClass("on_p");
 		$(".jbxx_con").css("display", "none");
 		$(".spwj_con").css("display", "block");
 	})
-})
+});
 
 function deleRow(w) {
 	var parent = document.getElementById('dong_table');
@@ -146,17 +146,17 @@ function delepic(w) {
 }
 
 $("[las]").click(function() {
-	$("[lasy=" + $(this).attr("las") + "]").slideDown();
-})
+	$("[lasy=" + $(this).attr("las") + "]").stop().slideDown();
+});
 
 $(".btnp>span").click(function() {
 	$(this).addClass("on").siblings("span").removeClass("on");
 	$(".tabDiv>div").eq($(this).index()).css("display", "block").siblings("div").css("display", "none")
-})
+});
 $(".toolBar").click(function() {
-	$(".toolCon").slideToggle(300);
-})
+	$(".toolCon").stop().slideToggle(300);
+});
 $(".toolCon p").click(function() {
 	$(this).addClass("on").siblings("p").removeClass("on");
-})
+});
 
