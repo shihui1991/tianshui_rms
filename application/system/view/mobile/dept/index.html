@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+    <link rel="stylesheet" type="text/css" href="__STATIC__/sysmobile/css/jquery.treetable.theme.default.css"/>
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100">
+
+        {include file="mobile/public/breadnav"/}
+
+        <div class="w_100">
+            <!--按钮组合-->
+            <div class=" anniu backCo_w padLR12 ov maT10">
+                <a href="{:url('all')}" class="refresh">所有数据</a>
+                <a href="{:url('index')}" class="refresh">刷新</a>
+                <a href="{:url('add')}">添加</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">启用</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">禁用</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}" title="删除">删除</a>
+                <span class="xiaMore"><em>更多</em><i class=" xiaMore iconfont icon-gongyongshuangjiantouxia"></i> </span>
+            </div>
+            <div class="w_100">
+                <form action="{:url('index')}" method="post" id="js-ajax-form">
+                <table id="example-advanced" class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect">
+                        <th style="text-align: left;">
+                            <input type="checkbox" data-role="checkall"/> 名称
+                        </th>
+                        <th>ID</th>
+                        <th>负责人</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+
+                    {$table_depts}
+                    </tbody>
+                </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="__STATIC__/sysmobile/js/jquery.treetable.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    $("#example-advanced").treetable({
+        expandable : true
+    });
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_num=$('table').find('input[data-role="check"]').length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+
+</script>
+</body>
+</html>

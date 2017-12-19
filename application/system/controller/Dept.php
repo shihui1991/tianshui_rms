@@ -44,7 +44,30 @@ class Dept extends Auth
                 $dept->delete_url=url('delete',['ids'=>$dept->id]);
                 $array[]=$dept;
             }
-            $str = "
+            if(request()->isMobile()) {
+                $str = "
+                    <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
+                        <td style='text-align: left;'>
+                            <label>
+                            <input class='va_m' type='checkbox' name='ids[]' value='\$id' id='check-\$id' data-role='check'/>
+                             \$name
+                            </label>
+                        </td>
+                        <td>\$id</td>
+                        <td>\$user_name</td>
+                        <td>\$status</td>
+                        <td class='shezhi'><i class='iconfont icon-shezhi2'></i>
+                            <div class='hide'>
+                                <img src='__STATIC__/sysmobile/img/sanjiao.png' />
+                                <a href='\$add_url'><i class='iconfont icon-iconjia'></i></a>
+                                <a href='\$detail_url'><i class='iconfont icon-xiugai'></i></a>
+                                <a data-action='\$delete_url' class='js-ajax-form-btn'><i class='iconfont icon-lajitong'></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    ";
+            }else{
+                $str = "
                     <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
                         <td>
                             <input class='va_m' type='checkbox' name='ids[]' value='\$id' onclick='checkBoxOp(this)' id='check-\$id'/>
@@ -60,6 +83,8 @@ class Dept extends Auth
                         </td>
                     </tr>
                     ";
+            }
+
             $table_depts=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
         }
         return view($this->theme.'/dept/index',['table_depts'=>$table_depts]);
@@ -100,6 +125,8 @@ class Dept extends Auth
         /* ++++++++++ 是否删除 ++++++++++ */
         $deleted=input('deleted');
         $dept_model=new Depts();
+        $datas['model']=$dept_model;
+
         if(is_numeric($deleted) && in_array($deleted,[0,1])){
             $datas['deleted']=$deleted;
             if($deleted==1){
