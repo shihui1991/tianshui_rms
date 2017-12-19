@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>项目风险评估话题|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="item_id" value="{$item_info->id}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label>项目：</label></td>
+                <td>{$item_info->name}</td>
+            </tr>
+            <tr class="h50">
+                <td><label for="topic_id">风险评估话题：</label></td>
+                <td>
+                    <select name="topic_id" id="topic_id" class="chosen sear_collection_id" data-placeholder="请选择风险评估话题" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择风险评估话题--</option>
+                        {volist name="topic" id="topics"}
+                        <option value="{$topics->id}" >{$topics->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<script>
+
+</script>
+</body>
+</html>

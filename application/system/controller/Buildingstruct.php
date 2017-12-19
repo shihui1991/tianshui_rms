@@ -76,7 +76,7 @@ class Buildingstruct extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/buildingstruct/index');
     }
 
     /* ========== 添加 ========== */
@@ -105,7 +105,7 @@ class Buildingstruct extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/buildingstruct/modify',[
                 'model'=>$model,
             ]);
         }
@@ -123,7 +123,7 @@ class Buildingstruct extends Auth
 
         $model=new Buildingstructs();
 
-        return view('modify',[
+        return view($this->theme.'/buildingstruct/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

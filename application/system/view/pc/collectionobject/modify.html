@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>入户摸底-其他补偿事项|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+    {include file="pc/public/kindeditor" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <input type="hidden" name="item_id" value="{:isset($infos)?$infos->item_id : $collection_info->item_id}">
+        <input type="hidden" name="collection_id" value="{:isset($infos)?$infos->collection_id : $collection_info->id}">
+        <table class="layerTable" border="0">
+            {if condition="isset($infos)"}
+            <tr class="h50">
+                <td><label for="object_id">补偿事项：</label></td>
+                <td>{$infos->o_name}</td>
+            </tr>
+            {else/}
+            <tr class="h50">
+                <td><label for="object_id">补偿事项：</label></td>
+                <td>
+                    <select name="object_id" id="object_id" class="chosen" data-placeholder="请选择补偿事项" data-no_results_text="没有匹配数据">
+                        <option value="">--选择补偿事项--</option>
+                        {volist name="objects" id="object"}
+                        <option value="{$object->id}" >{$object->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            {/if}
+            <tr class="h50">
+                <td><label for="number">数量：</label></td>
+                <td><input type="number" name="number" id="number" value="{:isset($infos)?$infos->number:''}" min="1" placeholder="请输入补偿数量，至少为1"></td>
+            </tr>
+            <tr class="h70">
+                <td>相关证件：</td>
+                <td class="imgCon">
+                    {if condition="isset($infos) and $infos->picture"}
+                    {volist name="infos->picture" id="pic"}
+                    <div class="img">
+                        <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                        <p><span onclick="picremove(this);">删除</span></p>
+                        <input type="hidden" name="picture[]" value="{$pic}"/>
+                    </div>
+                    {/volist}
+                    {/if}
+                    <div class="img btn-upload" data-type="multiimage" data-hidename="picture[]"><a>+</a></div>
+                </td>
+            </tr>
+
+            {if condition="isset($infos)"}
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td>
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+        </table>
+    </div>
+    <div class="layerBtns">
+        <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+        <button class="btn" type="reset">重置</button>
+    </div>
+
+</form>
+
+<script>
+   
+</script>
+</body>
+</html>

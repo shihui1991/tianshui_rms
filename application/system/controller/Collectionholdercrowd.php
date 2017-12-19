@@ -155,7 +155,7 @@ class Collectionholdercrowd extends Auth
         
         $this->assign($datas);
 
-        return view($view);
+        return view($this->theme.'/collectionholdercrowd/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -236,7 +236,7 @@ class Collectionholdercrowd extends Auth
             /* ++++++++++ 特殊人群 ++++++++++ */
             $crowds=Crowds::field(['id','name','status','parent_id'])->where('parent_id','<>',0)->where('status',1)->select();
 
-            return view('modify',[
+            return view($this->theme.'/collectionholdercrowd/modify',[
                 'model'=>$model,
                 'holder_info'=>$holder_info,
                 'crowds'=>$crowds,
@@ -260,7 +260,7 @@ class Collectionholdercrowd extends Auth
         /* ++++++++++ 特殊人群 ++++++++++ */
         $crowds=Crowds::field(['id','name','status','parent_id'])->where('parent_id','<>',0)->where('status',1)->select();
 
-        return view('modify',[
+        return view($this->theme.'/collectionholdercrowd/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'crowds'=>$crowds,

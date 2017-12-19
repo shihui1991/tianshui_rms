@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>项目兑付与协议|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<h4>项目兑付与协议管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('tools/houseresettle_search_pay',['item_id'=>$item_id])}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                重置</a>
+        </li>
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','300')" >
+            <img src="__STATIC__/system/img/page_white_magnify.png"/>
+            查询
+        </li>
+    </ul>
+</div>
+<form action="{:url('status')}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="radio" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>ID</th>
+                <th>项目</th>
+                <th>片区</th>
+                <th>位置</th>
+                <th>类型</th>
+                <th>性质</th>
+                <th>房产</th>
+                <th>资产</th>
+                <th>公共平均</th>
+                <th>重要科目</th>
+                <th>补偿事项</th>
+                <th>总计</th>
+                <th>补偿方式</th>
+                <th>过渡方式</th>
+            </tr>
+            {volist name="pays" id="pay"}
+            <tr>
+                <td>
+                    <input class="va_m pay_id" type="radio" name="pay_id" value="{$pay->id}" onclick="checkBoxOp(this)" id="check-{$pay->id}"/>
+                </td>
+                <td>{$pay->id}</td>
+                <td>{if condition="$pay->deleted_at"} <del>{$pay->i_name}</del>{else /}{$pay->i_name}{/if}</td>
+                <td title="{$pay->address}">{if condition="$pay->deleted_at"} <del>{$pay->cc_name}</del>{else /}{$pay->cc_name}{/if}</td>
+                <td>
+                    {if condition="$pay->deleted_at"}
+                    <del>
+                        {if condition="$pay->building"}{$pay->building}栋{/if}
+                        {if condition="$pay->unit"}{$pay->unit}单元{/if}
+                        {if condition="$pay->floor"}{$pay->floor}楼{/if}
+                        {if condition="$pay->number"}{$pay->number}号{/if}
+                    </del>
+                    {else /}
+                    {if condition="$pay->building"}{$pay->building}栋{/if}
+                    {if condition="$pay->unit"}{$pay->unit}单元{/if}
+                    {if condition="$pay->floor"}{$pay->floor}楼{/if}
+                    {if condition="$pay->number"}{$pay->number}号{/if}
+                    {/if}
+                </td>
+                <td>{$pay->type}</td>
+                <td>{$pay->bu_name}</td>
+                <td>{$pay->estate_amount|number_format=2}</td>
+                <td>{$pay->assets_amount|number_format=2}</td>
+                <td>{$pay->public_avg|number_format=2}</td>
+                <td>{$pay->subject_amount|number_format=2}</td>
+                <td>{$pay->object_amount|number_format=2}</td>
+                <td>{$pay->total|number_format=2}</td>
+                <td>{$pay->compensate_way}</td>
+                <td>{$pay->transit_way}</td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <div class="layerBtns">
+            <a class="btn sub_pay_id">选中兑付</a>
+        </div>
+    </div>
+</form>
+<div class="pageCon">
+    {$pays->render()}
+</div>
+<!-- 查询 -->
+<div id="search" class="layerCon bg_f hide">
+    <form action="{:url('tools/houseresettle_search_pay')}" method="post" id="search-form">
+        <table class="layerTable">
+            <input type="hidden" name="item_id" value="{$item_id}">
+            <tr class="h50">
+                <td><label for="community_id">片区：</label></td>
+                <td>
+                    <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="collectioncommunitys" id="collectioncommunity"}
+                        <option value="{$collectioncommunity->id}" {if condition="isset($community_id) and $community_id eq $collectioncommunity->id"}selected{/if}>{$collectioncommunity->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td><label for="collection_id">权属：</label></td>
+                <td>
+                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="collections" id="collection"}
+                        <option value="{$collection->id}" {if condition="isset($collection_id) and $collection_id eq $collection->id"}selected{/if}>
+                        {if condition="$collection->building"}{$collection->building}栋{/if}
+                        {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                        {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                        {if condition="$collection->number"}{$collection->number}号{/if}
+                        （{$collection->id}）
+                        </option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>是否删除：</td>
+                <td>
+                    <select name="deleted" id="deleted">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                        <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
+                    </select>
+                </td>
+                <td>每页条数：</td>
+                <td>
+                    <select name="display_num" id="display_num">
+                        {volist name="nums" id="num"}
+                        <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>排序：</td>
+                <td>
+                    <select name="ordername" id="ordername">
+                        <option value="id">--默认--</option>
+                        <option value="estate_amount" {if condition="isset($ordername) and $ordername eq 'estate_amount'"}selected{/if}>--房产补偿--</option>
+                        <option value="assets_amount" {if condition="isset($ordername) and $ordername eq 'assets_amount'"}selected{/if}>--资产补偿--</option>
+                        <option value="public_avg" {if condition="isset($ordername) and $ordername eq 'public_avg'"}selected{/if}>--公共平均--</option>
+                        <option value="total" {if condition="isset($ordername) and $ordername eq 'total'"}selected{/if}>--补偿总额--</option>
+                        <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                        <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                        <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
+                    </select>
+                </td>
+                <td>方式：</td>
+                <td>
+                    <select name="orderby" id="orderby">
+                        <option value="asc">--升序--</option>
+                        <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">查询</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+
+        $(".sub_pay_id").click(function () {
+            var _pay_id = $("input[name='pay_id']:checked").val();
+            if(!_pay_id){
+                layer.msg('至少选择一项兑付');
+                return false;
+            }
+            parent.pay_infos(_pay_id);
+        });
+    });
+
+</script>
+</body>
+</html>

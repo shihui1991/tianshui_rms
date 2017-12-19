@@ -33,15 +33,47 @@ class Api extends Auth
     {
         $apis=Apis::field(['id','parent_id','name','url','type','infos','status','sort'])->order('sort asc')->select();
         $table_apis='';
-        if($apis){
-            $array=[];
-            foreach ($apis as $api){
-                $api->add_btn=$api->parent_id?'':"<button type='button' class='btn' onclick='layerIfWindow(&apos;添加接口&apos;,&apos;".url('add',['id'=>$api->id])."&apos;,&apos;800&apos;,&apos;600&apos;)' >添加子接口</button>";
-                $api->detail_url=url('detail',['id'=>$api->id]);
-                $api->delete_url=url('delete',['ids'=>$api->id]);
-                $array[]=$api;
+
+        if(request()->isMobile()){
+            if($apis){
+                $array=[];
+                foreach ($apis as $api){
+                    $api->add_btn=$api->parent_id?'':"<a href='".url('add',['id'=>$api->id])."'><i class='iconfont icon-iconjia'></i></a>";
+                    $api->detail_url=url('detail',['id'=>$api->id]);
+                    $api->delete_url=url('delete',['ids'=>$api->id]);
+                    $array[]=$api;
+                }
+                $str = "
+                    <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
+                        <td style='text-align: left;'>
+                            <input class='va_m' type='checkbox' name='ids[]' value='\$id' id='check-\$id' data-role='check'/>
+                            \$name
+                        </td>
+                        <td>\$id</td>
+                        <td>\$type</td>
+                        <td>\$status</td>
+                        <td class='shezhi'><i class='iconfont icon-shezhi2'></i>
+                            <div class='hide'>
+                                <img src='__STATIC__/sysmobile/img/sanjiao.png' />
+                                \$add_btn
+                                <a href='\$detail_url'><i class='iconfont icon-xiugai'></i></a>
+                                <a data-action='\$delete_url' class='js-ajax-form-btn'><i class='iconfont icon-lajitong'></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    ";
+                $table_apis=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
             }
-            $str = "
+        }else{
+            if($apis){
+                $array=[];
+                foreach ($apis as $api){
+                    $api->add_btn=$api->parent_id?'':"<button type='button' class='btn' onclick='layerIfWindow(&apos;添加接口&apos;,&apos;".url('add',['id'=>$api->id])."&apos;,&apos;800&apos;,&apos;600&apos;)' >添加子接口</button>";
+                    $api->detail_url=url('detail',['id'=>$api->id]);
+                    $api->delete_url=url('delete',['ids'=>$api->id]);
+                    $array[]=$api;
+                }
+                $str = "
                     <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
                         <td>
                             <input class='va_m' type='checkbox' name='ids[]' value='\$id' onclick='checkBoxOp(this)' id='check-\$id'/>
@@ -60,9 +92,13 @@ class Api extends Auth
                         </td>
                     </tr>
                     ";
-            $table_apis=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
+                $table_apis=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
+            }
+
         }
-        return view('index',['table_apis'=>$table_apis]);
+        $this->assign(['table_apis'=>$table_apis]);
+
+        return view($this->theme.'/api/index');
     }
 
     /* ========== 列表全部 ========== */
@@ -106,6 +142,8 @@ class Api extends Auth
         /* ++++++++++ 是否删除 ++++++++++ */
         $deleted=input('deleted');
         $api_model=new Apis();
+        $datas['model']=$api_model;
+
         if(is_numeric($deleted) && in_array($deleted,[0,1])){
             $datas['deleted']=$deleted;
             if($deleted==1){
@@ -120,7 +158,7 @@ class Api extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/api/all');
     }
 
     /* ========== 添加 ========== */
@@ -163,7 +201,7 @@ class Api extends Auth
                 $options_apis=get_tree($array);
             }
 
-            return view('modify',[
+            return view('pc/api/modify',[
                 'model'=>$model,
                 'options_apis'=>$options_apis
             ]);
@@ -192,7 +230,7 @@ class Api extends Auth
             }
             $options_apis=get_tree($array);
         }
-        return view('modify',[
+        return view('pc/api/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'options_apis'=>$options_apis,

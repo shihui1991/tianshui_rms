@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>房源安置|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<h4>房源安置管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index')}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                重置</a>
+        </li>
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','215')" >
+            <img src="__STATIC__/system/img/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf" onclick="layerIfWindow('添加房源安置','{:url('add')}','800','600',true)">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            销毁
+        </li>
+        <li class="fgf" onclick="layerPage('安置房屋使用情况明细Excel导出',$('#search_excel'),'700','215')" >
+            <img src="__STATIC__/system/img/excel_exports.png"/>
+            Excel导出
+        </li>
+    </ul>
+</div>
+<form action="{:url('delete')}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>ID</th>
+                <th>项目（ID）</th>
+                <th>被征收人（ID）</th>
+                <th>安置房源（ID）</th>
+                <th>安置户型</th>
+                <th>安置面积</th>
+                <th>安置类型</th>
+                <th>安置状态</th>
+                <th>操作</th>
+            </tr>
+            {volist name="houseresettle_list" id="info"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$info->id}" onclick="checkBoxOp(this)" id="check-{$info->id}"/>
+                </td>
+                <td>{$info->id}</td>
+                <td>{$info->item_name}（{$info->item_id}）</td>
+                <td>{$info->ch_name}【{if condition="$info->holder eq 1"}产权人{/if}{if condition="$info->holder eq 2"}承租人{/if}】({$info->collection_holder_id})</td>
+                <td title="{$info->address}">
+                    {$info->hc_name}
+                    {if condition="$info->building"}{$info->building}栋{/if}
+                    {if condition="$info->unit"}{$info->unit}单元{/if}
+                    {if condition="$info->floor"}{$info->floor}楼{/if}
+                    {if condition="$info->number"}{$info->number}号{/if}
+                    ({$info->house_id})
+                </td>
+                <td>{$info->l_name}</td>
+                <td>{if condition="$info->area"}{$info->area}㎡{else/}{$info->area}{/if}</td>
+                <td>
+                    {if condition="in_array($info->is_real,[0,1]) and $info->is_real eq 0"}期房{else/}现房{/if} |
+                    {if condition="$info->is_buy eq 0"}非购置房{else/}购置房{/if} |
+                    {if condition="$info->is_transit eq 0"}非过渡{else/}可过渡{/if} |
+                    {if condition="$info->is_public eq 0"}专用{else/}共用{/if}
+                </td>
+                <td>
+                    {if condition="$info->house_status eq 0"}闲置{/if}
+                    {if condition="$info->house_status eq 1"}临时安置{/if}
+                    {if condition="$info->house_status eq 2"}安置{/if}
+                    {if condition="$info->house_status eq 3"}失效{/if}
+                </td>
+                <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('房源安置信息',	'{:url('detail',['id'=>$info->id])}','1000','650')" >详细信息</button>
+                    <button type="button" data-action="{:url('destroy',['ids'=>$info->id])}" class="btn js-ajax-form-btn">销毁</button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+<div class="pageCon">
+    {$houseresettle_list->render()}
+</div>
+<!-- 查询 -->
+<div id="search" class="layerCon bg_f hide">
+    <form action="{:url('index')}" method="post" id="search-form">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>项目：</td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if}>{$item->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>每页条数：</td>
+                <td>
+                    <select name="display_num" id="display_num">
+                        {volist name="nums" id="num"}
+                        <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>排序：</td>
+                <td>
+                    <select name="ordername" id="ordername">
+                        <option value="id">--默认--</option>
+                        <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                        <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                    </select>
+                </td>
+                <td>方式：</td>
+                <td>
+                    <select name="orderby" id="orderby">
+                        <option value="asc">--升序--</option>
+                        <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">查询</button>
+        </div>
+    </form>
+</div>
+<!-- 导出 -->
+<div id="search_excel" class="layerCon bg_f hide">
+    <form action="{:url('statis')}" method="post" id="search-forms">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>项目：</td>
+                <td>
+                    <select name="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}">{$item->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">导出</button>
+        </div>
+    </form>
+</div>
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>

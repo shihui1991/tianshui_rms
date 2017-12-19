@@ -58,7 +58,7 @@ class Topic extends Auth
             ->paginate($display_num);
         $datas['topic_list'] = $topic_list;
         $this->assign($datas);
-        return view();
+        return view($this->theme.'/topic/index');
     }
 
     /* ========== 添加 ========== */
@@ -80,7 +80,7 @@ class Topic extends Auth
                 return $this->error('添加失败', '');
             }
         } else {
-            return view('modify');
+            return view($this->theme.'/topic/modify');
         }
     }
 
@@ -95,7 +95,7 @@ class Topic extends Auth
             ->withTrashed()
             ->where('id',$id)
             ->find();
-        return view('modify', ['infos' => $assessassets_info]);
+        return view($this->theme.'/topic/modify', ['infos' => $assessassets_info]);
     }
 
     /* ========== 修改 ========== */

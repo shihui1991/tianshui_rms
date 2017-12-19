@@ -99,7 +99,7 @@ class Companyvaluer extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/companyvaluer/index');
     }
 
     /* ========== 添加 ========== */
@@ -137,7 +137,7 @@ class Companyvaluer extends Auth
             /* ++++++++++ 评估公司 ++++++++++ */
             $companys=Companys::field(['id','name','status'])->where('status',1)->order('sort asc')->select();
 
-            return view('modify',[
+            return view($this->theme.'/companyvaluer/modify',[
                 'model'=>$model,
                 'companys'=>$companys,
             ]);
@@ -159,7 +159,7 @@ class Companyvaluer extends Auth
         /* ++++++++++ 评估公司 ++++++++++ */
         $companys=Companys::field(['id','name','status'])->where('status',1)->order('sort asc')->select();
 
-        return view('modify',[
+        return view($this->theme.'/companyvaluer/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'companys'=>$companys,

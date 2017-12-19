@@ -89,7 +89,7 @@ class Company extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/company/index');
     }
 
     /* ========== 添加 ========== */
@@ -129,7 +129,7 @@ class Company extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/company/modify',[
                 'model'=>$model,
             ]);
         }
@@ -147,7 +147,7 @@ class Company extends Auth
 
         $model=new Companys();
 
-        return view('modify',[
+        return view($this->theme.'/company/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

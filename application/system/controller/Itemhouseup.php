@@ -53,7 +53,7 @@ class Itemhouseup extends Auth
         
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/itemhouseup/index');
     }
 
     /* ========== 添加 ========== */
@@ -88,7 +88,7 @@ class Itemhouseup extends Auth
                 return $this->error('错误操作');
             }
 
-            return view('modify',[
+            return view($this->theme.'/itemhouseup/modify',[
                 'model'=>$model,
                 'item_id'=>$item_id,
             ]);
@@ -109,7 +109,7 @@ class Itemhouseup extends Auth
 
         $model=new Itemhouseups();
 
-        return view('modify',[
+        return view($this->theme.'/itemhouseup/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

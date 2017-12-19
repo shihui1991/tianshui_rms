@@ -76,7 +76,7 @@ class Layout extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/layout/index');
     }
 
     /* ========== 添加 ========== */
@@ -105,7 +105,7 @@ class Layout extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/layout/modify',[
                 'model'=>$model,
             ]);
         }
@@ -123,7 +123,7 @@ class Layout extends Auth
 
         $model=new Layouts();
 
-        return view('modify',[
+        return view($this->theme.'/layout/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

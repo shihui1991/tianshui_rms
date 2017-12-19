@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>入户摸底|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<h4>入户摸底管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index',['item_id'=>$item_info->id,'l'=>1])}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                刷新
+            </a>
+        </li>
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','330')" >
+            <img src="__STATIC__/system/img/page_white_magnify.png"/>
+            查询
+        </li>
+        {if condition="$item_info->getData('status') eq 1"}
+        <li class="fgf" onclick="layerIfWindow('添加入户摸底','{:url('add',['item_id'=>$item_info->id])}','800','600',true)">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$item_info->id])}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$item_info->id])}">
+            <img src="__STATIC__/system/img/recycle.png"/>
+            恢复
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$item_info->id])}" data-notice="确定要彻底删除吗？">
+            <img src="__STATIC__/system/img/destroy.png"/>
+            销毁
+        </li>
+        {/if}
+      <!--  <li class="fgf" onclick="layerPage('房屋征收摸底汇总-&#45;&#45;Excel导出',$('#search_excel'),'700','215')" >
+            <img src="__STATIC__/system/img/excel_exports.png"/>
+            Excel导出
+        </li>-->
+    </ul>
+</div>
+<form action="{:url('index',['item_id'=>$item_info->id])}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>ID<i class="stretch"></i></th>
+                <th>地址<i class="stretch"></i></th>
+                <th>片区（ID）<i class="stretch"></i></th>
+                <th>房号<i class="stretch"></i></th>
+                <th>类型<i class="stretch"></i></th>
+                <th>用途<i class="stretch"></i></th>
+                <th>意见<i class="stretch"></i></th>
+                <th>补偿方式<i class="stretch"></i></th>
+                <th>补偿单价<i class="stretch"></i></th>
+                <th>状态<i class="stretch"></i></th>
+                <th>操作<i class="stretch"></i></th>
+            </tr>
+            {volist name="collections" id="collection"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$collection->id}" onclick="checkBoxOp(this)" id="check-{$collection->id}"/>
+                </td>
+                <td>{$collection->id}</td>
+                <td>{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->community->address}</del>{else /}{$collection->community->address}{/if}</td>
+                <td>{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->community->name}</del>{else /}{$collection->community->name}{/if}（{$collection->community_id}）</td>
+                <td>
+                    {if condition="$collection->deleted_at or $collection->getData('status') eq 0"}
+                    <del>
+                        {if condition="$collection->building"}{$collection->building}栋{/if}
+                        {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                        {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                        {if condition="$collection->number"}{$collection->number}号{/if}
+                    </del>
+                    {else /}
+                    {if condition="$collection->building"}{$collection->building}栋{/if}
+                    {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                    {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                    {if condition="$collection->number"}{$collection->number}号{/if}
+                    {/if}
+                </td>
+                <td>{$collection->type}</td>
+                <td>{$collection->realuse->name}</td>
+                <td>{$collection->is_agree}</td>
+                <td>{$collection->compensate_way}</td>
+                <td>{$collection->compensate_price}</td>
+                <td>{$collection->status}</td>
+                <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户摸底基本信息',	'{:url('detail',['id'=>$collection->id])}','800','630',true)" >详情</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户摸底动态与审核',	'{:url('status',['id'=>$collection->id,'item_id'=>$collection->item_id])}','800','600')">审核</button>
+                    <button type="button" class="btn" onclick="layerPage('入户摸底重要组成数据',	$('#datas-{$collection->id}'),'460','200')">重要数据</button>
+                    <div id="datas-{$collection->id}" class="layerCon bg_f hide">
+                        <div style="padding:10px;width: 100%;height: auto;">
+                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('入户摸底-建筑信息',	'{:url('Collectionbuilding/index',['collection_id'=>$collection->id,'l'=>1])}','800','600',true)" >建筑信息</button>
+                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('入户摸底-成员情况',	'{:url('Collectionholder/index',['item_id'=>$collection->item_id,'collection_id'=>$collection->id,'l'=>1])}','800','600',true)" >成员情况</button>
+                            <button style="display: inline-block;float: left;margin: 10px;" type="button" class="btn" onclick="layerIfWindow('入户摸底-其他补偿事项',	'{:url('Collectionobject/index',['collection_id'=>$collection->id])}','800','600',true)" >补偿事项</button>
+                        </div>
+                    </div>
+                    <button type="button" class="btn" onclick="layerIfWindow('安置房选择','{:url('Collectionholderhouse/index',['collection_id'=>$collection->id])}','800','600',true)" >安置房选择</button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+<div class="pageCon">
+    {$collections->render()}
+</div>
+<!-- 查询 -->
+<div id="search" class="layerCon bg_f hide">
+    <form action="{:url('index',['item_id'=>$item_info->id,'l'=>1])}" method="post" id="search-form">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>项目：</td>
+                <td colspan="3">{$item_info->name}</td>
+                <td>片区：</td>
+                <td colspan="3">
+                    <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="collectioncommunitys" id="collectioncommunity"}
+                        <option value="{$collectioncommunity->id}" {if condition="isset($community_id) and $community_id eq $collectioncommunity->id"}selected{/if}>{$collectioncommunity->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>几栋：</td>
+                <td><input type="number" name="building" id="building" value="{$building?:''}" min="1"></td>
+                <td>几单元：</td>
+                <td><input type="number" name="unit" id="unit" value="{$unit?:''}" min="1"></td>
+                <td>几楼：</td>
+                <td><input type="number" name="floor" id="floor" value="{$floor?:''}"></td>
+                <td>几号：</td>
+                <td><input type="number" name="number" id="number" value="{$number?:''}" min="1"></td>
+            </tr>
+            <tr class="h50">
+                <td>类型：</td>
+                <td>
+                    <select name="type" id="type">
+                        <option value="">--全部--</option>
+                        <option value="0" {if condition="isset($type) and $type eq 0"}selected{/if}>--私产--</option>
+                        <option value="1" {if condition="isset($type) and $type eq 1"}selected{/if}>--公产--</option>
+                    </select>
+                </td>
+                <td>实际用途：</td>
+                <td>
+                    <select name="real_use" id="real_use">
+                        <option value="">--全部--</option>
+                        {volist name="buildinguses" id="buildinguse"}
+                        <option value="{$buildinguse->id}" {if condition="isset($real_use) and $real_use eq $buildinguse->id"}selected{/if}>{$buildinguse->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>拆迁意见：</td>
+                <td>
+                    <select name="is_agree" id="is_agree">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($is_agree) and $is_agree eq 1"}selected{/if}>--同意--</option>
+                        <option value="0" {if condition="isset($is_agree) and $is_agree eq 0"}selected{/if}>--反对--</option>
+                    </select>
+                </td>
+                <td>状态：</td>
+                <td>
+                    <select name="status" id="status">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($status) and $status eq 1"}selected{/if}>--启用--</option>
+                        <option value="0" {if condition="isset($status) and $status eq 0"}selected{/if}>--禁用--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>是否删除：</td>
+                <td>
+                    <select name="deleted" id="deleted">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                        <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
+                    </select>
+                </td>
+                <td>每页条数：</td>
+                <td>
+                    <select name="display_num" id="display_num">
+                        {volist name="nums" id="num"}
+                        <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>排序：</td>
+                <td>
+                    <select name="ordername" id="ordername">
+                        <option value="id">--默认--</option>
+                        <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                        <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                        <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
+                    </select>
+                </td>
+                <td>方式：</td>
+                <td>
+                    <select name="orderby" id="orderby">
+                        <option value="asc">--升序--</option>
+                        <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">查询</button>
+        </div>
+    </form>
+</div>
+<!-- 导出 -->
+<div id="search_excel" class="layerCon bg_f hide">
+    <form action="{:url('statis')}" method="post" id="search-forms">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>项目：</td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请先选择项目--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}">{$item->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <button class="btn excel_collection" >导出</button>
+        </div>
+    </form>
+</div>
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+        $(".excel_collection").click(function () {
+            var item_ids = $("#item_ids").find('option:selected').val();
+            if(!item_ids){
+                layer.msg('请先选择项目');
+                return false;
+            }
+            $("#item_ids").parent('form').submit();
+        });
+    });
+
+</script>
+</body>
+</html>

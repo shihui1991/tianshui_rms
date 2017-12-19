@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>入户摸底-家庭人员|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="tabs">
+        <div class="item">
+            <div class="homeTit bg_f5">
+                <div class="fl"><img src="__STATIC__/system/img/account_balances.png"/>入户摸底-家庭人员</div>
+                <ul class="homeTab">
+                    <li class="on"><a href="javascript:location.reload();">基本信息</a></li>
+                    {if condition="isset($infos)"}
+                    <li class=""><a href="{:url('Collectionholdercrowd/index',['item_id'=>$infos->item_id,'holder_id'=>$infos->id,'l'=>1])}">特殊人群</a></li>
+                    {/if}
+                </ul>
+
+            </div>
+            <div class="homeCon">
+                <div class="tabPage w_100 on">
+                    <div class="layerCon bg_f">
+                        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                        <input type="hidden" name="item_id" value="{:isset($infos)?$infos->item_id:$collection_info->item_id}">
+                        <input type="hidden" name="collection_id" value="{:isset($infos)?$infos->collection_id:$collection_info->id}">
+                        <table class="layerTable" border="0">
+                            <tr class="h50">
+                                <td><label for="name">名称：</label></td>
+                                <td><input type="text" name="name" id="name" value="{:isset($infos)?$infos->name:''}" class="must" placeholder="输入单位名称或人员姓名"></td>
+                                <td><label for="phone">电话：</label></td>
+                                <td><input type="text" name="phone" id="phone" value="{:isset($infos)?$infos->phone:''}" class="must" placeholder="输入联系电话"></td>
+                                <td><label for="holder">产权：</label></td>
+                                <td>
+                                    <select name="holder" id="holder">
+                                        {volist name="model->holder" id="holder"}
+                                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('holder') eq $key"}selected{/if}>{$holder}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td><label for="portion">补偿份额：</label></td>
+                                <td><input type="number" name="portion" id="portion" value="{:isset($infos)?$infos->portion:''}" class="must" placeholder="输入产权补偿分配份额（%）" min="0"></td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="item_id">项目：</label></td>
+                                <td colspan="3">{:isset($infos)?$infos->item->name:$collection_info->item->name}</td>
+                                <td><label for="community_id">片区：</label></td>
+                                <td colspan="3">{:isset($infos)?$infos->community->name:$collection_info->community->name}</td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="collection_id">权属：</label></td>
+                                <td colspan="3">
+                                    {if condition="isset($infos)"}
+                                    {if condition="$infos->collection->building"}{$infos->collection->building}栋{/if}
+                                    {if condition="$infos->collection->unit"}{$infos->collection->unit}单元{/if}
+                                    {if condition="$infos->collection->floor"}{$infos->collection->floor}楼{/if}
+                                    {if condition="$infos->collection->number"}{$infos->collection->number}号{/if}
+                                    {else/}
+                                    {if condition="$collection_info->building"}{$collection_info->building}栋{/if}
+                                    {if condition="$collection_info->unit"}{$collection_info->unit}单元{/if}
+                                    {if condition="$collection_info->floor"}{$collection_info->floor}楼{/if}
+                                    {if condition="$collection_info->number"}{$collection_info->number}号{/if}
+                                    {/if}
+                                </td>
+                                <td><label for="address">地址：</label></td>
+                                <td colspan="3"><input type="text" name="address" id="address" value="{:isset($infos)?$infos->address:''}"></td>
+                            </tr>
+                           
+                            <tr class="h50">
+                                <td><label for="cardnum">证件号码：</label></td>
+                                <td><input type="text" name="cardnum" id="cardnum" value="{:isset($infos)?$infos->cardnum:''}" placeholder="输入证件号码（身份证）"></td>
+                                <td><label for="relation">户主关系：</label></td>
+                                <td><input type="text" name="relation" id="relation" value="{:isset($infos)?$infos->relation:''}" placeholder="输入与户主关系"></td>
+                                <td><label for="birth">生日年份：</label></td>
+                                <td><input type="number" name="birth" id="birth" value="{:isset($infos)?$infos->birth:''}" placeholder="输入生日年份"></td>
+                                <td><label for="gender">性别：</label></td>
+                                <td>
+                                    <select name="gender" id="gender">
+                                        {volist name="model->gender" id="gender"}
+                                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('gender') eq $key"}selected{/if}>{$gender}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr class="h50">
+                                <td><label for="nation">民族：</label></td>
+                                <td>
+                                    <select name="nation" id="nation" class="chosen" data-placeholder="请选择民族" data-no_results_text="没有匹配数据">
+                                        <option value="">--选择民族--</option>
+                                        {volist name="nations" id="nation"}
+                                        <option value="{$nation->name}" {if condition="isset($infos) and $infos->nation eq $nation->name"}selected{/if}>{$nation->name}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td><label for="job">职业：</label></td>
+                                <td><input type="text" name="job" id="job" value="{:isset($infos)?$infos->job:''}" placeholder="输入职业"></td>
+                                <td><label for="married">婚姻状况：</label></td>
+                                <td>
+                                    <select name="married" id="married">
+                                        {volist name="model->married" id="married"}
+                                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('married') eq $key"}selected{/if}>{$married}</option>
+                                        {/volist}
+                                    </select>
+                                </td>
+                                <td><label for="live_addr">现住址：</label></td>
+                                <td><input type="text" name="live_addr" id="live_addr" value="{:isset($infos)?$infos->live_addr:''}" placeholder="输入现住址"></td>
+                            </tr>
+                            {if condition="isset($infos)"}
+                            <tr class="h50">
+                                <td>操作时间：</td>
+                                <td colspan="7">
+                                    创建于：{$infos->created_at}<br/>
+                                    更新于：{$infos->updated_at}<br/>
+                                    {if condition="isset($infos) and $infos->deleted_at"}
+                                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/if}
+                        </table>
+                    </div>
+                </div>
+                <div class="layerBtns">
+                    <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+                    <button class="btn" type="reset">重置</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+</body>
+</html>

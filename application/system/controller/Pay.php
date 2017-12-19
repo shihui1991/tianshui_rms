@@ -125,7 +125,7 @@ class Pay extends Auth
 
         $this->assign($datas);
 
-        return view($view);
+        return view($this->theme.'/pay/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -359,7 +359,7 @@ class Pay extends Auth
             /* ++++++++++ 片区 ++++++++++ */
             $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
 
-            return view('add',[
+            return view($this->theme.'/pay/add',[
                 'model'=>$model,
                 'item_info'=>$item_info,
                 'collectioncommunitys'=>$collectioncommunitys,
@@ -388,7 +388,7 @@ class Pay extends Auth
 
         $model=new Pays();
 
-        return view('modify',[
+        return view($this->theme.'/pay/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

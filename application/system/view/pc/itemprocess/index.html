@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>项目控制流程|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<h4>项目控制流程管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index',['item_id'=>$item_id])}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                重置</a>
+        </li>
+        <li class="fgf" onclick="layerIfWindow('添加项目控制流程','{:url('add',['item_id'=>$item_id])}','600','300')">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form">
+            <img src="__STATIC__/system/img/text_list_numbers.png"/>
+            排序
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+            <img src="__STATIC__/system/img/recycle.png"/>
+            恢复
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+            <img src="__STATIC__/system/img/destroy.png"/>
+            销毁
+        </li>
+    </ul>
+</div>
+<form action="{:url('sort')}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>排序<i class="stretch"></i></th>
+                <th>ID<i class="stretch"></i></th>
+                <th>名称<i class="stretch"></i></th>
+                <th>说明<i class="stretch"></i></th>
+                <th>状态<i class="stretch"></i></th>
+                <th>操作<i class="stretch"></i></th>
+            </tr>
+            {volist name="itemprocesss" id="itemprocess"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$itemprocess->id}" onclick="checkBoxOp(this)" id="check-{$itemprocess->id}"/>
+                </td>
+                <td><input style="width: 50px;" type="text" name="sorts[{$itemprocess->id}]" value="{$itemprocess->sort}" id="input-{$itemprocess->id}" data-id="{$itemprocess->id}"></td>
+                <td>{$itemprocess->id}</td>
+                <td>{if condition="$itemprocess->deleted_at"}<del>{$itemprocess->name}</del>{else /}{$itemprocess->name}{/if}（{$itemprocess->process_id}）</td>
+                <td>{if condition="$itemprocess->deleted_at"}<del>{$itemprocess->infos}</del>{else /}{$itemprocess->infos}{/if}</td>
+                <td>{if condition="$itemprocess->deleted_at"}已删除{else /}{$itemprocess->status}{/if}</td>
+                <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('项目控制流程信息',	'{:url('detail',['id'=>$itemprocess->id])}','600','300')" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$itemprocess->id])}" class="btn js-ajax-form-btn">删除</button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>

@@ -68,7 +68,7 @@ class Housetransit extends Auth
         $items = model('Items')->field(['id', 'name', 'status'])->order('is_top desc')->select();
         $datas['items'] = $items;
         $this->assign($datas);
-        return view();
+        return view($this->theme.'/housetransit/index');
     }
 
     /* ========== 添加 ========== */
@@ -153,7 +153,7 @@ class Housetransit extends Auth
             /* ++++++++++ 项目列表 ++++++++++ */
             $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
             $this->assign('items',$items);
-            return view();
+            return view($this->theme.'/housetransit/add');
         }
     }
 
@@ -190,7 +190,7 @@ class Housetransit extends Auth
             ->join('layout l','h.layout_id=l.id','left')
             ->where('ih.house_id',$housetransit_info->house_id)
             ->find();
-        return view('modify',
+        return view($this->theme.'/housetransit/modify',
             ['infos'=>$housetransit_info,
                 'pays'=>$pays,
                 'itemhouse'=>$itemhouses,

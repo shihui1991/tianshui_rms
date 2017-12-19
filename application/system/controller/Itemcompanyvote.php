@@ -75,7 +75,7 @@ class Itemcompanyvote extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/itemcompanyvote/index');
     }
 
     /* ========== 添加 ========== */
@@ -154,7 +154,7 @@ class Itemcompanyvote extends Auth
             $collections=Collections::field(['id','building','unit','floor','number','status'])->where('status',1)->where('real_use','neq',3)->select();
             /* ++++++++++ 房产评估公司 ++++++++++ */
             $companys=Companys::field(['id','name','status'])->where('status',1)->where('type',0)->order('sort asc')->select();
-            return view('add',[
+            return view($this->theme.'/itemcompanyvote/add',[
                 'model'=>$model,
                 'item_info'=>$item_info,
                 'collectioncommunitys'=>$collectioncommunitys,
@@ -186,7 +186,7 @@ class Itemcompanyvote extends Auth
         $item_name=Items::where('id',$item_id)->value('name');
         $company_name=Companys::where('id',$company_id)->value('name');
 
-        return view('detail',[
+        return view($this->theme.'/itemcompanyvote/detail',[
             'item_id'=>$item_id,
             'company_id'=>$company_id,
             'item_name'=>$item_name,

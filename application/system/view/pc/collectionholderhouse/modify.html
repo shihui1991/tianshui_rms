@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>安置房选择|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{$infos->id}">
+        <input type="hidden" name="item_id" value="{$infos->item_id}">
+        <input type="hidden" name="collection_id" value="{$infos->collection_id}">
+        <table class="layerTable" border="0">
+           
+            <tr class="h50">
+                <td><label for="collection_holder_id">被征收人：</label></td>
+                <td>{$infos->ch_name} 【{$infos->holder}】</td>
+            </tr>
+
+            <tr class="h50">
+                <td><label for="house_id">安置房：</label></td>
+                <td>
+                    {$infos->address}
+                    {$infos->hc_name}
+                    {if condition="$infos->building"}{$infos->building}栋{/if}
+                    {if condition="$infos->unit"}{$infos->unit}单元{/if}
+                    {if condition="$infos->floor"}{$infos->floor}楼{/if}
+                    {if condition="$infos->number"}{$infos->number}号{/if}
+                    【{$infos->l_name}】
+                    【{$infos->area}】
+                    【{$infos->has_lift}/{$infos->total_floor}】
+                </td>
+            </tr>
+
+            <tr class="h50">
+                <td><label for="sort">选择排序：</label></td>
+                <td><input type="number" name="sort" id="sort" value="{$infos->sort}" placeholder="输入选择安置优先顺序"></td>
+            </tr>
+            
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td>
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            
+        </table>
+    </div>
+    <div class="layerBtns">
+        <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+        <button class="btn" type="reset">重置</button>
+    </div>
+
+</form>
+
+<script>
+   
+</script>
+</body>
+</html>

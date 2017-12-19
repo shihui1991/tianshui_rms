@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>登录|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body style="background: url(__STATIC__/sysmobile/img/login_bg.png) no-repeat center;background-size:100% 100%;">
+<div class="page" >
+    <form class="login_from js-ajax-form" data-role="none" action="{:url('login')}" method="post" onsubmit="return false;">
+        <p><i class="iconfont icon-gerenzhongxin"></i><input type="text" value="" data-role="none" name="username" placeholder="输入用户名"/> </p>
+        <p><i class="iconfont icon-mima"></i><input type="password" placeholder="输入密码" data-role="none" name="password"/> </p>
+        <a class="submit_p js-ajax-login">立即提交</a>
+    </form>
+</div>
+</body>
+</html>

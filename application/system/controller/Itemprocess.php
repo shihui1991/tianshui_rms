@@ -60,7 +60,7 @@ class Itemprocess extends Auth
         
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/itemprocess/index');
     }
 
     /* ========== 添加 ========== */
@@ -98,7 +98,7 @@ class Itemprocess extends Auth
             /* ++++++++++ 控制流程 ++++++++++ */
             $processs=Processs::field(['id','name'])->select();
 
-            return view('modify',[
+            return view($this->theme.'/itemprocess/modify',[
                 'model'=>$model,
                 'item_id'=>$item_id,
                 'processs'=>$processs,
@@ -125,7 +125,7 @@ class Itemprocess extends Auth
 
         $model=new Itemprocesss();
 
-        return view('modify',[
+        return view($this->theme.'/itemprocess/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

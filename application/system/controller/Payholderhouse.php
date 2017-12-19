@@ -86,7 +86,7 @@ class Payholderhouse extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/payholderhouse/index');
     }
 
     /* ========== 添加 ========== */
@@ -359,7 +359,7 @@ class Payholderhouse extends Auth
                 ->order('chh.sort asc')
                 ->select();
 
-            return view('add',[
+            return view($this->theme.'/payholderhouse/add',[
                 'pay_id'=>$pay_id,
                 'pay_info'=>$pay_info,
                 'payholders'=>$payholders,

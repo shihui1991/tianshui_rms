@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>入户评估管理|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="item_id" id="item_id" value="{:isset($infos)?$infos->item_id:$item_info->id}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label>项目：</label></td>
+                <td colspan="3">{$item_info->name}</td>
+            </tr>
+            <tr class="h50">
+                <td><label for="community_id">片区：</label></td>
+                <td colspan="3">
+                    <select name="community_id" id="community_id" class="chosen sear_collection_id" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择片区--</option>
+                        {volist name="collectioncommunitys" id="community"}
+                        <option value="{$community->id}">{$community->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h70">
+                <td ><label for="collection_id">权属：</label></td>
+                <td id="collection_id_info" colspan="3">
+                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
+                        <option value="">--请先选择片区--</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    /* ===== 查询权属 =====*/
+    $('.sear_collection_id').change(function () {
+        var _item_id=$("#item_id").val();
+        var _community_id=$("#community_id").find('option:selected').val();
+        var data = {
+            'item_id':_item_id,
+            'community_id':_community_id
+        };
+        if(_community_id){
+            $.ajax({
+                url:"{:url('Tools/collections')}",
+                data:data,
+                dataType:'json',
+                type:'post',
+                success:function (resp) {
+                    $('#collection_id_info').html('');
+                    var options = '';
+                    if(resp.code){
+                        options += '<select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">';
+                        options += ' <option value="">--请选择权属--</option>';
+                        $.each(resp.data,function (index,info) {
+                            var building = info.building?info.building+"栋":'';
+                            var unit = info.unit?info.unit+"单元":'';
+                            var floor = info.floor?info.floor+"楼":'';
+                            var number = info.number?info.number+"号":'';
+
+                            options += '<option value="'+info.id+'">'+building+unit+floor+number+'（'+info.id+'）'+'</option>';
+                        });
+                        options += '</select>';
+                    }else{
+                        options += '<select name="collection_id" id="collection_id" class="chosen" data-placeholder="暂无数据" data-no_results_text="没有匹配数据">';
+                        options += ' <option value="">--暂无数据--</option>';
+                        layer.msg(resp.msg,function(){});
+                    }
+                    options += '</select>';
+                    $('#collection_id_info').html(options);
+                    $("#collection_id").chosen();
+                },
+                error:function () {
+                    layer.msg('网络错误，请重试',function(){});
+                }
+            });
+        }else{
+            var options = '';
+            options += '<select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">';
+            options += ' <option value="">--请先选择片区--</option>';
+            options += '</select>';
+            $('#collection_id_info').html(options);
+            $("#collection_id").chosen();
+            layer.msg('请选择片区',function(){});
+        }
+    });
+</script>
+</body>
+</html>

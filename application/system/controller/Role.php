@@ -59,7 +59,7 @@ class Role extends Auth
                     ";
             $table_roles=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
         }
-        return view('index',['table_roles'=>$table_roles]);
+        return view($this->theme.'/role/index',['table_roles'=>$table_roles]);
     }
 
     /* ========== 列表全部 ========== */
@@ -117,7 +117,7 @@ class Role extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/role/all');
     }
 
     /* ========== 添加 ========== */
@@ -178,7 +178,7 @@ class Role extends Auth
                 $tree_menus=get_tree($menus,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
             }
 
-            return view('modify',[
+            return view($this->theme.'/role/modify',[
                 'model'=>$model,
                 'options_roles'=>$options_roles,
                 'tree_menus'=>$tree_menus,
@@ -233,7 +233,7 @@ class Role extends Auth
                         ";
             $tree_menus=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
         }
-        return view('modify',[
+        return view($this->theme.'/role/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'options_roles'=>$options_roles,

@@ -71,7 +71,7 @@ class Process extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/process/index');
     }
 
     /* ========== 添加 ========== */
@@ -124,7 +124,7 @@ class Process extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/process/modify',[
                 'model'=>$model,
             ]);
         }
@@ -144,7 +144,7 @@ class Process extends Auth
 
         $model=new Processs();
 
-        return view('modify',[
+        return view($this->theme.'/process/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'processurls'=>$processurls,

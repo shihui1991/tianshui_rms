@@ -44,7 +44,7 @@ class Menus extends Model
     }
 
     public function getStatusAttr($key=null){
-        $array=[1=>'启用',0=>'禁用'];
+        $array=[0=>'禁用',1=>'启用'];
         if(is_numeric($key) && in_array($key,[0,1])){
             return $array[$key];
         }else{

@@ -55,7 +55,7 @@ class Itemtopic extends Auth
         $topics = model('Topics')->field(['id', 'name'])->select();
         $datas['topic_list'] = $topics;
         $this->assign($datas);
-        return view();
+        return view($this->theme.'/itemtopic/index');
     }
 
     /* ========== 添加 ========== */
@@ -115,7 +115,7 @@ class Itemtopic extends Auth
             /* ++++++++++ 话题列表 ++++++++++ */
             $topic = model('Topics')->field(['id', 'name'])->select();
 
-            return view('modify',['item_info'=>$item_info,'topic'=>$topic]);
+            return view($this->theme.'/itemtopic/modify',['item_info'=>$item_info,'topic'=>$topic]);
         }
     }
 

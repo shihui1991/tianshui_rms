@@ -21,17 +21,10 @@ class Base extends Controller
         /* ++++++++++ 未登录或操作超时 ++++++++++ */
         $userinfo=Session::get('holderinfo');
         if(!$userinfo || time()-$userinfo['time']>3600){
-            $this->redirect('holder/Index/index');
+            $this->redirect('Index/index');
         }else{
             Session::set('holderinfo.time',time());
         }
-
-
-//        if(request()->isMobile()){
-//            $this->theme='mobile';
-//        }else{
-//            $this->theme='pc';
-//        }
     }
 
 }

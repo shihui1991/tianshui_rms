@@ -119,7 +119,7 @@ class Risktopic extends Auth
         $datas['topic_list'] = $topics;
 
         $this->assign($datas);
-        return view($view);
+        return view($this->theme.'/risktopic/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -195,7 +195,7 @@ class Risktopic extends Auth
             $items = model('Items')->field(['id', 'name', 'status'])->where('id', $item_id)->find();
             /* ++++++++++ 片区 ++++++++++ */
             $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
-            return view('add',[
+            return view($this->theme.'/risktopic/add',[
                 'item_info' => $items,
                 'collectioncommunitys' => $collectioncommunitys]);
         }
@@ -234,7 +234,7 @@ class Risktopic extends Auth
             ->join('collection_holder chr', 'chr.id=ass.recommemd_holder_id', 'left')
             ->where('ass.id',$risktopic_info['risk_id'])
             ->find();
-        return view('modify',[
+        return view($this->theme.'/risktopic/modify',[
             'infos'=>$risktopic_info,
             'risk_info'=>$risk_info,
             'item_id'=>$item_id

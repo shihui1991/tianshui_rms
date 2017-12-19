@@ -76,11 +76,11 @@ class Buildinguse extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/buildinguse/index');
     }
 
     /* ========== 添加 ========== */
-    public function add($id=0){
+    public function add(){
         $model=new Buildinguses();
         if(request()->isPost()){
             $rules=[
@@ -105,14 +105,15 @@ class Buildinguse extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/buildinguse/modify',[
                 'model'=>$model,
             ]);
         }
     }
 
     /* ========== 详情 ========== */
-    public function detail($id=null){
+    public function detail(){
+        $id=input('id');
         if(!$id){
             return $this->error('至少选择一项');
         }
@@ -123,7 +124,7 @@ class Buildinguse extends Auth
 
         $model=new Buildinguses();
 
-        return view('modify',[
+        return view($this->theme.'/buildinguse/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

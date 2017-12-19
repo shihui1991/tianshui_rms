@@ -57,7 +57,7 @@ class Crowd extends Auth
                     ";
             $table_crowds=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
         }
-        return view('index',['table_crowds'=>$table_crowds]);
+        return view($this->theme.'/crowd/index',['table_crowds'=>$table_crowds]);
     }
 
     /* ========== 列表全部 ========== */
@@ -109,7 +109,7 @@ class Crowd extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/crowd/all');
     }
 
     /* ========== 添加 ========== */
@@ -149,7 +149,7 @@ class Crowd extends Auth
                 $options_crowds=get_tree($array);
             }
 
-            return view('modify',[
+            return view($this->theme.'/crowd/modify',[
                 'model'=>$model,
                 'options_crowds'=>$options_crowds
             ]);
@@ -178,7 +178,7 @@ class Crowd extends Auth
             }
             $options_crowds=get_tree($array);
         }
-        return view('modify',[
+        return view($this->theme.'/crowd/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'options_crowds'=>$options_crowds,

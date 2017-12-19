@@ -326,7 +326,7 @@ class Statis extends Base
      $datas['statis_list'] = $statis_list;
 
         $this->assign($datas);
-        return view();
+        return view($this->theme.'/statis/index');
     }
 
     /* ========== 导出勾选项目统计数据 ========== */

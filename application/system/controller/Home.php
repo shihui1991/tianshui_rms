@@ -10,7 +10,7 @@ namespace app\system\controller;
 
 use think\Session;
 
-class Home extends Auth
+class Home extends Base
 {
     /* ========== 初始化 ========== */
     public function _initialize()
@@ -22,27 +22,33 @@ class Home extends Auth
     /* ========== 框架主页 ========== */
     public function index()
     {
-        $userinfo=Session::get('userinfo');
-        $menus_ids=json_decode($userinfo['menu_ids'],true);
-        $menus=[];
-        $field=['id','parent_id','name','icon','url','display','status','sort'];
-        if($userinfo['is_admin']){
-            $menus=model('Menus')->field($field)->where('display',1)->order(['sort'=>'asc','id'=>'asc'])->select();
-        }elseif($menus_ids){
-            $menus=model('Menus')->field($field)->where('display',1)->whereIn('id',$menus_ids)->order(['sort'=>'asc','id'=>'asc'])->select();
-        }
-        $nav_menus='';
-        if($menus){
-            $nav_menus=get_nav_li_list($menus);
+        if(request()->isMobile()){
+
+        }else{
+            $userinfo=Session::get('userinfo');
+            $menus_ids=json_decode($userinfo['menu_ids'],true);
+            $menus=[];
+            $field=['id','parent_id','name','icon','url','display','status','sort'];
+            if($userinfo['is_admin']){
+                $menus=model('Menus')->field($field)->where('display',1)->order(['sort'=>'asc','id'=>'asc'])->select();
+            }elseif($menus_ids){
+                $menus=model('Menus')->field($field)->where('display',1)->whereIn('id',$menus_ids)->order(['sort'=>'asc','id'=>'asc'])->select();
+            }
+            $nav_menus='';
+            if($menus){
+                $nav_menus=get_nav_li_list($menus);
+            }
+
+            $this->assign([
+                'nav_menus'=>$nav_menus
+            ]);
         }
 
-        return view('index',[
-            'nav_menus'=>$nav_menus,
-        ]);
+        return view($this->theme.'/home/index');
     }
 
     /* ========== 控制台 ========== */
     public function console(){
-        return view();
+        return view($this->theme.'/home/console');
     }
 }

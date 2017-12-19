@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>控制流程|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="name">名称：</label></td>
+                <td>
+                    <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入唯一名称"/>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="infos">说明：</label></td>
+                <td>
+                    <textarea id="infos" name="infos">{:isset($infos)?$infos->infos:''}</textarea>
+                </td>
+            </tr>
+            <tr class="h50" id="url">
+                <td colspan="2" style="text-align: left;">
+                    <label for="url">流程地址： </label>
+                    <a class="btn btn-add" title="点击添加"><img src="__STATIC__/system/img/add.png" alt="添加"></a>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><a class="btn btn-remove">删除</a></td>
+                <td>
+                    <input type="text" name="url[]" value="" placeholder="输入流程链接地址">
+                </td>
+            </tr>
+
+            {if condition="isset($infos)"}
+            {volist name="processurls" id="url"}
+            <tr class="h50">
+                <td><a class="btn btn-remove">删除</a></td>
+                <td>
+                    <input type="text" name="url[]" value="{$url.url}" placeholder="输入流程链接地址">
+                </td>
+            </tr>
+            {/volist}
+
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td>
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<table class="hide">
+    <tr class="h50" id="tpl">
+        <td><a class="btn btn-remove">删除</a></td>
+        <td>
+            <input type="text" name="url[]" value="" placeholder="输入流程链接地址">
+        </td>
+    </tr>
+</table>
+<script>
+    $('.btn-add').click(function () {
+        var tpl=$('#tpl').clone(true).attr('id','');
+        tpl.find('.btn-remove').click(function () {
+            $(this).parents('tr:first').remove();
+        });
+        $('#url').after(tpl);
+    });
+
+    $('.btn-remove').click(function () {
+        $(this).parents('tr:first').remove();
+    });
+
+</script>
+</body>
+</html>

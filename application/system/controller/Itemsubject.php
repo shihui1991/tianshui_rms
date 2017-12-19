@@ -58,7 +58,7 @@ class Itemsubject extends Auth
         
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/itemsubject/index');
     }
 
     /* ========== 添加 ========== */
@@ -96,7 +96,7 @@ class Itemsubject extends Auth
             /* ++++++++++ 补偿科目 ++++++++++ */
             $subjects=Subjects::field(['id','name'])->select();
 
-            return view('modify',[
+            return view($this->theme.'/itemsubject/modify',[
                 'model'=>$model,
                 'item_id'=>$item_id,
                 'subjects'=>$subjects,
@@ -123,7 +123,7 @@ class Itemsubject extends Auth
 
         $model=new Itemsubjects();
 
-        return view('modify',[
+        return view($this->theme.'/itemsubject/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

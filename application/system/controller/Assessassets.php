@@ -147,7 +147,7 @@ class Assessassets extends Auth
         $companys = model('Companys')->field(['id','name'])->where('status',1)->where('type',1)->select();
         $datas['company_list'] = $companys;
         $this->assign($datas);
-        return view($view);
+        return view($this->theme.'/assessassets/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -296,7 +296,7 @@ class Assessassets extends Auth
                 ->join('collection_community cc','cc.id=c.community_id','left')
                 ->where($where)
                 ->find();
-            return view('add',
+            return view($this->theme.'/assessassets/add',
                 ['item_info' => $items,
                     'collectioncommunity_info' => $collectioncommunitys,
                     'collection_info'=>$collections
@@ -347,7 +347,7 @@ class Assessassets extends Auth
             ->where($company_valuer_where)
             ->select();
         $valuer_ids = implode(",", $assessassetsvaluer_ids);
-        return view('modify',
+        return view($this->theme.'/assessassets/modify',
             [
                 'infos' => $assessassets_info,
                 'company_valuer_info' => $company_valuer,

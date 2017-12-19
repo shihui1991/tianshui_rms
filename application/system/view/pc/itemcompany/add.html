@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>项目评估公司|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <input type="hidden" name="item_id" value="{$item_info->id}">
+    <div class="layerCon bg_f">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="item_id">项目：</label></td>
+                <td>{$item_info->name}</td>
+            </tr>
+            <tr class="h50">
+                <td><label for="type">类型：</label></td>
+                <td>
+                    <select name="type" id="type">
+                        <option value="">--选择评估公司类型--</option>
+                        <option value="0">房产评估机构</option>
+                        <option value="1">资产评估机构</option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="company_id">评估公司：</label></td>
+                <td>
+                    <select name="company_id" id="company_id">
+
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="infos">评估说明：</label></td>
+                <td>
+                    <textarea id="infos" name="infos"></textarea>
+                </td>
+            </tr>
+            <tr class="h70">
+                <td style="text-align: left;"><a class="btn" title="点击查询被征户" onclick="layerPage('查询被征户',$('#search'),'600','300')">选择被征户</a></td>
+                <td>
+                    <table class="table" border="0" >
+                        <tbody>
+                        <tr class="noSelect" id="thead-collectionlist">
+                            <th class="tc" width="35px">
+                                <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                            </th>
+                            <th>ID</th>
+                            <th style="text-align: left;">地址</th>
+                            <th style="text-align: left;">片区</th>
+                            <th style="text-align: left;">位置</th>
+                            <th style="text-align: left;">资产状况</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<div id="search" class="bg_f hide">
+    <form action="{:url('Tools/collection')}" method="post" id="form-search" onsubmit="return false;">
+        <input type="hidden" name="item_id" id="item-id" value="">
+        <input type="hidden" name="type" id="company_type" value="">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>片区：</td>
+                <td colspan="3">
+                    <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="collectioncommunitys" id="collectioncommunity"}
+                        <option value="{$collectioncommunity->id}" >{$collectioncommunity->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>几栋：</td>
+                <td><input type="number" name="building" id="building" value="" min="1"></td>
+                <td>几单元：</td>
+                <td><input type="number" name="unit" id="unit" value="" min="1"></td>
+            </tr>
+            <tr class="h50">
+                <td>几楼：</td>
+                <td><input type="number" name="floor" id="floor" value=""></td>
+                <td>几号：</td>
+                <td><input type="number" name="number" id="number" value="" min="1"></td>
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="button" id="btn-form-search">查询</button>
+        </div>
+    </form>
+</div>
+<script>
+    /* ===== 查询评估公司 =====*/
+    $('#type').mouseup(function () {
+        var _type=$(this).find('option:selected').val();
+
+        $('#company_id').html('');
+        if(_type == '0' || _type == '1'){
+            $.ajax({
+                url:"{:url('Tools/company')}",
+                data:{type:_type},
+                dataType:'json',
+                type:'get',
+                success:function (resp) {
+                    var options='';
+                    if(resp.code){
+                        $.each(resp.data,function (index,info) {
+                            options += '<option value="'+info.id+'">'+info.name+'（'+info.id+'）'+'</option>';
+                        });
+                    }else{
+                        layer.msg(resp.msg,function(){});
+                    }
+                    $('#company_id').html(options);
+                },
+                error:function () {
+                    layer.msg('网络错误，请重试',function(){});
+                }
+            });
+        }else{
+            layer.msg('请选择评估公司类型',function(){});
+        }
+    });
+
+    /* ===== 查询摸底被征户 =====*/
+    $('#btn-form-search').click(function () {
+        var _item_id={$item_info->id};
+        var _type=$('#type').find('option:selected').val();
+        var form=$('#form-search');
+        var thead=$('#thead-collectionlist');
+
+        thead.siblings().remove();
+        $('#item-id').val(_item_id);
+        $('#company_type').val(_type);
+
+        if(_type != '0' && _type != '1'){
+            layer.msg('请先选择评估公司类型',function(){});
+            return false;
+        }
+
+        $.ajax({
+            url:form.attr('action'),
+            data:form.serialize(),
+            dataType:'json',
+            type:'post',
+            success:function (resp) {
+                var tr_obj='';
+                if(resp.code){
+                    $.each(resp.data,function (index,info) {
+                        tr_obj +='<tr>';
+                        tr_obj +='<td style="text-align: center;background: none;"><input class="va_m" type="checkbox" name="ids[]"  value="'+info.id+'" onclick="checkBoxOp(this)"> </td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.id+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.address+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.cc_name+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">';
+                        tr_obj +=info.building?(info.building+'栋'):'';
+                        tr_obj +=info.unit?(info.unit+'单元'):'';
+                        tr_obj +=info.floor?(info.floor+'楼'):'';
+                        tr_obj +=info.number?(info.number+'号'):'';
+                        tr_obj +='</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.has_assets+'</td>';
+                        tr_obj += '</tr>';
+                    });
+                }else{
+                    layer.msg(resp.msg,function(){});
+                }
+                thead.after(tr_obj);
+            },
+            error:function () {
+                layer.msg('网络出错，稍候重试！',function(){});
+            }
+        });
+    });
+</script>
+</body>
+</html>

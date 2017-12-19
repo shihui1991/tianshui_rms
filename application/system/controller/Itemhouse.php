@@ -165,7 +165,7 @@ class Itemhouse extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/itemhouse/index');
     }
 
     /* ========== 添加 ========== */
@@ -233,7 +233,7 @@ class Itemhouse extends Auth
             $communitys=Housecommunitys::field(['id','name','status'])->where('status',1)->select();
             /* ++++++++++ 户型列表 ++++++++++ */
             $layouts=Layouts::field(['id','name','status'])->where('status',1)->select();
-            return view('modify',[
+            return view($this->theme.'/itemhouse/modify',[
                 'model'=>$model,
                 'items'=>$items,
                 'communitys'=>$communitys,

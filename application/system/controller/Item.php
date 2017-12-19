@@ -89,7 +89,7 @@ class Item extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/item/index');
     }
 
     /* ========== 添加 ========== */
@@ -146,7 +146,7 @@ class Item extends Auth
                 return $this->error($msg,'');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/item/modify',[
                 'model'=>$model,
             ]);
         }
@@ -165,7 +165,7 @@ class Item extends Auth
 
         $model=new Items();
 
-        return view('modify',[
+        return view($this->theme.'/item/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);
@@ -291,7 +291,7 @@ class Item extends Auth
 
             $this->assign($datas);
 
-            return view();
+            return view($this->theme.'/item/status');
         }
     }
 
@@ -417,7 +417,7 @@ class Item extends Auth
             }
 
             $this->assign($datas);
-            return view('itemtime');
+            return view($this->theme.'/item/itemtime');
         }
     }
 }

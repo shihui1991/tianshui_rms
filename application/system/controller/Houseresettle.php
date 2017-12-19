@@ -66,7 +66,7 @@ class Houseresettle extends Auth
         $items = model('Items')->field(['id', 'name', 'status'])->order('is_top desc')->select();
         $datas['items'] = $items;
         $this->assign($datas);
-        return view();
+        return view($this->theme.'/houseresettle/index');
     }
 
     /* ========== 添加 ========== */
@@ -140,7 +140,7 @@ class Houseresettle extends Auth
             /* ++++++++++ 项目列表 ++++++++++ */
             $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
             $this->assign('items',$items);
-            return view();
+            return view($this->theme.'/houseresettle/add');
         }
 
     }
@@ -173,7 +173,7 @@ class Houseresettle extends Auth
             ->where('p.id',$houseresettle_info->pay_id)
             ->find();
 
-        return view('modify', [
+        return view($this->theme.'/houseresettle/modify', [
             'infos'=>$houseresettle_info,
             'pays'=>$pays,
         ]);

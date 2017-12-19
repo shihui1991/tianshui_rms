@@ -125,7 +125,7 @@ class News extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/news/index');
     }
 
     /* ========== 添加 ========== */
@@ -163,7 +163,7 @@ class News extends Auth
             /* ++++++++++ 项目列表 ++++++++++ */
             $items=Items::field(['id','name','is_top','status'])->where('status',1)->order('is_top desc')->select();
 
-            return view('modify',[
+            return view($this->theme.'/news/modify',[
                 'model'=>$model,
                 'newscates'=>$newscates,
                 'items'=>$items,
@@ -188,7 +188,7 @@ class News extends Auth
         /* ++++++++++ 项目列表 ++++++++++ */
         $items=Items::field(['id','name','is_top','status'])->where('status',1)->order('is_top desc')->select();
 
-        return view('modify',[
+        return view($this->theme.'/news/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'newscates'=>$newscates,

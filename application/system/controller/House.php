@@ -171,7 +171,7 @@ class House extends Auth
         
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/house/index');
     }
 
     /* ========== 添加 ========== */
@@ -211,7 +211,7 @@ class House extends Auth
             $communitys=Housecommunitys::field(['id','name','status'])->where('status',1)->select();
             /* ++++++++++ 户型列表 ++++++++++ */
             $layouts=Layouts::field(['id','name','status'])->where('status',1)->select();
-            return view('modify',[
+            return view($this->theme.'/house/modify',[
                 'model'=>$model,
                 'communitys'=>$communitys,
                 'layouts'=>$layouts,
@@ -240,7 +240,7 @@ class House extends Auth
         $communitys=Housecommunitys::field(['id','name','status'])->where('status',1)->select();
         /* ++++++++++ 户型列表 ++++++++++ */
         $layouts=Layouts::field(['id','name','status'])->where('status',1)->select();
-        return view('modify',[
+        return view($this->theme.'/house/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'communitys'=>$communitys,

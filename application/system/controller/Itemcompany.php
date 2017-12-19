@@ -106,7 +106,7 @@ class Itemcompany extends Auth
 
         $this->assign($datas);
 
-        return view($view);
+        return view($this->theme.'/itemcompany/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -195,7 +195,7 @@ class Itemcompany extends Auth
             /* ++++++++++ 片区 ++++++++++ */
             $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
 
-            return view('add',[
+            return view($this->theme.'/itemcompany/add',[
                 'model'=>$model,
                 'item_info'=>$item_info,
                 'collectioncommunitys'=>$collectioncommunitys,
@@ -227,7 +227,7 @@ class Itemcompany extends Auth
         /* ++++++++++ 片区 ++++++++++ */
         $collectioncommunitys=Collectioncommunitys::field(['id','address','name'])->select();
 
-        return view('modify',[
+        return view($this->theme.'/itemcompany/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'collection_ids'=>$collection_ids,

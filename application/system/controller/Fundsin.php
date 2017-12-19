@@ -101,7 +101,7 @@ class Fundsin extends Auth
         $datas['fundsnames'] = $fundsnames;
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/fundsin/index');
     }
 
     /* ========== 添加 ========== */
@@ -141,7 +141,7 @@ class Fundsin extends Auth
             /* ++++++++++ 资金款项列表 ++++++++++ */
             $fundsnames = model('Fundsnames')->field(['id', 'name'])->select();
 
-            return view('modify',[
+            return view($this->theme.'/fundsin/modify',[
                 'items' => $items,
                 'fundsnames' => $fundsnames
                 ]);
@@ -164,7 +164,7 @@ class Fundsin extends Auth
             ->join('collection_holder c', 'c.id=p.collection_holder_id', 'left')
             ->where('f.id',$id)
             ->find();
-        return view('modify',[
+        return view($this->theme.'/fundsin/modify',[
             'infos'=>$fundsin_info
         ]);
     }

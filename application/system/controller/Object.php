@@ -71,7 +71,7 @@ class Object extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/object/index');
     }
 
     /* ========== 添加 ========== */
@@ -100,7 +100,7 @@ class Object extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/object/modify',[
                 'model'=>$model,
             ]);
         }
@@ -118,7 +118,7 @@ class Object extends Auth
 
         $model=new Objects();
 
-        return view('modify',[
+        return view($this->theme.'/object/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

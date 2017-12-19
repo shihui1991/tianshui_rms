@@ -111,7 +111,7 @@ class Risk extends Auth
         $collections = model('Collections')->field(['id', 'building', 'unit','floor','number'])->select();
         $datas['collections_list'] = $collections;
         $this->assign($datas);
-        return view($view);
+        return view($this->theme.'/risk/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -215,7 +215,7 @@ class Risk extends Auth
             $items = model('Items')->field(['id', 'name', 'status'])->where('id', $item_id)->find();
             /* ++++++++++ 片区 ++++++++++ */
             $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
-            return view('add',[
+            return view($this->theme.'/risk/add',[
                 'item_info' => $items,
                 'collectioncommunitys' => $collectioncommunitys]);
         }
@@ -260,7 +260,7 @@ class Risk extends Auth
             ->where('rt.topic_id','not in',$topic_ids)
             ->select();
         $risktopic_count = count($risktopic_infos);
-        return view('modify',[
+        return view($this->theme.'/risk/modify',[
             'infos'=>$risk_info,
             'item_id'=>$item_id,
             'risktopic_infos'=>$risktopic_infos,

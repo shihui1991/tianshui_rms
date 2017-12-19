@@ -76,7 +76,7 @@ class Nation extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/nation/index');
     }
 
     /* ========== 添加 ========== */
@@ -105,7 +105,7 @@ class Nation extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/nation/modify',[
                 'model'=>$model,
             ]);
         }
@@ -123,7 +123,7 @@ class Nation extends Auth
 
         $model=new Nations();
 
-        return view('modify',[
+        return view($this->theme.'/nation/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

@@ -75,7 +75,7 @@ class Collectioncommunity extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/collectioncommunity/index');
     }
 
     /* ========== 添加 ========== */
@@ -106,7 +106,7 @@ class Collectioncommunity extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/collectioncommunity/modify',[
                 'model'=>$model,
             ]);
         }
@@ -125,7 +125,7 @@ class Collectioncommunity extends Auth
 
         $model=new Collectioncommunitys();
 
-        return view('modify',[
+        return view($this->theme.'/collectioncommunity/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

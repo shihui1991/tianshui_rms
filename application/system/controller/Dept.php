@@ -62,7 +62,7 @@ class Dept extends Auth
                     ";
             $table_depts=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
         }
-        return view('index',['table_depts'=>$table_depts]);
+        return view($this->theme.'/dept/index',['table_depts'=>$table_depts]);
     }
 
     /* ========== 列表全部 ========== */
@@ -120,7 +120,7 @@ class Dept extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/dept/all');
     }
 
     /* ========== 添加 ========== */
@@ -164,7 +164,7 @@ class Dept extends Auth
             /* ++++++++++ 用户列表 ++++++++++ */
             $users=Users::field(['id','name','status'])->where('status',1)->select();
 
-            return view('modify',[
+            return view($this->theme.'/dept/modify',[
                 'model'=>$model,
                 'options_depts'=>$options_depts,
                 'users'=>$users,
@@ -199,7 +199,7 @@ class Dept extends Auth
         /* ++++++++++ 用户列表 ++++++++++ */
         $users=Users::field(['id','name','status'])->where('status',1)->select();
         
-        return view('modify',[
+        return view($this->theme.'/dept/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'options_depts'=>$options_depts,

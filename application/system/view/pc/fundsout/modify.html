@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>资金支出|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<form action="{:isset($infos)?url('edit'):url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="item_id">项目：</label></td>
+                <td id="item_id_info">
+                    {if condition="isset($infos)"}
+                        {$infos->item_name}
+                    {else/}
+                    <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择项目--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}" >{$item->name}（{$item->id}）</option>
+                        {/volist}
+                    </select>
+                    {/if}
+                </td>
+                <td><label>产权人(承租人)名称(ID)：</label></td>
+                <td id="pay_holder_info">
+                    {if condition="isset($infos)"}
+                    {$infos->holder_names}{if condition="$infos->collection_holder_ids"}({$infos->collection_holder_ids}){/if}
+                    {else/}
+                    <select name="pay_holder_ids" id="pay_holder_ids" class="chosen" data-placeholder="请选择产权人(承租人)名称" data-no_results_text="没有匹配数据">
+                        <option value="">--请先选择项目--</option>
+                    </select>
+                    {/if}
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="name_id">资金款项(ID)：</label></td>
+                <td colspan="3">
+                    {if condition="isset($infos)"}
+                    {$infos->names}{if condition="$infos->name_id"}({$infos->name_id}){/if}
+                    {else/}
+                    <select name="name_id" id="name_id" class="chosen" data-placeholder="请选择资金款项" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择资金款项--</option>
+                        {volist name="fundsnames" id="fundsname"}
+                        <option value="{$fundsname->id}" >{$fundsname->name}（{$fundsname->id}）</option>
+                        {/volist}
+                    </select>
+                    {/if}
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="voucher">凭证号：</label></td>
+                <td>
+                    <input type="text" name="voucher" id="voucher" value="{:isset($infos)?$infos->voucher:''}" placeholder="请输入凭证号">
+                </td>
+                <td><label for="outlay_at">支付时间：</label></td>
+                <td>
+                    <input type="text" class="laydate-icon" name="outlay_at" id="outlay_at" value="{:isset($infos)?$infos->outlay_at:''}" placeholder="请输入支付时间">
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="payee">接收人：</label></td>
+                <td>
+                    <input type="text" name="payee" id="payee" value="{:isset($infos)?$infos->payee:''}" placeholder="请输入接收人">
+                </td>
+                <td><label for="amount">金额：</label></td>
+                <td>
+                    <input type="text" name="amount" id="amount" value="{:isset($infos)?$infos->amount:''}" placeholder="请输入缴纳金额">
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="bank">接收银行：</label></td>
+                <td>
+                    <input type="text" name="bank" id="bank" value="{:isset($infos)?$infos->bank:''}" placeholder="请输入接收银行">
+                </td>
+                <td><label for="account">接收账号：</label></td>
+                <td>
+                    <input type="text" name="account" id="account" value="{:isset($infos)?$infos->account:''}" placeholder="请输入接收账号">
+                </td>
+            </tr>
+            {if condition="isset($infos)"}
+            <tr class="h50">
+                <td>操作时间：</td>
+                <td colspan="3">
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </td>
+            </tr>
+            {/if}
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+{if condition="empty($infos)"}
+<script>
+    /* ===== 查询产权人(承租人)名称 =====*/
+    $("#item_id_info").on('change','#item_id',function () {
+        var _item_id = $("#item_id").find("option:selected").val();
+        if(_item_id){
+            $.ajax({
+                url:"{:url('Tools/sear_holder_name')}",
+                data:{ 'item_id':_item_id},
+                dataType:'json',
+                type:'post',
+                success:function (resp) {
+                    $('#pay_holder_info').html('');
+                    var options = '<select name="pay_holder_ids" id="pay_holder_ids" class="chosen" data-placeholder="请选择产权人(承租人)名称" data-no_results_text="没有匹配数据">';
+                    if(resp.code){
+                       options += '<option value="">--请选择产权人(承租人)名称--</option>';
+                        $.each(resp.data,function (index,info) {
+                            options += '<option value="'+info.id+','+info.pay_id+'">'+info.holder_name+'('+info.collection_holder_id+')</option>';
+                        });
+                    }else{
+                        options +='<option value="">--暂无数据--</option>';
+                        layer.msg(resp.msg,function(){});
+                    }
+                    options +='</select>';
+                    $('#pay_holder_info').html(options);
+                    $("#pay_holder_ids").chosen();
+                },
+                error:function () {
+                    layer.msg('网络错误，请重试',function(){});
+                }
+            });
+        }else{
+            $('#pay_holder_info').html('');
+            var options = '<select name="pay_holder_ids" id="pay_holder_ids" class="chosen" data-placeholder="请选择产权人(承租人)名称" data-no_results_text="没有匹配数据">';
+            options +='<option value="">--请先选择项目--</option>';
+            options +='</select>';
+            $('#pay_holder_info').html(options);
+            $("#pay_holder_ids").chosen();
+            layer.msg('请选择项目',function(){});
+        }
+    });
+
+</script>
+{/if}
+</body>
+</html>

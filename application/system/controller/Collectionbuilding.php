@@ -176,7 +176,7 @@ class Collectionbuilding extends Auth
 
         $this->assign($datas);
 
-        return view($view);
+        return view($this->theme.'/collectionbuilding/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -259,7 +259,7 @@ class Collectionbuilding extends Auth
             /* ++++++++++ 结构 ++++++++++ */
             $buildingstructs=Buildingstructs::field(['id','name','status'])->where('status',1)->select();
 
-            return view('modify',[
+            return view($this->theme.'/collectionbuilding/modify',[
                 'model'=>$model,
                 'collection_info'=>$collection_info,
                 'buildinguses'=>$buildinguses,
@@ -286,7 +286,7 @@ class Collectionbuilding extends Auth
         /* ++++++++++ 结构 ++++++++++ */
         $buildingstructs=Buildingstructs::field(['id','name','status'])->where('status',1)->select();
 
-        return view('modify',[
+        return view($this->theme.'/collectionbuilding/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'buildinguses'=>$buildinguses,
@@ -607,7 +607,7 @@ class Collectionbuilding extends Auth
             $datas['buildingstatuss']=$buildingstatuss;
 
             $this->assign($datas);
-            return view();
+            return view($this->theme.'/collectionbuilding/status');
         }
     }
 }

@@ -71,7 +71,7 @@ class Pact extends Auth
         $datas['pacts']=$pacts;
         $this->assign($datas);
         
-        return view();
+        return view($this->theme.'/pact/index');
     }
 
     /* ========== 添加 ========== */
@@ -151,7 +151,7 @@ class Pact extends Auth
                 ->where('ph.pay_id',$pay_id)
                 ->select();
 
-            return view('add',[
+            return view($this->theme.'/pact/add',[
                 'model'=>$model,
                 'pay_id'=>$pay_id,
                 'item_info'=>$item_info,
@@ -178,7 +178,7 @@ class Pact extends Auth
 
         $model=new Pacts();
 
-        return view('modify',[
+        return view($this->theme.'/pact/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

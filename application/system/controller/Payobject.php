@@ -78,7 +78,7 @@ class Payobject extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/payobject/index');
     }
 
     /* ========== 批量修改 ========== */

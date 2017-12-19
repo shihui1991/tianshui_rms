@@ -127,7 +127,7 @@ class User extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/user/index');
     }
 
     /* ========== 添加 ========== */
@@ -185,7 +185,7 @@ class User extends Auth
             if($roles){
                 $options_roles=get_tree($roles,"<option value='\$id'>\$space \$name</option>");
             }
-            return view('modify',[
+            return view($this->theme.'/user/modify',[
                 'model'=>$model,
                 'options_depts'=>$options_depts,
                 'options_roles'=>$options_roles,
@@ -225,7 +225,7 @@ class User extends Auth
             }
             $options_roles=get_tree($array);
         }
-        return view('modify',[
+        return view($this->theme.'/user/modify',[
             'infos'=>$infos,
             'model'=>$model,
             'options_depts'=>$options_depts,
@@ -322,7 +322,7 @@ class User extends Auth
                 return $this->error('错误操作');
             }
 
-            return view('',[
+            return view($this->theme.'/user/password',[
                 'infos'=>$infos,
             ]);
         }
@@ -444,7 +444,7 @@ class User extends Auth
                 ->where(['u.id'=>Session::get('userinfo.user_id')])
                 ->find();
 
-            return view('',[
+            return view($this->theme.'/user/info',[
                 'infos'=>$infos,
             ]);
         }

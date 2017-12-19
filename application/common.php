@@ -287,6 +287,61 @@ function get_nav_li_list($menus, $level=1, $parent_id=0){
 }
 
 
+/** 生成导航菜单树 手机版
+ * @param array $menus      菜单数据
+ * @param int $current_id   当前菜单ID
+ * @param int $level        菜单层级
+ * @param int $parent_id    上级菜单ID
+ * @return string           导航菜单树 ul>li
+ */
+function get_na_li_list_mobile($menus, $level=1, $parent_id=0,$current_id,$parent_ids){
+    if($level>2){
+        return '';
+    }
+    $str='';
+    $ul_class='';
+    $list=get_childs($menus,$parent_id);
+    $childs=$list['childs'];
+    $new_list=$list['new_list'];
+    if(count($childs)){
+        foreach($childs as $child){
+            $open='';
+            $open_li='';
+            $child=$child->toArray();
+            if($level==1){
+                if(in_array($child['id'],$parent_ids)){
+                    $open=' open ';
+                }
+                $content='<div class="link '.$open.'">'.$child['icon'].' '.$child['name'].'<i class="iconfont icon-arrow"></i></div>';
+            }else{
+                if($child['id']==$current_id){
+                    $open_li=' open_li ';
+                }
+                $content='<a href="'.$child['url'].'">'.$child['icon'].' '.$child['name'].'</a>';
+            }
+
+            $str .= '<li class="'.$open_li.'">'.$content;
+
+            $str_childs=get_na_li_list_mobile($new_list,$level+1,$child['id'],$current_id,$parent_ids);
+            $str .= $str_childs.'</li>';
+        }
+        if($level==2){
+            $ul_class=' two ';
+            if(in_array($parent_id,$parent_ids)){
+                $ul_class .=' open ';
+            }else{
+                $ul_class .=' hide ';
+            }
+        }
+
+        /* ul标签class */
+        $str ='<ul class="'.$ul_class.'">'.$str.'</ul>';
+    }
+    return $str;
+}
+
+
+
 /** cURL函数简单封装
  * @param $url
  * @param null $data

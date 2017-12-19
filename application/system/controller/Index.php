@@ -18,7 +18,11 @@ class Index extends Controller
     /* ========== 登录页 ========== */
     public function index()
     {
-        return view();
+        if(request()->isMobile()){
+            return view('mobile/index/index');
+        }else{
+            return view('pc/index/index');
+        }
     }
 
     /* ========== 登录 ========== */

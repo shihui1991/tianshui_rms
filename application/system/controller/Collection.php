@@ -172,7 +172,7 @@ class Collection extends Auth
 
         $this->assign($datas);
 
-        return view($view);
+        return view($this->theme.'/collection/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -254,7 +254,7 @@ class Collection extends Auth
             /* ++++++++++ 户型 ++++++++++ */
             $layouts=Layouts::field(['id','name','status'])->where('status',1)->select();
 
-            return view('modify',[
+            return view($this->theme.'/collection/modify',[
                 'model'=>$model,
                 'item_info'=>$item_info,
                 'collectioncommunitys'=>$collectioncommunitys,
@@ -282,7 +282,7 @@ class Collection extends Auth
         /* ++++++++++ 户型 ++++++++++ */
         $layouts=Layouts::field(['id','name','status'])->where('status',1)->select();
 
-        return view('modify',[
+        return view($this->theme.'/colleciton/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'buildinguses'=>$buildinguses,
@@ -439,7 +439,7 @@ class Collection extends Auth
 
             $this->assign($datas);
 
-            return view();
+            return view($this->theme.'/collection/status');
         }
     }
 

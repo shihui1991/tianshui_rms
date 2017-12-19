@@ -76,7 +76,7 @@ class Newscate extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/newscate/index');
     }
 
     /* ========== 添加 ========== */
@@ -105,7 +105,7 @@ class Newscate extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/newscate/modify',[
                 'model'=>$model,
             ]);
         }
@@ -123,7 +123,7 @@ class Newscate extends Auth
 
         $model=new Newscates();
 
-        return view('modify',[
+        return view($this->theme.'/newscate/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

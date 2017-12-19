@@ -36,13 +36,33 @@ class Menu extends Auth
         $table_menus='';
         if($menus){
             $array=[];
-            foreach ($menus as $menu){
-                $menu->add_url=url('add',['id'=>$menu->id]);
-                $menu->detail_url=url('detail',['id'=>$menu->id]);
-                $menu->delete_url=url('delete',['ids'=>$menu->id]);
-                $array[]=$menu;
+            foreach ($menus as $menu) {
+                $menu->add_url = url('add', ['id' => $menu->id]);
+                $menu->detail_url = url('detail', ['id' => $menu->id]);
+                $menu->delete_url = url('delete', ['ids' => $menu->id]);
+                $array[] = $menu;
             }
-            $str = "
+            if(request()->isMobile()) {
+                $str = "
+                    <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
+                        <td style='text-align: left;'>
+                            <input class='va_m' type='checkbox' name='ids[]' value='\$id' id='check-\$id' data-role='check'/>
+                            \$icon \$name
+                        </td>
+                        <td>\$id</td>
+                        <td>\$display|\$status</td>
+                        <td class='shezhi'><i class='iconfont icon-shezhi2'></i>
+                            <div class='hide'>
+                                <img src='__STATIC__/sysmobile/img/sanjiao.png' />
+                                <a href='\$add_url'><i class='iconfont icon-iconjia'></i></a>
+                                <a href='\$detail_url'><i class='iconfont icon-xiugai'></i></a>
+                                <a data-action='\$delete_url' class='js-ajax-form-btn'><i class='iconfont icon-lajitong'></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    ";
+            }else{
+                $str = "
                     <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
                         <td>
                             <input class='va_m' type='checkbox' name='ids[]' value='\$id' onclick='checkBoxOp(this)' id='check-\$id'/>
@@ -59,9 +79,10 @@ class Menu extends Auth
                         </td>
                     </tr>
                     ";
+            }
             $table_menus=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
         }
-        return view('index',['table_menus'=>$table_menus]);
+        return view($this->theme.'/menu/index',['table_menus'=>$table_menus]);
     }
 
     /* ========== 列表全部 ========== */
@@ -111,6 +132,8 @@ class Menu extends Auth
         /* ++++++++++ 是否删除 ++++++++++ */
         $deleted=input('deleted');
         $menu_model=new Menus();
+        $datas['model']=$menu_model;
+
         if(is_numeric($deleted) && in_array($deleted,[0,1])){
             $datas['deleted']=$deleted;
             if($deleted==1){
@@ -125,7 +148,7 @@ class Menu extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/menu/all');
     }
 
     /* ========== 添加 ========== */
@@ -168,10 +191,12 @@ class Menu extends Auth
                 $options_menus=get_tree($array);
             }
 
-            return view('modify',[
+            $this->assign([
                 'model'=>$model,
                 'options_menus'=>$options_menus
             ]);
+
+            return view($this->theme.'/menu/modify');
         }
     }
 
@@ -197,7 +222,7 @@ class Menu extends Auth
             }
             $options_menus=get_tree($array);
         }
-        return view('modify',[
+        return view($this->theme.'/menu/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'options_menus'=>$options_menus,

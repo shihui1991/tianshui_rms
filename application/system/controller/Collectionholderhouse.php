@@ -76,7 +76,7 @@ class Collectionholderhouse extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/collectionholderhouse/index');
     }
 
     /* ========== 添加 ========== */
@@ -169,7 +169,7 @@ class Collectionholderhouse extends Auth
                 ->where('h.status',0)
                 ->select();
 
-            return view('add',[
+            return view($this->theme.'/collectionholderhouse/add',[
                 'model'=>$model,
                 'collection_info'=>$collection_info,
                 'collectionholders'=>$collectionholders,
@@ -200,7 +200,7 @@ class Collectionholderhouse extends Auth
 
         $model=new Collectionholderhouses();
 
-        return view('modify',[
+        return view($this->theme.'/collectionholderhouse/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

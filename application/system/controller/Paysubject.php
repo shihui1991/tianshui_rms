@@ -79,7 +79,7 @@ class Paysubject extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/paysubject/index');
     }
 
     /* ========== 添加 ========== */
@@ -214,7 +214,7 @@ class Paysubject extends Auth
                 ->where('item_id',$item_id)
                 ->select();
 
-            return view('add',[
+            return view($this->theme.'/paysubject/add',[
                 'model'=>$model,
                 'pay_id'=>$pay_id,
                 'item_info'=>$item_info,
@@ -243,7 +243,7 @@ class Paysubject extends Auth
 
         $model=new Paysubjects();
 
-        return view('modify',[
+        return view($this->theme.'/paysubject/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

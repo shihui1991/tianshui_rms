@@ -82,7 +82,7 @@ class Housecommunity extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/housecommunity/index');
     }
 
     /* ========== 添加 ========== */
@@ -111,7 +111,7 @@ class Housecommunity extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/housecommunity/modify',[
                 'model'=>$model,
             ]);
         }
@@ -129,7 +129,7 @@ class Housecommunity extends Auth
 
         $model=new Housecommunitys();
 
-        return view('modify',[
+        return view($this->theme.'/housecommunity/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

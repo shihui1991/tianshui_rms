@@ -6,8 +6,7 @@
  * */
 namespace app\system\controller;
 
-use app\system\model\Itemprocesss;
-use app\system\model\Processurls;
+use app\system\model\Roles;
 use think\Session;
 
 class Auth extends Base
@@ -18,7 +17,7 @@ class Auth extends Base
         parent::_initialize();
 
         /* ++++++++++ 检查操作权限 ++++++++++ */
-        $priv_res=$this->check_priv();
+        $priv_res=$this->check_priv($this->menu_id);
         if(!$priv_res){
             if(request()->isAjax()){
                 $this->error('没有权限！');
@@ -27,58 +26,21 @@ class Auth extends Base
             }
         }
 
-//        $url=request()->path();
-//        $params=request()->route();
-//        if($params){
-//            foreach ($params as $key => $value){
-//                $url=str_replace('/'.$key.'/'.$value,'',$url);
-//            }
-//        }
-//        $url=$url=='/'?'/':'/'.$url;
-//        /* ++++++++++ 流程控制 ++++++++++ */
-//        if(request()->isPost()){
-//            $process_id=Processurls::where('url',$url)->value('process_id');
-//            if($process_id){
-//                $itemprocess=Itemprocesss::where(['item_id'=>input('item_id'),'process_id'=>$process_id])->find();
-//                if($itemprocess){
-//                    if($itemprocess->getData('status') == 0){
-//                        if(request()->isAjax()){
-//                            return $this->error('当前项目，此流程尚未启动！');
-//                        }else{
-//                            exit('当前项目，此流程尚未启动！');
-//                        }
-//                    }elseif ($itemprocess->getData('status') == 2){
-//                        if(request()->isAjax()){
-//                            return $this->error('当前项目，此流程已完成，禁止操作！');
-//                        }else{
-//                            exit('当前项目，此流程已完成，禁止操作！');
-//                        }
-//                    }
-//
-//                }else{
-//                    if(request()->isAjax()){
-//                        return $this->error('当前项目，无此流程，禁止操作！');
-//                    }else{
-//                        exit('当前项目，无此流程，禁止操作！');
-//                    }
-//                }
-//            }
-//        }
 
     }
 
     /* ========== 检查操作权限 ========== */
-    public function check_priv($url='', $role_id=''){
+    public function check_priv($menu_id='', $role_id=''){
         $controller=strtolower(request()->controller());
         $role_id=$role_id?(int)$role_id:\think\Session::get('userinfo.role_id');
-        $url=$url?$url:request()->path();
+
         if(in_array($controller,['home','tools'])){
             return true;
         }
         if(!$role_id){
             return false;
         }
-        $role=\app\system\model\Roles::field(['id','is_admin','menu_ids'])->where('id',$role_id)->where('status',1)->find();
+        $role=Roles::field(['id','is_admin','menu_ids'])->where('id',$role_id)->where('status',1)->find();
         if(!$role){
             return false;
         }
@@ -90,14 +52,6 @@ class Auth extends Base
             return true;
         }
 
-        $params=request()->route();
-        if($params){
-            foreach ($params as $key => $value){
-                $url=str_replace('/'.$key.'/'.$value,'',$url);
-            }
-        }
-        $url=$url=='/'?'/':'/'.$url;
-        $menu_id=\app\system\model\Menus::where('status',1)->where('url',$url)->value('id');
         if(!$menu_id){
             return false;
         }

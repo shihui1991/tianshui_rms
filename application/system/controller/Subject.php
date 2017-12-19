@@ -76,7 +76,7 @@ class Subject extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/subject/index');
     }
 
     /* ========== 添加 ========== */
@@ -106,7 +106,7 @@ class Subject extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/subject/modify',[
                 'model'=>$model,
             ]);
         }
@@ -124,7 +124,7 @@ class Subject extends Auth
 
         $model=new Subjects();
 
-        return view('modify',[
+        return view($this->theme.'/subject/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

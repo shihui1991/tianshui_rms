@@ -74,7 +74,7 @@ class Payholder extends Auth
         
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/payholder/index');
     }
 
 
@@ -98,7 +98,7 @@ class Payholder extends Auth
 
         $model=new Payholders();
 
-        return view('modify',[
+        return view($this->theme.'/payholder/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

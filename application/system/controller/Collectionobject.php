@@ -69,7 +69,7 @@ class Collectionobject extends Auth
         
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/collectionobject/index');
     }
 
     /* ========== 添加 ========== */
@@ -148,7 +148,7 @@ class Collectionobject extends Auth
             /* ++++++++++ 其他补偿事项 ++++++++++ */
             $objects=Objects::field(['id','name'])->select();
 
-            return view('modify',[
+            return view($this->theme.'/collectionobject/modify',[
                 'model'=>$model,
                 'collection_info'=>$collection_info,
                 'objects'=>$objects,
@@ -175,7 +175,7 @@ class Collectionobject extends Auth
 
         $model=new Collectionobjects();
 
-        return view('modify',[
+        return view($this->theme.'/collectionobject/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

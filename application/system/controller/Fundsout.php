@@ -100,7 +100,7 @@ class Fundsout extends Auth
         $datas['fundsnames'] = $fundsnames;
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/fundsout/index');
     }
 
     /* ========== 添加 ========== */
@@ -140,7 +140,7 @@ class Fundsout extends Auth
             /* ++++++++++ 资金款项列表 ++++++++++ */
             $fundsnames = model('Fundsnames')->field(['id', 'name'])->select();
 
-            return view('modify',[
+            return view($this->theme.'/fundsout/modify',[
                 'items' => $items,
                 'fundsnames' => $fundsnames
                 ]);
@@ -163,7 +163,7 @@ class Fundsout extends Auth
             ->join('collection_holder c', 'c.id=p.collection_holder_id', 'left')
             ->where('f.id',$id)
             ->find();
-        return view('modify',[
+        return view($this->theme.'/fundsout/modify',[
             'infos'=>$fundsout_info
         ]);
     }

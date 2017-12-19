@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>安置房选择|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<h4>安置房选择管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index',['collection_id'=>$collection_info->id])}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                刷新
+            </a>
+        </li>
+        {if condition="$collection_info->item->getData('status') eq 1 and $collection_status neq 8"}
+        <li class="fgf" onclick="layerIfWindow('添加安置房选择','{:url('add',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}','800','500')">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}">
+            <img src="__STATIC__/system/img/recycle.png"/>
+            恢复
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}" data-notice="确定要彻底删除吗？">
+            <img src="__STATIC__/system/img/destroy.png"/>
+            销毁
+        </li>
+        {/if}
+    </ul>
+</div>
+<form action="{:url('index',['collection_id'=>$collection_info->id])}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>排序<i class="stretch"></i></th>
+                <th>被征收人<i class="stretch"></i></th>
+                <th>电话<i class="stretch"></i></th>
+                <th>安置房<i class="stretch"></i></th>
+                <th>面积<i class="stretch"></i></th>
+                <th>户型<i class="stretch"></i></th>
+                <th>电梯/楼层<i class="stretch"></i></th>
+                <th>状态<i class="stretch"></i></th>
+                <th>操作<i class="stretch"></i></th>
+            </tr>
+            {volist name="collectionholderhouses" id="collectionholderhouse"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$collectionholderhouse->id}" onclick="checkBoxOp(this)" id="check-{$collectionholderhouse->id}"/>
+                </td>
+                <td>{$collectionholderhouse->sort}</td>
+                <td title="{$collectionholderhouse->address}">{if condition="$collectionholderhouse->deleted_at"}<del>{$collectionholderhouse->name}</del>{else /}{$collectionholderhouse->name}{/if}</td>
+                <td>{if condition="$collectionholderhouse->deleted_at"}<del>{$collectionholderhouse->phone}</del>{else /}{$collectionholderhouse->phone}{/if}</td>
+                <td>
+                    {if condition="$collectionholderhouse->deleted_at"}
+                    <del>
+                        {$collectionholderhouse->hc_address}
+                        {$collectionholderhouse->hc_name}
+                        {if condition="$collectionholderhouse->building"}{$collectionholderhouse->building}栋{/if}
+                        {if condition="$collectionholderhouse->unit"}{$collectionholderhouse->unit}单元{/if}
+                        {if condition="$collectionholderhouse->floor"}{$collectionholderhouse->floor}楼{/if}
+                        {if condition="$collectionholderhouse->number"}{$collectionholderhouse->number}号{/if}
+                    </del>
+                    {else /}
+                    {$collectionholderhouse->hc_address}
+                    {$collectionholderhouse->hc_name}
+                    {if condition="$collectionholderhouse->building"}{$collectionholderhouse->building}栋{/if}
+                    {if condition="$collectionholderhouse->unit"}{$collectionholderhouse->unit}单元{/if}
+                    {if condition="$collectionholderhouse->floor"}{$collectionholderhouse->floor}楼{/if}
+                    {if condition="$collectionholderhouse->number"}{$collectionholderhouse->number}号{/if}
+                    {/if}
+                </td>
+                <td>{$collectionholderhouse->area}</td>
+                <td>{$collectionholderhouse->l_name}</td>
+                <td>{$collectionholderhouse->has_lift}/{$collectionholderhouse->total_floor}</td>
+                <td>{$collectionholderhouse->house_status}</td>
+                <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('安置房选择信息',	'{:url('detail',['id'=>$collectionholderhouse->id])}','800','500')" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id,'ids'=>$collectionholderhouse->id])}" class="btn js-ajax-form-btn">删除</button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>

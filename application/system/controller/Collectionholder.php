@@ -160,7 +160,7 @@ class Collectionholder extends Auth
         
         $this->assign($datas);
 
-        return view($view);
+        return view($this->theme.'/collectionholder/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -261,7 +261,7 @@ class Collectionholder extends Auth
             /* ++++++++++ 常用民族 ++++++++++ */
             $nations=Nations::field(['id','name','status'])->where('status',1)->select();
 
-            return view('modify',[
+            return view($this->theme.'/collectionholder/modify',[
                 'model'=>$model,
                 'collection_info'=>$collection_info,
                 'nations'=>$nations,
@@ -286,7 +286,7 @@ class Collectionholder extends Auth
         $nations=Nations::field(['id','name','status'])->where('status',1)->select();
 
 
-        return view('modify',[
+        return view($this->theme.'/collectionholder/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'nations'=>$nations,

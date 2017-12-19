@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>房源物业管理费|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="year">计算年份：</label></td>
+                <td>
+                    <select name="year" id="year">
+                        {for start="date('Y')" end="date('Y')-10" comparison="egt" step="-1"}
+                        <option value="{$i}">{$i}</option>
+                        {/for}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h70">
+                <td style="text-align: left;"><a class="btn" title="点击查询房源" onclick="layerPage('查询房源',$('#search'),'700','400')">选择房源</a></td>
+                <td>
+                    <table class="table" border="0" >
+                        <tbody>
+                        <tr class="noSelect" id="thead-houselist">
+                            <th class="tc" width="35px">
+                                <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                            </th>
+                            <th>ID</th>
+                            <th style="text-align: left;">小区</th>
+                            <th style="text-align: left;">房号</th>
+                            <th style="text-align: left;">交付时间</th>
+                            <th style="text-align: left;">户型</th>
+                            <th style="text-align: left;">面积</th>
+                            <th style="text-align: left;">有无电梯</th>
+                            <th style="text-align: left;">类型</th>
+                            <th style="text-align: left;">状态</th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+            <button class="btn" type="reset">重置</button>
+        </div>
+    </div>
+</form>
+<div id="search" class="bg_f hide">
+    <form action="{:url('Tools/findhouse')}" method="post" id="form-search" onsubmit="return false;">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>小区：</td>
+                <td colspan="3">
+                    <select name="community_ids[]" id="community_ids" class="chosen" multiple data-placeholder="请选择小区" data-no_results_text="没有匹配数据">
+                        {volist name="communitys" id="community"}
+                        <option value="{$community->id}">{$community->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>户型：</td>
+                <td colspan="3">
+                    <select name="layout_ids[]" id="layout_ids" class="chosen" multiple data-placeholder="请选择户型" data-no_results_text="没有匹配数据">
+                        {volist name="layouts" id="layout"}
+                        <option value="{$layout->id}" >{$layout->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>面积起：</td>
+                <td><input type="number" name="area_start" id="area_start" value=""></td>
+                <td>面积止：</td>
+                <td><input type="number" name="area_end" id="area_end" value=""></td>
+            </tr>
+            <tr class="h50">
+                <td>类型：</td>
+                <td>
+                    <select name="is_real" id="is_real">
+                        <option value="">--全部--</option>
+                        {volist name="model->is_real" id="value"}
+                        <option value="{$key}">{$value}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>购买：</td>
+                <td>
+                    <select name="is_buy" id="is_buy">
+                        <option value="">--全部--</option>
+                        {volist name="model->is_buy" id="value"}
+                        <option value="{$key}">{$value}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>过渡：</td>
+                <td>
+                    <select name="is_transit" id="is_transit">
+                        <option value="">--全部--</option>
+                        {volist name="model->is_transit" id="value"}
+                        <option value="{$key}">{$value}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>共用：</td>
+                <td>
+                    <select name="is_public" id="is_public">
+                        <option value="">--全部--</option>
+                        {volist name="model->is_public" id="value"}
+                        <option value="{$key}">{$value}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="button" id="btn-form-search">查询</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    /* ===== 查询房源 =====*/
+    $('#btn-form-search').click(function () {
+        var form=$('#form-search');
+        var thead=$('#thead-houselist');
+
+        thead.siblings().remove();
+        $.ajax({
+            url:form.attr('action'),
+            data:form.serialize(),
+            dataType:'json',
+            type:'post',
+            success:function (resp) {
+                var tr_obj='';
+                if(resp.code){
+                    $.each(resp.data,function (index,info) {
+                        tr_obj +='<tr>';
+                        tr_obj +='<td style="text-align: center;background: none;"><input class="va_m" type="checkbox" name="ids[]"  value="'+info.id+'" onclick="checkBoxOp(this)"> </td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.id+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;" title="'+info.address+'">'+info.c_name+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">';
+                        tr_obj +=info.building?(info.building+'栋'):'';
+                        tr_obj +=info.unit?(info.unit+'单元'):'';
+                        tr_obj +=info.floor?(info.floor+'楼'):'';
+                        tr_obj +=info.number?(info.number+'号'):'';
+                        tr_obj +='</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.deliver_at+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.l_name+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.area+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.has_lift+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.is_real+'|'+info.is_buy+'|'+info.is_transit+'|'+info.is_public+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.status+'</td>';
+                        tr_obj += '</tr>';
+                    });
+                }else{
+                    layer.msg(resp.msg,function(){});
+                }
+                thead.after(tr_obj);
+            },
+            error:function () {
+                layer.msg('网络出错，稍候重试！',function(){});
+            }
+        });
+    });
+</script>
+</body>
+</html>

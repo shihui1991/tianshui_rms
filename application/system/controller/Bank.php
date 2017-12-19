@@ -76,7 +76,7 @@ class Bank extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/bank/index');
     }
 
     /* ========== 添加 ========== */
@@ -105,7 +105,7 @@ class Bank extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/bank/modify',[
                 'model'=>$model,
             ]);
         }
@@ -123,7 +123,7 @@ class Bank extends Auth
 
         $model=new Banks();
 
-        return view('modify',[
+        return view($this->theme.'/bank/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

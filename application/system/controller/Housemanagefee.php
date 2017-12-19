@@ -104,7 +104,7 @@ class Housemanagefee extends Auth
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/housemanagefee/index');
     }
 
 
@@ -285,7 +285,7 @@ class Housemanagefee extends Auth
                 'model'=>$model,
             ]);
 
-            return view();
+            return view($this->theme.'/housemanagefee/add');
         }
 
     }

@@ -150,7 +150,7 @@ class Assessestate extends Auth
         $companys = model('Companys')->field(['id','name'])->where('status',1)->where('type',0)->select();
         $datas['company_list'] = $companys;
         $this->assign($datas);
-        return view($view);
+        return view($this->theme.'/assessestate/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -329,7 +329,7 @@ class Assessestate extends Auth
                 ->join('collection_community cc','cc.id=c.community_id','left')
                 ->where($where)
                 ->find();
-            return view('add',
+            return view($this->theme.'/assessestate/add',
                 ['item_info' => $items,
                     'collectioncommunity_info' => $collectioncommunitys,
                     'collection_info'=>$collections
@@ -420,7 +420,7 @@ class Assessestate extends Auth
             ->where($company_valuer_where)
             ->select();
         $valuer_ids = implode(",", $assessestatevaluer_ids);
-        return view('modify',
+        return view($this->theme.'/assessestate/modify',
             [
                 'infos' => $assessestate_info,
                 'company_valuer_info' => $company_valuer,

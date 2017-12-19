@@ -879,7 +879,7 @@ class Tools extends Base
 
         $this->assign($datas);
 
-        return view('housetransit/search_house');
+        return view($this->theme.'/housetransit/search_house');
     }
 
     /* ========== 临时安置记录----兑付列表 ========== */
@@ -958,7 +958,7 @@ class Tools extends Base
 
         $this->assign($datas);
 
-        return view('housetransit/search_pay');
+        return view($this->theme.'/housetransit/search_pay');
     }
 
     /* ========== 安置记录----兑付列表 ========== */
@@ -1037,6 +1037,6 @@ class Tools extends Base
 
         $this->assign($datas);
 
-        return view('houseresettle/search_pay');
+        return view($this->theme.'/houseresettle/search_pay');
     }
 }

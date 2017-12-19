@@ -108,7 +108,7 @@ class Assess extends Auth
         $collections = model('Collections')->field(['id', 'building', 'unit','floor','number'])->select();
         $datas['collections_list'] = $collections;
         $this->assign($datas);
-        return view($view);
+        return view($this->theme.'/assess/'.$view);
     }
 
     /* ========== 添加 ========== */
@@ -185,7 +185,7 @@ class Assess extends Auth
             /* ++++++++++ 片区 ++++++++++ */
             $collectioncommunitys = model('Collectioncommunitys')->field(['id', 'address', 'name'])->select();
 
-            return view('add',
+            return view($this->theme.'/assess/add',
                 ['item_info' => $items,
                     'collectioncommunitys' => $collectioncommunitys
                 ]);

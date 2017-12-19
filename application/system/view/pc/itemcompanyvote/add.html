@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>评估公司选票|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+    <div class="layerCon bg_f">
+        <input type="hidden" name="item_id" value="{$item_info->id}">
+        <table class="layerTable" border="0">
+            <tr class="h50">
+                <td><label for="item_id">项目：</label></td>
+                <td>{$item_info->name}
+
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="community_id">片区：</label></td>
+                <td>
+                    <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择片区--</option>
+                        {volist name="collectioncommunitys" id="community"}
+                        <option value="{$community->id}" >{$community->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="collection_id">权属：</label></td>
+                <td>
+                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择权属--</option>
+                        {volist name="collections" id="collection"}
+                        <option value="{$collection->id}">
+                        {if condition="$collection->building"}{$collection->building}栋{/if}
+                        {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                        {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                        {if condition="$collection->number"}{$collection->number}号{/if}
+                        （{$collection->id}）
+                        </option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="collection_holder_id">投票人：</label></td>
+                <td>
+                    <select name="collection_holder_id" id="collection_holder_id">
+                        <option value="">--请选择投票人--</option>
+                       
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td><label for="company_id">评估公司：</label></td>
+                <td>
+                    <select name="company_id" id="company_id" class="chosen" data-placeholder="请选择评估公司" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择评估公司--</option>
+                        {volist name="companys" id="company"}
+                        <option value="{$company->id}" >{$company->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="layerBtns">
+        <a class="btn js-ajax-form-btn" data-layer="true" >立即提交</a>
+        <button class="btn" type="reset">重置</button>
+    </div>
+
+</form>
+
+</body>
+
+<script>
+    $('#collection_id').change(function () {
+        var collection_id=$('#collection_id').find('option:selected').val();
+        var collection_holder=$('#collection_holder_id');
+
+        collection_holder.find('option:first').siblings().remove();
+        if(!collection_id){
+            layer.msg('请选择权属',function () {});
+            return false;
+        }
+        $.ajax({
+            url:"{:url('Tools/collection_holder')}",
+            data:{collection_id:collection_id},
+            dataType:'json',
+            type:'get',
+            success:function (resp) {
+                if(resp.code){
+                    var options='';
+                    $.each(resp.data,function (index,info) {
+                        options='<option value="'+info.id+'">（'+info.id+'）'+info.name+'-【'+info.address+'-'+info.phone+'】'+'</option>'
+                    });
+                    collection_holder.append(options);
+                }else{
+                    layer.msg(resp.msg,function () {});
+                }
+            },
+            error:function () {
+                layer.msg('网络错误，请稍候重试',function () {});
+            }
+        });
+    });
+</script>
+</html>

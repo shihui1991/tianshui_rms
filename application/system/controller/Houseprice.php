@@ -39,7 +39,7 @@ class Houseprice extends Auth
         
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/houseprice/index');
     }
 
     /* ========== 添加 ========== */
@@ -82,7 +82,7 @@ class Houseprice extends Auth
                 return $this->error('保存失败');
             }
         }else{
-            return view('modify',[
+            return view($this->theme.'/houseprice/modify',[
                 'model'=>$model,
                 'house_id'=>$house_id,
             ]);
@@ -101,7 +101,7 @@ class Houseprice extends Auth
 
         $model=new Houseprices();
 
-        return view('modify',[
+        return view($this->theme.'/houseprice/modify',[
             'model'=>$model,
             'infos'=>$infos,
         ]);

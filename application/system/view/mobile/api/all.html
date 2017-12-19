@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name|default=''}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+</head>
+<body>
+<div class="page">
+    <!--头部-->
+    <div class="header">
+        <span class="cd caidan"><i class="iconfont icon-caidan"></i></span>
+        <p class="margin0 f18">{$cur_menu->name|default=''}</p>
+        <span class="yh"><a href="{:url('User/info')}"><i class="iconfont icon-gerenzhongxin"></i> </a></span>
+        <div class="cd_list backCo_w hide" style="width: 190px;">
+            {$nav_menus}
+        </div>
+    </div>
+
+    <div class="w_100">
+
+        <p class="titP f14 padding_left13 backCo_f2 margin0 h_50">
+            {if condition="$cur_menu"}
+            <a href="{:url('Home/index')}"><img src="__STATIC__/system/img/house.png"></a>
+            {volist name="parents_menus" id="pmenu"}
+            <span class="f13">&gt;</span>
+            {if condition="is_numeric(stripos($pmenu->url,'#'))"}
+            <span>{$pmenu->icon} {$pmenu->name}</span>
+            {else/}
+            <a href="{$pmenu->url}">{$pmenu->icon} {$pmenu->name}</a>
+            {/if}
+            {/volist}
+
+            <span class="f13">&gt;</span>
+            {$cur_menu->icon} {$cur_menu->name}
+
+            {else/}
+            <a href="javascript:window.history.back();">&lt; 返回</a>
+            {/if}
+        </p>
+
+
+        <div class="w_100">
+            <!--按钮组合-->
+            <div  class="flex anniu backCo_w">
+                <a href="{:url('index')}" class="refresh">树形列表</a>
+                <a href="{:url('all')}" class="refresh">刷新</a>
+                <a id="showQuery">查询</a>
+                <a href="{:url('add')}">添加</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">启用</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">禁用</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}" >删除</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">恢复</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">销毁</a>
+            </div>
+            <div class="w_100">
+                <table id="example-advanced" class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect">
+                        <th><input type="checkbox" data-role="checkall"/></th>
+                        <th>ID</th>
+                        <th>名称</th>
+                        <th>类型</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+
+                    {volist name="apis" id="api"}
+                    <tr>
+                        <td id="tdp1"><input type='checkbox' data-role="check"  name="ids[]"/></td>
+                        <td>{$api->id}</td>
+                        <td>{$api->name}</td>
+                        <td>{$api->type}</td>
+                        <td>{$api->status}</td>
+                        <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
+                            <div class="hide">
+                                <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                {if  condition="$api->parent_id eq 0"}
+                                <a href="{:url('add',['id'=>$api->id])}"><i class="iconfont icon-iconjia"></i></a>
+                                {/if}
+                                <a href="{:url('detail',['id'=>$api->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                <a data-action="{:url('delete',['ids'=>$api->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                            </div>
+                        </td>
+
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                {$apis->render()}
+            </div>
+
+            <div class="showQuery hide" id="layerQuery">
+                <form action="{:url('all')}" method="post" id="search-form">
+                    <input type="hidden" name="issearch" value="true">
+                    <div class=" backCo_w">
+                        <h3 class="queryTitle">查&nbsp;&nbsp;询</h3>
+                        <div class="queryCon">
+                            <p>
+                                <span>名称：</span>
+                                <input type="text" id="name" name="name" value="{$name?:''}" placeholder="请输入查询名称" />
+                            </p>
+                            <p>
+                                <span>状态：</span>
+                                <select name="status" id="status">
+                                    <option value="">--全部--</option>
+                                    {volist name="model->status" id="value"}
+                                    <option value="{$key}" {if condition="isset($status) and $status eq $key"}selected{/if}>{$value}</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>是否删除：</span>
+                                <select name="deleted" id="deleted">
+                                    <option value="">--全部--</option>
+                                    <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                                    <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
+                                </select>
+                            </p>
+                            <p>
+                                <span>每页条数：</span>
+                                <select name="display_num" id="display_num">
+                                    {volist name="nums" id="num"}
+                                    <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>排序：</span>
+                                <select name="ordername" id="ordername">
+                                    <option value="sort">--默认--</option>
+                                    <option value="id" {if condition="isset($ordername) and $ordername eq 'id'"}selected{/if}>--ID--</option>
+                                    <option value="level" {if condition="isset($ordername) and $ordername eq 'level'"}selected{/if}>--层级--</option>
+                                    <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                                    <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                                    <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
+                                </select>
+                            </p>
+                            <p>
+                                <span>方式：</span>
+                                <select name="orderby" id="orderby">
+                                    <option value="asc">--升序--</option>
+                                    <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                                </select>
+                            </p>
+                            <!--提交按钮-->
+                            <p class="Btnform align_cen bor_none maT20">
+                                <button class="submit button maR17" type="submit">查询</button>
+                                <span class="reset close button maL17">取消</span>
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+
+    $('.pagination').find('a').on('click',function () {
+        $('#search-form').attr('action',$(this).attr('href')).submit();
+        return false;
+    });
+
+</script>
+
+<script>
+    $("#showQuery").click(function(){
+        setTimeout(function(){
+            for(var i=0 ; i<$("[type='text']").length ; i++){
+                $("[type='text']").eq(i).css("width",$("[type='text']").eq(i).parent().width()-$("[type='text']").eq(i).siblings().width());
+            }
+            for(var i=0 ; i<$("[type='number']").length ; i++){
+                $("[type='number']").eq(i).css("width",$("[type='number']").eq(i).parent().width()-$("[type='number']").eq(i).siblings().width());
+            }
+            for(var i=0 ; i<$("[type='date']").length ; i++){
+                $("[type='date']").eq(i).css("width",$("[type='date']").eq(i).parent().width()-$("[type='date']").eq(i).siblings().width());
+            }
+            for(var i=0 ; i<$("select").length ; i++){
+                $("select").eq(i).css("width",$("select").eq(i).parent().width()-$("select").eq(i).siblings().width());
+            }
+        },300)
+    });
+
+    $("#ImportantData").click(function(){
+        $(".ImportantData").fadeIn(300);
+    });
+    $(".iconfont.icon-guanbi").click(function(){
+        $(".ImportantData").fadeOut(300);
+    })
+
+</script>
+</body>
+</html>

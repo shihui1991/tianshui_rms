@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>新闻公告|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<h4>新闻公告管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index')}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                重置</a>
+        </li>
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','430')" >
+            <img src="__STATIC__/system/img/page_white_magnify.png"/>
+            查询
+        </li>
+        <li class="fgf" onclick="layerIfWindow('添加新闻公告','{:url('add')}','800','580')">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form">
+            <img src="__STATIC__/system/img/text_list_numbers.png"/>
+            排序
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">
+            <img src="__STATIC__/system/img/checked.png"/>
+            启用
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">
+            <img src="__STATIC__/system/img/disabled.png"/>
+            禁用
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('istop',array('top'=>'1'))}">
+            <img src="__STATIC__/system/img/top.png"/>
+            置顶
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('istop',array('top'=>'0'))}">
+            <img src="__STATIC__/system/img/top_no.png"/>
+            取消置顶
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">
+            <img src="__STATIC__/system/img/recycle.png"/>
+            恢复
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">
+            <img src="__STATIC__/system/img/destroy.png"/>
+            销毁
+        </li>
+    </ul>
+</div>
+<form action="{:url('sort')}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>排序</th>
+                <th>ID</th>
+                <th>名称</th>
+                <th>分类</th>
+                <th>项目</th>
+                <th>发布时间</th>
+                <th>关键词</th>
+                <th>链接</th>
+                <th>置顶</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            {volist name="newss" id="news"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$news->id}" onclick="checkBoxOp(this)" id="check-{$news->id}"/>
+                </td>
+                <td><input style="width: 50px;" type="text" name="sorts[{$news->id}]" value="{$news->sort}" id="input-{$news->id}" data-id="{$news->id}"></td>
+                <td>{$news->id}</td>
+                <td>{if condition="$news->getData('status') eq 0 or $news->deleted_at"} <del>{$news->name}</del>{else /}{$news->name}{/if}</td>
+                <td>{$news->c_name}</td>
+                <td>{$news->i_name}</td>
+                <td>{$news->release_at}</td>
+                <td>{if condition="$news->deleted_at"} <del>{$news->keywords}</del>{else /}{$news->keywords}{/if}</td>
+                <td title="{$news->url_name}">{if condition="$news->deleted_at"} <del>{$news->url}</del>{else /}{$news->url}{/if}</td>
+                <td>{$news->is_top}</td>
+                <td>{$news->status}</td>
+                <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('新闻公告信息',	'{:url('detail',['id'=>$news->id])}','800','630')" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['ids'=>$news->id])}" class="btn js-ajax-form-btn">删除</button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+<div class="pageCon">
+    {$newss->render()}
+</div>
+<!-- 查询 -->
+<div id="search" class="layerCon bg_f hide">
+    <form action="{:url('index')}" method="post" id="search-form">
+        <table class="layerTable">
+            <tr class="h50">
+                <td>项目：</td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if}>{$item->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td>分类：</td>
+                <td>
+                    <select name="cate_id" id="cate_id" class="chosen" data-placeholder="请选择分类" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="newscates" id="cate"}
+                        <option value="{$cate->id}" {if condition="isset($cate_id) and $cate_id eq $cate->id"}selected{/if}>{$cate->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>名称：</td>
+                <td colspan="3"><input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入新闻公告名称"/></td>
+            </tr>
+            <tr class="h50">
+                <td>关键词：</td>
+                <td colspan="3"><input type="text" name="keywords" id="keywords" value="{$keywords?:''}" placeholder="请输入新闻公告关键词"/></td>
+            </tr>
+            <tr class="h50">
+                <td>链接：</td>
+                <td colspan="3"><input type="text" name="url" id="url" value="{$url?:''}" placeholder="请输入新闻链接地址"/></td>
+            </tr>
+            <tr class="h50">
+                <td>置顶：</td>
+                <td>
+                    <select name="is_top" id="is_top">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($is_top) and $is_top eq 1"}selected{/if}>--置顶--</option>
+                        <option value="0" {if condition="isset($is_top) and $is_top eq 0"}selected{/if}>--非置顶--</option>
+                    </select>
+                </td>
+                <td>状态：</td>
+                <td>
+                    <select name="status" id="status">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($status) and $status eq 1"}selected{/if}>--启用--</option>
+                        <option value="0" {if condition="isset($status) and $status eq 0"}selected{/if}>--禁用--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>是否删除：</td>
+                <td>
+                    <select name="deleted" id="deleted">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                        <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
+                    </select>
+                </td>
+                <td>每页条数：</td>
+                <td>
+                    <select name="display_num" id="display_num">
+                        {volist name="nums" id="num"}
+                        <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>排序：</td>
+                <td>
+                    <select name="ordername" id="ordername">
+                        <option value="sort">--默认--</option>
+                        <option value="id" {if condition="isset($ordername) and $ordername eq 'id'"}selected{/if}>--ID--</option>
+                        <option value="release_at" {if condition="isset($ordername) and $ordername eq 'release_at'"}selected{/if}>--发布时间--</option>
+                        <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                        <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                        <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
+                    </select>
+                </td>
+                <td>方式：</td>
+                <td>
+                    <select name="orderby" id="orderby">
+                        <option value="asc">--升序--</option>
+                        <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">查询</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $(function () {
+
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>

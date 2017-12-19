@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>入户摸底-其他补偿事项|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<h4>入户摸底-其他补偿事项管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index',['collection_id'=>$collection_info->id])}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                刷新
+            </a>
+        </li>
+        {if condition="$collection_info->item->getData('status') eq 1 and $collection_status neq 8"}
+        <li class="fgf" onclick="layerIfWindow('添加入户摸底-其他补偿事项','{:url('add',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}','800','600')">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}">
+            <img src="__STATIC__/system/img/recycle.png"/>
+            恢复
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}" data-notice="确定要彻底删除吗？">
+            <img src="__STATIC__/system/img/destroy.png"/>
+            销毁
+        </li>
+        {/if}
+    </ul>
+</div>
+<form action="{:url('index',['collection_id'=>$collection_info->id])}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>ID<i class="stretch"></i></th>
+                <th>补偿事项<i class="stretch"></i></th>
+                <th>数量<i class="stretch"></i></th>
+                <th>操作<i class="stretch"></i></th>
+            </tr>
+            {volist name="collectionobjects" id="collectionobject"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$collectionobject->id}" onclick="checkBoxOp(this)" id="check-{$collectionobject->id}"/>
+                </td>
+                <td>{$collectionobject->id}</td>
+                <td>{if condition="$collectionobject->deleted_at"}<del>{$collectionobject->o_name}</del>{else /}{$collectionobject->o_name}{/if}</td>
+                <td>{if condition="$collectionobject->deleted_at"}<del>{$collectionobject->number}</del>{else /}{$collectionobject->number}{/if}</td>
+                <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户摸底-其他补偿事项信息',	'{:url('detail',['id'=>$collectionobject->id])}','800','600')" >详细信息</button>
+                    <button type="button" data-action="{:url('delete',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id,'ids'=>$collectionobject->id])}" class="btn js-ajax-form-btn">删除</button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>

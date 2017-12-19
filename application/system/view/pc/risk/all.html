@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>风险评估|后台管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<h4>风险评估管理</h4>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index')}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                刷新
+            </a>
+        </li>
+        <li class="fgf" onclick="layerPage('查询',$('#search'),'700','290')" >
+            <img src="__STATIC__/system/img/page_white_magnify.png"/>
+            查询
+        </li>
+    </ul>
+</div>
+<form action="{:url('index')}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>ID</th>
+                <th>项目</th>
+                <th>片区</th>
+                <th>权属(ID)</th>
+                <th>成员</th>
+                <th>推荐代表成员</th>
+                <th>群众代表意见</th>
+                <th>方案意见</th>
+                <th>补偿方式</th>
+                <th>补偿单价</th>
+                <th>过渡方式</th>
+                <th>搬迁方式</th>
+                <th>操作</th>
+            </tr>
+            {volist name="risk_list" id="info"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$info->id}" onclick="checkBoxOp(this)" id="check-{$info->id}"/>
+                </td>
+                <td>{$info->id}</td>
+                <td>{if condition="$info->deleted_at"}<del>{$info->item_name}</del>{else/}{$info->item_name}{/if}</td>
+                <td>{if condition="$info->deleted_at"}<del>{$info->pq_name}</del>{else/}{$info->pq_name}{/if}</td>
+                <td> {if condition="$info->deleted_at"}
+                    <del>
+                        {if condition="$info->c_building"}{$info->c_building}栋{/if}
+                        {if condition="$info->c_unit"}{$info->c_unit}单元{/if}
+                        {if condition="$info->c_floor"}{$info->c_floor}楼{/if}
+                        {if condition="$info->c_number"}{$info->c_number}号{/if}
+                        {if condition="$info->c_id"}({$info->c_id}){/if}
+                    </del>
+                    {else /}
+                    {if condition="$info->c_building"}{$info->c_building}栋{/if}
+                    {if condition="$info->c_unit"}{$info->c_unit}单元{/if}
+                    {if condition="$info->c_floor"}{$info->c_floor}楼{/if}
+                    {if condition="$info->c_number"}{$info->c_number}号{/if}
+                    {if condition="$info->c_id"}({$info->c_id}){/if}
+                    {/if}</td>
+                <td>{if condition="$info->deleted_at"}<del>{$info->holder_name}</del>{else/}{$info->holder_name}{/if}</td>
+                <td>{if condition="$info->deleted_at"}<del>{$info->recommemd_holder_name}</del>{else/}{$info->recommemd_holder_name}{/if}</td>
+                <td>{if condition="$info->deleted_at"}<del>{$info->deputy}</del>{else/}{$info->deputy}{/if}</td>
+                <td>{if condition="$info->deleted_at"}<del>{$info->is_agree}</del>{else/}{$info->is_agree}{/if}</td>
+                <td>{if condition="$info->deleted_at"}<del>{$info->compensate_way}</del>{else/}{$info->compensate_way}{/if}</td>
+                <td>{if condition="$info->deleted_at"}<del>{$info->compensate_price}</del>{else/}{$info->compensate_price}{/if}</td>
+                <td>{if condition="$info->deleted_at"}<del>{$info->transit_way}</del>{else/}{$info->transit_way}{/if}</td>
+                <td>{if condition="$info->deleted_at"}<del>{$info->move_way}</del>{else/}{$info->move_way}{/if}</td>
+                <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('风险评估信息',	'{:url('detail',['id'=>$info->id,'item_id'=>$info->item_id])}','1000','650')" >详细信息</button>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+<div class="pageCon">
+    {$risk_list->render()}
+</div>
+<!-- 查询 -->
+<div id="search" class="layerCon bg_f hide">
+    <form action="{:url('index')}" method="post" id="search-form">
+        <table class="layerTable">
+            <tr class="h50">
+                <td><label for="item_id">项目：</label></td>
+                <td>
+                    <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择项目--</option>
+                        {volist name="item_list" id="item"}
+                        <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if} >{$item->name}（{$item->id}）</option>
+                        {/volist}
+                    </select>
+                </td>
+                <td><label for="community_id">片区：</label></td>
+                <td>
+                    <select name="community_id" id="community_id" class="chosen sear_collection_id" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择片区--</option>
+                        {volist name="collectioncommunity_list" id="community"}
+                        <option value="{$community->id}" {if condition="isset($community_id) and $community_id eq $community->id"}selected{/if}>{$community->name}</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td ><label for="collection_id">权属：</label></td>
+                <td colspan="3">
+                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择权属--</option>
+                        {volist name="collections_list" id="collection"}
+                        <option value="{$collection->id}" {if condition="isset($collection_id) and $collection_id eq $collection->id"}selected{/if}>
+                        {if condition="$collection->building"}{$collection->building}栋{/if}
+                        {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                        {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                        {if condition="$collection->number"}{$collection->number}号{/if}
+                        {if condition="$collection->id"}({$collection->id}){/if}
+                        </option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>是否删除：</td>
+                <td>
+                    <select name="deleted" id="deleted">
+                        <option value="">--全部--</option>
+                        <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                        <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
+                    </select>
+                </td>
+                <td>每页条数：</td>
+                <td>
+                    <select name="display_num" id="display_num">
+                        {volist name="nums" id="num"}
+                        <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                        {/volist}
+                    </select>
+                </td>
+            </tr>
+            <tr class="h50">
+                <td>排序：</td>
+                <td>
+                    <select name="ordername" id="ordername">
+                        <option value="id">--默认--</option>
+                        <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                        <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                        <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
+                    </select>
+                </td>
+                <td>方式：</td>
+                <td>
+                    <select name="orderby" id="orderby">
+                        <option value="asc">--升序--</option>
+                        <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+        <div class="layerBtns">
+            <button class="btn" type="submit">查询</button>
+        </div>
+    </form>
+</div>
+
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+        $('.pageCon').find('a').on('click',function () {
+            $('#search-form').attr('action',$(this).attr('href')).submit();
+            return false;
+        });
+    });
+
+</script>
+</body>
+</html>
