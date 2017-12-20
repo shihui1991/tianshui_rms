@@ -40,7 +40,7 @@ class Subject extends Auth
         }
         /* ++++++++++ 数量来源 ++++++++++ */
         $num_from=input('num_from');
-        if(is_numeric($num_from) && in_array($num_from,[0,1])){
+        if(is_numeric($num_from) && in_array($num_from,[0,1,2])){
             $where['num_from']=$num_from;
             $datas['num_from']=$num_from;
         }

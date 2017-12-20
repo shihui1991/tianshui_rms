@@ -36,11 +36,34 @@ class Crowd extends Auth
             $array=[];
             foreach ($crowds as $crowd){
                 $crowd->add_btn=$crowd->parent_id?'':"<button type='button' class='btn' onclick='layerIfWindow(&apos;添加分类&apos;,&apos;".url('add',['id'=>$crowd->id])."&apos;,&apos;600&apos;,&apos;260&apos;)' >添加子分类</button>";
+                $crowd->add_url=$crowd->parent_id?'':" <a href='".url('add',['id'=>$crowd->id])."'><i class='iconfont icon-iconjia'></i></a>";
                 $crowd->detail_url=url('detail',['id'=>$crowd->id]);
                 $crowd->delete_url=url('delete',['ids'=>$crowd->id]);
                 $array[]=$crowd;
             }
-            $str = "
+            if(request()->isMobile()) {
+                $str = "
+                    <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
+                        <td style='text-align: left;'>
+                            <label>
+                            <input class='va_m' type='checkbox' name='ids[]' value='\$id'  data-role='check' id='check-\$id'/>
+                             \$space \$name
+                            </label>
+                        </td>
+                        <td>\$id</td>
+                        <td>\$status</td>
+                       <td class='shezhi'><i class='iconfont icon-shezhi2'></i>
+                            <div class='hide'>
+                                <img src='__STATIC__/sysmobile/img/sanjiao.png' />
+                               \$add_url
+                                <a href='\$detail_url'><i class='iconfont icon-xiugai'></i></a>
+                                <a data-action='\$delete_url' class='js-ajax-form-btn'><i class='iconfont icon-lajitong'></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    ";
+            }else{
+                $str = "
                     <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id' >
                         <td>
                             <input class='va_m' type='checkbox' name='ids[]' value='\$id' onclick='checkBoxOp(this)' id='check-\$id'/>
@@ -55,6 +78,8 @@ class Crowd extends Auth
                         </td>
                     </tr>
                     ";
+            }
+
             $table_crowds=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
         }
         return view($this->theme.'/crowd/index',['table_crowds'=>$table_crowds]);
