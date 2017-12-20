@@ -314,7 +314,7 @@ function get_na_li_list_mobile($menus, $level=1, $parent_id=0,$current_id,$paren
                 }
                 $content='<div class="link '.$open.'">'.$child['icon'].' '.$child['name'].'<i class="iconfont icon-arrow"></i></div>';
             }else{
-                if($child['id']==$current_id){
+                if($child['id']==$current_id || in_array($child['id'],$parent_ids)){
                     $open_li=' open_li ';
                 }
                 $content='<a href="'.$child['url'].'">'.$child['icon'].' '.$child['name'].'</a>';
