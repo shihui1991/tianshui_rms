@@ -21,40 +21,18 @@
             <div class="backCo_w add_menu padLR12">
                 <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
                 <p>
-                    <span>上级菜单：</span>
-                    <select name="parent_id" id="parent_id" class="chosen" data-no_results_text="没有匹配数据" data-placeholder="请选择上级菜单">
-                        <option value="0">--作为一级菜单--</option>
-                        {$options_menus}
-                    </select>
+                    <span>地址：<i>* </i></span>
+                    <input id="address" type="text" name="address" value="{$infos->address?:''}" required placeholder="输入房源小区地址"/>
                 </p>
                 <p>
-                    <span>菜单名称：<i>* </i></span>
+                    <span>名称：<i>* </i></span>
                     <input id="name" type="text" name="name" value="{$infos->name?:''}" required placeholder="输入唯一名称"/>
                 </p>
-                <p>
-                    <span>路由地址：<i>* </i></span>
-                    <input id="url" class="must" type="text" name="url" value="{$infos->url?:''}" required/>
-                </p>
-                <p>
-                    <span>显示排序：</span>
-                    <input id="sort" type="number" name="sort" value="{$infos->sort?:''}" />
-                </p>
-                <p>
-                    <span>菜单图标：</span>
-                    <input id="icon" type="text" name="icon" value="{$infos->icon|default=''|htmlspecialchars}" />
-                </p>
+
                 <div class="w_100 backCo_f2 add_menu_textarea">
-                    <p>菜单描述：</p>
+                    <p>描述：</p>
                     <textarea class="flex" id="infos" name="infos">{$infos->infos?:''}</textarea>
                 </div>
-                <p>
-                    <span>显示状态：</span>
-                    <select name="display" id="display">
-                        {volist name="model->display" id="value"}
-                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->display eq $value)"} selected{/if} >{$value}</option>
-                        {/volist}
-                    </select>
-                </p>
                 <p>
                     <span>状态：</span>
                     <select name="status" id="status">

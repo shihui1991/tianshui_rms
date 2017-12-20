@@ -68,6 +68,8 @@ class Housecommunity extends Auth
         /* ++++++++++ 是否删除 ++++++++++ */
         $deleted=input('deleted');
         $housecommunity_model=new Housecommunitys();
+        $datas['model']=$housecommunity_model;
+
         if(is_numeric($deleted) && in_array($deleted,[0,1])){
             $datas['deleted']=$deleted;
             if($deleted==1){

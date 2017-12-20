@@ -18,7 +18,7 @@ $(function() {
 
 	//表个更多内容展示
 	$(".more>i").click(function() {
-		$(this).parent("td").parent("tr").next("tr").stop().slideToggle();
+		$(this).parent("td").parent("tr").next("tr").stop().slideToggle(0);
 	});
 	//操作
 	$(".shezhi").click(function() {
@@ -51,7 +51,7 @@ $(function() {
 	});
 
 	$(document).bind("click", function(e) {
-		//id为menu的是菜单，id为open的是打开菜单的按钮            
+		//id为menu的是菜单，id为open的是打开菜单的按钮
 		if($(e.target).closest(".shezhi").length == 0) {
 			//点击id为menu之外且id不是不是open，则触发
 			$(".shezhi>div").addClass("hide");
@@ -149,10 +149,11 @@ $("[las]").click(function() {
 	$("[lasy=" + $(this).attr("las") + "]").stop().slideDown();
 });
 
-$(".btnp>span").click(function() {
-	$(this).addClass("on").siblings("span").removeClass("on");
-	$(".tabDiv>div").eq($(this).index()).css("display", "block").siblings("div").css("display", "none")
+$(".btnp").find('span').on('click',function() {
+    $(this).addClass("on").siblings("span").removeClass("on");
+    $(".tabDiv>div").eq($(this).index()).css("display", "block").siblings("div").css("display", "none")
 });
+
 $(".toolBar").click(function() {
 	$(".toolCon").stop().slideToggle(300);
 });

@@ -120,11 +120,11 @@ a {
 }
 
 .margin12 {
-	margin: 0px 12px;
+	margin: 0 12px;
 }
 
 .padLR12 {
-	padding: 0px 12px;
+	padding: 0 12px;
 }
 
 .padding0 {
@@ -132,15 +132,15 @@ a {
 }
 
 .padding5_0 {
-	padding: 5px 0px !important;
+	padding: 5px 0 !important;
 }
 
 .padding15_0 {
-	padding: 15px 0px !important;
+	padding: 15px 0 !important;
 }
 
-.flex {
-	display: flex1;
+.flex1 {
+	display: flex;
 }
 
 .cor_lan {
@@ -203,6 +203,12 @@ a {
 .align_cen {
 	text-align: center;
 }
+.align_left {
+	text-align: left;
+}
+.align_right {
+	text-align: right;
+}
 
 .back {
 	width: 40px !important;
@@ -251,7 +257,7 @@ a {
 }
 
 .cd {
-	left: 0px !important;
+	left: 0 !important;
 	top: 0;
 }
 
@@ -260,7 +266,7 @@ a {
 }
 
 .yh {
-	right: 0px !important;
+	right: 0 !important;
 	top: 0;
 }
 
@@ -269,7 +275,7 @@ a {
 	color: white;
 }
 
-input['type=checkbox'] {
+input[type=checkbox]{
 	width: 20px;
 	height: 20px;
 }
@@ -286,7 +292,7 @@ input['type=checkbox'] {
 	font-size: 14px;
 	font-weight: normal;
 	display: inline-block;
-	padding: 0px 8px;
+	padding: 0 8px;
 	height: 28px;
 	line-height: 28px;
 	background: #E0E0E0;
@@ -357,7 +363,7 @@ table {
 }
 
 .dong_table tbody tr td:last-child ul {
-	padding-bottom: 0px;
+	padding-bottom: 0;
 	width: 100%;
 }
 
@@ -377,7 +383,7 @@ table {
 .dong_table tbody tr td:last-child ul li input {
 	width: 100%;
 	height: 76px;
-	left: 0px;
+	left: 0;
 }
 
 .dong_table tbody tr td:last-child ul li a {
@@ -407,8 +413,8 @@ table {
 
 .em {
 	position: absolute;
-	bottom: 0px;
-	left: 0px;
+	bottom: 0;
+	left: 0;
 	font-style: normal;
 	width: 100%;
 	display: inline-block;
@@ -456,7 +462,7 @@ th {
 }
 
 .shezhi_img {
-	width,
+	width:auto;
 	height: 27px;
 }
 
@@ -533,11 +539,10 @@ th {
 .shezhi>div {
 	z-index: 21;
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 50px;
+	left: 0;
 	width: 100%;
 	background: #4693d5;
-	top: 50px;
 }
 
 .shezhi>div>a {
@@ -609,12 +614,11 @@ table.treetable span {
 }
 
 table.treetable tbody tr td {
-	padding: .3em 0em .3em 0em !important;
+	padding: .3em 0 .3em 0 !important;
 	white-space: nowrap;
 }
 table.treetable span.indenter a {
-	background-position: left center;
-	background-repeat: no-repeat;
+	background: left center no-repeat;
 	display: inline-block;
 	width: 14px;
 }
@@ -622,7 +626,7 @@ table.treetable span.indenter a {
 .table_more {
 	width: 100%;
 	z-index: 20;
-	left: 0px;
+	left: 0;
 }
 
 .table_more>div {
@@ -666,15 +670,15 @@ table.treetable span.indenter a {
 
 .hide_more>td {
 	padding: 0 !important;
-	height: 0px !important;
+	height: 0 !important;
 }
 
 tr.hide_more {
-	height: 0px !important;
+	height: 0 !important;
 }
 
 .table.treetable {
-	margin-top: 0px !important;
+	margin-top: 0 !important;
 }
 
 
@@ -724,7 +728,7 @@ tr.hide_more {
 .add_menu>p>label {
 	width: auto;
 	display: inline-block;
-	margin: 0px 5px;
+	margin: 0 5px;
 }
 
 .add_menu_textarea>textarea {
@@ -732,7 +736,7 @@ tr.hide_more {
 	border: none;
 	outline: none;
 	background: #F2F2F2;
-	padding: 0px 12px;
+	padding: 0 12px;
 	font-size: 13px;
 	min-height: 70px;
 }
@@ -807,7 +811,7 @@ tr.hide_more {
 	height: 48px;
 	line-height: 44px;
 	border-radius: 48px;
-	margin: 20px 0px !important;
+	margin: 20px 0 !important;
 	text-indent: 8%;
 }
 
@@ -844,7 +848,7 @@ tr.hide_more {
 
 .daoru {
 	position: fixed;
-	bottom: 0px;
+	bottom: 0;
 	width: 100%;
 	height: 41px;
 	line-height: 40px;
@@ -874,7 +878,6 @@ tr.hide_more {
 .hxt_ul>li {
 	float: left;
 	margin: 3px 4px;
-	width: 30%;
 	width: 58px;
 	position: relative;
 }
@@ -886,8 +889,7 @@ tr.hide_more {
 .hxt_ul>li>p {
 	width: 100%;
 	position: absolute;
-	bottom: 0px;
-	line-height: 18px;
+	bottom: 0;
 	line-height: 18px;
 	background: rgba(0, 0, 0, .4);
 	color: white;
@@ -903,7 +905,7 @@ tr.hide_more {
 	height: 100%;
 	position: fixed;
 	overflow: scroll;
-	top: 0px;
+	top: 0;
 	background: rgba(0, 0, 0, .4);
 }
 
@@ -925,7 +927,7 @@ tr.hide_more {
 }
 
 .queryCon {
-	padding: 0px 15px 30px 15px;
+	padding: 0 15px 30px 15px;
 }
 
 .queryCon>p {
@@ -959,8 +961,8 @@ tr.hide_more {
 	padding-left: 90px;
 }
 
-.queryCon>p span float: left;
-
+.queryCon>p span {
+	float: left;
 }
 
 /*kaiguan*/
@@ -972,7 +974,7 @@ tr.hide_more {
 	position: absolute;
 	display: inline-block;
 	top: 6px;
-	right: 0px;
+	right: 0;
 	width: 30%;
 	height: 40px;
 	color: white;
@@ -1038,24 +1040,25 @@ input[type='checkbox'] {
 
 /*图片上传的样式*/
 .add_tu>li {
-	margin: 5px 5px 5px 0px;
+	margin: 5px 12px 5px 0;
+	position: relative;
 }
-.add_tu>li:first-child {
+.add_tu>li:last-child {
 	position: relative;
 	height: 58px;
 }
-.add_tu>li:first-child>input,
-.add_tu>li:first-child>a {
+.add_tu>li:last-child>input,
+.add_tu>li:last-child>a {
 	position: absolute;
-	top: 0px;
+	top: 0;
 	width: 58px;
 	height: 58px;
 }
-.add_tu>li:first-child>input {
+.add_tu>li:last-child>input {
 	z-index: 2;
 	opacity: 0;
 }
-.add_tu>li:first-child>a {
+.add_tu>li:last-child>a {
 	display: block;
 	border: 1px dashed #878787;
 	z-index: 1;
@@ -1064,6 +1067,21 @@ input[type='checkbox'] {
 	font-size: 40px;
 	background: #f2f2f2;
 	overflow: hidden;
+}
+.add_tu>li>span{
+	position: absolute;
+	top: -5px;
+	right: -10px;
+	display: block;
+	width:24px;
+	height: 24px;
+	background: rgba(0,0,0,0.3);
+	border-radius: 100% 100%;
+	text-align: center;
+}
+.add_tu>li>span i{
+	font-size: 12px;
+	color: white;
 }
 
 /*公司简介*/
@@ -1079,7 +1097,7 @@ input[type='checkbox'] {
 }
 .imgCon {
 	width: 100%;
-	padding: 0px 12px;
+	padding: 0 12px;
 	margin-bottom: 30px;
 }
 .imgDiv>.bd>ul>li {
@@ -1108,7 +1126,7 @@ div[noData] {
 	color: #999;
 	font-size: 20px;
 	text-align: center;
-	height: 0px;
+	height: 0;
 	padding-bottom: 33%;
 	padding-top: 20%;
 }
@@ -1178,7 +1196,7 @@ div[noData] {
 	width: -moz-calc( 100% - 45px) !important;
 }
 .padLnull {
-	padding-left: 0px !important;
+	padding-left: 0 !important;
 }
 table.treetable span.indenter {
 	/*padding-left: 11px!important;*/
@@ -1210,8 +1228,8 @@ span[spanc] {
 	height: 100%;
 	background: white;
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 0;
+	left: 0;
 	display: block;
 }
 .forSearchName {
@@ -1251,11 +1269,11 @@ span[spanc] {
 	width: 100%;
 	height: 100%;
 	display: inline-block;
-	top: 0px;
+	top: 0;
 	font-size: 36px;
 	font-weight: bold;
 	text-align: center;
-	left: 0px;
+	left: 0;
 }
 .addBtn>input {
 	opacity: 0;
@@ -1280,7 +1298,7 @@ span[spanc] {
 	width: 100%;
 	height: 24px;
 	line-height: 24px;
-	bottom: 0px;
+	bottom: 0;
 	background: rgba(0, 0, 0, .5);
 	color: white;
 	font-style: normal;
@@ -1292,8 +1310,8 @@ span[spanc] {
 }
 .wAuto {
 	width: auto !important;
-	padding: 0px 10px;
-	margin: 0px 3px;
+	padding: 0 10px;
+	margin: 0 3px;
 	height: 32px;
 	line-height: 26px !important;
 }
@@ -1306,8 +1324,8 @@ span[spanc] {
 	position: fixed;
 	z-index: 20;
 	background: rgba(0, 0, 0, .3);
-	top: 0px;
-	left: 0px;
+	top: 0;
+	left: 0;
 	display: none;
 	overflow: scroll;
 }
@@ -1328,7 +1346,6 @@ span[spanc] {
 }
 .dataWrap {
 	padding: 10px 5px;
-	font-size: 14px;
 	min-height: 100px;
 	background: white;
 	color: #999999;
@@ -1407,7 +1424,7 @@ span[addpng] {
 }
 .huiDiv>div {
 	display: table-cell;
-	padding: 5px 0px;
+	padding: 5px 0;
 	font-size: 14px;
 }
 .huiDiv>div:first-child {
@@ -1431,7 +1448,7 @@ span[delspan] {
 	width: 100px;
 	position: absolute;
 	top: 64px;
-	right: 0px;
+	right: 0;
 	background: white;
 	border: 1px solid #DCDCDC;
 	display: none;
@@ -1482,8 +1499,8 @@ span[delspan] {
 }
 .toolCon{
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 0;
+	left: 0;
 	display:none ;
 	width: 100%;
 	

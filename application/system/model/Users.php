@@ -56,4 +56,14 @@ class Users extends Model
         $data['login_ip']=request()->ip();
         return $data;
     }
+
+
+    public function dept(){
+        return $this->belongsTo('Depts','dept_id','id');
+    }
+
+
+    public function role(){
+        return $this->belongsTo('Roles','role_id','id');
+    }
 }

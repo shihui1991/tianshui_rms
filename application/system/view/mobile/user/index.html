@@ -28,8 +28,7 @@
         <div class="w_100">
             <!--按钮组合-->
             <div class=" anniu backCo_w padLR12 ov maT10">
-                <a href="{:url('index')}" class="refresh">树形列表</a>
-                <a href="{:url('all')}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                <a href="{:url('index')}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
                 <a id="showQuery"><i class="iconfont icon-search"></i>&nbsp;查询</a>
                 <a href="{:url('add')}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">启用</a>
@@ -40,33 +39,30 @@
                 <span class="xiaMore"><em>更多</em><i class=" xiaMore iconfont icon-gongyongshuangjiantouxia"></i> </span>
             </div>
             <div class="w_100">
-                <form action="{:url('all')}" method="post" id="js-ajax-form">
+                <form action="{:url('index')}" method="post" id="js-ajax-form">
                 <table id="example-advanced" class="table treetable w_100" border="0" >
                     <tbody>
                     <tr class="noSelect">
-                        <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 名称</th>
+                        <th ><input type="checkbox" data-role="checkall"/></th>
                         <th>ID</th>
-                        <th>类型</th>
+                        <th>角色</th>
+                        <th>用户名</th>
                         <th>状态</th>
                         <th>操作</th>
                     </tr>
 
-                    {volist name="roles" id="role"}
+                    {volist name="users" id="user"}
                     <tr>
-                        <td class="tdp1" style="text-align: left;">
-                            <label><input type='checkbox' data-role="check"  name="ids[]" value="{$role->id}"/>&nbsp;
-                                {if condition="$role->deleted_at"}<del>{$role->name}</del>{else/}{$role->name}{/if}
-                            </label>
-                        </td>
-                        <td>{$role->id}</td>
-                        <td>{if condition="$role->deleted_at"}<del>{$role->is_admin}</del>{else/}{$role->is_admin}{/if}</td>
-                        <td>{if condition="$role->deleted_at"}已删除{else/}{$role->status}{/if}</td>
+                        <td class="tdp1" ><label><input type='checkbox' data-role="check"  name="ids[]" value="{$user->id}"/></label></td>
+                        <td>{$user->id}</td>
+                        <td>{if condition="$user->deleted_at"}<del>{$user->role_name}</del>{else/}{$user->role_name}{/if}</td>
+                        <td>{if condition="$user->deleted_at"}<del>{$user->username}</del>{else/}{$user->username}{/if}</td>
+                        <td>{if condition="$user->deleted_at"}已删除{else/}{$user->status}{/if}</td>
                         <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
                             <div class="hide">
                                 <img src="__STATIC__/sysmobile/img/sanjiao.png" />
-                                <a href="{:url('add',['id'=>$role->id])}"><i class="iconfont icon-iconjia"></i></a>
-                                <a href="{:url('detail',['id'=>$role->id])}"><i class="iconfont icon-xiugai"></i></a>
-                                <a data-action="{:url('delete',['ids'=>$role->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                                <a href="{:url('detail',['id'=>$user->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                <a data-action="{:url('delete',['ids'=>$user->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
                             </div>
                         </td>
 
@@ -78,26 +74,35 @@
             </div>
 
             <div class="pageCon">
-                {$roles->render()}
+                {$users->render()}
             </div>
 
             <div class="showQuery hide" id="layerQuery">
-                <form action="{:url('all')}" method="post" id="search-form">
+                <form action="{:url('index')}" method="post" id="search-form">
                     <input type="hidden" name="issearch" value="true">
                     <div class=" backCo_w">
                         <h3 class="queryTitle">查&nbsp;&nbsp;询</h3>
                         <div class="queryCon pafBt_10">
                             <p>
-                                <span>名称：</span>
-                                <input type="text" id="name" name="name" value="{$name?:''}" placeholder="请输入查询名称" />
+                                <span>姓名：</span>
+                                <input type="text" id="name" name="name" value="{$name?:''}" placeholder="请输入查询姓名" />
                             </p>
                             <p>
-                                <span>类型：</span>
-                                <select name="type" id="type">
+                                <span>用户名：</span>
+                                <input type="text" id="username" name="username" value="{$username?:''}" placeholder="请输入查询用户名" />
+                            </p>
+                            <p>
+                                <span>部门：</span>
+                                <select name="dept_id" id="dept_id" class="chosen" data-placeholder="请选择部门" data-no_results_text="没有匹配数据">
                                     <option value="">--全部--</option>
-                                    {volist name="model->is_admin" id="value"}
-                                    <option value="{$key}" {if condition="isset($type) and $type eq $key"}selected{/if}>{$value}</option>
-                                    {/volist}
+                                    {$depts}
+                                </select>
+                            </p>
+                            <p>
+                                <span>角色：</span>
+                                <select name="role_id" id="role_id" class="chosen" data-placeholder="请选择角色" data-no_results_text="没有匹配数据">
+                                    <option value="">--全部--</option>
+                                    {$roles}
                                 </select>
                             </p>
                             <p>
@@ -129,7 +134,7 @@
                                 <span>排序：</span>
                                 <select name="ordername" id="ordername">
                                     <option value="id">--默认--</option>
-                                    <option value="level" {if condition="isset($ordername) and $ordername eq 'level'"}selected{/if}>--层级--</option>
+                                    <option value="login_at" {if condition="isset($ordername) and $ordername eq 'login_at'"}selected{/if}>--登录时间--</option>
                                     <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
                                     <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
                                     <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>

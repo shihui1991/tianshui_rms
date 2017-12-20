@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                <p>
+                    <span>所在部门：</span>
+                    <input type="text" readonly value="{$infos->dept_name}">
+                </p>
+                <p>
+                    <span>用户角色：</span>
+                    <input type="text" readonly value="{$infos->role_name}">
+                </p>
+                <p>
+                    <span>用户名：<i>* </i></span>
+                    <input id="username" type="text" name="username" value="{$infos->username}" required placeholder="请输入登录用户名"/>
+                </p>
+                <p onclick="location.href='{:url('password',['id'=>$infos->id])}';">
+                    <span>修改密码</span>
+                    <a href="{:url('password',['id'=>$infos->id])}">
+                        <i class="iconfont icon-icon fc_70 float_r f20"></i>
+                    </a>
+                </p>
+                <p>
+                    <span>姓名：</span>
+                    <input id="name" type="text" name="name" value="{$infos->name}" placeholder="输入姓名"/>
+                </p>
+                <p>
+                    <span>电话：</span>
+                    <input id="phone" type="text" name="phone" value="{$infos->phone}" placeholder="输入联系电话"/>
+                </p>
+                <p>
+                    <span>办公电话：</span>
+                    <input id="office_phone" type="text" name="office_phone" value="{$infos->office_phone}" placeholder="输入办公电话"/>
+                </p>
+                <p>
+                    <span>邮箱：</span>
+                    <input id="email" type="email" name="email" value="{$infos->email?:''}" placeholder="输入联系邮箱"/>
+                </p>
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <p>电子签名</p>
+                    <ul class="hxt_ul add_tu">
+                        {if condition="isset($infos) and $infos->signature"}
+                        <li>
+                            <img src="{$infos->signature}" class="w_100 h_100" onclick="bigerimg(this)">
+                            <span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span>
+                            <input type="hidden" name="signature" value="{$infos->signature}"/>
+                        </li>
+                        {/if}
+                        <li class="btn-upload" data-type="image" data-hidename="signature">
+                            <a>+</a>
+                        </li>
+                    </ul>
+
+                </div>
+                <hr>
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <p>个性说明：</p>
+                    <textarea class="flex" id="infos" name="infos">{$infos->infos?:''}</textarea>
+                </div>
+                <p style="height: auto;line-height: inherit;">
+                    最近登录时间： {if condition="$infos->getData('login_at')"}{$infos->login_at}{/if}<br/>
+                    最近登录IP：{$infos->login_ip}<br/>
+                </p>
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+
+</script>
+
+</body>
+</html>
