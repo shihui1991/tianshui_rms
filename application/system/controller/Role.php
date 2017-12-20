@@ -261,7 +261,18 @@ class Role extends Auth
                 $menu->checked=(in_array($menu->id,$infos->menu_ids) || $infos->getData('is_admin'))?'checked':'';
                 $array[]=$menu;
             }
-            $str = "
+            if(request()->isMobile()){
+                $str = "
+                        <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id'>
+                            <td style='text-align: left;'>
+                            <label>
+                             <input id='id-\$id' data-id='\$id' data-parent-id='\$parent_id' class='va_m priv_detail' data-role='check' type='checkbox' name='menuids[]' value='\$id' \$checked/>
+                            \$icon \$name</label>
+                            </td>
+                        </tr>
+                        ";
+            }else{
+                $str = "
                         <tr data-tt-id='\$id' data-tt-parent-id='\$parent_id'>
                             <td>
                                 <input id='id-\$id' data-id='\$id' data-parent-id='\$parent_id' onclick='checkBoxOp(this)' class='va_m priv_detail' type='checkbox' name='menuids[]' value='\$id' \$checked/>
@@ -271,6 +282,8 @@ class Role extends Auth
                             </td>
                         </tr>
                         ";
+            }
+
             $tree_menus=get_tree($array,$str,0,1,['&nbsp;&nbsp;┃&nbsp;','&nbsp;&nbsp;┣┅','&nbsp;&nbsp;┗┅'],'&nbsp;&nbsp;');
         }
         return view($this->theme.'/role/modify',[
