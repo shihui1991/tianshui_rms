@@ -50,18 +50,18 @@
                             <th>操作</th>
                         </tr>
 
-                        {volist name="banks" id="bank"}
+                        {volist name="layouts" id="layout"}
                         <tr>
-                            <td id="tdp1" style="text-align: left;"><label><input type='checkbox' data-role="check"  name="ids[]" value="{$bank->id}"/>&nbsp;</label></td>
-                            <td>{$bank->id}</td>
-                            <td>{if condition="$bank->deleted_at"} <del>{$bank->name}</del>{else /}{$bank->name}{/if}</td>
-                            <td>{if condition="$bank->deleted_at"} <del>{$bank->status}</del>{else /}{$bank->status}{/if}</td>
+                            <td id="tdp1" style="text-align: left;"><label><input type='checkbox' data-role="check"  name="ids[]" value="{$layout->id}"/>&nbsp;</label></td>
+                            <td>{$layout->id}</td>
+                            <td>{if condition="$layout->deleted_at"} <del>{$layout->name}</del>{else /}{$layout->name}{/if}</td>
+                            <td>{if condition="$layout->deleted_at"} <del>{$layout->status}</del>{else /}{$layout->status}{/if}</td>
                             <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
                                 <div class="hide">
                                     <img src="__STATIC__/sysmobile/img/sanjiao.png" />
-                                    <a href="{:url('add',['id'=>$bank->id])}"><i class="iconfont icon-iconjia"></i></a>
-                                    <a href="{:url('detail',['id'=>$bank->id])}"><i class="iconfont icon-xiugai"></i></a>
-                                    <a data-action="{:url('delete',['ids'=>$bank->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                                    <a href="{:url('add',['id'=>$layout->id])}"><i class="iconfont icon-iconjia"></i></a>
+                                    <a href="{:url('detail',['id'=>$layout->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                    <a data-action="{:url('delete',['ids'=>$layout->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
                                 </div>
                             </td>
 
@@ -73,7 +73,7 @@
             </div>
 
             <div class="pageCon">
-                {$banks->render()}
+                {$layouts->render()}
             </div>
 
             <div class="showQuery hide" id="layerQuery">
@@ -84,7 +84,7 @@
                         <div class="queryCon pafBt_10">
                             <p>
                                 <span>名称：</span>
-                                <input type="text" id="name" name="name" value="{$name?:''}" placeholder="请输入常用银行名称" />
+                                <input type="text" id="name" name="name" value="{$name?:''}" placeholder="请输入房屋户型名称" />
                             </p>
                             <p>
                                 <span>状态：</span>
@@ -159,7 +159,7 @@
         }
     });
 
-    $('.pagibank').find('a').on('click',function () {
+    $('.pagilayout').find('a').on('click',function () {
         $('#search-form').attr('action',$(this).attr('href')).submit();
         return false;
     });
