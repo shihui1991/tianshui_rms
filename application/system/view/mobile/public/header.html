@@ -9,6 +9,6 @@
 </div>
 <div class="gerenList">
     <a href="{:url('User/info')}" class="on">个人中心</a>
-    <a href="{:url('User/password')}">修改密码</a>
+    <a href="{:url('User/password',['id'=>session('userinfo.user_id')])}">修改密码</a>
     <a href="{:url('Index/logout')}">退出登录</a>
 </div>

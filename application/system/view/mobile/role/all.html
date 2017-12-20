@@ -53,10 +53,14 @@
 
                     {volist name="roles" id="role"}
                     <tr>
-                        <td id="tdp1" style="text-align: left;"><label><input type='checkbox' data-role="check"  name="ids[]" value="{$role->id}"/>&nbsp;{$role->name}</label></td>
+                        <td id="tdp1" style="text-align: left;">
+                            <label><input type='checkbox' data-role="check"  name="ids[]" value="{$role->id}"/>&nbsp;
+                                {if condition="$role->deleted_at"}<del>{$role->name}</del>{else/}{$role->name}{/if}
+                            </label>
+                        </td>
                         <td>{$role->id}</td>
-                        <td>{$role->is_admin}</td>
-                        <td>{$role->status}</td>
+                        <td>{if condition="$role->deleted_at"}<del>{$role->is_admin}</del>{else/}{$role->is_admin}{/if}</td>
+                        <td>{if condition="$role->deleted_at"}已删除{else/}{$role->status}{/if}</td>
                         <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
                             <div class="hide">
                                 <img src="__STATIC__/sysmobile/img/sanjiao.png" />

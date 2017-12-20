@@ -48,7 +48,7 @@
                                 <td class="imgCon" colspan="7">
                                     {if condition="isset($infos) and $infos->l_pic"}
                                     <div class="img">
-                                        <img src="{$infos->l_pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                        <img src="{$infos->l_pic}" class="w_100 h_100" onclick="bigerimg(this)">
                                         <p><span onclick="picremove(this);">删除</span></p>
                                         <input type="hidden" name="layout_pic_id" value="{$infos->layout_pic_id}"/>
                                     </div>
@@ -173,7 +173,7 @@
                                     {volist name="pics" id="pic" key="k"}
                                     {if condition="$pic"}
                                     <div class="img">
-                                        <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                        <img src="{$pic}" class="w_100 h_100" onclick="bigerimg(this)">
                                         <p><span onclick="picremove(this);">删除</span></p>
                                         <input type="hidden" name="picture[{$name}][]" value="{$pic}">
                                     </div>
@@ -242,7 +242,7 @@
                                 imgs +='<input class="va_m" type="radio" name="layout-picture" value="'+info.id+'" data-pic="'+info.picture+'" id="pic-'+info.id+'" style="display: inline-block;">' +
                                     '<label for="pic-'+info.id+'" style="display: inline-block"><div class="img">' +
                                     '<img title="'+info.l_name+'('+info.remark+')" src="'+info.picture+'" class="w_100 h_100" id="'+info.l_name+'-'+info.id+'"/>' +
-                                    '<p><span onclick="bigimg(document.getElementById(\''+info.l_name+'-'+info.id+'\'))">点击放大</span></p></div></label>'
+                                    '<p><span onclick="bigerimg(document.getElementById(\''+info.l_name+'-'+info.id+'\'))">点击放大</span></p></div></label>'
                             });
                             var dom=$('#view-layout-pic-box');
                             dom.find('td.imgCon').html(imgs);
@@ -280,7 +280,7 @@
         }else{
             layer.close(layer_index);
             var view_pic=$('#view-layout-pic');
-            var img='<div class="img"><img src="'+layout_pic+'" class="w_100 h_100" onclick="bigimg(this)">\n' +
+            var img='<div class="img"><img src="'+layout_pic+'" class="w_100 h_100" onclick="bigerimg(this)">\n' +
                 '<p><span onclick="picremove(this);">删除</span></p>\n' +
                 '<input type="hidden" name="layout_pic_id" value="'+layout_pic_id+'"/></div>';
 

@@ -94,7 +94,7 @@ function layerIfWindow(tit,url){
 }
 
 //图片放大
-function bigimg(obj){
+function bigerimg(obj){
     var width,
         height,
         imgsrc=obj.src,

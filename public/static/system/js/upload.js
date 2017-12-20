@@ -17,7 +17,7 @@ KindEditor.ready(function(K) {
             editor_uploads.loadPlugin('image', function() {
                 editor_uploads.plugin.imageDialog({
                     clickFn : function(url, title, width, height, border, align) {
-                        preview ='<div class="img"><img title="'+title+'" src="'+url+'" class="w_100 h_100" onclick="bigimg(this)"><p><span onclick="picremove(this);">删除</span></p>';
+                        preview ='<div class="img"><img title="'+title+'" src="'+url+'" class="w_100 h_100" onclick="bigerimg(this)"><p><span onclick="picremove(this);">删除</span></p>';
                         preview +='<input type="hidden" name="'+hidename+'" value="'+url+'"/></div>';
 
                         btn.siblings().remove();
@@ -33,7 +33,7 @@ KindEditor.ready(function(K) {
                 editor_uploads.plugin.multiImageDialog({
                     clickFn : function(urlList) {
                         K.each(urlList, function(i, data) {
-                            preview ='<div class="img"><img src="'+data.url+'" class="w_100 h_100" onclick="bigimg(this)"><p><span onclick="picremove(this);">删除</span></p>';
+                            preview ='<div class="img"><img src="'+data.url+'" class="w_100 h_100" onclick="bigerimg(this)"><p><span onclick="picremove(this);">删除</span></p>';
                             preview +='<input type="hidden" name="'+hidename+'" value="'+data.url+'"/></div>';
                             btn.before(preview);
                         });
