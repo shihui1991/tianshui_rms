@@ -29,9 +29,9 @@
             <!--按钮组合-->
             <div class=" anniu backCo_w padLR12 ov maT10">
                 <a href="{:url('index')}" class="refresh">树形列表</a>
-                <a href="{:url('all')}" class="refresh">刷新</a>
-                <a id="showQuery">查询</a>
-                <a href="{:url('add')}">添加</a>
+                <a href="{:url('all')}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                <a id="showQuery"><i class="iconfont icon-search"></i>&nbsp;查询</a>
+                <a href="{:url('add')}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">启用</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">禁用</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}" >删除</a>
@@ -53,7 +53,7 @@
 
                     {volist name="depts" id="dept"}
                     <tr>
-                        <td id="tdp1" style="text-align: left;">
+                        <td class="tdp1" style="text-align: left;">
                             <label><input type='checkbox' data-role="check"  name="ids[]" value="{$dept->id}"/>&nbsp;
                                 {if condition="$dept->deleted_at"}<del>{$dept->name}</del>{else/}{$dept->name}{/if}
                             </label>

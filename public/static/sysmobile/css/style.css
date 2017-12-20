@@ -203,6 +203,12 @@ a {
 .align_cen {
 	text-align: center;
 }
+.align_left {
+	text-align: left;
+}
+.align_right {
+	text-align: right;
+}
 
 .back {
 	width: 40px !important;

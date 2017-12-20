@@ -28,9 +28,9 @@
         <div class="w_100">
             <!--按钮组合-->
             <div class=" anniu backCo_w padLR12 ov maT10">
-                <a href="{:url('index')}" class="refresh">刷新</a>
-                <a id="showQuery">查询</a>
-                <a href="{:url('add')}">添加</a>
+                <a href="{:url('index')}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                <a id="showQuery"><i class="iconfont icon-search"></i>&nbsp;查询</a>
+                <a href="{:url('add')}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">启用</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">禁用</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}" >删除</a>
@@ -43,7 +43,7 @@
                 <table id="example-advanced" class="table treetable w_100" border="0" >
                     <tbody>
                     <tr class="noSelect">
-                        <th style="text-align: left;"><input type="checkbox" data-role="checkall"/></th>
+                        <th ><input type="checkbox" data-role="checkall"/></th>
                         <th>ID</th>
                         <th>角色</th>
                         <th>用户名</th>
@@ -53,7 +53,7 @@
 
                     {volist name="users" id="user"}
                     <tr>
-                        <td id="tdp1" style="text-align: left;"><label><input type='checkbox' data-role="check"  name="ids[]" value="{$user->id}"/></label></td>
+                        <td class="tdp1" ><label><input type='checkbox' data-role="check"  name="ids[]" value="{$user->id}"/></label></td>
                         <td>{$user->id}</td>
                         <td>{if condition="$user->deleted_at"}<del>{$user->role_name}</del>{else/}{$user->role_name}{/if}</td>
                         <td>{if condition="$user->deleted_at"}<del>{$user->username}</del>{else/}{$user->username}{/if}</td>
@@ -61,7 +61,6 @@
                         <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
                             <div class="hide">
                                 <img src="__STATIC__/sysmobile/img/sanjiao.png" />
-                                <a href="{:url('add',['id'=>$user->id])}"><i class="iconfont icon-iconjia"></i></a>
                                 <a href="{:url('detail',['id'=>$user->id])}"><i class="iconfont icon-xiugai"></i></a>
                                 <a data-action="{:url('delete',['ids'=>$user->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
                             </div>
