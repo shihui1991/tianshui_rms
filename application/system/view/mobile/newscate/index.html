@@ -43,23 +43,19 @@
                     <table id="example-advanced" class="table treetable w_100" border="0" >
                         <tbody>
                         <tr class="noSelect">
-                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
+                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> </th>
                             <th>ID</th>
-                            <th>公司</th>
-                            <th>类型</th>
+                            <th>名称</th>
+                            <th>状态</th>
                             <th>操作</th>
                         </tr>
 
-                        {volist name="companys" id="info"}
+                        {volist name="newscates" id="info"}
                         <tr>
-                            <td class="more">
-                                <input type='checkbox' data-role="check"  name="ids[]" value="{$info->id}"/>
-                                &nbsp;
-                                <i class="iconfont icon-gongyongshuangjiantouxia"></i>
-                            </td>
+                            <td id="tdp1" style="text-align: left;"><label><input type='checkbox' data-role="check"  name="ids[]" value="{$info->id}"/>&nbsp;</label></td>
                             <td>{$info->id}</td>
                             <td>{if condition="$info->deleted_at"} <del>{$info->name}</del>{else /}{$info->name}{/if}</td>
-                            <td>{if condition="$info->deleted_at"} <del>{$info->type}</del>{else /}{$info->type}{/if}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->status}</del>{else /}{$info->status}{/if}</td>
                             <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
                                 <div class="hide">
                                     <img src="__STATIC__/sysmobile/img/sanjiao.png" />
@@ -68,24 +64,7 @@
                                     <a data-action="{:url('delete',['ids'=>$info->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
                                 </div>
                             </td>
-                        </tr>
-                        <tr class="hide_more hide">
-                            <td colspan="6" style="padding: 0 !important;">
-                                <div class="table_more w_100 backCo_f21">
-                                    <div class="flex w_100">
-                                        <div class="w_30 align_right">联系人：</div><div class="align_left">{$info->contact_man}</div>
-                                    </div>
-                                    <div class="flex w_100">
-                                        <div class="w_30 align_right">联系电话：</div><div class="align_left">{$info->contact_phone}</div>
-                                    </div>
-                                    <div class="flex w_100">
-                                        <div class="w_30 align_right">登录名：</div><div class="align_left">{$info->username}</div>
-                                    </div>
-                                    <div class="flex w_100">
-                                        <div class="w_30 align_right">状态：</div><div class="align_left">{$info->status}</div>
-                                    </div>
-                                </div>
-                            </td>
+
                         </tr>
                         {/volist}
                         </tbody>
@@ -94,7 +73,7 @@
             </div>
 
             <div class="pageCon">
-                {$companys->render()}
+                {$newscates->render()}
             </div>
 
             <div class="showQuery hide" id="layerQuery">
@@ -105,19 +84,7 @@
                         <div class="queryCon pafBt_10">
                             <p>
                                 <span>名称：</span>
-                                <input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入评估公司名称"/>
-                            </p>
-                            <p>
-                                <span>类型：</span>
-                                <select name="type" id="type">
-                                    <option value="">--全部--</option>
-                                    <option value="0" {if condition="isset($type) and $type eq 0"}selected{/if}>房产评估机构</option>
-                                    <option value="1" {if condition="isset($type) and $type eq 1"}selected{/if}>资产评估机构</option>
-                                </select>
-                            </p>
-                            <p>
-                                <span>登录名：</span>
-                                <input type="text" name="username" id="username" value="{$username?:''}" placeholder="请输入登录名"/>
+                                <input type="text" id="name" name="name" value="{$name?:''}" placeholder="请输入新闻公告分类名称" />
                             </p>
                             <p>
                                 <span>状态：</span>

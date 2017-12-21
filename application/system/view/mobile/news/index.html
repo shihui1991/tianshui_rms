@@ -45,12 +45,13 @@
                         <tr class="noSelect">
                             <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
                             <th>ID</th>
-                            <th>公司</th>
-                            <th>类型</th>
+                            <th>名称</th>
+                            <th>分类</th>
+                            <th>发布时间</th>
                             <th>操作</th>
                         </tr>
 
-                        {volist name="companys" id="info"}
+                        {volist name="newss" id="info"}
                         <tr>
                             <td class="more">
                                 <input type='checkbox' data-role="check"  name="ids[]" value="{$info->id}"/>
@@ -59,7 +60,8 @@
                             </td>
                             <td>{$info->id}</td>
                             <td>{if condition="$info->deleted_at"} <del>{$info->name}</del>{else /}{$info->name}{/if}</td>
-                            <td>{if condition="$info->deleted_at"} <del>{$info->type}</del>{else /}{$info->type}{/if}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->c_name}</del>{else /}{$info->c_name}{/if}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->release_at}</del>{else /}{$info->release_at}{/if}</td>
                             <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
                                 <div class="hide">
                                     <img src="__STATIC__/sysmobile/img/sanjiao.png" />
@@ -73,13 +75,19 @@
                             <td colspan="6" style="padding: 0 !important;">
                                 <div class="table_more w_100 backCo_f21">
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">联系人：</div><div class="align_left">{$info->contact_man}</div>
+                                        <div class="w_30 align_right">项目：</div><div class="align_left">{$info->i_name}</div>
                                     </div>
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">联系电话：</div><div class="align_left">{$info->contact_phone}</div>
+                                        <div class="w_30 align_right">关键词：</div><div class="align_left">{$info->keywords}</div>
                                     </div>
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">登录名：</div><div class="align_left">{$info->username}</div>
+                                        <div class="w_30 align_right">衔接名称：</div><div class="align_left">{$info->url_name}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">衔接：</div><div class="align_left">{$info->url}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">置顶：</div><div class="align_left">{$info->is_top}</div>
                                     </div>
                                     <div class="flex w_100">
                                         <div class="w_30 align_right">状态：</div><div class="align_left">{$info->status}</div>
@@ -94,7 +102,7 @@
             </div>
 
             <div class="pageCon">
-                {$companys->render()}
+                {$newss->render()}
             </div>
 
             <div class="showQuery hide" id="layerQuery">
@@ -104,20 +112,42 @@
                         <h3 class="queryTitle">查&nbsp;&nbsp;询</h3>
                         <div class="queryCon pafBt_10">
                             <p>
-                                <span>名称：</span>
-                                <input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入评估公司名称"/>
-                            </p>
-                            <p>
-                                <span>类型：</span>
-                                <select name="type" id="type">
+                                <span>项目：</span>
+                                <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
                                     <option value="">--全部--</option>
-                                    <option value="0" {if condition="isset($type) and $type eq 0"}selected{/if}>房产评估机构</option>
-                                    <option value="1" {if condition="isset($type) and $type eq 1"}selected{/if}>资产评估机构</option>
+                                    {volist name="items" id="item"}
+                                    <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if}>{$item->name}</option>
+                                    {/volist}
                                 </select>
                             </p>
                             <p>
-                                <span>登录名：</span>
-                                <input type="text" name="username" id="username" value="{$username?:''}" placeholder="请输入登录名"/>
+                                <span>分类：</span>
+                                <select name="cate_id" id="cate_id" class="chosen" data-placeholder="请选择分类" data-no_results_text="没有匹配数据">
+                                    <option value="">--全部--</option>
+                                    {volist name="newscates" id="cate"}
+                                    <option value="{$cate->id}" {if condition="isset($cate_id) and $cate_id eq $cate->id"}selected{/if}>{$cate->name}</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>名称：</span>
+                                <input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入新闻公告名称"/>
+                            </p>
+                            <p>
+                                <span>关键词：</span>
+                                <input type="text" name="keywords" id="keywords" value="{$keywords?:''}" placeholder="请输入新闻公告关键词"/>
+                            </p>
+                            <p>
+                                <span>链接：</span>
+                                <input type="text" name="url" id="url" value="{$url?:''}" placeholder="请输入新闻链接地址"/>
+                            </p>
+                            <p>
+                                <span>置顶：</span>
+                                <select name="is_top" id="is_top">
+                                    <option value="">--全部--</option>
+                                    <option value="1" {if condition="isset($is_top) and $is_top eq 1"}selected{/if}>--置顶--</option>
+                                    <option value="0" {if condition="isset($is_top) and $is_top eq 0"}selected{/if}>--非置顶--</option>
+                                </select>
                             </p>
                             <p>
                                 <span>状态：</span>

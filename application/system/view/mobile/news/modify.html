@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <p class="padLR12 btnp maT10">
+                <span class="on">基本信息</span>
+                <span>相关图片</span>
+                <span>新闻内容</span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class=" add_menu maT20">
+                    <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                    <p class="padLR12">
+                        <span>项目：</span>
+                        <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                            <option value="">--请选择项目--</option>
+                            {volist name="items" id="item"}
+                            <option value="{$item->id}" {if condition="isset($infos) and $infos->item_id eq $item->id"}selected{/if}>{$item->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>分类：</span>
+                        <select name="cate_id" id="cate_id" class="chosen" data-placeholder="请选择分类" data-no_results_text="没有匹配数据">
+                            <option value="">--请选择分类--</option>
+                            {volist name="newscates" id="cate"}
+                            <option value="{$cate->id}" {if condition="isset($infos) and $infos->cate_id eq $cate->id"}selected{/if}>{$cate->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>名称：</span>
+                        <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入唯一名称"/>
+                    </p>
+                    <p class="padLR12">
+                        <span>发布时间：</span>
+                        <input id="release_at" type="text" name="release_at" value="{:isset($infos)?$infos->release_at:''}" class="laydate-icon" placeholder="输入发布时间"/>
+                    </p>
+                    <div class="w_100 backCo_f2 add_menu_textarea">
+                        <p>关键词：</p>
+                        <textarea class="flex" id="keywords" name="keywords">{$infos->keywords?:''}</textarea>
+                    </div>
+                    <p class="padLR12">
+                        <span>链接：</span>
+                        <input id="url" type="text" name="url" value="{:isset($infos)?$infos->url:''}" placeholder="输入新闻链接"/>
+                    </p>
+                    <p class="padLR12">
+                        <span>链接名称：</span>
+                        <input id="url_name" type="text" name="url_name" value="{:isset($infos)?$infos->url_name:''}" placeholder="输入链接名称" min="1"/>
+                    </p>
+                    <p class="padLR12">
+                        <span>显示排序：</span>
+                        <input id="sort" type="number" name="sort" value="{:isset($infos)?$infos->sort:''}"/>
+                    </p>
+                    <p class="padLR12">
+                        <span>置顶：</span>
+                        <select name="is_top" id="is_top">
+                            {volist name="model->is_top" id="is_top"}
+                            <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->is_top eq $is_top)"} selected{/if} >{$is_top}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>状态：</span>
+                        <select name="status" id="status">
+                            {volist name="model->status" id="value"}
+                            <option value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $value)"} selected{/if} >{$value}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <div class="w_100 backCo_f2 add_menu_textarea">
+                        <p>摘要：</p>
+                        <textarea class="flex" id="infos" name="infos">{$infos->keywords?:''}</textarea>
+                    </div>
+                    {if condition="isset($infos)"}
+                    <p style="height: auto;line-height: inherit;">
+                        创建于：{$infos->created_at}<br/>
+                        更新于：{$infos->updated_at}<br/>
+                        {if condition="isset($infos) and $infos->deleted_at"}
+                        删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                        {/if}
+                    </p>
+                    {/if}
+                </div>
+
+                <div class="padLR12 add_menu maT20" style="display: none;">
+                    <div class="w_100 backCo_f2 add_menu_textarea">
+                        <p>封面：</p>
+                        <ul class="hxt_ul add_tu">
+                            {if condition="isset($infos) and $infos->title_page"}
+                            <li>
+                                <img src="{$infos->title_page}" class="w_100 h_100" onclick="bigerimg(this)">
+                                <span>
+                                    <span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span>
+                                </span>
+                                <input type="hidden" name="title_page" value="{$infos->title_page}"/>
+                            </li>
+                            {/if}
+                            <li class="btn-upload" data-type="image" data-hidename="title_page">
+                                <a>+</a>
+                            </li>
+                        </ul>
+
+                    </div>
+
+                    <p class="add-cate-box">
+                        <span>其他分类：</span>
+                        <input type="text" placeholder="请输入类型名称" name="cate_name"/>
+                    </p>
+                    <div class="Btnform align_cen bor_none maT10 add-cate">
+                        <span class="submit button addrow">点击添加分类</span>
+                    </div>
+
+
+                    <table class="w_100  dong_table">
+                        <tbody id="picture-table">
+                        <tr>
+                            <td colspan="2" style="border: none;height: 15px;background: white;"></td>
+                        </tr>
+                        {if condition="isset($infos) and $infos->picture"}
+                        {volist name="$infos->picture" id="pics"}
+                        {php}$name=$key;{/php}
+                        <tr>
+                            <td style="border-bottom: 1px solid black">
+                                <p>{$name}</p>
+                                <span class="dele_row" onclick='picremove(this);'>删除</span>
+                            </td>
+                            <td style="border-bottom: 1px solid black">
+                                <ul class="hxt_ul add_tu">
+                                    {volist name="pics" id="pic" key="k"}
+                                    {if condition="$pic"}
+                                    <li>
+                                        <img src="{$pic}" class="w_100 h_100" onclick="bigerimg(this)">
+                                        <span><span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span></span>
+                                        <input type="hidden" name="picture[{$name}][]" value="{$pic}">
+                                    </li>
+                                    {/if}
+                                    {/volist}
+                                    <li class="btn-upload" data-type="multiimage" data-hidename="picture[{$name}][]">
+                                        <input type="file" multiple onchange="multiimageupl(this)">
+                                        <a>+</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        {/volist}
+                        {/if}
+
+                        </tbody>
+                    </table>
+                    <table style="display: none">
+                        <tbody >
+                        <tr id="img_tpl">
+                            <td style="border-bottom: 1px solid black">
+                                <p class="cate-name"></p>
+                                <span class="dele_row" onclick='picremove(this);'>删除</span>
+                            </td>
+                            <td style="border-bottom: 1px solid black">
+                                <ul class="hxt_ul add_tu">
+                                    <li class="btn-upload" data-type="multiimage" data-hidename="">
+                                        <input type="file" multiple  onchange="multiimageupl(this)">
+                                        <a>+</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="padLR12 add_menu maT20" style="display: none;overflow: scroll;">
+                    <div id="textBox">
+                        <textarea name="content" id="content" class="kindeditor">{:isset($infos)?$infos->content:''}</textarea>
+                    </div>
+                </div>
+            </div>
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+            <!--弹出层-->
+
+        </form>
+    </div>
+</div>
+<script>
+    $(function () {
+        /*----- 获取密钥 -----*/
+        $("#getkey").click(function () {
+            var obj=$(this).data('obj');
+            $.ajax({
+                url:"{:url('Tools/getguid')}",
+                dataType:'json',
+                type:'get',
+                success:function (resp) {
+                    if(resp.code){
+                        $(obj).val(resp.data);
+                    }else{
+                        layer.open({
+                            content:'获取失败'
+                            ,skin: 'msg'
+                            ,time:1.5
+                        });
+                    }
+                },
+                error:function () {
+                    layer.open({
+                        content:'获取失败'
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+            });
+        });
+        /*----- 添加分类 -----*/
+        $('.add-cate').on('click',function () {
+            var add_cate_box=$(this).siblings('.add-cate-box'),
+                cate_name=add_cate_box.find('input[name="cate_name"]:first').val().replace(/\s+/g, '');
+            if(cate_name.length){
+                add_cate_box.find('input[name="cate_name"]:first').val('');
+                var img_tpl=$('#img_tpl').clone(true).attr('id','');
+                img_tpl.find('.cate-name').text(cate_name);
+                img_tpl.find('.btn-upload').data('hidename','picture['+cate_name+'][]');
+                $('#picture-table').append(img_tpl);
+            }else{
+                layer.open({
+                    content:'请输入分类名称'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    });
+
+
+    /*----- 富文本编辑器 -----*/
+    KindEditor.ready(function(K) {
+        window.editor = K.create('.kindeditor',{
+            width : '100%',
+            minHeight:'300',
+            uploadJson : upload_url,
+            fileManagerJson : filemanager_url,
+            allowFileManager : true,
+            items:['source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '/',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink', '|', 'about'],
+            afterBlur:function () {
+                editor.sync();
+            },
+            autoHeightMode : true,
+            afterCreate : function() {
+                this.loadPlugin('autoheight');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
