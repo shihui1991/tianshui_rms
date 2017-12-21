@@ -28,11 +28,9 @@
         <div class="w_100">
             <!--按钮组合-->
             <div class=" anniu backCo_w padLR12 ov maT10">
-                <a href="{:url('index')}" class="refresh">刷新</a>
-                <a id="showQuery">查询</a>
-                <a href="{:url('add')}">添加</a>
-                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'1'))}">启用</a>
-                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('status',array('status'=>'0'))}">禁用</a>
+                <a href="{:url('index')}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                <a id="showQuery"><i class="iconfont icon-search"></i>&nbsp;查询</a>
+                <a href="{:url('add')}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}" >删除</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore')}">恢复</a>
                 <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy')}" data-notice="确定要彻底删除吗？">销毁</a>
@@ -113,16 +111,30 @@
                         <h3 class="queryTitle">查&nbsp;&nbsp;询</h3>
                         <div class="queryCon pafBt_10">
                             <p>
-                                <span>名称：</span>
-                                <input type="text" id="name" name="name" value="{$name?:''}" placeholder="请输入建筑使用性质名称" />
+                                <span>项目：</span>
+                                <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                                    <option value="">--全部--</option>
+                                    {volist name="item_list" id="item"}
+                                    <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if}>{$item->name}（{$item->id}）</option>
+                                    {/volist}
+                                </select>
                             </p>
                             <p>
-                                <span>状态：</span>
-                                <select name="status" id="status">
+                                <span>资金款项：</span>
+                                <select name="name_id" id="name_id" class="chosen" data-placeholder="请选择资金款项" data-no_results_text="没有匹配数据">
                                     <option value="">--全部--</option>
-                                    <option value="1" {if condition="isset($status) and $status eq 1"}selected{/if}>--启用--</option>
-                                    <option value="0" {if condition="isset($status) and $status eq 0"}selected{/if}>--禁用--</option>
+                                    {volist name="fundsnames" id="fundsname"}
+                                    <option value="{$fundsname->id}" {if condition="isset($name_id) and $name_id eq $fundsname->id"}selected{/if}>{$fundsname->name}（{$fundsname->id}）</option>
+                                    {/volist}
                                 </select>
+                            </p>
+                            <p>
+                                <span><label for="voucher">凭证号：</label></span>
+                                <input type="text" name="voucher" id="voucher" value="{:isset($voucher)?$voucher:''}" placeholder="请输入凭证号">
+                            </p>
+                            <p>
+                                <span><label for="entry_at">缴纳时间：</label></span>
+                                <input type="text" class="laydate-icon" name="entry_at" id="entry_at" value="{:isset($entry_at)?$entry_at:''}" placeholder="请输入缴纳时间">
                             </p>
                             <p>
                                 <span>是否删除：</span>

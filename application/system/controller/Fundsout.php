@@ -155,6 +155,7 @@ class Fundsout extends Auth
         }
         $field=['f.*','i.name as item_name','n.name as names','c.name as holder_names','p.collection_holder_id as collection_holder_ids'];
         $fundsout_info=model('Fundsouts')
+            ->withTrashed()
             ->alias('f')
             ->field($field)
             ->join('item i', 'i.id=f.item_id', 'left')

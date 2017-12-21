@@ -152,6 +152,7 @@ class Houseresettle extends Auth
             return $this->error('至少选择一项');
         }
         $houseresettle_info = model('Houseresettles')
+            ->withTrashed()
             ->alias('hs')
             ->field(['hs.*','i.name as item_name','ch.name as ch_name','ch.holder',
                 'h.community_id as house_community_id','h.id as h_id','h.building','h.unit',

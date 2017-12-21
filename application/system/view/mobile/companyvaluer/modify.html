@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                <p>
+                    <span>公司：</span>
+                    <select name="company_id" id="company_id" class="chosen" data-placeholder="请选择评估公司" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择评估公司--</option>
+                        {volist name="companys" id="company"}
+                        <option value="{$company->id}" {if condition="isset($infos) and $infos->company_id eq $company->id"}selected{/if}>{$company->name}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <p>
+                    <span>注册号：<i>* </i></span>
+                    <input id="register_num" class="must" type="text" name="register_num" value="{:isset($infos)?$infos->register_num:''}" required placeholder="输入评估师注册号"/>
+                </p>
+                <p>
+                    <span>有效期：<i>* </i></span>
+                    <input id="valid_at" class="laydate-icon" type="text" name="valid_at" value="{:isset($infos)?$infos->valid_at:''}" placeholder="输入有效期"/>
+                </p>
+                <p>
+                    <span>姓名：<i>* </i></span>
+                    <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入姓名"/>
+                </p>
+                <p>
+                    <span>电话：<i>* </i></span>
+                    <input id="phone" type="text" name="phone" value="{:isset($infos)?$infos->phone:''}" placeholder="输入联系电话"/>
+                </p>
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <p>描述：</p>
+                    <textarea class="flex" id="infos" name="infos">{$infos->infos?:''}</textarea>
+                </div>
+                <p>
+                    <span>状态：</span>
+                    <select name="status" id="status">
+                        {volist name="model->status" id="value"}
+                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('status') eq $key"}selected{/if}>{$value}</option>
+                        {/volist}
+                    </select>
+                </p>
+                {if condition="isset($infos)"}
+                <p style="height: auto;line-height: inherit;">
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </p>
+                {/if}
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+</body>
+</html>

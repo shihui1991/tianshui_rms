@@ -233,6 +233,7 @@ class Risk extends Auth
             'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id','ch.name as holder_name','chr.name as recommemd_holder_name'];
 
         $risk_info = model('Risks')
+            ->withTrashed()
             ->alias('ass')
             ->field($field)
             ->join('item i', 'i.id=ass.item_id', 'left')
