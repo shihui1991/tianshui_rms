@@ -88,7 +88,7 @@ class Housetransit extends Auth
             }
             /*+++++ 数据对比 +++++*/
             $pay_info = model('Pays')->field(['transit_way','community_id','collection_id'])->where('id',$datas['pay_id'])->where('item_id',$datas['item_id'])->find();
-            if(empty($pay_info->getData('transit_way'))&&$pay_info->getData('transit_way')!=0){
+            if(!strlen($pay_info->getData('compensate_way'))){
                 return $this->error('兑付数据不存在');
             }
             $house_info = model('Itemhouses')

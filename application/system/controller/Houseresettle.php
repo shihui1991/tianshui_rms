@@ -93,7 +93,7 @@ class Houseresettle extends Auth
                 ->where('id',$datas['pay_id'])
                 ->where('item_id',$datas['item_id'])
                 ->find();
-            if(empty($pay_info->getData('compensate_way'))&&$pay_info->getData('compensate_way')!=0){
+            if(!strlen($pay_info->getData('compensate_way'))){
                 return $this->error('兑付数据不存在');
             }
             $start_at = strtotime(input('start_at'));
