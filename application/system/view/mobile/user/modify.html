@@ -79,7 +79,7 @@
                         {if condition="isset($infos) and $infos->signature"}
                         <li>
                             <img src="{$infos->signature}" class="w_100 h_100" onclick="bigerimg(this)">
-                            <span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span>
+                            <span><span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span></span>
                             <input type="hidden" name="signature" value="{$infos->signature}"/>
                         </li>
                         {/if}
