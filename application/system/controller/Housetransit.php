@@ -49,7 +49,7 @@ class Housetransit extends Auth
         $housetransit_list = model('Housetransits')
             ->alias('hs')
             ->field(['hs.*','i.name as item_name','cc.name as pq_name', 'c.building as c_building',
-                'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number','p.transit_way as p_transit_way',
+                'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number',
                 'h.community_id','hc.address','hc.name as hc_name',
                 'h.building','h.unit','h.floor','h.number','h.layout_id','h.area','h.status as house_status','h.is_real','h.is_buy',
                 'h.is_transit','h.is_public','l.name as l_name'])
@@ -88,7 +88,7 @@ class Housetransit extends Auth
             }
             /*+++++ 数据对比 +++++*/
             $pay_info = model('Pays')->field(['transit_way','community_id','collection_id'])->where('id',$datas['pay_id'])->where('item_id',$datas['item_id'])->find();
-            if(empty($pay_info->getData('transit_way'))&&$pay_info->getData('transit_way')!=0){
+            if(!strlen($pay_info->getData('transit_way'))){
                 return $this->error('兑付数据不存在');
             }
             $house_info = model('Itemhouses')

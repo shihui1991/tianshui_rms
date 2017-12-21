@@ -124,7 +124,7 @@
             </tr>
         </table>
         <div class="layerBtns">
-            <button class="btn" type="button" id="btn-form-search">查询</button>
+            <button class="btn" type="button" id="btn-form-search" onclick="layer.closeAll();">查询</button>
         </div>
     </form>
 </div>
@@ -146,7 +146,7 @@
                 var tr_obj='';
                 if(resp.code){
                     $.each(resp.data,function (index,info) {
-                        tr_obj +='<tr>';
+                        tr_obj +='<tr class="h50">';
                         tr_obj +='<td style="text-align: center;background: none;"><input class="va_m" type="checkbox" name="ids[]"  value="'+info.id+'" onclick="checkBoxOp(this)"> </td>';
                         tr_obj +='<td style="text-align: left;background: none;">'+info.id+'</td>';
                         tr_obj +='<td style="text-align: left;background: none;" title="'+info.address+'">'+info.c_name+'</td>';
