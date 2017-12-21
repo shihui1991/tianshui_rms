@@ -20,10 +20,6 @@
                             <img src="__STATIC__/system/img/arrow_refresh.png"/>
                             重置</a>
                     </li>
-                    <li class="fgf" onclick="layerPage('查询',$('#search'),'700','250')" >
-                        <img src="__STATIC__/system/img/page_white_magnify.png"/>
-                        查询
-                    </li>
                     <li class="fgf" onclick="layerIfWindow('添加房源价格','{:url('add',['house_id'=>$house_id])}','500','350')">
                         <img src="__STATIC__/system/img/add.png"/>
                         添加
@@ -114,21 +110,6 @@
 </div>
 
 
-<!-- 查询 -->
-<div id="search" class="layerCon bg_f hide">
-    <form action="{:url('index')}" method="post" id="search-form">
-        <table class="layerTable">
-            <tr class="h50">
-
-            </tr>
-
-        </table>
-        <div class="layerBtns">
-            <button class="btn" type="submit">查询</button>
-        </div>
-    </form>
-</div>
-
 <script>
 
     $(function () {
@@ -137,10 +118,6 @@
             $('#check-'+id).attr('checked',true);
         }) ;
 
-        $('.pageCon').find('a').on('click',function () {
-            $('#search-form').attr('action',$(this).attr('href')).submit();
-            return false;
-        });
     });
 
 </script>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor" /}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                <p>
+                    <span>小区：</span>
+                    <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择小区" data-no_results_text="没有匹配数据">
+                        <option value="">--选择小区--</option>
+                        {volist name="communitys" id="community"}
+                        <option value="{$community->id}" {if condition="isset($infos) and $infos->community_id eq $community->id"}selected{/if}>{$community->name}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <p>
+                    <span>户型：</span>
+                    <select name="layout_id" id="layout_id" class="chosen" data-placeholder="请选择户型" data-no_results_text="没有匹配数据">
+                        <option value="">--选择户型--</option>
+                        {volist name="layouts" id="layout"}
+                        <option value="{$layout->id}" {if condition="isset($infos) and $infos->layout_id eq $layout->id"}selected{/if}>{$layout->name}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <p>
+                    <span>标记：<i>* </i></span>
+                    <input id="remark" type="text" name="remark" value="{$infos->remark?:''}" required placeholder="输入唯一户型标记"/>
+                </p>
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <p>户型图</p>
+                    <ul class="hxt_ul add_tu">
+                        {if condition="isset($infos) and $infos->picture"}
+                        <li>
+                            <img src="{$infos->picture}" class="w_100 h_100" onclick="bigerimg(this)">
+                            <span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span>
+                            <input type="hidden" name="picture" value="{$infos->picture}"/>
+                        </li>
+                        {/if}
+                        <li class="btn-upload" data-type="image" data-hidename="picture">
+                            <a>+</a>
+                        </li>
+                    </ul>
+
+                </div>
+                <hr>
+
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <p>描述：</p>
+                    <textarea class="flex" id="infos" name="infos">{$infos->infos?:''}</textarea>
+                </div>
+                <p>
+                    <span>状态：</span>
+                    <select name="status" id="status">
+                        {volist name="model->status" id="value"}
+                        <option value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->status eq $value)"} selected{/if} >{$value}</option>
+                        {/volist}
+                    </select>
+                </p>
+                {if condition="isset($infos)"}
+                <p style="height: auto;line-height: inherit;">
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </p>
+                {/if}
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+
+</script>
+
+</body>
+</html>
