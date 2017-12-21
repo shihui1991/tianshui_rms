@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                <p>
+                    <span>名称：<i>* </i></span>
+                    <input id="name" type="text" name="name" value="{$infos->name?:''}" required placeholder="输入名称"/>
+                </p>
+                <p>
+                    <span>数据来源：</span>
+                    <select name="num_from" id="num_from">
+                        <option value="">--选择数据来源--</option>
+                        {volist name="model->num_from" id="value"}
+                        <option value="{$key}" {if condition="isset($infos) and $infos->getData('num_from') eq $key"}selected{/if}>{$value}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <p>
+                    <span>数量单位：<i>* </i></span>
+                    <input id="unit" type="text" name="unit" value="{$infos->unit?:''}" required placeholder="输入数量单位"/>
+                </p>
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <p>说明：</p>
+                    <textarea class="flex" id="infos" name="infos">{$infos->infos?:''}</textarea>
+                </div>
+                {if condition="isset($infos)"}
+                <p style="height: auto;line-height: inherit;">
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </p>
+                {/if}
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+
+</script>
+
+</body>
+</html>
