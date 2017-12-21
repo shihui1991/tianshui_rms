@@ -50,7 +50,7 @@ $(function() {
 		$(".showQuery,.forSearch").slideUp(300);
 	});
 
-	$(document).bind("click", function(e) {
+	$(document).on("click", function(e) {
 		//id为menu的是菜单，id为open的是打开菜单的按钮
 		if($(e.target).closest(".shezhi").length == 0) {
 			//点击id为menu之外且id不是不是open，则触发
@@ -89,10 +89,7 @@ $(function() {
             $(".xiaMore>i").addClass("icon-shuangjiantouxiangshang").removeClass("icon-gongyongshuangjiantouxia");
             $(".xiaMore>em").text("收起");
         }
-    })
-});
-
-$(function() {
+    });
 
 	//动态添加行
 	$("#add_rowName").focus(function() {
@@ -130,34 +127,24 @@ $(function() {
 		$(this).addClass("on_p").siblings().removeClass("on_p");
 		$(".jbxx_con").css("display", "none");
 		$(".spwj_con").css("display", "block");
-	})
+	});
+
+
+    $("[las]").click(function() {
+        $("[lasy=" + $(this).attr("las") + "]").stop().slideDown();
+    });
+
+    $(".btnp").find('span').on('click',function(){
+        $(this).addClass("on").siblings("span").removeClass("on");
+        $(".tabDiv>div").eq($(this).index()).css("display", "block").siblings("div").css("display", "none")
+    });
+
+    $(".toolBar").click(function() {
+        $(".toolCon").stop().slideToggle(300);
+    });
+    $(".toolCon p").click(function() {
+        $(this).addClass("on").siblings("p").removeClass("on");
+    });
 });
 
-function deleRow(w) {
-	var parent = document.getElementById('dong_table');
-
-	var prveTr = w.parentNode.parentNode.previousSibling;
-	parent.removeChild(prveTr);
-	parent.removeChild(w.parentNode.parentNode);
-}
-
-function delepic(w) {
-	w.parentNode.parentNode.removeChild(w.parentNode);
-}
-
-$("[las]").click(function() {
-	$("[lasy=" + $(this).attr("las") + "]").stop().slideDown();
-});
-
-$(".btnp").find('span').on('click',function() {
-    $(this).addClass("on").siblings("span").removeClass("on");
-    $(".tabDiv>div").eq($(this).index()).css("display", "block").siblings("div").css("display", "none")
-});
-
-$(".toolBar").click(function() {
-	$(".toolCon").stop().slideToggle(300);
-});
-$(".toolCon p").click(function() {
-	$(this).addClass("on").siblings("p").removeClass("on");
-});
 
