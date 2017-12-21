@@ -164,6 +164,7 @@ class Housetransit extends Auth
             return $this->error('至少选择一项');
         }
         $housetransit_info = model('Housetransits')
+            ->withTrashed()
             ->alias('hs')
             ->field(['hs.*','i.name as item_name'])
             ->join('item i', 'i.id=hs.item_id', 'left')

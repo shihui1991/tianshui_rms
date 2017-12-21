@@ -48,7 +48,7 @@
                             <th>操作</th>
                         </tr>
 
-                        {volist name="fundsin_list" id="info"}
+                        {volist name="fundsout_list" id="info"}
                         <tr>
                             <td class="more">
                                 <input type='checkbox' data-role="check"  name="ids[]" value="{$info->id}"/>
@@ -77,19 +77,19 @@
                                         <div class="w_30 align_right">凭证号：</div><div class="align_left">{$info->voucher}</div>
                                     </div>
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">缴纳时间：</div><div class="align_left">{$info->entry_at}</div>
+                                        <div class="w_30 align_right">支付时间：</div><div class="align_left">{$info->outlay_at}</div>
                                     </div>
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">缴纳人：</div><div class="align_left">{$info->payer}</div>
+                                        <div class="w_30 align_right">接收人：</div><div class="align_left">{$info->payee}</div>
                                     </div>
                                     <div class="flex w_100">
                                         <div class="w_30 align_right">金额：</div><div class="align_left">{$info->amount}</div>
                                     </div>
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">支付银行：</div><div class="align_left">{$info->bank}</div>
+                                        <div class="w_30 align_right">接收银行：</div><div class="align_left">{$info->bank}</div>
                                     </div>
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">支付账号：</div><div class="align_left">{$info->account}</div>
+                                        <div class="w_30 align_right">接收账号：</div><div class="align_left">{$info->account}</div>
                                     </div>
                                 </div>
                             </td>
@@ -101,7 +101,7 @@
             </div>
 
             <div class="pageCon">
-                {$fundsin_list->render()}
+                {$fundsout_list->render()}
             </div>
 
             <div class="showQuery hide" id="layerQuery">
@@ -133,8 +133,8 @@
                                 <input type="text" name="voucher" id="voucher" value="{:isset($voucher)?$voucher:''}" placeholder="请输入凭证号">
                             </p>
                             <p>
-                                <span><label for="entry_at">缴纳时间：</label></span>
-                                <input type="text" class="laydate-icon" name="entry_at" id="entry_at" value="{:isset($entry_at)?$entry_at:''}" placeholder="请输入缴纳时间">
+                                <span><label for="outlay_at">支付时间：</label></span>
+                                <input type="text" class="laydate-icon" name="outlay_at" id="outlay_at" value="{:isset($outlay_at)?$outlay_at:''}" placeholder="请输入支付时间">
                             </p>
                             <p>
                                 <span>是否删除：</span>
