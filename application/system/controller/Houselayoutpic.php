@@ -77,6 +77,8 @@ class Houselayoutpic extends Auth
         /* ++++++++++ 是否删除 ++++++++++ */
         $deleted=input('deleted');
         $houselayoutpic_model=new Houselayoutpics();
+        $datas['model']=$houselayoutpic_model;
+
         if(is_numeric($deleted) && in_array($deleted,[0,1])){
             $datas['deleted']=$deleted;
             if($deleted==1){

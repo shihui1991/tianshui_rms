@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                <p>
+                    <span>项目：<i>* </i></span>
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择项目--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}">{$item->name}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <p spanc="" id="showQuery"><span spanc="">查询房源</span></p>
+                <table id="example-advanced" class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect" id="thead-houselist">
+                        <th><input type="checkbox" data-role="checkall"/>&nbsp;更多</th>
+                        <th>ID</th>
+                        <th>小区</th>
+                        <th>房源</th>
+                        <th>面积</th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+
+
+        <div class="showQuery hide" id="layerQuery">
+            <form action="{:url('Tools/findhouse')}" method="post" id="form-search" onsubmit="return false;">
+                <input type="hidden" name="issearch" value="true">
+                <div class=" backCo_w">
+                    <h3 class="queryTitle">查&nbsp;&nbsp;询</h3>
+                    <div class="queryCon pafBt_10">
+                        <p>
+                            <span>小区：</span>
+                            <select name="community_ids[]" id="community_ids" class="chosen" multiple data-placeholder="请选择小区" data-no_results_text="没有匹配数据">
+                                {volist name="communitys" id="community"}
+                                <option value="{$community->id}">{$community->name}</option>
+                                {/volist}
+                            </select>
+                        </p>
+                        <p>
+                            <span>户型：</span>
+                            <select name="layout_ids[]" id="layout_ids" class="chosen" multiple data-placeholder="请选择户型" data-no_results_text="没有匹配数据">
+                                {volist name="layouts" id="layout"}
+                                <option value="{$layout->id}" >{$layout->name}</option>
+                                {/volist}
+                            </select>
+                        </p>
+                        <p>
+                            <span>面积起：</span>
+                            <input type="number" name="area_start" id="area_start" value="">
+                        </p>
+                        <p>
+                            <span>面积止：</span>
+                            <input type="number" name="area_end" id="area_end" value="">
+                        </p>
+                    </div>
+                    <!--提交按钮-->
+                    <p class="Btnform align_cen bor_none maT20">
+                        <span class="submit button maR17 close" id="btn-form-search">查询</span>
+                        <span class="reset close button maL17">取消</span>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    /* ===== 查询房源 =====*/
+    $('#btn-form-search').click(function () {
+        var form=$('#form-search');
+        var thead=$('#thead-houselist');
+
+        thead.siblings().remove();
+        $.ajax({
+            url:form.attr('action'),
+            data:form.serialize(),
+            dataType:'json',
+            type:'post',
+            success:function (resp) {
+                var tr_obj='';
+                if(resp.code){
+                    $.each(resp.data,function (index,info) {
+                        tr_obj +='<tr>' +
+                            '    <td class="more">' +
+                            '        <input type=\'checkbox\' data-role="check"  name="ids[]" value="'+info.id+'"/>' +
+                            '        &nbsp;' +
+                            '        <i class="iconfont icon-gongyongshuangjiantouxia"></i>' +
+                            '    </td>' +
+                            '    <td>'+info.id+'</td>' +
+                            '    <td>'+info.c_name+'</td>' +
+                            '    <td>' +
+                            '        '+(info.building?(info.building+'栋'):'')+
+                            '        '+(info.unit?(info.unit+'单元'):'')+
+                            '        '+(info.floor?(info.floor+'楼'):'') +
+                            '        '+(info.number?(info.number+'号'):'')+
+                            '    </td>' +
+                            '    <td>' +info.area+ '</td>' +
+                            '</tr>' +
+                            '<tr class="hide_more hide">' +
+                            '    <td colspan="5" style="padding: 0 !important;">' +
+                            '        <div class="table_more w_100 backCo_f21">' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">地址：</div><div class="align_left">'+info.address+'</div>' +
+                            '            </div>' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">户型：</div><div class="align_left">'+info.l_name+'</div>' +
+                            '            </div>' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">有无电梯：</div><div class="align_left">'+info.has_lift+'</div>' +
+                            '            </div>' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">交付时间：</div><div class="align_left">'+info.deliver_at+'</div>' +
+                            '            </div>' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">类型：</div><div class="align_left">'+info.is_real+'|'+info.is_buy+'|'+info.is_transit+'|'+info.is_public+'</div>' +
+                            '            </div>' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">状态：</div><div class="align_left">'+info.status+'</div>' +
+                            '            </div>' +
+                            '        </div>' +
+                            '    </td>' +
+                            '</tr>';
+                    });
+                }else{
+                    layer.open({
+                        content:resp.msg
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+                thead.after(tr_obj);
+            },
+            error:function () {
+                layer.open({
+                    content:'网络出错，稍候重试！'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    });
+
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+
+</script>
+
+</body>
+</html>
