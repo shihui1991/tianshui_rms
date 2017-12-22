@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name|default=''}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    <style type="text/css">
+        .queryCon>:last-child {
+            height: 52px;
+        }
+
+        .queryCon {
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100">
+
+        {include file="mobile/public/breadnav"/}
+
+        <div class="w_100">
+            <!--按钮组合-->
+            <div class=" anniu backCo_w padLR12 ov maT10">
+                <a href="{:url('index')}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                <a id="showQuery"><i class="iconfont icon-search"></i>&nbsp;查询</a>
+                <a href="{:url('add')}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete')}" >删除</a>
+                <span class="xiaMore"><em>更多</em><i class=" xiaMore iconfont icon-gongyongshuangjiantouxia"></i> </span>
+            </div>
+            <div class="w_100">
+                <form action="{:url('index')}" method="post" id="js-ajax-form">
+                <table id="example-advanced" class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect">
+                        <th><input type="checkbox" data-role="checkall"/>&nbsp;更多</th>
+                        <th>ID</th>
+                        <th>安置时间</th>
+                        <th>被征收人</th>
+                        <th>房源</th>
+                        <th>操作</th>
+                    </tr>
+
+                    {volist name="houseresettle_list" id="info"}
+                    <tr>
+                        <td class="more">
+                            <input type='checkbox' data-role="check"  name="ids[]" value="{$info->id}"/>
+                            &nbsp;
+                            <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                        </td>
+                        <td>{$info->id}</td>
+                        <td>{$info->start_at}</td>
+                        <td>{$info->ch_name}</td>
+                        <td>
+                        {$info->hc_name}
+                        {if condition="$info->building"}{$info->building}栋{/if}
+                        {if condition="$info->unit"}{$info->unit}单元{/if}
+                        {if condition="$info->floor"}{$info->floor}楼{/if}
+                        {if condition="$info->number"}{$info->number}号{/if}
+                        </td>
+                        <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
+                            <div class="hide">
+                                <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                <a href="{:url('detail',['id'=>$info->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                <a data-action="{:url('destroy',['ids'=>$info->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hide_more hide">
+                        <td colspan="6" style="padding: 0 !important;">
+                            <div class="table_more w_100 backCo_f21">
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">项目：</div><div class="align_left">{$info->item_name}</div>
+                                </div>
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">户型：</div><div class="align_left">{$info->l_name}</div>
+                                </div>
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">面积：</div><div class="align_left">{$info->area}</div>
+                                </div>
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">结束时间：</div><div class="align_left">{$info->end_at?:'安置中'}</div>
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+                </form>
+            </div>
+
+            <div class="pageCon">
+                {$houseresettle_list->render()}
+            </div>
+
+            <div class="showQuery hide" id="layerQuery">
+                <form action="{:url('index')}" method="post" id="search-form">
+                    <input type="hidden" name="issearch" value="true">
+                    <div class=" backCo_w">
+                        <h3 class="queryTitle">查&nbsp;&nbsp;询</h3>
+                        <div class="queryCon pafBt_10">
+                            <p>
+                                <span>项目：</span>
+                                <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                                    <option value="">--全部--</option>
+                                    {volist name="items" id="item"}
+                                    <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if}>{$item->name}</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>每页条数：</span>
+                                <select name="display_num" id="display_num">
+                                    {volist name="nums" id="num"}
+                                    <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>排序：</span>
+                                <select name="ordername" id="ordername">
+                                    <option value="id">--默认--</option>
+                                    <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                                    <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                                    <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
+                                </select>
+                            </p>
+                            <p>
+                                <span>方式：</span>
+                                <select name="orderby" id="orderby">
+                                    <option value="asc">--升序--</option>
+                                    <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                                </select>
+                            </p>
+                        </div>
+                        <!--提交按钮-->
+                        <p class="Btnform align_cen bor_none maT20">
+                            <button class="submit button maR17" type="submit">查询</button>
+                            <span class="reset close button maL17">取消</span>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+
+    $('.pagination').find('a').on('click',function () {
+        $('#search-form').attr('action',$(this).attr('href')).submit();
+        return false;
+    });
+
+</script>
+
+</body>
+</html>

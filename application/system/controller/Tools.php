@@ -718,13 +718,11 @@ class Tools extends Base
 
     /* ========== 查询安置房源 ========== */
     public function sear_house(){
-        $pay_id = input('pay_id');
         $pay_holder_id = input('pay_holder_id');
         if(!$pay_holder_id){
             return $this->error('请选择被征收人');
         }
         /* ++++++++++ 安置房选择 ++++++++++ */
-        $where['pyh.pay_id']=$pay_id;
         $where['pyh.pay_holder_id']=$pay_holder_id;
         $where['h.status']=0;
         $house_list=model('Payholderhouses')
@@ -976,7 +974,11 @@ class Tools extends Base
 
         /* ++++++++++ 项目 ++++++++++ */
         $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('请先选择项目');
+        }
         $where['p.item_id']=$item_id;
+        $where['p.compensate_way']=1;
         $datas['item_id']=$item_id;
         /* ++++++++++ 片区 ++++++++++ */
         $community_id=input('community_id');
@@ -1031,18 +1033,23 @@ class Tools extends Base
 
         $datas['pays']=$pays;
 
-        /* ++++++++++ 项目 ++++++++++ */
-        $items=model('Items')->field(['id','name','status','is_top'])->where(['status'=>1])->order('is_top desc')->select();
-        $datas['items']=$items;
-        /* ++++++++++ 片区 ++++++++++ */
-        $collectioncommunitys=model('Collectioncommunitys')->field(['id','address','name'])->select();
-        $datas['collectioncommunitys']=$collectioncommunitys;
-        /* ++++++++++ 权属 ++++++++++ */
-        $collections=model('Collections')->field(['id','building','unit','floor','number','status'])->where('status',1)->select();
-        $datas['collections']=$collections;
+        if(request()->isAjax()){
+            return $this->success('请求成功','',$pays);
+        }else{
+            /* ++++++++++ 项目 ++++++++++ */
+            $items=model('Items')->field(['id','name','status','is_top'])->where(['status'=>1])->order('is_top desc')->select();
+            $datas['items']=$items;
+            /* ++++++++++ 片区 ++++++++++ */
+            $collectioncommunitys=model('Collectioncommunitys')->field(['id','address','name'])->select();
+            $datas['collectioncommunitys']=$collectioncommunitys;
+            /* ++++++++++ 权属 ++++++++++ */
+            $collections=model('Collections')->field(['id','building','unit','floor','number','status'])->where('status',1)->select();
+            $datas['collections']=$collections;
 
-        $this->assign($datas);
+            $this->assign($datas);
 
-        return view($this->theme.'/houseresettle/search_pay');
+            return view($this->theme.'/houseresettle/search_pay');
+        }
+
     }
 }

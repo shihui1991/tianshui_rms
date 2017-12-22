@@ -52,43 +52,38 @@
                     </select>
                 </p>
                 <p>
-                    <span>开始时间：<i>* </i></span>
-                    <input type="text" class="laydate-icon" name="start_at" id="start_at" value="" placeholder="请输入开始时间">
-                </p>
-                <p>
-                    <span>预计结束时间：<i>* </i></span>
-                    <input type="text" class="laydate-icon" name="exp_end" id="exp_end" value="" placeholder="请输入预计结束时间">
+                    <span>安置时间：<i>* </i></span>
+                    <input type="text" class="laydate-icon" name="start_at" id="start_at" value="" placeholder="请输入安置时间">
                 </p>
                 <p>
                     <span>结束时间：</span>
                     <input type="text" class="laydate-icon" name="end_at" id="end_at" value="" placeholder="请输入结束时间">
                 </p>
 
-                <p spanc="" id="choose-pay"><span spanc="">选择过渡户</span></p>
+                <p spanc="" id="choose-pay"><span spanc="">选择被征户</span></p>
                 <table class="table treetable w_100" border="0" >
                     <tbody>
                     <tr class="noSelect" id="thead-pay">
                         <th>更多</th>
                         <th>ID</th>
                         <th>片区</th>
-                        <th>过渡户</th>
+                        <th>被征户</th>
                         <th>性质</th>
                     </tr>
                     </tbody>
                 </table>
 
-                <p spanc="" id="choose-house"><span spanc="" style="width: auto;">选择临时安置房</span></p>
-                <table class="table treetable w_100" border="0" >
-                    <tbody>
-                    <tr class="noSelect" id="thead-house">
-                        <th>更多</th>
-                        <th>ID</th>
-                        <th>小区</th>
-                        <th>房源</th>
-                        <th>面积</th>
-                    </tr>
-                    </tbody>
-                </table>
+                <p>
+                    <span>被征收人：<i>* </i></span>
+                    <select name="pay_holder_id" id="pay_holder_id" >
+                    </select>
+                    <input type="hidden" name="collection_holder_id" id="collection_holder_id">
+                </p>
+                <p>
+                    <span>安置房：<i>* </i></span>
+                    <select name="house_id" id="house_id" >
+                    </select>
+                </p>
             </div>
 
             <!--提交按钮-->
@@ -114,7 +109,7 @@
                     <th>更多</th>
                     <th>ID</th>
                     <th>片区</th>
-                    <th>过渡户</th>
+                    <th>被征户</th>
                     <th>性质</th>
                 </tr>
                 </tbody>
@@ -127,7 +122,7 @@
 
     </div>
     <div class="showQuery hide showQuery-pay" style="z-index: 9999;">
-        <form action={:url('Tools/housetransit_search_pay')}" method="get" >
+        <form action={:url('Tools/houseresettle_search_pay')}" method="get" >
             <input type="hidden" name="issearch" value="true">
             <div class=" backCo_w" data-form="pay">
                 <p class="queryTitle">查&nbsp;&nbsp;询</p>
@@ -167,75 +162,6 @@
     </div>
 </div>
 
-<div class="hide" id="house-box">
-    <div class="w_100">
-        <!--按钮组合-->
-        <div class=" anniu backCo_w padLR12 ov maT10">
-            <b id="showQuery-house" class="modal-search btna"><i class="iconfont icon-search"></i>&nbsp;查询</b>
-            <b id="reset-house" class="modal-reset btna"><i class="iconfont icon-shuaxin1"></i>&nbsp;重置</b>
-        </div>
-        <div class="w_100">
-            <table class="table w_100" border="0">
-                <tbody>
-                <tr class="noSelect house-table">
-                    <th>更多</th>
-                    <th>ID</th>
-                    <th>小区</th>
-                    <th>房号</th>
-                    <th>面积</th>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="pageCon page-house">
-
-        </div>
-
-    </div>
-    <div class="showQuery hide showQuery-house" id="layerQuery" style="z-index: 9999;">
-        <form action={:url('Tools/housetransit_search_house')}" method="get" id="search-form">
-            <input type="hidden" name="issearch" value="true">
-            <div class=" backCo_w">
-                <p class="queryTitle">查&nbsp;&nbsp;询</p>
-                <div class="queryCon pafBt_10" data-form="house">
-                    <p>
-                        <span>小区：</span>
-                        <select name="community_ids_c[]" id="c_name" class="chosen" data-placeholder="请选择小区" data-no_results_text="没有匹配数据">
-                            <option value="">--全部--</option>
-                            {volist name="communitys" id="community"}
-                            <option value="{$community->id}" >{$community->name}</option>
-                            {/volist}
-                        </select>
-                    </p>
-                    <p>
-                        <span>户型：</span>
-                        <select name="layout_id" id="layout_id" class="chosen" data-placeholder="请选择户型" data-no_results_text="没有匹配数据">
-                            <option value="">--全部--</option>
-                            {volist name="layouts" id="layout"}
-                            <option value="{$layout->id}" >{$layout->name}</option>
-                            {/volist}
-                        </select>
-                    </p>
-                    <p>
-                        <span>面积起：</span>
-                        <input type="number" name="area_start" id="area_start" value="{$area_start?:''}">
-                    </p>
-                    <p>
-                        <span>面积止：</span>
-                        <input type="number" name="area_end" id="area_end" value="{$area_end?:''}">
-                    </p>
-                </div>
-                <!--提交按钮-->
-                <p class="Btnform align_cen bor_none maT20">
-                    <span class="submit button maR17 search-submit">查询</span>
-                    <span class="reset close button maL17">取消</span>
-                </p>
-            </div>
-        </form>
-    </div>
-</div>
-
 <script>
 
     $(document).on('click',".modal-search",function() {
@@ -245,32 +171,66 @@
     }).on('click','.search-submit',function () {
         var box=$(this).parents('div.backCo_w');
         var form=box.data('form');
-        if(form=='house'){
-            var datas={
-                "item_id":$('#item_id').find('option:selected').val()
-                ,"community_ids_c[]":box.find('select[name="community_ids_c[]"]').find('option:selected').val()
-                ,"layout_id":box.find('select[name="layout_id"]').find('option:selected').val()
-                ,"area_start":box.find('input[name="area_start"]').val()
-                ,"area_end":box.find('input[name="area_end"]').val()
-                ,"page":1
-            };
-            searchhouses(datas);
-        }else if(form=='pay'){
+        if(form=='pay'){
             var datas={
                 "item_id":$('#item_id').find('option:selected').val()
                 ,"community_id":box.find('select[name="community_id"]').find('option:selected').val()
                 ,"collection_id":box.find('select[name="collection_id"]').find('option:selected').val()
                 ,"page":1
+                
             };
             searchpays(datas);
         }
         
     }).on('click','.modal-reset',function () {
-        if($(this).attr('id')=='reset-house'){
-            searchhouses({"item_id":$('#item_id').find('option:selected').val()});
-        }else if($(this).attr('id')=='reset-pay'){
+        if($(this).attr('id')=='reset-pay'){
             searchpays({"item_id":$('#item_id').find('option:selected').val()});
         }
+    }).on('change','#pay_holder_id',function () {
+        var pay_holder_id=$(this).find('option:selected').val();
+        $('#collection_holder_id').val($(this).find('option:selected').data('collectionholderid'));
+
+        var options='<option value="">--请先选择被征收人--</option>';
+        if(pay_holder_id){
+            $.ajax({
+                url:"{:url('Tools/sear_house')}",
+                data:{ 'pay_holder_id':pay_holder_id},
+                dataType:'json',
+                type:'post',
+                success:function (resp) {
+                    var  options = '';
+                    if(resp.code){
+                        options += '<option value="">--选择安置房--</option>';
+                        $.each(resp.data,function (index,info) {
+                            var building = info.building?info.building+"栋":'';
+                            var unit = info.unit?info.unit+"单元":'';
+                            var floor = info.floor?info.floor+"楼":'';
+                            var number = info.number?info.number+"号":'';
+                            options += '<option value="'+info.h_id+'">'+info.hc_name+building+unit+floor+number+'【'+info.l_name+'】【'+info.area+'㎡】</option>';
+                        });
+                    }else{
+                        options += '<option value="">--暂无安置房--</option>';
+                        layer.open({
+                            content:resp.msg
+                            ,skin: 'msg'
+                            ,time:1.5
+                        });
+                    }
+
+                    $('#house_id').html(options);
+
+                },
+                error:function () {
+                    layer.open({
+                        content:'网络错误，请重试'
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+
+            });
+        }
+        $('#house_id').html(options);
     });
 
 
@@ -298,12 +258,47 @@
                         tr=tro.prop('outerHTML');
                         tr_hide=tr_hideo.prop('outerHTML');
                         layer.closeAll();
+
+                        $.ajax({
+                            url:"{:url('Tools/sear_holder_name')}",
+                            data:{ 'pay_id':pay_id,'bisoshi':1},
+                            dataType:'json',
+                            type:'get',
+                            success:function (resp) {
+                                $('#pay_holder_id').html('<option value="">--选择被征收人--</option>');
+                                $('#house_id').html('<option value="">--请先选择被征收人--</option>');
+                                if(resp.code){
+                                    var options = '<option value="">--选择被征收人--</option>';
+                                    $.each(resp.data,function (index,info) {
+                                        options += '<option value="'+info.id+'" data-collectionholderid="'+info.collection_holder_id+'">'+info.name+'【'+info.holder+'】</option>';
+                                    });
+                                    $('#pay_holder_id').html(options);
+                                }else{
+                                    var options1 = '<option value="">--暂无被征收人--</option>';
+                                    $('#pay_holder_id').html(options1);
+                                    layer.open({
+                                        content:resp.msg
+                                        ,skin: 'msg'
+                                        ,time:1.5
+                                    });
+                                }
+                            },
+                            error:function () {
+                                layer.open({
+                                    content:'网络错误，请重试'
+                                    ,skin: 'msg'
+                                    ,time:1.5
+                                });
+                            }
+                        });
                     }else{
                         layer.open({
-                            content:'请选择过渡户'
+                            content:'请选择被征户'
                             ,skin: 'msg'
                             ,time:1.5
                         });
+                        $('#pay_holder_id').html('<option value="">--请先选择被征户--</option>');
+                        $('#house_id').html('<option value="">--请先选择被征户--</option>');
                     }
                     $('#thead-pay').siblings().remove();
                     $('#thead-pay').after(tr+tr_hide);
@@ -326,7 +321,7 @@
     });
     function searchpays(datas) {
         $.ajax({
-            url:"{:url('Tools/housetransit_search_pay')}"
+            url:"{:url('Tools/houseresettle_search_pay')}"
             ,data:datas
             ,dataType:'json'
             ,type:'get'
@@ -360,6 +355,9 @@
                                 '            </div>' +
                                 '            <div class="flex w_100">' +
                                 '                <div class="w_30 align_right">补偿方式：</div><div class="align_left">'+info.compensate_way+'</div>' +
+                                '            </div>' +
+                                '            <div class="flex w_100">' +
+                                '                <div class="w_30 align_right">兑付方式：</div><div class="align_left">'+info.pay_way+'</div>' +
                                 '            </div>' +
                                 '            <div class="flex w_100">' +
                                 '                <div class="w_30 align_right">类型：</div><div class="align_left">'+info.type+'</div>' +
@@ -413,153 +411,11 @@
                     ,skin: 'msg'
                     ,time:1.5
                 });
+
             }
         });
     }
-    
 
-    $('#choose-house').on('click',function () {
-        var item_id=$('#item_id').find('option:selected').val();
-        if(item_id){
-            layer.open({
-                type: 1
-                ,content: $('#house-box').html()
-                ,anim: 'up'
-                ,style: 'position:fixed; left:0; top:0; width:100%; height:100%; border: none; -webkit-animation-duration: .5s; animation-duration: .5s;overflow: auto;'
-                ,success:function (layero) {
-                    searchhouses({"item_id":item_id});
-                }
-                ,btn:['确定','返回']
-                ,yes:function (index) {
-                    var house_id=$(document).find('input[name="house"]:checked').val();
-                    var tr='';
-                    var tr_hide='';
-                    if(house_id){
-                        var trobj=$('#tr-house-'+house_id);
-                        var tro=trobj.clone(true);
-                        var tr_hideo=trobj.next();
-                        tro.find('input[type=radio]').attr('name','house_id').attr('checked','checked');
-                        tr=tro.prop('outerHTML');
-                        tr_hide=tr_hideo.prop('outerHTML');
-                        layer.closeAll();
-                    }else{
-                        layer.open({
-                            content:'请选择房源'
-                            ,skin: 'msg'
-                            ,time:1.5
-                        });
-                    }
-                    $('#thead-house').siblings().remove();
-                    $('#thead-house').after(tr+tr_hide);
-                }
-                ,btn1:function (index) {
-                    layer.closeAll();
-                }
-            });
-        }else{
-            layer.open({
-                content:'请先选择项目'
-                ,skin: 'msg'
-                ,time:1.5
-                ,end:function() {
-                    layer.closeAll();
-                }
-            });
-        }
-
-    });
-    function searchhouses(datas) {
-        $.ajax({
-            url:"{:url('Tools/housetransit_search_house')}"
-            ,data:datas
-            ,dataType:'json'
-            ,type:'get'
-            ,async:false
-            ,success:function (resp) {
-                if(resp.code){
-                    var tr_obj='';
-                    if(resp.data.data && resp.data.data.length){
-                        $.each(resp.data.data,function (index,info) {
-                            tr_obj +='<tr id="tr-house-'+info.house_id+'">' +
-                                '    <td class="more">' +
-                                '        <input type="radio" name="house" value="'+info.house_id+'"/>' +
-                                '        &nbsp;' +
-                                '        <i class="iconfont icon-gongyongshuangjiantouxia"></i>' +
-                                '    </td>' +
-                                '    <td>'+info.house_id+'</td>' +
-                                '    <td>'+info.c_name+'</td>' +
-                                '    <td>' +
-                                '        '+(info.building?(info.building+'栋'):'')+
-                                '        '+(info.unit?(info.unit+'单元'):'')+
-                                '        '+(info.floor?(info.floor+'楼'):'') +
-                                '        '+(info.number?(info.number+'号'):'')+
-                                '    </td>' +
-                                '    <td>' +info.area+ '</td>' +
-                                '</tr>' +
-                                '<tr class="hide_more hide">' +
-                                '    <td colspan="5" style="padding: 0 !important;">' +
-                                '        <div class="table_more w_100 backCo_f21">' +
-                                '            <div class="flex w_100">' +
-                                '                <div class="w_30 align_right">地址：</div><div class="align_left">'+info.address+'</div>' +
-                                '            </div>' +
-                                '            <div class="flex w_100">' +
-                                '                <div class="w_30 align_right">户型：</div><div class="align_left">'+info.l_name+'</div>' +
-                                '            </div>' +
-                                '            <div class="flex w_100">' +
-                                '                <div class="w_30 align_right">类型：</div><div class="align_left">'+info.is_real+'|'+info.is_buy+'|'+info.is_public+'</div>' +
-                                '            </div>' +
-                                '        </div>' +
-                                '    </td>' +
-                                '</tr>';
-                        });
-
-
-                        $('.page-house').pagination({
-                            totalData:resp.data.total,
-                            showData:resp.data.per_page,
-                            current:resp.data.current_page,
-                            jump:false,
-                            coping:true,
-                            homePage:'',
-                            endPage:'',
-                            prevContent:'<<',
-                            nextContent:'>>',
-                            callback:function(api){
-                                datas.page=api.getCurrent();
-                                searchhouses(datas);
-                            }
-                        },function(api){
-                            var cur=api.getCurrent();
-                        });
-
-                    }else{
-                        layer.open({
-                            content:'没有数据'
-                            ,skin: 'msg'
-                            ,time:1.5
-                        });
-                        $('.page-house').html('');
-                    }
-                    $('.house-table').siblings().remove();
-                    $('.house-table').after(tr_obj);
-
-                }else{
-                    layer.open({
-                        content:resp.msg
-                        ,skin: 'msg'
-                        ,time:1.5
-                    });
-                }
-            }
-            ,error:function () {
-                layer.open({
-                    content:'网络出错，稍候重试！'
-                    ,skin: 'msg'
-                    ,time:1.5
-                });
-            }
-        });
-    }
 
 </script>
 

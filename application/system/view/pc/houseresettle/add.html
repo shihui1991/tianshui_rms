@@ -50,9 +50,10 @@
             <tr class="h50">
                 <td><label for="pay_holder_id">被征收人：</label></td>
                 <td>
-                    <select name="collection_holder_id" id="pay_holder_id">
+                    <select name="pay_holder_id" id="pay_holder_id">
                         <option value="">--请先选择兑付--</option>
                     </select>
+                    <input type="hidden" name="collection_holder_id" id="collection_holder_id">
                 </td>
             </tr>
             <tr class="h50">
@@ -146,7 +147,7 @@
                             if(resp.code){
                                 var options = '<option value="">--选择被征收人--</option>';
                                 $.each(resp.data,function (index,info) {
-                                    options += '<option value="'+info.ch_id+'">'+info.name+'【'+info.holder+'】</option>';
+                                    options += '<option value="'+info.id+'" data-collectionholderid="'+info.collection_holder_id+'">'+info.name+'【'+info.holder+'】</option>';
                                 });
                                 $('#pay_holder_id').html(options);
                             }else{
@@ -173,6 +174,7 @@
     $("#pay_holder_id").change(function () {
         var _pay_holder_id = $(this).val();
         var _pay_id = $('#pay_id').val();
+        $('#collection_holder_id').val($(this).find('option:selected').data('collectionholderid'));
        $.ajax({
            url:"{:url('Tools/sear_house')}",
            data:{ 'pay_holder_id':_pay_holder_id,'pay_id':_pay_id},
