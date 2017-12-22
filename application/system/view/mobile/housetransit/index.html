@@ -81,7 +81,7 @@
                         </td>
                     </tr>
                     <tr class="hide_more hide">
-                        <td colspan="5" style="padding: 0 !important;">
+                        <td colspan="6" style="padding: 0 !important;">
                             <div class="table_more w_100 backCo_f21">
                                 <div class="flex w_100">
                                     <div class="w_30 align_right">项目：</div><div class="align_left">{$housetransit->item_name}</div>
@@ -90,10 +90,10 @@
                                     <div class="w_30 align_right">过渡户：</div>
                                     <div class="align_left">
                                         {$housetransit->pq_name}
-                                        {if condition="$info->c_building"}{$info->c_building}栋{/if}
-                                        {if condition="$info->c_unit"}{$info->c_unit}单元{/if}
-                                        {if condition="$info->c_floor"}{$info->c_floor}楼{/if}
-                                        {if condition="$info->c_number"}{$info->c_number}号{/if}
+                                        {if condition="$housetransit->c_building"}{$housetransit->c_building}栋{/if}
+                                        {if condition="$housetransit->c_unit"}{$housetransit->c_unit}单元{/if}
+                                        {if condition="$housetransit->c_floor"}{$housetransit->c_floor}楼{/if}
+                                        {if condition="$housetransit->c_number"}{$housetransit->c_number}号{/if}
                                     </div>
                                 </div>
                                 <div class="flex w_100">
@@ -105,11 +105,9 @@
                                 <div class="flex w_100">
                                     <div class="w_30 align_right">预计结束时间：</div><div class="align_left">{$housetransit->exp_end}</div>
                                 </div>
-                                {if condition="$info->getData('end_at')"}
                                 <div class="flex w_100">
-                                    <div class="w_30 align_right">结束时间：</div><div class="align_left">{$housetransit->end_at}</div>
+                                    <div class="w_30 align_right">结束时间：</div><div class="align_left">{$housetransit->end_at?:'过渡中'}</div>
                                 </div>
-                                {/if}
 
                             </div>
                         </td>

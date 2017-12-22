@@ -71,7 +71,7 @@
                         <th>更多</th>
                         <th>ID</th>
                         <th>片区</th>
-                        <th>位置</th>
+                        <th>过渡户</th>
                         <th>性质</th>
                     </tr>
                     </tbody>
@@ -114,7 +114,7 @@
                     <th>更多</th>
                     <th>ID</th>
                     <th>片区</th>
-                    <th>位置</th>
+                    <th>过渡户</th>
                     <th>性质</th>
                 </tr>
                 </tbody>
@@ -281,7 +281,7 @@
                 type: 1
                 ,content: $('#pay-box').html()
                 ,anim: 'up'
-                ,style: 'position:fixed; left:0; top:0; width:100%; height:100%; border: none; -webkit-animation-duration: .5s; animation-duration: .5s;'
+                ,style: 'position:fixed; left:0; top:0; width:100%; height:100%; border: none; -webkit-animation-duration: .5s; animation-duration: .5s;overflow: auto;'
                 ,success:function (layero) {
                     searchpays({"item_id":item_id});
                 }
@@ -425,7 +425,7 @@
                 type: 1
                 ,content: $('#house-box').html()
                 ,anim: 'up'
-                ,style: 'position:fixed; left:0; top:0; width:100%; height:100%; border: none; -webkit-animation-duration: .5s; animation-duration: .5s;'
+                ,style: 'position:fixed; left:0; top:0; width:100%; height:100%; border: none; -webkit-animation-duration: .5s; animation-duration: .5s;overflow: auto;'
                 ,success:function (layero) {
                     searchhouses({"item_id":item_id});
                 }

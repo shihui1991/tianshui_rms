@@ -861,7 +861,7 @@ class Tools extends Base
             ->join('layout l','h.layout_id=l.id','left')
             ->where($where)
             ->order(['item.is_top'=>'desc','item_house.'.$ordername=>$orderby])
-            ->paginate(1);
+            ->paginate($display_num);
 
         $datas['itemhouses']=$itemhouses;
         /* ++++++++++ 小区列表 ++++++++++ */
