@@ -214,7 +214,7 @@ class Housetransit extends Auth
             ['infos'=>$housetransit_info,
                 'pays'=>$pays,
                 'itemhouse'=>$itemhouses,
-                ]);
+            ]);
     }
 
     /* ========== 修改 ========== */
@@ -239,39 +239,22 @@ class Housetransit extends Auth
         $end_at_end = strtotime(date('Y-m-d')." 23:59:59");
         if($end_at<=$end_at_end){
             Db::startTrans();
-            try{
-              $rs = model('Housetransits')->save([
-                    'start_at'=>$datas['start_at'],
-                    'exp_end'=>$datas['exp_end'],
-                    'end_at'=>$datas['end_at'],
-                    ],['id'=>$datas['id']]);
-            $house_id =  model('Housetransits')
-                ->where('id',$datas['id'])
-                ->value('house_id');
-            model('Houses')->save(['status'=>0],['id'=>$house_id]);
-              if(!$rs){
-                  $res = false;
-                  Db::rollback();
-              }else{
-                  $res = true;
-                  Db::commit();
-              }
-            }catch (\Exception $e){
-                $res = false;
-                Db::rollback();
-            }
-        }else{
-            Db::startTrans();
-            try{
+            try {
                 $rs = model('Housetransits')->save([
-                    'start_at'=>$datas['start_at'],
-                    'exp_end'=>$datas['exp_end'],
-                    'end_at'=>$datas['end_at']
-                ],['id'=>$datas['id']]);
-                $house_id =  model('Housetransits')
-                    ->where('id',$datas['id'])
+                    'start_at' => $datas['start_at'],
+                    'exp_end' => $datas['exp_end'],
+                    'end_at' => $datas['end_at'],
+                ], ['id' => $datas['id']]);
+                $house_id = model('Housetransits')
+                    ->where('id', $datas['id'])
                     ->value('house_id');
-                model('Houses')->save(['status'=>1],['id'=>$house_id]);
+
+                if ($datas['end_at']){
+                    model('Houses')->save(['status' => 0], ['id' => $house_id]);
+                }else{
+                    model('Houses')->save(['status' => 1], ['id' => $house_id]);
+                }
+
                 if(!$rs){
                     $res = false;
                     Db::rollback();
@@ -283,6 +266,8 @@ class Housetransit extends Auth
                 $res = false;
                 Db::rollback();
             }
+        }else{
+            return $this->error('结束时间不能晚于今天');
         }
         if($res){
             return $this->success('修改成功','');
@@ -338,7 +323,7 @@ class Housetransit extends Auth
         $houseresettle_list = model('Housetransits')
             ->alias('hs')
             ->field(['i.name as item_name','hc.address','hc.name as hc_name','h.building','h.unit','h.floor','h.number','l.name as l_name','h.area',
-               'hs.start_at','hs.end_at','hs.house_id','ch.name as collection_holder_name','hs.pay_id as hpay_id'])
+                'hs.start_at','hs.end_at','hs.house_id','ch.name as collection_holder_name','hs.pay_id as hpay_id'])
             ->join('item i', 'i.id=hs.item_id', 'left')
             ->join('house h','hs.house_id=h.id','left')
             ->join('house_community hc','h.community_id=hc.id','left')
@@ -369,22 +354,22 @@ class Housetransit extends Auth
                 $floor =  $val[0]->floor?$val[0]->floor.'楼':'';
                 $number = $val[0]->number?$val[0]->number.'号':'';
                 $end_at = $val[0]->end_at?'---'.$val[0]->end_at:'';
-                   $datas_array[$k]['xuhao'] = $i;
-                   $datas_array[$k]['item_name'] = $val[0]->item_name;
-                   $datas_array[$k]['pq_address'] = $val[0]->hc_name.'('.$val[0]->address.')';
-                   $datas_array[$k]['building_num'] = $building.$unit.$floor.$number;
-                   $datas_array[$k]['l_name'] = $val[0]->l_name;
-                   $datas_array[$k]['area'] = $val[0]->area;
-                   $datas_array[$k]['collection_holder_name'.$key] = $val[0]->collection_holder_name;
-                   $datas_array[$k]['start_at'.$key] = $val[0]->start_at.$end_at;
-             }
+                $datas_array[$k]['xuhao'] = $i;
+                $datas_array[$k]['item_name'] = $val[0]->item_name;
+                $datas_array[$k]['pq_address'] = $val[0]->hc_name.'('.$val[0]->address.')';
+                $datas_array[$k]['building_num'] = $building.$unit.$floor.$number;
+                $datas_array[$k]['l_name'] = $val[0]->l_name;
+                $datas_array[$k]['area'] = $val[0]->area;
+                $datas_array[$k]['collection_holder_name'.$key] = $val[0]->collection_holder_name;
+                $datas_array[$k]['start_at'.$key] = $val[0]->start_at.$end_at;
+            }
         }
 
-       /*---------- 过渡次数 ----------*/
+        /*---------- 过渡次数 ----------*/
         $count_data = [];
-      foreach ($datas_array as $k=>$v){
-          $count_data[] = count($v);
-      }
+        foreach ($datas_array as $k=>$v){
+            $count_data[] = count($v);
+        }
         arsort($count_data);
         $count_data = array_values($count_data)[0]-6;
         /*---------- 标题 ----------*/
