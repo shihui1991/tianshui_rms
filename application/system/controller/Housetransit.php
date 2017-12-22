@@ -10,6 +10,8 @@
  * | 销毁
  * */
 namespace app\system\controller;
+use app\system\model\Housecommunitys;
+use app\system\model\Layouts;
 use think\Db;
 
 class Housetransit extends Auth
@@ -152,7 +154,24 @@ class Housetransit extends Auth
         }else{
             /* ++++++++++ 项目列表 ++++++++++ */
             $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
-            $this->assign('items',$items);
+            $datas['items']=$items;
+            if(request()->isMobile()){
+                /* ++++++++++ 小区列表 ++++++++++ */
+                $communitys=Housecommunitys::field(['id','address','name','status'])->where('status',1)->select();
+                $datas['communitys']=$communitys;
+                /* ++++++++++ 户型列表 ++++++++++ */
+                $layouts=Layouts::field(['id','name','status'])->where('status',1)->select();
+                $datas['layouts']=$layouts;
+
+                /* ++++++++++ 片区 ++++++++++ */
+                $collectioncommunitys=model('Collectioncommunitys')->field(['id','address','name'])->select();
+                $datas['collectioncommunitys']=$collectioncommunitys;
+                /* ++++++++++ 权属 ++++++++++ */
+                $collections=model('Collections')->field(['id','building','unit','floor','number','status'])->where('status',1)->where('real_use','<>',3)->select();
+                $datas['collections']=$collections;
+            }
+            $this->assign($datas);
+
             return view($this->theme.'/housetransit/add');
         }
     }

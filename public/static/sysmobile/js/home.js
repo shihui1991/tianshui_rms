@@ -17,7 +17,7 @@ $(function() {
 	$("a").removeClass("ui-link");
 
 	//表个更多内容展示
-	$('table').on('click',".more>i",function() {
+	$(document).on('click',"table .more>i",function() {
 		$(this).parent("td").parent("tr").next("tr").stop().slideToggle(0);
 	});
 	//操作

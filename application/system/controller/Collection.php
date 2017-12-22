@@ -282,7 +282,7 @@ class Collection extends Auth
         /* ++++++++++ 户型 ++++++++++ */
         $layouts=Layouts::field(['id','name','status'])->where('status',1)->select();
 
-        return view($this->theme.'/colleciton/modify',[
+        return view($this->theme.'/collection/modify',[
             'model'=>$model,
             'infos'=>$infos,
             'buildinguses'=>$buildinguses,

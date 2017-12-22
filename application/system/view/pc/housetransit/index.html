@@ -47,11 +47,10 @@
                 <th>项目（ID）</th>
                 <th>兑付片区（ID）</th>
                 <th>兑付位置（ID）</th>
-                <th>过渡方式</th>
                 <th>安置房源（ID）</th>
                 <th>安置户型</th>
                 <th>安置面积</th>
-                <th>安置类型</th>
+                <th>开始时间</th>
                 <th>安置状态</th>
                 <th>操作</th>
             </tr>
@@ -79,7 +78,6 @@
                     {/if}
                     （{$info->collection_id}）
                 </td>
-                <td>{if condition="$info->deleted_at"}<del>{if condition="$info->p_transit_way eq 0"}货币过期{else/}周转房临时安置{/if}</del>{else/}{if condition="$info->p_transit_way eq 0"}货币过期{else/}周转房临时安置{/if}{/if}</td>
                 <td title="{$info->address}">
                     {if condition="$info->getData('house_status') eq 3"}
                     <del>
@@ -100,18 +98,8 @@
                 </td>
                 <td>{if condition="$info->deleted_at"}<del>{$info->l_name}</del>{else/}{$info->l_name}{/if}</td>
                 <td>{if condition="$info->deleted_at"}<del>{$info->area}</del>{else/}{$info->area}{/if}</td>
-                <td>
-                    {if condition="in_array($info->is_real,[0,1]) and $info->is_real eq 0"}期房{else/}现房{/if} |
-                    {if condition="$info->is_buy eq 0"}非购置房{else/}购置房{/if} |
-                    {if condition="$info->is_transit eq 0"}非过渡{else/}可过渡{/if} |
-                    {if condition="$info->is_public eq 0"}专用{else/}共用{/if}
-                </td>
-                <td>
-                    {if condition="$info->house_status eq 0"}闲置{/if}
-                    {if condition="$info->house_status eq 1"}临时安置{/if}
-                    {if condition="$info->house_status eq 2"}安置{/if}
-                    {if condition="$info->house_status eq 3"}失效{/if}
-                </td>
+                <td>{$info->start_at}</td>
+                <td>{if condition="$info->getData('end_at')"}已结束{else/}过渡中{/if}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('房源临时安置信息',	'{:url('detail',['id'=>$info->id])}','1000','650')" >详细信息</button>
                     <button type="button" data-action="{:url('destroy',['ids'=>$info->id])}" class="btn js-ajax-form-btn">销毁</button>
