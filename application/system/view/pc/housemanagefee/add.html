@@ -52,6 +52,7 @@
 </form>
 <div id="search" class="bg_f hide">
     <form action="{:url('Tools/findhouse')}" method="post" id="form-search" onsubmit="return false;">
+        <input type="hidden" name="is_buy" value="1">
         <table class="layerTable">
             <tr class="h50">
                 <td>小区：</td>
@@ -79,46 +80,7 @@
                 <td>面积止：</td>
                 <td><input type="number" name="area_end" id="area_end" value=""></td>
             </tr>
-            <tr class="h50">
-                <td>类型：</td>
-                <td>
-                    <select name="is_real" id="is_real">
-                        <option value="">--全部--</option>
-                        {volist name="model->is_real" id="value"}
-                        <option value="{$key}">{$value}</option>
-                        {/volist}
-                    </select>
-                </td>
-                <td>购买：</td>
-                <td>
-                    <select name="is_buy" id="is_buy">
-                        <option value="">--全部--</option>
-                        {volist name="model->is_buy" id="value"}
-                        <option value="{$key}">{$value}</option>
-                        {/volist}
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
-                <td>过渡：</td>
-                <td>
-                    <select name="is_transit" id="is_transit">
-                        <option value="">--全部--</option>
-                        {volist name="model->is_transit" id="value"}
-                        <option value="{$key}">{$value}</option>
-                        {/volist}
-                    </select>
-                </td>
-                <td>共用：</td>
-                <td>
-                    <select name="is_public" id="is_public">
-                        <option value="">--全部--</option>
-                        {volist name="model->is_public" id="value"}
-                        <option value="{$key}">{$value}</option>
-                        {/volist}
-                    </select>
-                </td>
-            </tr>
+
         </table>
         <div class="layerBtns">
             <button class="btn" type="button" id="btn-form-search">查询</button>
@@ -142,7 +104,7 @@
                 var tr_obj='';
                 if(resp.code){
                     $.each(resp.data,function (index,info) {
-                        tr_obj +='<tr>';
+                        tr_obj +='<tr class="h30">';
                         tr_obj +='<td style="text-align: center;background: none;"><input class="va_m" type="checkbox" name="ids[]"  value="'+info.id+'" onclick="checkBoxOp(this)"> </td>';
                         tr_obj +='<td style="text-align: left;background: none;">'+info.id+'</td>';
                         tr_obj +='<td style="text-align: left;background: none;" title="'+info.address+'">'+info.c_name+'</td>';
@@ -164,6 +126,7 @@
                     layer.msg(resp.msg,function(){});
                 }
                 thead.after(tr_obj);
+                layer.closeAll();
             },
             error:function () {
                 layer.msg('网络出错，稍候重试！',function(){});

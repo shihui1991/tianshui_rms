@@ -241,12 +241,14 @@ class Tools extends Base
 
         /* ++++++++++ 小区 ++++++++++ */
         $community_ids=isset($inputs['community_ids'])?$inputs['community_ids']:[];
-        if($community_ids){
+        $community_ids=array_filter($community_ids);
+        if(!empty($community_ids)){
             $where['community_id']=['in',$community_ids];
         }
         /* ++++++++++ 户型 ++++++++++ */
         $layout_ids=isset($inputs['layout_ids'])?$inputs['layout_ids']:[];
-        if($layout_ids){
+        $layout_ids=array_filter($layout_ids);
+        if(!empty($layout_ids)){
             $where['layout_id']=['in',$layout_ids];
         }
         /* ++++++++++ 面积 ++++++++++ */
