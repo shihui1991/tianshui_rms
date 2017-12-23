@@ -64,6 +64,6 @@ class Assessassets extends Base
             'assessassetsvaluers'=>$assessassetsvaluers,
         ]);
 
-        return view();
+        return view($this->theme.'/assessassets/detail');
     }
 }

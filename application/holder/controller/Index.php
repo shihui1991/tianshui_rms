@@ -18,7 +18,12 @@ class Index extends Controller
     /* ========== 登录页 ========== */
     public function index()
     {
-        return view('login/index');
+        if(request()->isMobile()){
+            $this->theme='mobile';
+        }else{
+            $this->theme='pc';
+        }
+        return view($this->theme.'/login/index');
     }
 
     /* ========== 登录 ========== */
@@ -45,7 +50,8 @@ class Index extends Controller
         $holders=Collectionholders::where([
             'name'=>input('name'),
             'phone'=>input('phone'),
-            'cardnum'=>input('cardnum')
+            'cardnum'=>input('cardnum'),
+            'holder'=>['in',[1,2]]
         ])
             ->select();
         if(!$holders){

@@ -47,7 +47,7 @@ class Collectionbuilding extends Base
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/collectionbuilding/index');
     }
 
 
@@ -74,7 +74,7 @@ class Collectionbuilding extends Base
             'infos'=>$infos,
         ]);
 
-        return view();
+        return view($this->theme.'/collectionbuilding/detail');
     }
 
 }

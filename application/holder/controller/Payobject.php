@@ -48,7 +48,7 @@ class Payobject extends Base
             'payobjects'=>$payobjects,
         ]);
 
-        return view();
+        return view($this->theme.'/payobject/index');
     }
 }
 

@@ -52,7 +52,7 @@ class Payholder extends Base
             'payholders'=>$payholders,
         ]);
 
-        return view();
+        return view($this->theme.'/payholder/index');
     }
 }
 

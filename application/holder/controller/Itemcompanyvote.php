@@ -60,7 +60,7 @@ class Itemcompanyvote extends Base
             'companys'=>$companys,
         ]);
 
-        return view();
+        return view($this->theme.'/itemcompanyvote/index');
     }
 
 
@@ -138,7 +138,7 @@ class Itemcompanyvote extends Base
 
         $this->assign(['infos'=>$infos]);
 
-        return view();
+        return view($this->theme.'/itemcompanyvote/detail');
     }
 }
 

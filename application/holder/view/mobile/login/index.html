@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+</head>
+<body>
+<div class="warp">
+    <div class="loginbar">
+        <img src="__STATIC__/holdermobile/img/login_01.png" />
+    </div>
+    <div class="userinfo">
+        <form action="{:url('login')}" class="js-ajax-form" method="post" onsubmit="return false;">
+            <div class="dlo">
+                <i class="iconfont icon-yonghuzhongxin"></i>
+                <input type="text" placeholder="姓名" name="name" id="name"/>
+            </div>
+            <div class="dlo">
+                <i class="iconfont icon-shenfenzhenghaoma"></i>
+                <input type="text" placeholder="身份证号" name="cardnum"/>
+            </div>
+            <div class="dlo">
+                <i class="iconfont icon-dianhua1"></i>
+                <input type="text" placeholder="联系电话" name="phone"/>
+            </div>
+           <!-- <div class="dlo">
+                <i class="iconfont icon-yanzhengma"></i>
+                <input type="text" placeholder="验证码" class="uyz"/>
+                <span class="sendyz">发送验证码</span>
+            </div>-->
+            <div class="dlo bono">
+                <input type="button" value="登&nbsp;&nbsp;录" class="denglu js-ajax-login" />
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+
+<script>
+    $('#name').focus();
+    $(document).on('keydown',function (e) {
+        if (!e) e = window.event; //火狐中是 window.event
+        if ((e.keyCode || e.which) == 13) {
+            $('.js-ajax-login').click();
+        }
+    });
+</script>
+</html>

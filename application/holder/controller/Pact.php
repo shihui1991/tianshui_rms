@@ -50,7 +50,7 @@ class Pact extends Base
             'pacts'=>$pacts,
         ]);
 
-        return view();
+        return view($this->theme.'/pact/index');
     }
 
     /* ========== 详情 ========== */
@@ -73,7 +73,7 @@ class Pact extends Base
             'infos'=>$infos,
         ]);
 
-        return view();
+        return view($this->theme.'/pact/detail');
     }
 }
 

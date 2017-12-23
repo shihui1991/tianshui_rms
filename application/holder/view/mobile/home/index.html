@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+</head>
+
+<body>
+<div class="warp">
+    <div class="header">
+        <p class="head_tit">新闻公告</p>
+    </div>
+    <div class="content">
+        <div class="note_content">
+            <ul>
+                {volist name="newss" id="news"}
+                <li>
+                    <a href="{:url('newsdetail',['id'=>$news->id])}">
+                        <div class="li_left">
+                            <img src="{$news->title_page}"/>
+                        </div>
+                        <div class="li_right">
+                            <p><span class="li_name">{$news->name}</span><span class="li_time">{$news->release_at}</span></p>
+                            <p class="li_text">{$news->infos}</p>
+                        </div>
+                    </a>
+                </li>
+                {/volist}
+            </ul>
+        </div>
+    </div>
+    <!--footer-->
+    <div class="footer">
+        <ul>
+            <li><a href="{:url('Home/index')}" class="li_on"><i class="iconfont icon-xiaoxi"></i>公告</a></li>
+            <li><a href="cqinfo_jiating.html"> <i class="iconfont icon-ZHicon-"></i>产权</a></li>
+            <li><a href="vote_pggs.html" ><i class="iconfont icon-toupiao"></i>投票</a></li>
+            <li><a href="pinggu.html"><i class="iconfont icon-brt7"></i>评估</a></li>
+            <li><a href="fangyuan.html"><i class="iconfont icon-fangwu"></i>房源</a></li>
+        </ul>
+    </div>
+
+</div>
+</body>
+</html>

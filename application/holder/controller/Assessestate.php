@@ -78,6 +78,6 @@ class Assessestate extends Base
             'assessestatevaluers'=>$assessestatevaluers,
         ]);
 
-        return view();
+        return view($this->theme.'/assessestate/detail');
     }
 }

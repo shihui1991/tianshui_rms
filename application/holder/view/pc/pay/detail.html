@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>兑付与协议|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+
+<div class="tabs">
+    <div class="item">
+        <div class="homeTit bg_f5">
+            <div class="fl"><img src="__STATIC__/system/img/server_database.png"/>兑付与协议管理</div>
+            <ul class="homeTab">
+                <li class="on"><a href="javascript:location.reload();">兑付汇总</a></li>
+                <li><a href="{:url('Payholder/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">分权兑付</a></li>
+                <li><a href="{:url('Paysubject/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">补偿科目</a></li>
+                <li><a href="{:url('Payobject/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">补偿事项</a></li>
+                <li><a href="{:url('Payholderhouse/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">安置房</a></li>
+                <li><a href="{:url('Pact/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">补偿协议</a></li>
+            </ul>
+        </div>
+        <div class="homeCon">
+            <div class="tabPage w_100 on">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td>类型：</td>
+                            <td>{$infos->type}</td>
+                            <td>性质：</td>
+                            <td>{$infos->bu_name}</td>
+                        </tr>
+
+                        <tr class="h50">
+                            <td>位置：</td>
+                            <td colspan="3">
+                                {if condition="$infos->building"}{$infos->building}栋{/if}
+                                {if condition="$infos->unit"}{$infos->unit}单元{/if}
+                                {if condition="$infos->floor"}{$infos->floor}楼{/if}
+                                {if condition="$infos->number"}{$infos->number}号{/if}
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td>兑付汇总：</td>
+                            <td colspan="3">
+                                <p>房产补偿：{$infos->estate_amount|number_format=2} 元</p>
+                                <p>资产补偿：{$infos->assets_amount|number_format=2} 元</p>
+                                <p>公共附属物总计：{$infos->public_amount|number_format=2} 元</p>
+                                <p>平分户数：{$infos->public_num|number_format} 户</p>
+                                <p>公共附属物平均：{$infos->public_avg|number_format=2} 元</p>
+                                <p>重要补偿科目小计：{$infos->subject_amount|number_format=2} 元</p>
+                                <p>其他补偿事项小计：{$infos->object_amount|number_format=2} 元</p>
+                                <p>补偿总计：{$infos->total|number_format=2} 元</p>
+                            </td>
+                        </tr>
+                        <tr class="h50">
+                            <td>补偿方式：</td>
+                            <td>{$infos->compensate_way}</td>
+                            <td>兑付方式：</td>
+                            <td>{$infos->pay_way}</td>
+                        </tr>
+                        <tr class="h50">
+                            <td>过渡方式：</td>
+                            <td>{$infos->transit_way}</td>
+                            <td>搬迁方式：</td>
+                            <td>{$infos->move_way}</td>
+                        </tr>
+                        <tr class="h70">
+                            <td>兑付图片：</td>
+                            <td class="imgCon" colspan="3">
+                                {if condition="$infos->picture"}
+                                {volist name="infos->picture" id="pic"}
+                                <div class="img">
+                                    <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                </div>
+                                {/volist}
+                                {/if}
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+</script>
+</body>
+</html>

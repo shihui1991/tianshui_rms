@@ -69,7 +69,7 @@ class Collectionholderhouse extends Base
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/collectionholderhouse/index');
     }
 
     /* ========== 添加 ========== */
@@ -222,7 +222,7 @@ class Collectionholderhouse extends Base
 
             $this->assign($datas);
 
-            return view();
+            return view($this->theme.'/collectionholderhouse/add');
         }
     }
 

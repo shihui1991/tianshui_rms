@@ -62,7 +62,7 @@ class Payholderhouse extends Base
             'model'=>$model,
         ]);
 
-        return view();
+        return view($this->theme.'/payholderhouse/index');
     }
 }
 

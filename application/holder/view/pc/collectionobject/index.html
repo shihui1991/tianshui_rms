@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>入户摸底-其他补偿事项|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<div class="tabs">
+    <div class="item">
+        <div class="homeTit bg_f5">
+            <div class="fl"><img src="__STATIC__/system/img/outlook_new_meeting.png"/>房屋及附属物</div>
+            <ul class="homeTab">
+                <li class=""><a href="{:url('Collection/detail',['id'=>$collection_id])}">房产基本信息</a></li>
+                <li class=""><a href="{:url('Collectionholder/index',['item_id'=>$item_id,'collection_id'=>$collection_id])}">产权人及家庭成员</a></li>
+                <li class=""><a href="{:url('Collectionbuilding/index',['item_id'=>$item_id,'collection_id'=>$collection_id])}">房屋及附属物</a></li>
+                <li class="on"><a href="javascript:location.reload();">其他</a></li>
+            </ul>
+        </div>
+        <div class="homeCon">
+            <div class="tabPage w_100 on">
+                <div class="tableCon">
+                    <em class="xian"></em>
+                    <table class="table" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th>序号<i class="stretch"></i></th>
+                            <th>补偿事项<i class="stretch"></i></th>
+                            <th>数量<i class="stretch"></i></th>
+                            <th>说明<i class="stretch"></i></th>
+                        </tr>
+                        {volist name="collectionobjects" id="collectionobject"}
+                        <tr>
+                            <td>{$i}</td>
+                            <td>{$collectionobject->name}</td>
+                            <td>{$collectionobject->number}</td>
+                            <td>{$collectionobject->infos}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

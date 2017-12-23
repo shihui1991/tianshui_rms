@@ -49,7 +49,7 @@ class Paysubject extends Base
             'paysubjects'=>$paysubjects,
         ]);
 
-        return view();
+        return view($this->theme.'/paysubject/index');
     }
 }
 

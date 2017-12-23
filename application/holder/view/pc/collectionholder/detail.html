@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>入户摸底-产权人及家庭成员|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<div class="tabs">
+    <div class="item">
+        <div class="homeTit bg_f5">
+            <div class="fl"><img src="__STATIC__/system/img/account_balances.png"/>入户摸底-产权人及家庭成员</div>
+            <ul class="homeTab">
+                <li class="on"><a href="javascript:location.reload();">基本信息</a></li>
+                <li class=""><a href="{:url('Collectionholdercrowd/index',['item_id'=>$infos->item_id,'holder_id'=>$infos->id])}">特殊人群</a></li>
+            </ul>
+
+        </div>
+        <div class="homeCon">
+            <div class="tabPage w_100 on">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td><label for="name">名称：</label></td>
+                            <td>{$infos->name}</td>
+                            <td><label for="phone">电话：</label></td>
+                            <td>{$infos->phone}</td>
+                            <td><label for="holder">产权：</label></td>
+                            <td>{$infos->holder}</td>
+                            <td><label for="portion">补偿份额：</label></td>
+                            <td>{$infos->portion} %</td>
+                        </tr>
+
+                        <tr class="h50">
+                            <td><label for="address">地址：</label></td>
+                            <td colspan="3">{$infos->address}</td>
+                            <td><label for="live_addr">现住址：</label></td>
+                            <td colspan="3">{$infos->live_addr}</td>
+                        </tr>
+
+                        <tr class="h50">
+                            <td><label for="cardnum">证件号码：</label></td>
+                            <td>{$infos->cardnum}</td>
+                            <td><label for="relation">户主关系：</label></td>
+                            <td>{$infos->relation}</td>
+                            <td><label for="birth">生日年份：</label></td>
+                            <td>{$infos->birth}</td>
+                            <td><label for="gender">性别：</label></td>
+                            <td>{$infos->gender}</td>
+                        </tr>
+                        <tr class="h50">
+                            <td><label for="nation">民族：</label></td>
+                            <td>{$infos->nation}</td>
+                            <td><label for="job">职业：</label></td>
+                            <td>{$infos->job}</td>
+                            <td><label for="married">婚姻状况：</label></td>
+                            <td>{$infos->married}</td>
+
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

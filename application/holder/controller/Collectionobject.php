@@ -1,11 +1,10 @@
 <?php
 /* |------------------------------------------------------
- * | 入户摸底 建筑
+ * | 入户摸底 其他事项
  * |------------------------------------------------------
  * */
 namespace app\holder\controller;
 
-use app\system\model\Collectionbuildings;
 use app\system\model\Collectionobjects;
 
 class Collectionobject extends Base
@@ -48,35 +47,7 @@ class Collectionobject extends Base
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/collectionobject/index');
     }
-
-
-    /* ========== 详情 ========== */
-    public function detail(){
-        $id=input('id');
-        if(!$id){
-            return $this->error('非法访问','');
-        }
-
-        $infos=Collectionbuildings::alias('cb')
-            ->field(['cb.*','du.name du_name','ru.name as ru_name','bst.name as struct_name','bss.name as status_name'])
-            ->join('building_use du','du.id=cb.default_use','left')
-            ->join('building_use ru','ru.id=cb.use_id','left')
-            ->join('building_struct bst','bst.id=cb.struct_id','left')
-            ->join('building_status bss','bss.id=cb.status_id','left')
-            ->where('cb.id',$id)
-            ->find();
-        if(!$infos){
-            return $this->error('不存在');
-        }
-
-        $this->assign([
-            'infos'=>$infos,
-        ]);
-
-        return view();
-    }
-
 }
 
