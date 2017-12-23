@@ -81,8 +81,8 @@
                     {if condition="$collectionbuilding->number"}{$collectionbuilding->number}号{/if}
                     {/if}
                 </td>
-                <td>{$collectionbuilding->buildingstruct->name}</td>
-                <td>{$collectionbuilding->realuse->name}</td>
+                <td>{$collectionbuilding->buildingstruct->name?:''}</td>
+                <td>{$collectionbuilding->realuse->name?:''}</td>
                 <td>{$collectionbuilding->real_num} {$collectionbuilding->real_unit}</td>
                 <td>{$collectionbuilding->build_year}</td>
                 <td>
@@ -115,7 +115,7 @@
                 <td><label for="item_id">项目：</label></td>
                 <td colspan="3">{$collection_info->item->name}</td>
                 <td><label for="community_id">片区：</label></td>
-                <td colspan="3">{$collection_info->community->name}</td>
+                <td colspan="3">{$collection_info->community->name?:''}</td>
             </tr>
             <tr class="h50">
                 <td><label for="collection_id">权属：</label></td>

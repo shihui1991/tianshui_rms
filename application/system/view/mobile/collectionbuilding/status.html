@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('status')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{$id}">
+                <input type="hidden" name="item_id" value="{$collection_info->item_id}">
+                <input type="hidden" name="collection_id" value="{$collection_info->id}">
+                <p>
+                    <span>建筑性质：</span>
+                    <select name="status" id="status">
+                        {volist name="buildingstatuss" id="status"}
+                        <option value="{$status->id}">{$status->name}</option>
+                        {/volist}
+                    </select>
+                </p>
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+
+</script>
+
+</body>
+</html>
