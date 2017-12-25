@@ -100,15 +100,7 @@
                         <p>其他意见：</p>
                         <textarea class="flex" id="opinion" name="opinion">{$infos->opinion?:''}</textarea>
                     </div>
-                    {if condition="isset($infos)"}
-                    <p style="height: auto;line-height: inherit;">
-                        创建于：{$infos->created_at}<br/>
-                        更新于：{$infos->updated_at}<br/>
-                        {if condition="isset($infos) and $infos->deleted_at"}
-                        删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
-                        {/if}
-                    </p>
-                    {/if}
+
                 </div>
 
                 <div class="padLR12 add_menu maT20" style="display: none;" id="risk_topic_val">
