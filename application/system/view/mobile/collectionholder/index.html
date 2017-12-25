@@ -45,12 +45,13 @@
                         <tr class="noSelect">
                             <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
                             <th>ID</th>
-                            <th>片区(ID)</th>
-                            <th>权属(ID)</th>
+                            <th>名称</th>
+                            <th>产权</th>
+                            <th>份额</th>
                             <th>操作</th>
                         </tr>
 
-                        {volist name="collectionbuildings" id="info"}
+                        {volist name="collectionholders" id="info"}
                         <tr>
                             <td class="more">
                                 <input type='checkbox' data-role="check"  name="ids[]" value="{$info->id}"/>
@@ -58,31 +59,18 @@
                                 <i class="iconfont icon-gongyongshuangjiantouxia"></i>
                             </td>
                             <td>{$info->id}</td>
-                            <td>{if condition="$info->deleted_at"} <del>{$info->community->name}（{$info->community_id}）</del>{else /}{$info->community->name}（{$info->community_id}）{/if}</td>
-                            <td>{if condition="$info->deleted_at"} <del> {if condition="$info->collection_id"}
-                                {if condition="$info->collection->building"}{$info->collection->building}栋{/if}
-                                {if condition="$info->collection->unit"}{$info->collection->unit}单元{/if}
-                                {if condition="$info->collection->floor"}{$info->collection->floor}楼{/if}
-                                {if condition="$info->collection->number"}{$info->collection->number}号{/if}
-                                （{$info->collection_id}）
-                                {else/}
-                                -
-                                {/if}</del>{else /} {if condition="$info->collection_id"}
-                                {if condition="$info->collection->building"}{$info->collection->building}栋{/if}
-                                {if condition="$info->collection->unit"}{$info->collection->unit}单元{/if}
-                                {if condition="$info->collection->floor"}{$info->collection->floor}楼{/if}
-                                {if condition="$info->collection->number"}{$info->collection->number}号{/if}
-                                （{$info->collection_id}）
-                                {else/}
-                                -
-                                {/if}{/if}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->name}</del>{else /}{$info->name}{/if}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->holder}</del>{else /}{$info->holder}{/if}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->portion}</del>{else /}{$info->portion}{/if}</td>
                             <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
                                 <div class="hide">
                                     <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                    {if condition="$collection_info->item->getData('status') eq 1 and $collection_status neq 8"}
+                                    <a href="{:url('add',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}"><i class="iconfont icon-iconjia"></i></a>
+                                    {/if}
                                     <a href="{:url('detail',['id'=>$info->id])}"><i class="iconfont icon-xiugai"></i></a>
                                     {if condition="$collection_info->item->getData('status') eq 1 and $collection_status neq 8"}
-                                    <a href="{:url('status',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id,'id'=>$info->id])}"><i class="iconfont icon-question-9"></i></a>
-                                    <a data-action="{:url('delete',['ids'=>$info->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                                    <a data-action="{:url('delete',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id,'ids'=>$info->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
                                     {/if}
                                 </div>
                             </td>
@@ -91,35 +79,16 @@
                             <td colspan="6" style="padding: 0 !important;">
                                 <div class="table_more w_100 backCo_f21">
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">项目(ID)：</div><div class="align_left">{$info->item->name}（{$info->item_id}）</div>
+                                        <div class="w_30 align_right">地址：</div><div class="align_left">{$info->address}</div>
                                     </div>
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">位置：</div><div class="align_left"> {if condition="$info->building"}{$info->building}栋{/if}
-                                        {if condition="$info->unit"}{$info->unit}单元{/if}
-                                        {if condition="$info->floor"}{$info->floor}楼{/if}
-                                        {if condition="$info->number"}{$info->number}号{/if}</div>
+                                        <div class="w_30 align_right">电话：</div><div class="align_left">{$info->phone}</div>
                                     </div>
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">结构：</div><div class="align_left">{$info->buildingstruct->name?:''}</div>
+                                        <div class="w_30 align_right">户主关系：</div><div class="align_left">{$info->relation}</div>
                                     </div>
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">性质：</div><div class="align_left">{$info->realuse->name?:''}</div>
-                                    </div>
-                                    <div class="flex w_100">
-                                        <div class="w_30 align_right">数量：</div><div class="align_left">{$info->real_num} {$info->real_unit}</div>
-                                    </div>
-                                    <div class="flex w_100">
-                                        <div class="w_30 align_right">建造年份：</div><div class="align_left">{$info->build_year}</div>
-                                    </div>
-                                    <div class="flex w_100">
-                                        <div class="w_30 align_right">状况：</div><div class="align_left">  {if condition="$info->deleted_at"}
-                                        已删除
-                                        {else/}
-                                        {if condition="$info->status_id eq 0"}待定{else/}{$info->buildingstatus->name}{/if}
-                                        {/if}</div>
-                                    </div>
-                                    <div class="flex w_100">
-                                        <div class="w_30 align_right">备注：</div><div class="align_left">{$info->remark}</div>
+                                        <div class="w_30 align_right">现住址：</div><div class="align_left">{$info->live_addr}</div>
                                     </div>
                                 </div>
                             </td>
@@ -131,8 +100,9 @@
             </div>
 
             <div class="pageCon">
-                {$collectionbuildings->render()}
+                {$collectionholders->render()}
             </div>
+
             <div class="showQuery hide" id="layerQuery">
                 <form action="{:url('index',['collection_id'=>$collection_info->id,'l'=>1])}" method="post" id="search-form">
                     <input type="hidden" name="issearch" value="true">
@@ -141,37 +111,26 @@
                         <div class="queryCon pafBt_10">
                             <p>
                                 <span>项目：</span>
-                                <input type="text" value="{$collection_info->item->name}" disabled>
+                                <input type="text" value="{$collection_info->item->name}" disabled/>
                             </p>
                             <p>
                                 <span>片区：</span>
-                                <input type="text" value="{$collection_info->community->name}" disabled>
+                                <input type="text" value="{$collection_info->community->name}" disabled/>
                             </p>
                             <p>
                                 <span>权属：</span>
                                 <input type="text" value="{if condition="$collection_info->building"}{$collection_info->building}栋{/if}
                                 {if condition="$collection_info->unit"}{$collection_info->unit}单元{/if}
                                 {if condition="$collection_info->floor"}{$collection_info->floor}楼{/if}
-                                {if condition="$collection_info->number"}{$collection_info->number}号{/if}" disabled>
+                                {if condition="$collection_info->number"}{$collection_info->number}号{/if}" disabled/>
                             </p>
                             <p>
-                                <span>实际用途：</span>
-                                <select name="use_id" id="use_id" class="chosen" data-placeholder="请选择用途" data-no_results_text="没有匹配数据">
-                                    <option value="">--全部--</option>
-                                    {volist name="buildinguses" id="buildinguse"}
-                                    <option value="{$buildinguse->id}" {if condition="isset($use_id) and $use_id eq $buildinguse->id"}selected{/if}>{$buildinguse->name}</option>
-                                    {/volist}
-                                </select>
+                                <span>名称：</span>
+                                <input type="text" name="name" id="name" value="{$name?:''}" placeholder="输入名称">
                             </p>
                             <p>
-                                <span>建筑状况：</span>
-                                <select name="status_id" id="status_id" class="chosen" data-placeholder="请选择建筑状况" data-no_results_text="没有匹配数据">
-                                    <option value="">--全部--</option>
-                                    <option value="0" {if condition="isset($status_id) and $status_id eq 0"}selected{/if}>待定</option>
-                                    {volist name="buildingstatuss" id="buildingstatus"}
-                                    <option value="{$buildingstatus->id}" {if condition="isset($status_id) and $status_id eq $buildingstatus->id"}selected{/if}>{$buildingstatus->name}</option>
-                                    {/volist}
-                                </select>
+                                <span>地址：</span>
+                                <input type="text" name="address" id="address" value="{$address?:''}" placeholder="输入地址">
                             </p>
                             <p>
                                 <span>是否删除：</span>
@@ -237,10 +196,12 @@
             $('table').find('input[data-role="checkall"]').prop('checked',false);
         }
     });
+
     $('.pagination').find('a').on('click',function () {
         $('#search-form').attr('action',$(this).attr('href')).submit();
         return false;
     });
+
 </script>
 
 </body>

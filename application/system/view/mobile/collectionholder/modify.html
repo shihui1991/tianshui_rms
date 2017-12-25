@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <p class="padLR12 btnp maT10">
+                <span class="on"><a href="javascript:location.reload();">基本信息</a></span>
+                {if condition="isset($infos)"}
+                <span><a href="{:url('Collectionholdercrowd/index',['item_id'=>$infos->item_id,'holder_id'=>$infos->id,'l'=>1])}">特殊人群</a></span>
+                {/if}
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class=" add_menu maT20">
+                    <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                    <input type="hidden" name="item_id" value="{:isset($infos)?$infos->item_id:$collection_info->item_id}">
+                    <input type="hidden" name="collection_id" value="{:isset($infos)?$infos->collection_id:$collection_info->id}">
+                    <p class="padLR12">
+                        <span>名称：<i>* </i></span>
+                        <input type="text" name="name" id="name" value="{:isset($infos)?$infos->name:''}" class="must" placeholder="输入单位名称或人员姓名">
+                    </p>
+                    <p class="padLR12">
+                        <span>电话：<i>* </i></span>
+                        <input type="text" name="phone" id="phone" value="{:isset($infos)?$infos->phone:''}" class="must" placeholder="输入联系电话">
+                    </p>
+                    <p class="padLR12">
+                        <span>产权：</span>
+                        <select name="holder" id="holder">
+                            {volist name="model->holder" id="holder"}
+                            <option value="{$key}" {if condition="isset($infos) and $infos->getData('holder') eq $key"}selected{/if}>{$holder}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>补偿份额：<i>* </i></span>
+                        <input type="number" name="portion" id="portion" value="{:isset($infos)?$infos->portion:''}" class="must" placeholder="输入产权补偿分配份额（%）" min="0">
+                    </p>
+                    <p class="padLR12">
+                        <span>项目：</span>
+                        <input type="text" value="{:isset($infos)?$infos->item->name:$collection_info->item->name}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>片区：</span>
+                        <input type="text" value="{:isset($infos)?$infos->community->name:$collection_info->community->name}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>权属：</span>
+                        <input type="text" value="{if condition="isset($infos)"}
+                        {if condition="$infos->collection->building"}{$infos->collection->building}栋{/if}
+                        {if condition="$infos->collection->unit"}{$infos->collection->unit}单元{/if}
+                        {if condition="$infos->collection->floor"}{$infos->collection->floor}楼{/if}
+                        {if condition="$infos->collection->number"}{$infos->collection->number}号{/if}
+                        {else/}
+                        {if condition="$collection_info->building"}{$collection_info->building}栋{/if}
+                        {if condition="$collection_info->unit"}{$collection_info->unit}单元{/if}
+                        {if condition="$collection_info->floor"}{$collection_info->floor}楼{/if}
+                        {if condition="$collection_info->number"}{$collection_info->number}号{/if}
+                        {/if}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>地址：<i>* </i></span>
+                        <input type="text" name="address" id="address" value="{:isset($infos)?$infos->address:''}" placeholder="输入地址">
+                    </p>
+                    <p class="padLR12">
+                        <span>证件号码：</span>
+                        <input type="text" name="cardnum" id="cardnum" value="{:isset($infos)?$infos->cardnum:''}" placeholder="输入证件号码（身份证）">
+                    </p>
+                    <p class="padLR12">
+                        <span>户主关系：</span>
+                        <input type="text" name="relation" id="relation" value="{:isset($infos)?$infos->relation:''}" placeholder="输入与户主关系">
+                    </p>
+                    <p class="padLR12">
+                        <span>生日年份：</span>
+                        <input type="number" name="birth" id="birth" value="{:isset($infos)?$infos->birth:''}" placeholder="输入生日年份">
+                    </p>
+                    <p class="padLR12">
+                        <span>性别：</span>
+                        <select name="gender" id="gender">
+                            {volist name="model->gender" id="gender"}
+                            <option value="{$key}" {if condition="isset($infos) and $infos->getData('gender') eq $key"}selected{/if}>{$gender}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>民族：</span>
+                        <select name="nation" id="nation" class="chosen" data-placeholder="请选择民族" data-no_results_text="没有匹配数据">
+                            <option value="">--选择民族--</option>
+                            {volist name="nations" id="nation"}
+                            <option value="{$nation->name}" {if condition="isset($infos) and $infos->nation eq $nation->name"}selected{/if}>{$nation->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>职业：</span>
+                        <input type="text" name="job" id="job" value="{:isset($infos)?$infos->job:''}" placeholder="输入职业">
+                    </p>
+                    <p class="padLR12">
+                        <span>婚姻状况：</span>
+                        <select name="married" id="married">
+                            {volist name="model->married" id="married"}
+                            <option value="{$key}" {if condition="isset($infos) and $infos->getData('married') eq $key"}selected{/if}>{$married}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>现住址：</span>
+                        <input type="text" name="live_addr" id="live_addr" value="{:isset($infos)?$infos->live_addr:''}" placeholder="输入现住址">
+                    </p>
+                    {if condition="isset($infos)"}
+                    <p class="padLR12" style="height: auto;line-height: inherit;">
+                        创建于：{$infos->created_at}<br/>
+                        更新于：{$infos->updated_at}<br/>
+                        {if condition="isset($infos) and $infos->deleted_at"}
+                        删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                        {/if}
+                    </p>
+                    {/if}
+                </div>
+            </div>
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <a href="{:url('index')}"><span class="maL17 button">返回</span></a>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+
+</script>
+
+</body>
+</html>

@@ -22,7 +22,8 @@ $(function() {
 	});
 	//操作
 	$(".shezhi").click(function() {
-		$(this).children("div").toggleClass("hide");
+        $("td").siblings('.shezhi').not(this).children("div").addClass("hide");
+        $(this).children("div").toggleClass("hide");
 	});
 	//	全选
 	$("#checkall").click(function() {

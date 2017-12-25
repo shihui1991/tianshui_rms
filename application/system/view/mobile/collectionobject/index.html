@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name|default=''}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100">
+
+        {include file="mobile/public/breadnav"/}
+
+        <div class="w_100">
+            <!--按钮组合-->
+            <div class=" anniu backCo_w padLR12 ov maT10">
+                <a href="{:url('index',['collection_id'=>$collection_info->id])}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                {if condition="$collection_info->item->getData('status') eq 1 and $collection_status neq 8"}
+                <a href="{:url('add',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}" >删除</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}">恢复</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}" data-notice="确定要彻底删除吗？">销毁</a>
+                <span class="xiaMore"><em>更多</em><i class=" xiaMore iconfont icon-gongyongshuangjiantouxia"></i> </span>
+                {/if}
+            </div>
+            <div class="w_100">
+                <form action="{:url('index',['collection_id'=>$collection_info->id])}" method="post" id="js-ajax-form">
+                    <table id="example-advanced" class="table treetable w_100" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> </th>
+                            <th>ID</th>
+                            <th>补偿事项</th>
+                            <th>数量</th>
+                            <th>操作</th>
+                        </tr>
+
+                        {volist name="collectionobjects" id="info"}
+                        <tr>
+                            <td id="tdp1" style="text-align: left;"><label><input type='checkbox' data-role="check"  name="ids[]" value="{$info->id}"/>&nbsp;</label></td>
+                            <td>{$info->id}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->o_name}</del>{else /}{$info->o_name}{/if}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->number}</del>{else /}{$info->number}{/if}</td>
+                            <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
+                                <div class="hide">
+                                    <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                    <a href="{:url('detail',['id'=>$info->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                    {if condition="$collection_info->item->getData('status') eq 1 and $collection_status neq 8"}
+                                    <a data-action="{:url('delete',['item_id'=>$info->item_id,'collection_id'=>$info->collection_id,'ids'=>$info->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                                    {/if}
+                                </div>
+                            </td>
+
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+
+</script>
+
+</body>
+</html>
