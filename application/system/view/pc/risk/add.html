@@ -184,7 +184,6 @@
 
                             options += '<option value="'+info.id+'">'+building+unit+floor+number+'（'+info.id+'）'+'</option>';
                         });
-                        options += '</select>';
                     }else{
                         options += '<select name="collection_id" id="collection_id" class="chosen" data-placeholder="暂无数据" data-no_results_text="没有匹配数据">';
                         options += ' <option value="">--暂无数据--</option>';
@@ -228,7 +227,6 @@
                       $.each(resp.data,function (index,info) {
                           options += '<option value="'+info.id+'">'+info.name+'（'+info.id+'）'+'</option>';
                       });
-                      options += '</select>';
                   }else{
                       options += '<select name="holder_id" id="holder_id" class="chosen" data-placeholder="暂无数据" data-no_results_text="没有匹配数据">';
                       options += ' <option value="">--暂无数据--</option>';
@@ -285,7 +283,6 @@
                     $.each(resp.data,function (index,info) {
                         options += '<option value="'+info.id+'">'+info.name+'（'+info.id+'）'+'</option>';
                     });
-                    options += '</select>';
                 }else{
                     options += '<select name="recommemd_holder_id" id="recommemd_holder_id" class="chosen" data-placeholder="暂无数据" data-no_results_text="没有匹配数据">';
                     options += ' <option value="">--暂无数据--</option>';

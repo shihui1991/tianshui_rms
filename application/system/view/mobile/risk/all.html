@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name|default=''}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    <style type="text/css">
+        .queryCon>:last-child {
+            height: 52px;
+        }
+
+        .queryCon {
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100">
+
+        {include file="mobile/public/breadnav"/}
+
+        <div class="w_100">
+            <!--按钮组合-->
+            <div class=" anniu backCo_w padLR12 ov maT10">
+                <a href="{:url('index')}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                <a id="showQuery"><i class="iconfont icon-search"></i>&nbsp;查询</a>
+            </div>
+            <div class="w_100">
+                <form action="{:url('index')}" method="post" id="js-ajax-form">
+                    <table id="example-advanced" class="table treetable w_100" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
+                            <th>ID</th>
+                            <th>权属(ID)</th>
+                            <th>成员</th>
+                            <th>操作</th>
+                        </tr>
+
+                        {volist name="risk_list" id="info"}
+                        <tr>
+                            <td class="more">
+                                <input type='checkbox' data-role="check"  name="ids[]" value="{$info->id}"/>
+                                &nbsp;
+                                <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                            </td>
+                            <td>{$info->id}</td>
+                            <td>{if condition="$info->deleted_at"}
+                                <del>
+                                    {if condition="$info->c_building"}{$info->c_building}栋{/if}
+                                    {if condition="$info->c_unit"}{$info->c_unit}单元{/if}
+                                    {if condition="$info->c_floor"}{$info->c_floor}楼{/if}
+                                    {if condition="$info->c_number"}{$info->c_number}号{/if}
+                                    {if condition="$info->c_id"}({$info->c_id}){/if}
+                                </del>
+                                {else /}
+                                {if condition="$info->c_building"}{$info->c_building}栋{/if}
+                                {if condition="$info->c_unit"}{$info->c_unit}单元{/if}
+                                {if condition="$info->c_floor"}{$info->c_floor}楼{/if}
+                                {if condition="$info->c_number"}{$info->c_number}号{/if}
+                                {if condition="$info->c_id"}({$info->c_id}){/if}
+                                {/if}
+                            </td>
+                            <td>{if condition="$info->deleted_at"}<del>{$info->holder_name}</del>{else/}{$info->holder_name}{/if}</td>
+                            <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
+                                <div class="hide">
+                                    <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                    <a href="{:url('detail',['id'=>$info->id,'item_id'=>$info->item_id])}"><i class="iconfont icon-xiugai"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hide_more hide">
+                            <td colspan="6" style="padding: 0 !important;">
+                                <div class="table_more w_100 backCo_f21">
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">项目：</div><div class="align_left">{$info->item_name}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">片区：</div><div class="align_left">{$info->pq_name}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">推荐代表成员：</div><div class="align_left">{$info->recommemd_holder_name}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">群众代表意见：</div><div class="align_left">{$info->deputy}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">方案意见：</div><div class="align_left">{$info->is_agree}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">补偿方式：</div><div class="align_left">{$info->compensate_way}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">补偿单价：</div><div class="align_left">{$info->compensate_price}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">过渡方式：</div><div class="align_left">{$info->transit_way}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">搬迁方式：</div><div class="align_left">{$info->move_way}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+
+            <div class="pageCon">
+                {$risk_list->render()}
+            </div>
+
+            <div class="showQuery hide" id="layerQuery">
+                <form action="{:url('index')}" method="post" id="search-form">
+                    <input type="hidden" name="issearch" value="true">
+                    <div class=" backCo_w">
+                        <h3 class="queryTitle">查&nbsp;&nbsp;询</h3>
+                        <div class="queryCon pafBt_10">
+                            <p>
+                                <span>项目：</span>
+                                <select name="item_id" id="item_id" class="chosen sear_collection_id" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                                    <option value="">--请选择项目--</option>
+                                    {volist name="item_list" id="item"}
+                                    <option value="{$item->id}" {if condition="isset($item_id) and $item_id eq $item->id"}selected{/if} >{$item->name}（{$item->id}）</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>片区：</span>
+                                <select name="community_id" id="community_id" class="chosen sear_collection_id" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                                    <option value="">--请选择片区--</option>
+                                    {volist name="collectioncommunity_list" id="community"}
+                                    <option value="{$community->id}" {if condition="isset($community_id) and $community_id eq $community->id"}selected{/if}>{$community->name}</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>权属：</span>
+                                <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
+                                    <option value="">--请选择权属--</option>
+                                    {volist name="collections_list" id="collection"}
+                                    <option value="{$collection->id}" {if condition="isset($collection_id) and $collection_id eq $collection->id"}selected{/if}>
+                                    {if condition="$collection->building"}{$collection->building}栋{/if}
+                                    {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                                    {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                                    {if condition="$collection->number"}{$collection->number}号{/if}
+                                    {if condition="$collection->id"}({$collection->id}){/if}
+                                    </option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>是否删除：</span>
+                                <select name="deleted" id="deleted">
+                                    <option value="">--全部--</option>
+                                    <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                                    <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
+                                </select>
+                            </p>
+                            <p>
+                                <span>每页条数：</span>
+                                <select name="display_num" id="display_num">
+                                    {volist name="nums" id="num"}
+                                    <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>排序：</span>
+                                <select name="ordername" id="ordername">
+                                    <option value="id">--默认--</option>
+                                    <option value="level" {if condition="isset($ordername) and $ordername eq 'level'"}selected{/if}>--层级--</option>
+                                    <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                                    <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                                    <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
+                                </select>
+                            </p>
+                            <p>
+                                <span>方式：</span>
+                                <select name="orderby" id="orderby">
+                                    <option value="asc">--升序--</option>
+                                    <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                                </select>
+                            </p>
+                        </div>
+                        <!--提交按钮-->
+                        <p class="Btnform align_cen bor_none maT20">
+                            <button class="submit button maR17" type="submit">查询</button>
+                            <span class="reset close button maL17">取消</span>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+
+    $('.pagination').find('a').on('click',function () {
+        $('#search-form').attr('action',$(this).attr('href')).submit();
+        return false;
+    });
+
+</script>
+
+</body>
+</html>

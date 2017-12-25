@@ -27,6 +27,12 @@ class Topic extends Auth
         /* ********** 查询条件 ********** */
         $datas = [];
         $where = [];
+        /* ++++++++++ 话题名称 ++++++++++ */
+        $name = input('name');
+        if($name){
+           $where['name'] = array('like',"%$name%");
+            $datas['name'] = $name;
+        }
         /* ++++++++++ 排序 ++++++++++ */
         $ordername = input('ordername');
         $ordername = $ordername ? $ordername : 'id';

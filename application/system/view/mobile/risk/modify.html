@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('edit',['item_id'=>$item_id])}" method="post" onsubmit="return false;">
+            <p class="padLR12 btnp maT10">
+                <span class="on">风险评估</span>
+                <span>话题结果</span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class=" add_menu maT20">
+                    <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                    <p class="padLR12">
+                        <span>项目：</span>
+                        <input type="text" value="{$infos->item_name}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>片区：</span>
+                        <input type="text" value="{$infos->pq_name}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>权属(ID)：</span>
+                        <input type="text" value=" {if condition="$infos->c_building"}{$infos->c_building}栋{/if}
+                        {if condition="$infos->c_unit"}{$infos->c_unit}单元{/if}
+                        {if condition="$infos->c_floor"}{$infos->c_floor}楼{/if}
+                        {if condition="$infos->c_number"}{$infos->c_number}号{/if}
+                        {if condition="$infos->c_id"}({$infos->c_id}){/if}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>成员：</span>
+                        <input type="text" value="{$infos->holder_name}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>推荐代表成员：</span>
+                        <input type="text" value="{$infos->recommemd_holder_name}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>群众代表：</span>
+                        <select name="deputy" id="deputy">
+                            <option value="1" {if condition="$infos->getData('deputy') eq 1"}selected{/if} >同意</option>
+                            <option value="0" {if condition="$infos->getData('deputy') eq 0"}selected{/if} >拒绝</option>
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>方案意见：</span>
+                        <select name="is_agree" id="is_agree">
+                            <option value="1" {if condition="$infos->getData('is_agree') eq 1"}selected{/if} >同意</option>
+                            <option value="0" {if condition="$infos->getData('is_agree') eq 0"}selected{/if} >拒绝</option>
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>补偿方式：</span>
+                        <select name="compensate_way" id="compensate_way">
+                            <option value="1" {if condition="$infos->getData('compensate_way') eq 1"}selected{/if} >产权调换</option>
+                            <option value="0" {if condition="$infos->getData('compensate_way') eq 0"}selected{/if} >货币补偿</option>
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>补偿单价：</span>
+                        <input type="text" name="compensate_price" id="compensate_price" value="{$infos->compensate_price}" placeholder="请输入补偿单价">
+                    </p>
+                    <p class="padLR12">
+                        <span>过渡方式：</span>
+                        <select name="transit_way" id="transit_way">
+                            <option value="1" {if condition="$infos->getData('transit_way') eq 1"}selected{/if} >周转房临时安置</option>
+                            <option value="0" {if condition="$infos->getData('transit_way') eq 0"}selected{/if} >货币过渡</option>
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>搬迁方式：</span>
+                        <select name="move_way" id="move_way">
+                            <option value="1" {if condition="$infos->getData('move_way') eq 1"}selected{/if} >政府负责</option>
+                            <option value="0" {if condition="$infos->getData('move_way') eq 0"}selected{/if} >自行搬迁</option>
+                        </select>
+                    </p>
+                    <div class="w_100 backCo_f2 add_menu_textarea">
+                        <p>其他意见：</p>
+                        <textarea class="flex" id="opinion" name="opinion">{$infos->opinion?:''}</textarea>
+                    </div>
+                    {if condition="isset($infos)"}
+                    <p style="height: auto;line-height: inherit;">
+                        创建于：{$infos->created_at}<br/>
+                        更新于：{$infos->updated_at}<br/>
+                        {if condition="isset($infos) and $infos->deleted_at"}
+                        删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                        {/if}
+                    </p>
+                    {/if}
+                </div>
+
+                <div class="padLR12 add_menu maT20" style="display: none;">
+                        {volist name="risktopic_infos" id="risktopicinfos"}
+                        <input type="hidden" name="risktopic_id[]" class="risktopic_id" value="{$risktopicinfos->id}">
+                        <p class="h50">
+                            <span ><label>话题{$i}：</label></span>
+                            <input type="text" value="{$risktopicinfos->topic_name}" disabled>
+                        </p>
+                    <div class="w_100 backCo_f2 add_menu_textarea">
+                        <p>话题{$i}回答：</p>
+                        <textarea name="answer[]" id="answer" cols="10" rows="3">{$risktopicinfos->answer}</textarea>
+                    </div>
+                        {/volist}
+                    {if condition="isset($item_topic)"}
+                        {volist name="item_topic" id="itemtopic"}
+                        <p class="h50">
+                            <span ><label>话题{$i+$risktopic_count}：</label></span>
+                                <input type="hidden" name="new_topic_id[]" class="new_topic_id" value="{$itemtopic->topic_id}">
+                            <input type="text" value=" {$itemtopic->topic_name}" disabled>
+                        </p>
+                        <div class="w_100 backCo_f2 add_menu_textarea">
+                            <p>话题{$i+$risktopic_count}回答：</p>
+                            <textarea name="new_answer[]"  cols="10" rows="3"></textarea>
+                        </div>
+                        {/volist}
+                    {/if}
+                    <br/>
+                </div>
+            </div>
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+            <!--弹出层-->
+
+        </form>
+    </div>
+</div>
+<script>
+
+</script>
+
+</body>
+</html>
