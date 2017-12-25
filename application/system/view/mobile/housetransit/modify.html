@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('edit')}" method="post" onsubmit="return false;">
+            <input type="hidden" name="id" value="{$infos->id}">
+            <div class="backCo_w add_menu padLR12">
+                <p>
+                    <span>项目：</span>
+                    <input type="text" value="{$infos->item_name}" readonly>
+                </p>
+                <p>
+                    <span>开始时间：<i>* </i></span>
+                    <input type="text" class="laydate-icon" name="start_at" id="start_at" value="{$infos->start_at}" placeholder="请输入开始时间">
+                </p>
+                <p>
+                    <span>预计结束时间：<i>* </i></span>
+                    <input type="text" class="laydate-icon" name="exp_end" id="exp_end" value="{$infos->exp_end}" placeholder="请输入预计结束时间">
+                </p>
+                <p>
+                    <span>结束时间：</span>
+                    <input type="text" class="laydate-icon" name="end_at" id="end_at" value="{$infos->end_at}" placeholder="请输入结束时间">
+                </p>
+
+                <table class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect" id="thead-pay">
+                        <th>更多</th>
+                        <th>ID</th>
+                        <th>片区</th>
+                        <th>过渡户</th>
+                        <th>性质</th>
+                    </tr>
+                    <tr>
+                        <td class="more">
+                            <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                        </td>
+                        <td>{$infos->pay_id}</td>
+                        <td>{$pays->pq_name}</td>
+                        <td>
+                            {if condition="$pays->building"}{$pays->building}栋{/if}
+                            {if condition="$pays->unit"}{$pays->unit}单元{/if}
+                            {if condition="$pays->floor"}{$pays->floor}楼{/if}
+                            {if condition="$pays->number"}{$pays->number}号{/if}
+                        </td>
+                        <td>{$pays->bu_name}</td>
+
+                    </tr>
+                    <tr class="hide_more hide">
+                        <td colspan="5" style="padding: 0 !important;">
+                            <div class="table_more w_100 backCo_f21">
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">地址：</div><div class="align_left">{$pays->address}</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <table class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect" id="thead-house">
+                        <th>更多</th>
+                        <th>ID</th>
+                        <th>小区</th>
+                        <th>安置房</th>
+                        <th>面积</th>
+                    </tr>
+                    <tr>
+                        <td class="more">
+                            <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                        </td>
+                        <td>{$itemhouse->house_id}</td>
+                        <td>{$itemhouse->c_name}</td>
+                        <td>
+                            {if condition="$itemhouse->building"}{$itemhouse->building}栋{/if}
+                            {if condition="$itemhouse->unit"}{$itemhouse->unit}单元{/if}
+                            {if condition="$itemhouse->floor"}{$itemhouse->floor}楼{/if}
+                            {if condition="$itemhouse->number"}{$itemhouse->number}号{/if}
+                        </td>
+                        <td>{$itemhouse->area}</td>
+
+                    </tr>
+                    <tr class="hide_more hide">
+                        <td colspan="5" style="padding: 0 !important;">
+                            <div class="table_more w_100 backCo_f21">
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">地址：</div><div class="align_left">{$itemhouse->address}</div>
+                                </div>
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">户型：</div><div class="align_left">{$itemhouse->l_name}</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+
+<script>
+
+
+</script>
+
+</body>
+</html>

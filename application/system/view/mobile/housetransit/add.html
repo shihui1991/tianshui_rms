@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    <script src="__STATIC__/sysmobile/js/jquery.pagination.js"></script>
+
+    <style>
+        .pageCon{
+            width: 100%;
+            text-align: center;
+        }
+        .pageCon>a,.pageCon>span{
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 5px;
+            border: 1px solid #CCCCCC;
+            text-decoration: none;
+        }
+        .pageCon>a{
+            background: #dcdcdc;
+            color: rgb(51,51,51);
+        }
+        .pageCon>.active{
+            background: #F0AD4E;
+            color: white;
+        }
+    </style>
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <p>
+                    <span>项目：<i>* </i></span>
+                    <select name="item_id" id="item_id" class="chosen" data-placeholder="请选择项目" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择项目--</option>
+                        {volist name="items" id="item"}
+                        <option value="{$item->id}">{$item->name}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <p>
+                    <span>开始时间：<i>* </i></span>
+                    <input type="text" class="laydate-icon" name="start_at" id="start_at" value="" placeholder="请输入开始时间">
+                </p>
+                <p>
+                    <span>预计结束时间：<i>* </i></span>
+                    <input type="text" class="laydate-icon" name="exp_end" id="exp_end" value="" placeholder="请输入预计结束时间">
+                </p>
+                <p>
+                    <span>结束时间：</span>
+                    <input type="text" class="laydate-icon" name="end_at" id="end_at" value="" placeholder="请输入结束时间">
+                </p>
+
+                <p spanc="" id="choose-pay"><span spanc="">选择过渡户</span></p>
+                <table class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect" id="thead-pay">
+                        <th>更多</th>
+                        <th>ID</th>
+                        <th>片区</th>
+                        <th>过渡户</th>
+                        <th>性质</th>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <p spanc="" id="choose-house"><span spanc="" style="width: auto;">选择临时安置房</span></p>
+                <table class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect" id="thead-house">
+                        <th>更多</th>
+                        <th>ID</th>
+                        <th>小区</th>
+                        <th>房源</th>
+                        <th>面积</th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+<div class="hide" id="pay-box">
+    <div class="w_100">
+        <!--按钮组合-->
+        <div class=" anniu backCo_w padLR12 ov maT10">
+            <a id="showQuery-pay" class="modal-search"><i class="iconfont icon-search"></i>&nbsp;查询</a>
+            <a id="reset-pay" class="modal-reset"><i class="iconfont icon-shuaxin1"></i>&nbsp;重置</a>
+        </div>
+        <div class="w_100">
+            <table class="table w_100" border="0">
+                <tbody>
+                <tr class="noSelect pay-table">
+                    <th>更多</th>
+                    <th>ID</th>
+                    <th>片区</th>
+                    <th>过渡户</th>
+                    <th>性质</th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pageCon page-pay">
+
+        </div>
+
+    </div>
+    <div class="showQuery hide showQuery-pay" style="z-index: 9999;">
+        <form action={:url('Tools/housetransit_search_pay')}" method="get" >
+            <input type="hidden" name="issearch" value="true">
+            <div class=" backCo_w" data-form="pay">
+                <p class="queryTitle">查&nbsp;&nbsp;询</p>
+                <div class="queryCon pafBt_10">
+                    <p>
+                        <span>片区：</span>
+                        <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                            <option value="">--全部--</option>
+                            {volist name="collectioncommunitys" id="collectioncommunity"}
+                            <option value="{$collectioncommunity->id}" >{$collectioncommunity->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p>
+                        <span>权属：</span>
+                        <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
+                            <option value="">--全部--</option>
+                            {volist name="collections" id="collection"}
+                            <option value="{$collection->id}">
+                            {if condition="$collection->building"}{$collection->building}栋{/if}
+                            {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                            {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                            {if condition="$collection->number"}{$collection->number}号{/if}
+                            （{$collection->id}）
+                            </option>
+                            {/volist}
+                        </select>
+                    </p>
+                </div>
+                <!--提交按钮-->
+                <p class="Btnform align_cen bor_none maT20">
+                    <span class="submit button maR17 search-submit">查询</span>
+                    <span class="reset close button maL17">取消</span>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="hide" id="house-box">
+    <div class="w_100">
+        <!--按钮组合-->
+        <div class=" anniu backCo_w padLR12 ov maT10">
+            <b id="showQuery-house" class="modal-search btna"><i class="iconfont icon-search"></i>&nbsp;查询</b>
+            <b id="reset-house" class="modal-reset btna"><i class="iconfont icon-shuaxin1"></i>&nbsp;重置</b>
+        </div>
+        <div class="w_100">
+            <table class="table w_100" border="0">
+                <tbody>
+                <tr class="noSelect house-table">
+                    <th>更多</th>
+                    <th>ID</th>
+                    <th>小区</th>
+                    <th>房号</th>
+                    <th>面积</th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pageCon page-house">
+
+        </div>
+
+    </div>
+    <div class="showQuery hide showQuery-house" id="layerQuery" style="z-index: 9999;">
+        <form action={:url('Tools/housetransit_search_house')}" method="get" id="search-form">
+            <input type="hidden" name="issearch" value="true">
+            <div class=" backCo_w">
+                <p class="queryTitle">查&nbsp;&nbsp;询</p>
+                <div class="queryCon pafBt_10" data-form="house">
+                    <p>
+                        <span>小区：</span>
+                        <select name="community_ids_c[]" id="c_name" class="chosen" data-placeholder="请选择小区" data-no_results_text="没有匹配数据">
+                            <option value="">--全部--</option>
+                            {volist name="communitys" id="community"}
+                            <option value="{$community->id}" >{$community->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p>
+                        <span>户型：</span>
+                        <select name="layout_id" id="layout_id" class="chosen" data-placeholder="请选择户型" data-no_results_text="没有匹配数据">
+                            <option value="">--全部--</option>
+                            {volist name="layouts" id="layout"}
+                            <option value="{$layout->id}" >{$layout->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p>
+                        <span>面积起：</span>
+                        <input type="number" name="area_start" id="area_start" value="{$area_start?:''}">
+                    </p>
+                    <p>
+                        <span>面积止：</span>
+                        <input type="number" name="area_end" id="area_end" value="{$area_end?:''}">
+                    </p>
+                </div>
+                <!--提交按钮-->
+                <p class="Btnform align_cen bor_none maT20">
+                    <span class="submit button maR17 search-submit">查询</span>
+                    <span class="reset close button maL17">取消</span>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+
+    $(document).on('click',".modal-search",function() {
+        $("."+$(this).attr('id')).slideDown(300);
+    }).on('click','.close,.submit',function () {
+        $('.showQuery').slideUp(300);
+    }).on('click','.search-submit',function () {
+        var box=$(this).parents('div.backCo_w');
+        var form=box.data('form');
+        if(form=='house'){
+            var datas={
+                "item_id":$('#item_id').find('option:selected').val()
+                ,"community_ids_c[]":box.find('select[name="community_ids_c[]"]').find('option:selected').val()
+                ,"layout_id":box.find('select[name="layout_id"]').find('option:selected').val()
+                ,"area_start":box.find('input[name="area_start"]').val()
+                ,"area_end":box.find('input[name="area_end"]').val()
+                ,"page":1
+            };
+            searchhouses(datas);
+        }else if(form=='pay'){
+            var datas={
+                "item_id":$('#item_id').find('option:selected').val()
+                ,"community_id":box.find('select[name="community_id"]').find('option:selected').val()
+                ,"collection_id":box.find('select[name="collection_id"]').find('option:selected').val()
+                ,"page":1
+            };
+            searchpays(datas);
+        }
+        
+    }).on('click','.modal-reset',function () {
+        if($(this).attr('id')=='reset-house'){
+            searchhouses({"item_id":$('#item_id').find('option:selected').val()});
+        }else if($(this).attr('id')=='reset-pay'){
+            searchpays({"item_id":$('#item_id').find('option:selected').val()});
+        }
+    });
+
+
+    $('#choose-pay').on('click',function () {
+        var item_id=$('#item_id').find('option:selected').val();
+        if(item_id){
+            layer.open({
+                type: 1
+                ,content: $('#pay-box').html()
+                ,anim: 'up'
+                ,style: 'position:fixed; left:0; top:0; width:100%; height:100%; border: none; -webkit-animation-duration: .5s; animation-duration: .5s;overflow: auto;'
+                ,success:function (layero) {
+                    searchpays({"item_id":item_id});
+                }
+                ,btn:['确定','返回']
+                ,yes:function (index) {
+                    var pay_id=$(document).find('input[name="pay"]:checked').val();
+                    var tr='';
+                    var tr_hide='';
+                    if(pay_id){
+                        var trobj=$('#tr-pay-'+pay_id);
+                        var tro=trobj.clone(true);
+                        var tr_hideo=trobj.next();
+                        tro.find('input[type=radio]').attr('name','pay_id').attr('checked','checked');
+                        tr=tro.prop('outerHTML');
+                        tr_hide=tr_hideo.prop('outerHTML');
+                        layer.closeAll();
+                    }else{
+                        layer.open({
+                            content:'请选择过渡户'
+                            ,skin: 'msg'
+                            ,time:1.5
+                        });
+                    }
+                    $('#thead-pay').siblings().remove();
+                    $('#thead-pay').after(tr+tr_hide);
+                }
+                ,btn1:function (index) {
+                    layer.closeAll();
+                }
+            });
+        }else{
+            layer.open({
+                content:'请先选择项目'
+                ,skin: 'msg'
+                ,time:1.5
+                ,end:function() {
+                    layer.closeAll();
+                }
+            });
+        }
+
+    });
+    function searchpays(datas) {
+        $.ajax({
+            url:"{:url('Tools/housetransit_search_pay')}"
+            ,data:datas
+            ,dataType:'json'
+            ,type:'get'
+            ,async:false
+            ,success:function (resp) {
+                if(resp.code){
+                    var tr_obj='';
+                    if(resp.data.data && resp.data.data.length){
+                        $.each(resp.data.data,function (index,info) {
+                            tr_obj +='<tr id="tr-pay-'+info.id+'">' +
+                                '    <td class="more">' +
+                                '        <input type="radio" name="pay" value="'+info.id+'"/>' +
+                                '        &nbsp;' +
+                                '        <i class="iconfont icon-gongyongshuangjiantouxia"></i>' +
+                                '    </td>' +
+                                '    <td>'+info.id+'</td>' +
+                                '    <td>'+info.cc_name+'</td>' +
+                                '    <td>' +
+                                '        '+(info.building?(info.building+'栋'):'')+
+                                '        '+(info.unit?(info.unit+'单元'):'')+
+                                '        '+(info.floor?(info.floor+'楼'):'') +
+                                '        '+(info.number?(info.number+'号'):'')+
+                                '    </td>' +
+                                '    <td>' +info.bu_name+ '</td>' +
+                                '</tr>' +
+                                '<tr class="hide_more hide">' +
+                                '    <td colspan="5" style="padding: 0 !important;">' +
+                                '        <div class="table_more w_100 backCo_f21">' +
+                                '            <div class="flex w_100">' +
+                                '                <div class="w_30 align_right">地址：</div><div class="align_left">'+info.address+'</div>' +
+                                '            </div>' +
+                                '            <div class="flex w_100">' +
+                                '                <div class="w_30 align_right">补偿方式：</div><div class="align_left">'+info.compensate_way+'</div>' +
+                                '            </div>' +
+                                '            <div class="flex w_100">' +
+                                '                <div class="w_30 align_right">类型：</div><div class="align_left">'+info.type+'</div>' +
+                                '            </div>' +
+                                '        </div>' +
+                                '    </td>' +
+                                '</tr>';
+                        });
+
+
+                        $('.page-pay').pagination({
+                            totalData:resp.data.total,
+                            showData:resp.data.per_page,
+                            current:resp.data.current_page,
+                            jump:false,
+                            coping:true,
+                            homePage:'',
+                            endPage:'',
+                            prevContent:'<<',
+                            nextContent:'>>',
+                            callback:function(api){
+                                datas.page=api.getCurrent();
+                                searchpays(datas);
+                            }
+                        },function(api){
+                            var cur=api.getCurrent();
+                        });
+
+                    }else{
+                        layer.open({
+                            content:'没有数据'
+                            ,skin: 'msg'
+                            ,time:1.5
+                        });
+                        $('.page-pay').html('');
+                    }
+                    $('.pay-table').siblings().remove();
+                    $('.pay-table').after(tr_obj);
+
+                }else{
+                    layer.open({
+                        content:resp.msg
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+            }
+            ,error:function () {
+                layer.open({
+                    content:'网络出错，稍候重试！'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    }
+    
+
+    $('#choose-house').on('click',function () {
+        var item_id=$('#item_id').find('option:selected').val();
+        if(item_id){
+            layer.open({
+                type: 1
+                ,content: $('#house-box').html()
+                ,anim: 'up'
+                ,style: 'position:fixed; left:0; top:0; width:100%; height:100%; border: none; -webkit-animation-duration: .5s; animation-duration: .5s;overflow: auto;'
+                ,success:function (layero) {
+                    searchhouses({"item_id":item_id});
+                }
+                ,btn:['确定','返回']
+                ,yes:function (index) {
+                    var house_id=$(document).find('input[name="house"]:checked').val();
+                    var tr='';
+                    var tr_hide='';
+                    if(house_id){
+                        var trobj=$('#tr-house-'+house_id);
+                        var tro=trobj.clone(true);
+                        var tr_hideo=trobj.next();
+                        tro.find('input[type=radio]').attr('name','house_id').attr('checked','checked');
+                        tr=tro.prop('outerHTML');
+                        tr_hide=tr_hideo.prop('outerHTML');
+                        layer.closeAll();
+                    }else{
+                        layer.open({
+                            content:'请选择房源'
+                            ,skin: 'msg'
+                            ,time:1.5
+                        });
+                    }
+                    $('#thead-house').siblings().remove();
+                    $('#thead-house').after(tr+tr_hide);
+                }
+                ,btn1:function (index) {
+                    layer.closeAll();
+                }
+            });
+        }else{
+            layer.open({
+                content:'请先选择项目'
+                ,skin: 'msg'
+                ,time:1.5
+                ,end:function() {
+                    layer.closeAll();
+                }
+            });
+        }
+
+    });
+    function searchhouses(datas) {
+        $.ajax({
+            url:"{:url('Tools/housetransit_search_house')}"
+            ,data:datas
+            ,dataType:'json'
+            ,type:'get'
+            ,async:false
+            ,success:function (resp) {
+                if(resp.code){
+                    var tr_obj='';
+                    if(resp.data.data && resp.data.data.length){
+                        $.each(resp.data.data,function (index,info) {
+                            tr_obj +='<tr id="tr-house-'+info.house_id+'">' +
+                                '    <td class="more">' +
+                                '        <input type="radio" name="house" value="'+info.house_id+'"/>' +
+                                '        &nbsp;' +
+                                '        <i class="iconfont icon-gongyongshuangjiantouxia"></i>' +
+                                '    </td>' +
+                                '    <td>'+info.house_id+'</td>' +
+                                '    <td>'+info.c_name+'</td>' +
+                                '    <td>' +
+                                '        '+(info.building?(info.building+'栋'):'')+
+                                '        '+(info.unit?(info.unit+'单元'):'')+
+                                '        '+(info.floor?(info.floor+'楼'):'') +
+                                '        '+(info.number?(info.number+'号'):'')+
+                                '    </td>' +
+                                '    <td>' +info.area+ '</td>' +
+                                '</tr>' +
+                                '<tr class="hide_more hide">' +
+                                '    <td colspan="5" style="padding: 0 !important;">' +
+                                '        <div class="table_more w_100 backCo_f21">' +
+                                '            <div class="flex w_100">' +
+                                '                <div class="w_30 align_right">地址：</div><div class="align_left">'+info.address+'</div>' +
+                                '            </div>' +
+                                '            <div class="flex w_100">' +
+                                '                <div class="w_30 align_right">户型：</div><div class="align_left">'+info.l_name+'</div>' +
+                                '            </div>' +
+                                '            <div class="flex w_100">' +
+                                '                <div class="w_30 align_right">类型：</div><div class="align_left">'+info.is_real+'|'+info.is_buy+'|'+info.is_public+'</div>' +
+                                '            </div>' +
+                                '        </div>' +
+                                '    </td>' +
+                                '</tr>';
+                        });
+
+
+                        $('.page-house').pagination({
+                            totalData:resp.data.total,
+                            showData:resp.data.per_page,
+                            current:resp.data.current_page,
+                            jump:false,
+                            coping:true,
+                            homePage:'',
+                            endPage:'',
+                            prevContent:'<<',
+                            nextContent:'>>',
+                            callback:function(api){
+                                datas.page=api.getCurrent();
+                                searchhouses(datas);
+                            }
+                        },function(api){
+                            var cur=api.getCurrent();
+                        });
+
+                    }else{
+                        layer.open({
+                            content:'没有数据'
+                            ,skin: 'msg'
+                            ,time:1.5
+                        });
+                        $('.page-house').html('');
+                    }
+                    $('.house-table').siblings().remove();
+                    $('.house-table').after(tr_obj);
+
+                }else{
+                    layer.open({
+                        content:resp.msg
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+            }
+            ,error:function () {
+                layer.open({
+                    content:'网络出错，稍候重试！'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>

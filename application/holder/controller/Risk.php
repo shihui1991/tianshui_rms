@@ -99,7 +99,7 @@ class Risk extends Base
                 'model'=>$model,
             ]);
 
-            return view();
+            return view($this->theme.'/risk/add');
         }
     }
 
@@ -132,7 +132,7 @@ class Risk extends Base
 
         $this->assign(['infos'=>$infos]);
 
-        return view();
+        return view($this->theme.'/risk/detail');
     }
 }
 

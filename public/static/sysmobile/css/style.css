@@ -280,6 +280,22 @@ input[type=checkbox]{
 	height: 20px;
 }
 
+.btna{
+	text-align: center;
+	color: #333333;
+	font-size: 14px;
+	font-weight: normal;
+	display: inline-block;
+	float: left;
+	padding: 0 8px;
+	height: 28px;
+	line-height: 28px;
+	background: #E0E0E0;
+	border-radius: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
 .anniu {
 	padding: 8px 15px;
 	overflow: hidden;

@@ -11,13 +11,13 @@
 <body style="background: url(__STATIC__/sysmobile/img/login_bg.png) no-repeat center;background-size:100% 100%;">
 <div class="page" >
     <form class="login_from js-ajax-form" data-role="none" action="{:url('login')}" method="post" onsubmit="return false;">
-        <p><i class="iconfont icon-gerenzhongxin"></i><input type="text" value="" data-role="none" name="username" placeholder="输入用户名"/> </p>
+        <p><i class="iconfont icon-gerenzhongxin"></i><input type="text" value="" id="username" data-role="none" name="username" placeholder="输入用户名"/> </p>
         <p><i class="iconfont icon-mima"></i><input type="password" placeholder="输入密码" data-role="none" name="password"/> </p>
         <a class="submit_p js-ajax-login">立即提交</a>
     </form>
 </div>
 <script>
-    $('#name').focus();
+    $('#username').focus();
     $(document).on('keydown',function (e) {
         if (!e) e = window.event; //火狐中是 window.event
         if ((e.keyCode || e.which) == 13) {

@@ -44,7 +44,7 @@ class Collectionholder extends Base
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/collectionholder/index');
     }
 
 
@@ -64,7 +64,7 @@ class Collectionholder extends Base
             'infos'=>$infos,
         ]);
 
-        return view();
+        return view($this->theme.'/collectionholder/detail');
     }
 
 }

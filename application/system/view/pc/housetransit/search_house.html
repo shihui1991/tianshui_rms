@@ -2,12 +2,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>冻结安置房源|房屋征收安置管理系统</title>
+    <title>房源|房屋征收安置管理系统</title>
     {include file="pc/public/head" /}
 
 </head>
 <body>
-<h4>冻结安置房源管理</h4>
 <div class="toolsBar">
     <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
     <ul>
@@ -28,9 +27,7 @@
         <table class="table" border="0" >
             <tbody>
             <tr class="noSelect">
-                <th class="tc" width="35px">
-                    <input class="va_m" type="radio" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
-                </th>
+                <th class="tc" width="35px"></th>
                 <th>ID</th>
                 <th>项目（ID）</th>
                 <th>房源（ID）</th>
@@ -42,7 +39,7 @@
             {volist name="itemhouses" id="itemhouse"}
             <tr>
                 <td>
-                    <input class="va_m house_id" type="radio" name="house_id" value="{$itemhouse->id}" onclick="checkBoxOp(this)" id="check-{$itemhouse->id}"/>
+                    <input class="va_m house_id" type="radio" name="house_id" value="{$itemhouse->house_id}" onclick="checkBoxOp(this)" id="check-{$itemhouse->house_id}"/>
                 </td>
                 <td>{$itemhouse->id}</td>
                 <td>{if condition="$itemhouse->i_status"}{$itemhouse->i_name}{else/}<del>{$itemhouse->i_name}</del>{/if}（{$itemhouse->item_id}）</td>
@@ -86,17 +83,6 @@
         <table class="layerTable">
             <input type="hidden" name="item_id" value="{$item_id}">
             <tr class="h50">
-                <td>地址：</td>
-                <td colspan="7">
-                    <select name="community_ids_a[]" id="address" class="chosen" multiple data-placeholder="请选择地址" data-no_results_text="没有匹配数据">
-                        <option value="">--全部--</option>
-                        {volist name="communitys" id="community"}
-                        <option value="{$community->id}" {if condition="isset($community_ids_a) and in_array($community->id,$community_ids_a)"}selected{/if}>{$community->address}</option>
-                        {/volist}
-                    </select>
-                </td>
-            </tr>
-            <tr class="h50">
                 <td>小区：</td>
                 <td colspan="3">
                     <select name="community_ids_c[]" id="c_name" class="chosen" multiple data-placeholder="请选择小区" data-no_results_text="没有匹配数据">
@@ -117,29 +103,10 @@
                 </td>
             </tr>
             <tr class="h50">
-                <td>几栋：</td>
-                <td><input type="number" name="building" id="building" value="{$building?:''}" min="1"></td>
-                <td>几单元：</td>
-                <td><input type="number" name="unit" id="unit" value="{$unit?:''}" min="1"></td>
-                <td>几楼：</td>
-                <td><input type="number" name="floor" id="floor" value="{$floor?:''}"></td>
-                <td>几号：</td>
-                <td><input type="number" name="number" id="number" value="{$number?:''}" min="1"></td>
-            </tr>
-            <tr class="h50">
                 <td>面积起：</td>
-                <td><input type="number" name="area_start" id="area_start" value="{$area_start?:''}"></td>
+                <td colspan="3"><input type="number" name="area_start" id="area_start" value="{$area_start?:''}"></td>
                 <td>面积止：</td>
-                <td><input type="number" name="area_end" id="area_end" value="{$area_end?:''}"></td>
-                <td>状态：</td>
-                <td>
-                    <select name="status" id="status">
-                        <option value="">--全部--</option>
-                        {volist name="model->house_status" id="value"}
-                        <option value="{$key}" {if condition="isset($status) and $status eq $key"}selected{/if}>{$value}</option>
-                        {/volist}
-                    </select>
-                </td>
+                <td colspan="3"><input type="number" name="area_end" id="area_end" value="{$area_end?:''}"></td>
             </tr>
             <tr class="h50">
                 <td>类型：</td>
@@ -157,15 +124,6 @@
                         <option value="">--全部--</option>
                         {volist name="model->is_buy" id="value"}
                         <option value="{$key}" {if condition="isset($is_buy) and $is_buy eq $key"}selected{/if}>{$value}</option>
-                        {/volist}
-                    </select>
-                </td>
-                <td>过渡：</td>
-                <td>
-                    <select name="is_transit" id="is_transit">
-                        <option value="">--全部--</option>
-                        {volist name="model->is_transit" id="value"}
-                        <option value="{$key}" {if condition="isset($is_transit) and $is_transit eq $key"}selected{/if}>{$value}</option>
                         {/volist}
                     </select>
                 </td>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>评估公司简介|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+    {include file="pc/public/kindeditor" /}
+
+</head>
+<body>
+<div class="tabs">
+    <div class="item">
+        <div class="homeTit bg_f5">
+            <div class="fl"><img src="__STATIC__/system/img/bricks.png"/>评估公司</div>
+            <ul class="homeTab">
+                <li class="on">基本信息</li>
+                <li>详细介绍</li>
+            </ul>
+        </div>
+        <div class="homeCon">
+            <div class="tabPage w_100 on">
+                <div class="layerCon bg_f">
+                    <table class="layerTable" border="0">
+                        <tr class="h50">
+                            <td>名称：</td>
+                            <td>{$infos->name}</td>
+                            <td>地址：</td>
+                            <td>{$infos->address}</td>
+                        </tr>
+                        <tr class="h50">
+                            <td>公司电话：</td>
+                            <td>{$infos->phone}</td>
+                            <td>公司传真：</td>
+                            <td>{$infos->fax}</td>
+                        </tr>
+                        <tr class="h50">
+                            <td>简介：</td>
+                            <td colspan="3">{$infos->infos}</td>
+                        </tr>
+                    </table>
+
+                </div>
+            </div>
+            <div class="tabPage w_100">
+                <div class="layerCon bg_f">
+                    <textarea name="content" id="content" class="kindeditor">{$infos->content}</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /*----- 富文本编辑器 -----*/
+    KindEditor.ready(function(K) {
+        window.editor = K.create('.kindeditor',{
+            width : '100%',
+            minHeight:'300',
+            uploadJson : '',
+            fileManagerJson : '',
+            allowFileManager : false,
+            items:[],
+            readonlyMode:true
+        });
+    });
+</script>
+</body>
+</html>

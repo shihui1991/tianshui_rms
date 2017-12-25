@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    <style type="text/css">
+        .queryCon>:last-child {
+            height: 52px;
+        }
+
+        .queryCon {
+            padding-bottom: 0;
+        }
+    </style>
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <p>
+                    <span>计算年份：</span>
+                    <select name="year" id="year">
+                        {for start="date('Y')" end="date('Y')-10" comparison="egt" step="-1"}
+                        <option value="{$i}">{$i}</option>
+                        {/for}
+                    </select>
+                </p>
+
+                <p spanc="" id="showQuery"><span spanc="">选择房源</span></p>
+                <table class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect" id="thead-houselist">
+                        <th><input type="checkbox" data-role="checkall"/> 更多</th>
+                        <th>交付时间</th>
+                        <th>小区</th>
+                        <th>房号</th>
+                        <th>面积</th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+
+
+    <div class="showQuery hide" id="layerQuery">
+        <form action="{:url('Tools/findhouse')}" method="get" id="search-form">
+            <input type="hidden" name="is_buy" value="1">
+            <div class=" backCo_w">
+                <p class="queryTitle">查&nbsp;&nbsp;询</p>
+                <div class="queryCon pafBt_10">
+                    <p>
+                        <span>小区：</span>
+                        <select name="community_ids[]" id="community_ids" class="chosen" data-placeholder="请选择小区" data-no_results_text="没有匹配数据">
+                            <option value="">--全部--</option>
+                            {volist name="communitys" id="community"}
+                            <option value="{$community->id}">{$community->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p>
+                        <span>户型：</span>
+                        <select name="layout_ids[]" id="layout_ids" class="chosen" data-placeholder="请选择户型" data-no_results_text="没有匹配数据">
+                            <option value="">--全部--</option>
+                            {volist name="layouts" id="layout"}
+                            <option value="{$layout->id}" >{$layout->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p>
+                        <span>面积起：</span>
+                        <input type="number" name="area_start" id="area_start" value="">
+                    </p>
+                    <p>
+                        <span>面积止：</span>
+                        <input type="number" name="area_end" id="area_end" value="">
+                    </p>
+
+                </div>
+                <!--提交按钮-->
+                <p class="Btnform align_cen bor_none maT20">
+                    <span class="submit button maR17" id="btn-form-search">查询</span>
+                    <span class="reset close button maL17">取消</span>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+    $('#btn-form-search').click(function () {
+        var form=$('#search-form');
+        var thead=$('#thead-houselist');
+
+        thead.siblings().remove();
+        $.ajax({
+            url:form.attr('action'),
+            data:form.serialize(),
+            dataType:'json',
+            type:'get',
+            success:function (resp) {
+                var tr_obj='';
+                if(resp.code){
+                    $.each(resp.data,function (index,info) {
+                        tr_obj +='<tr>' +
+                            '    <td class="more">' +
+                            '        <input type="checkbox" data-role="check"  name="ids[]" value="'+info.id+'"/> <i class="iconfont icon-gongyongshuangjiantouxia"></i>' +
+                            '    </td>' +
+                            '    <td>'+info.deliver_at+'</td>' +
+                            '    <td>'+info.c_name+'</td>' +
+                            '    <td>' +
+                            '        '+(info.building?(info.building+'栋'):'')+
+                            '        '+(info.unit?(info.unit+'单元'):'')+
+                            '        '+(info.floor?(info.floor+'楼'):'') +
+                            '        '+(info.number?(info.number+'号'):'')+
+                            '    </td>' +
+                            '    <td>' +info.area+ '</td>' +
+                            '</tr>' +
+                            '<tr class="hide_more hide">' +
+                            '    <td colspan="5" style="padding: 0 !important;">' +
+                            '        <div class="table_more w_100 backCo_f21">' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">地址：</div><div class="align_left">'+info.address+'</div>' +
+                            '            </div>' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">户型：</div><div class="align_left">'+info.l_name+'</div>' +
+                            '            </div>' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">有无电梯：</div><div class="align_left">'+info.has_lift+'</div>' +
+                            '            </div>' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">类型：</div><div class="align_left">'+info.is_real+'|'+info.is_buy+'|'+'|'+info.is_transit+info.is_public+'</div>' +
+                            '            </div>' +
+                            '            <div class="flex w_100">' +
+                            '                <div class="w_30 align_right">状态：</div><div class="align_left">'+info.status+'</div>' +
+                            '            </div>' +
+                            '        </div>' +
+                            '    </td>' +
+                            '</tr>';
+                    });
+                }else{
+                    layer.open({
+                        content:resp.msg
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+                thead.after(tr_obj);
+                $('.showQuery').slideUp(0);
+            },
+            error:function () {
+                layer.open({
+                    content:'网络出错，稍候重试！'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>

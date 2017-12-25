@@ -37,7 +37,7 @@ class Collection extends Base
             'collections'=>$collections
         ]);
 
-        return view();
+        return view($this->theme.'/collection/index');
     }
 
     /* ========== 详情 ========== */
@@ -59,6 +59,6 @@ class Collection extends Base
             'infos'=>$collection,
         ]);
 
-        return view();
+        return view($this->theme.'/collection/detail');
     }
 }

@@ -52,7 +52,7 @@ class Collectionholdercrowd extends Base
 
         $this->assign($datas);
 
-        return view();
+        return view($this->theme.'/collectionholdercrowd/index');
     }
 
 
@@ -67,7 +67,7 @@ class Collectionholdercrowd extends Base
             return $this->error('非法访问');
         }
 
-        return view('detail',[
+        return view($this->theme.'/collectionholdercrowd/detail',[
             'infos'=>$infos,
         ]);
     }

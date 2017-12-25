@@ -241,12 +241,14 @@ class Tools extends Base
 
         /* ++++++++++ 小区 ++++++++++ */
         $community_ids=isset($inputs['community_ids'])?$inputs['community_ids']:[];
-        if($community_ids){
+        $community_ids=array_filter($community_ids);
+        if(!empty($community_ids)){
             $where['community_id']=['in',$community_ids];
         }
         /* ++++++++++ 户型 ++++++++++ */
         $layout_ids=isset($inputs['layout_ids'])?$inputs['layout_ids']:[];
-        if($layout_ids){
+        $layout_ids=array_filter($layout_ids);
+        if(!empty($layout_ids)){
             $where['layout_id']=['in',$layout_ids];
         }
         /* ++++++++++ 面积 ++++++++++ */
@@ -718,13 +720,11 @@ class Tools extends Base
 
     /* ========== 查询安置房源 ========== */
     public function sear_house(){
-        $pay_id = input('pay_id');
         $pay_holder_id = input('pay_holder_id');
         if(!$pay_holder_id){
             return $this->error('请选择被征收人');
         }
         /* ++++++++++ 安置房选择 ++++++++++ */
-        $where['pyh.pay_id']=$pay_id;
         $where['pyh.pay_holder_id']=$pay_holder_id;
         $where['h.status']=0;
         $house_list=model('Payholderhouses')
@@ -755,6 +755,9 @@ class Tools extends Base
 
         /* ++++++++++ 项目 ++++++++++ */
         $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('请选择项目');
+        }
         $where['item_id']=$item_id;
         $datas['item_id']=$item_id;
         $inputs=input();
@@ -822,25 +825,16 @@ class Tools extends Base
             $where['house.is_buy']=$is_buy;
             $datas['is_buy']=$is_buy;
         }
-        /* ++++++++++ 是否过渡房 ++++++++++ */
-        $is_transit=input('is_transit');
-        if(is_numeric($is_transit) && in_array($is_transit,[0,1])){
-            $where['house.is_transit']=$is_transit;
-            $datas['is_transit']=$is_transit;
-        }
+
         /* ++++++++++ 是否共用 ++++++++++ */
         $is_public=input('is_public');
         if(is_numeric($is_public) && in_array($is_public,[0,1])){
             $where['house.is_public']=$is_public;
             $datas['is_public']=$is_public;
         }
-        /* ++++++++++ 状态 ++++++++++ */
-        $status=input('status');
-        if(is_numeric($status) && in_array($status,[0,1,2,3])){
-            $where['house.status']=$status;
-            $datas['status']=$status;
-        }
+
         $where['h.status']=0;
+        $where['h.is_transit']=1;
         /* ++++++++++ 排序 ++++++++++ */
         $ordername=input('ordername');
         $ordername=$ordername?$ordername:'id';
@@ -877,20 +871,27 @@ class Tools extends Base
         $layouts=model('Layouts')->field(['id','name','status'])->where('status',1)->select();
         $datas['layouts']=$layouts;
 
-        $this->assign($datas);
-
-        return view($this->theme.'/housetransit/search_house');
+        if(request()->isAjax()){
+            return $this->success('请求成功','',$itemhouses);
+        }else{
+            $this->assign($datas);
+            return view($this->theme.'/housetransit/search_house');
+        }
     }
 
     /* ========== 临时安置记录----兑付列表 ========== */
     public function housetransit_search_pay(){
         /* ********** 查询条件 ********** */
         $datas=[];
-        $where=[];
+        $where['p.compensate_way']=1;
+        $where['p.transit_way']=1;
         $field=['p.*','i.name as i_name','i.is_top','c.community_id','c.building','c.unit','c.floor','c.number','c.type','c.real_use','cc.address','cc.name as cc_name','bu.name as bu_name'];
 
         /* ++++++++++ 项目 ++++++++++ */
         $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('请选择项目');
+        }
         $where['p.item_id']=$item_id;
         $datas['item_id']=$item_id;
         /* ++++++++++ 片区 ++++++++++ */
@@ -953,12 +954,17 @@ class Tools extends Base
         $collectioncommunitys=model('Collectioncommunitys')->field(['id','address','name'])->select();
         $datas['collectioncommunitys']=$collectioncommunitys;
         /* ++++++++++ 权属 ++++++++++ */
-        $collections=model('Collections')->field(['id','building','unit','floor','number','status'])->where('status',1)->select();
+        $collections=model('Collections')->field(['id','building','unit','floor','number','status'])->where('status',1)->where('real_use','<>',3)->select();
         $datas['collections']=$collections;
 
-        $this->assign($datas);
+        if(request()->isAjax()){
+            return $this->success('请求成功','',$pays);
+        }else{
+            $this->assign($datas);
 
-        return view($this->theme.'/housetransit/search_pay');
+            return view($this->theme.'/housetransit/search_pay');
+        }
+
     }
 
     /* ========== 安置记录----兑付列表 ========== */
@@ -970,7 +976,11 @@ class Tools extends Base
 
         /* ++++++++++ 项目 ++++++++++ */
         $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('请先选择项目');
+        }
         $where['p.item_id']=$item_id;
+        $where['p.compensate_way']=1;
         $datas['item_id']=$item_id;
         /* ++++++++++ 片区 ++++++++++ */
         $community_id=input('community_id');
@@ -1025,18 +1035,23 @@ class Tools extends Base
 
         $datas['pays']=$pays;
 
-        /* ++++++++++ 项目 ++++++++++ */
-        $items=model('Items')->field(['id','name','status','is_top'])->where(['status'=>1])->order('is_top desc')->select();
-        $datas['items']=$items;
-        /* ++++++++++ 片区 ++++++++++ */
-        $collectioncommunitys=model('Collectioncommunitys')->field(['id','address','name'])->select();
-        $datas['collectioncommunitys']=$collectioncommunitys;
-        /* ++++++++++ 权属 ++++++++++ */
-        $collections=model('Collections')->field(['id','building','unit','floor','number','status'])->where('status',1)->select();
-        $datas['collections']=$collections;
+        if(request()->isAjax()){
+            return $this->success('请求成功','',$pays);
+        }else{
+            /* ++++++++++ 项目 ++++++++++ */
+            $items=model('Items')->field(['id','name','status','is_top'])->where(['status'=>1])->order('is_top desc')->select();
+            $datas['items']=$items;
+            /* ++++++++++ 片区 ++++++++++ */
+            $collectioncommunitys=model('Collectioncommunitys')->field(['id','address','name'])->select();
+            $datas['collectioncommunitys']=$collectioncommunitys;
+            /* ++++++++++ 权属 ++++++++++ */
+            $collections=model('Collections')->field(['id','building','unit','floor','number','status'])->where('status',1)->select();
+            $datas['collections']=$collections;
 
-        $this->assign($datas);
+            $this->assign($datas);
 
-        return view($this->theme.'/houseresettle/search_pay');
+            return view($this->theme.'/houseresettle/search_pay');
+        }
+
     }
 }

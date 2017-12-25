@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>入户摸底-建筑|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+
+</head>
+<body>
+<table class="layerTable" border="0">
+    <tr class="h50">
+        <td>批准用途：</td>
+        <td>{$infos->du_name}</td>
+        <td>实际用途：</td>
+        <td>{$infos->ru_name}</td>
+        <td><label for="struct_id">建筑结构：</label></td>
+        <td>{$infos->struct_name}</td>
+        <td>建筑状况：</td>
+        <td>{if condition="$infos->status_id"}{$infos->status_name}{else/}待定{/if}</td>
+    </tr>
+
+    <tr class="h50">
+        <td><label for="collection_id">位置：</label></td>
+        <td colspan="3">
+            {if condition="$infos->building"}{$infos->building}栋{/if}
+            {if condition="$infos->unit"}{$infos->unit}单元{/if}
+            {if condition="$infos->floor"}{$infos->floor}楼{/if}
+            {if condition="$infos->number"}{$infos->number}号{/if}
+        </td>
+        <td><label for="total_floor">总楼层：</label></td>
+        <td>{$infos->total_floor}</td>
+        <td><label for="direction">朝向：</label></td>
+        <td>{$infos->direction}</td>
+    </tr>
+
+    <tr class="h50">
+        <td><label for="register">登记号：</label></td>
+        <td>{$infos->register}</td>
+        <td><label for="register_num">登记数量：</label></td>
+        <td>{$infos->register_num}</td>
+        <td><label for="real_num">实际数量：</label></td>
+        <td>{$infos->real_num}</td>
+        <td><label for="real_unit">数量单位：</label></td>
+        <td>{$infos->real_unit}</td>
+    </tr>
+    <tr class="h50">
+        <td>使用状态：</td>
+        <td>{$infos->status}</td>
+        <td><label for="business">经营项目：</label></td>
+        <td colspan="3">{$infos->business}</td>
+        <td><label for="build_year">建造年份：</label></td>
+        <td>{$infos->build_year}</td>
+    </tr>
+    <tr class="h50">
+        <td><label for="remark">备注：</label></td>
+        <td colspan="7">{$infos->remark}</td>
+    </tr>
+
+    {if condition="$infos->picture"}
+    {volist name="$infos->picture" id="pics"}
+    {php}$name=$key;{/php}
+    <tr class="h70">
+        <td><span>{$name}</span>：</td>
+        <td class="imgCon" colspan="7">
+            {volist name="pics" id="pic" key="k"}
+            {if condition="$pic"}
+            <div class="img">
+                <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+            </div>
+            {/if}
+            {/volist}
+        </td>
+    </tr>
+    {/volist}
+    {/if}
+</table>
+</body>
+</html>

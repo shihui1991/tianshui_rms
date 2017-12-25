@@ -78,7 +78,7 @@ class Houseresettle extends Auth
                 ['pay_id', 'require', '请勾选兑付'],
                 ['collection_holder_id', 'require', '请选择被征收人'],
                 ['house_id', 'require', '请选择安置房源'],
-                ['start_at', 'require', '请选择开始时间']
+                ['start_at', 'require', '请选择安置时间']
             ];
             $result = $this->validate($datas, $rule);
             if (true !== $result) {
@@ -114,6 +114,7 @@ class Houseresettle extends Auth
                     'collection_id'=>$pay_infos->collection_id,
                     'collection_community_id'=>$pay_infos->community_id,
                     'collection_holder_id'=>$datas['collection_holder_id'],
+                    'pay_holder_id'=>$datas['pay_holder_id'],
                     'house_id'=>$datas['house_id'],
                     'house_community_id'=>$house_infos->community_id,
                     'start_at'=>$datas['start_at'],
@@ -139,7 +140,17 @@ class Houseresettle extends Auth
         }else{
             /* ++++++++++ 项目列表 ++++++++++ */
             $items = model('Items')->field(['id', 'name', 'status'])->where('status', 1)->order('is_top desc')->select();
-            $this->assign('items',$items);
+            $datas['items']=$items;
+            if(request()->isMobile()){
+                /* ++++++++++ 片区 ++++++++++ */
+                $collectioncommunitys=model('Collectioncommunitys')->field(['id','address','name'])->select();
+                $datas['collectioncommunitys']=$collectioncommunitys;
+                /* ++++++++++ 权属 ++++++++++ */
+                $collections=model('Collections')->field(['id','building','unit','floor','number','status'])->where('status',1)->where('real_use','<>',3)->select();
+                $datas['collections']=$collections;
+            }
+
+            $this->assign($datas);
             return view($this->theme.'/houseresettle/add');
         }
 
@@ -209,7 +220,12 @@ class Houseresettle extends Auth
                 $house_id =  model('Houseresettles')
                     ->where('id',$datas['id'])
                     ->value('house_id');
-                model('Houses')->save(['status'=>0],['id'=>$house_id]);
+                if($datas['end_at']){
+                    model('Houses')->save(['status'=>0],['id'=>$house_id]);
+                }else{
+                    model('Houses')->save(['status'=>2],['id'=>$house_id]);
+                }
+
                 if(!$rs){
                     $res = false;
                     Db::rollback();
@@ -222,27 +238,7 @@ class Houseresettle extends Auth
                 Db::rollback();
             }
         }else{
-            Db::startTrans();
-            try{
-                $rs = model('Houseresettles')->save([
-                    'start_at'=>$datas['start_at'],
-                    'end_at'=>$datas['end_at']
-                ],['id'=>$datas['id']]);
-                $house_id =  model('Houseresettles')
-                    ->where('id',$datas['id'])
-                    ->value('house_id');
-                model('Houses')->save(['status'=>2],['id'=>$house_id]);
-                if(!$rs){
-                    $res = false;
-                    Db::rollback();
-                }else{
-                    $res = true;
-                    Db::commit();
-                }
-            }catch (\Exception $e){
-                $res = false;
-                Db::rollback();
-            }
+            return $this->error('结束时间不能晚于今天');
         }
         if($res){
             return $this->success('修改成功','');

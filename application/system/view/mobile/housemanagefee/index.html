@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name|default=''}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+    <style type="text/css">
+        .queryCon>:last-child {
+            height: 52px;
+        }
+
+        .queryCon {
+            padding-bottom: 0;
+        }
+    </style>
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100">
+
+        {include file="mobile/public/breadnav"/}
+
+        <div class="w_100">
+            <!--按钮组合-->
+            <div class=" anniu backCo_w padLR12 ov maT10">
+                <a href="{:url('index')}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                <a id="showQuery"><i class="iconfont icon-search"></i>&nbsp;查询</a>
+                <a href="{:url('add')}"><i class="iconfont icon-tianjia"></i>&nbsp;计算</a>
+            </div>
+            <div class="w_100">
+                <form action="{:url('index')}" method="post" id="js-ajax-form">
+                <table id="example-advanced" class="table treetable w_100" border="0" >
+                    <tbody>
+                    <tr class="noSelect">
+                        <th>更多</th>
+                        <th>时间</th>
+                        <th>小区</th>
+                        <th>房源</th>
+                        <th>面积</th>
+                    </tr>
+
+                    {volist name="housefees" id="housefee"}
+                    <tr>
+                        <td class="more">
+                            <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                        </td>
+                        <td>{$housefee->date_at}</td>
+                        <td>{$housefee->house->community->name}</td>
+                        <td>
+                            {if condition="$housefee->house->building"}{$housefee->house->building}栋{/if}
+                            {if condition="$housefee->house->unit"}{$housefee->house->unit}单元{/if}
+                            {if condition="$housefee->house->floor"}{$housefee->house->floor}楼{/if}
+                            {if condition="$housefee->house->number"}{$housefee->house->number}号{/if}
+                        </td>
+                        <td>{$housefee->area|number_format=2}</td>
+                    </tr>
+                    <tr class="hide_more hide">
+                        <td colspan="5" style="padding: 0 !important;">
+                            <div class="table_more w_100 backCo_f21">
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">地址：</div><div class="align_left">{$housefee->house->community->address}</div>
+                                </div>
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">管理费单价(元/㎡/月)：</div><div class="align_left">{$housefee->manage_price|number_format=2}</div>
+                                </div>
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">管理费(元/月)：</div><div class="align_left">{$housefee->manage_fee|number_format=2}</div>
+                                </div>
+                                <div class="flex w_100">
+                                    <div class="w_30 align_right">公摊费(元/月)：</div><div class="align_left">{$housefee->public_price|number_format=2}</div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {/volist}
+                    </tbody>
+                </table>
+                </form>
+            </div>
+
+            <div class="pageCon">
+                {$housefees->render()}
+            </div>
+
+            <div class="showQuery hide" id="layerQuery">
+                <form action="{:url('index')}" method="post" id="search-form">
+                    <input type="hidden" name="issearch" value="true">
+                    <div class=" backCo_w">
+                        <h3 class="queryTitle">查&nbsp;&nbsp;询</h3>
+                        <div class="queryCon pafBt_10">
+                            <p>
+                                <span>地址：</span>
+                                <input type="text" name="address" id="address" value="{:isset($address)?$address:''}" placeholder="请输入查询地址">
+                            </p>
+                            <p>
+                                <span>小区：</span>
+                                <input type="text" name="name" id="name" value="{:isset($name)?$name:''}" placeholder="请输入查询小区名">
+                            </p>
+                            <p>
+                                <span>几栋：</span>
+                                <input type="number" name="building" id="building" value="{$building?:''}" min="1">
+                            </p>
+                            <p>
+                                <span>几单元：</span>
+                                <input type="number" name="unit" id="unit" value="{$unit?:''}" min="1">
+                            </p>
+                            <p>
+                                <span>几楼：</span>
+                                <input type="number" name="floor" id="floor" value="{$floor?:''}">
+                            </p>
+                            <p>
+                                <span>几号：</span>
+                                <input type="number" name="number" id="number" value="{$number?:''}" min="1">
+                            </p>
+                            <p>
+                                <span>年份：</span>
+                                <select name="year" id="year">
+                                    <option value="">全部</option>
+                                    {for start="2010" end="2100"}
+                                    <option value="{$i}" {if condition="isset($year) and $year eq $i"}selected{/if}>{$i}</option>
+                                    {/for}
+                                </select>
+                            </p>
+
+                            <p>
+                                <span>每页条数：</span>
+                                <select name="display_num" id="display_num">
+                                    {volist name="nums" id="num"}
+                                    <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                        </div>
+                        <!--提交按钮-->
+                        <p class="Btnform align_cen bor_none maT20">
+                            <button class="submit button maR17" type="submit">查询</button>
+                            <span class="reset close button maL17">取消</span>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+
+    $('.pagination').find('a').on('click',function () {
+        $('#search-form').attr('action',$(this).attr('href')).submit();
+        return false;
+    });
+
+</script>
+
+</body>
+</html>

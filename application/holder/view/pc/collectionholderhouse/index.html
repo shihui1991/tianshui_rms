@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>选择安置房|房屋征收安置管理系统</title>
+    {include file="pc/public/head" /}
+
+</head>
+<body>
+<div class="toolsBar">
+    <!--fgf为工具栏分隔符，刷新没有，离开都有。中间工具每一类第一个添加fgf-->
+    <ul>
+        <li>
+            <a href="{:url('index',['item_id'=>$item_id,'collection_id'=>$collection_id])}">
+                <img src="__STATIC__/system/img/arrow_refresh.png"/>
+                刷新
+            </a>
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('sort',['item_id'=>$item_id,'collection_id'=>$collection_id])}">
+            <img src="__STATIC__/system/img/text_list_numbers.png"/>
+            排序
+        </li>
+        <li class="fgf" onclick="layerIfWindow('添加安置房选择','{:url('add',['item_id'=>$item_id,'collection_id'=>$collection_id])}','800','500')">
+            <img src="__STATIC__/system/img/add.png"/>
+            添加
+        </li>
+        <li class="fgf js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$item_id,'collection_id'=>$collection_id])}">
+            <img src="__STATIC__/system/img/broom.png"/>
+            删除
+        </li>
+    </ul>
+</div>
+<form action="{:url('index',['item_id'=>$item_id,'collection_id'=>$collection_id])}" method="post" id="js-ajax-form">
+    <div class="tableCon">
+        <em class="xian"></em>
+        <table class="table" border="0" >
+            <tbody>
+            <tr class="noSelect">
+                <th class="tc" width="35px">
+                    <input class="va_m" type="checkbox" name="" id="allCheck" value="" data-falg="allCheck" onclick="checkBoxOp(this)"/>
+                </th>
+                <th>排序<i class="stretch"></i></th>
+                <th>被征收人<i class="stretch"></i></th>
+                <th>电话<i class="stretch"></i></th>
+                <th>安置房<i class="stretch"></i></th>
+                <th>面积<i class="stretch"></i></th>
+                <th>户型<i class="stretch"></i></th>
+                <th>市场评估价<i class="stretch"></i></th>
+                <th>安置优惠价<i class="stretch"></i></th>
+                <th>电梯/总楼层<i class="stretch"></i></th>
+                <th>图片<i class="stretch"></i></th>
+            </tr>
+            {volist name="collectionholderhouses" id="collectionholderhouse"}
+            <tr>
+                <td>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$collectionholderhouse->id}" onclick="checkBoxOp(this)" id="check-{$collectionholderhouse->id}"/>
+                </td>
+                <td><input style='width: 50px;' type='text' name='sorts[{$collectionholderhouse->id}]' value='{$collectionholderhouse->sort}' id='input-{$collectionholderhouse->id}' data-id='{$collectionholderhouse->id}'></td>
+                <td title="{$collectionholderhouse->address}">{$collectionholderhouse->name}</td>
+                <td>{$collectionholderhouse->phone}</td>
+                <td>
+                    {$collectionholderhouse->hc_address}
+                    {$collectionholderhouse->hc_name}
+                    {if condition="$collectionholderhouse->building"}{$collectionholderhouse->building}栋{/if}
+                    {if condition="$collectionholderhouse->unit"}{$collectionholderhouse->unit}单元{/if}
+                    {if condition="$collectionholderhouse->floor"}{$collectionholderhouse->floor}楼{/if}
+                    {if condition="$collectionholderhouse->number"}{$collectionholderhouse->number}号{/if}
+                </td>
+                <td>{$collectionholderhouse->area}</td>
+                <td>{$collectionholderhouse->l_name}</td>
+                <td>{$collectionholderhouse->market_price|number_format}</td>
+                <td>{$collectionholderhouse->price|number_format}</td>
+                <td>{$collectionholderhouse->has_lift}/{$collectionholderhouse->total_floor}</td>
+                <td>
+                    <button type="button" class="btn" onclick="showpics('#house-pics-{$collectionholderhouse->id}')">点击查看</button>
+                    <div class="hide layer-photos" id="house-pics-{$collectionholderhouse->id}">
+                        {if condition="$collectionholderhouse->l_pic"}
+                        <img data-pid="{$i}" src="{$collectionholderhouse->l_pic}" alt="户型图">
+                        {/if}
+                        {if condition="$collectionholderhouse->picture"}
+                            {php}$house_pictures=json_decode($collectionholderhouse->picture,true);{/php}
+                            {volist name="house_pictures" id="pictures"}
+                                {php}$name=$key;{/php}
+                                {volist name="pictures" id="pic"}
+                                    <img data-pid="{$i}" src="{$pic}" alt="{$name}">
+                                {/volist}
+                            {/volist}
+                        {/if}
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+
+<script>
+
+    $(function () {
+        $('input[type=text]').on('change',function () {
+            var id=$(this).data('id');
+            $('#check-'+id).attr('checked',true);
+        }) ;
+
+    });
+
+    function showpics(obj){
+        var pics=$(obj).find('img');
+        if(pics.length){
+            var imgs=[];
+            $.each(pics,function (index,info) {
+                var p=$(info);
+                imgs[index]={
+                    "alt": p.attr('alt'),
+                    "pid": p.data('pid'),
+                    "src": p.attr('src'),
+                    "thumb": p.attr('src')
+                };
+            });
+        }
+        layer.photos({
+            photos: {
+                "title": "房源图片", //相册标题
+                "id": obj, //相册id
+                "start": 0, //初始显示的图片序号，默认0
+                "data": imgs
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
