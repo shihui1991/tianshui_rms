@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('edit')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{$infos->id}">
+                <input type="hidden" name="item_id" value="{$infos->item_id}">
+                <input type="hidden" name="collection_id" value="{$infos->collection_id}">
+                <p>
+                    <span>被征收人：</span>
+                    <input type="text" value="{$infos->ch_name} 【{$infos->holder}】" disabled>
+                </p>
+                <p>
+                    <span>安置房：</span>
+                    <input type="text" value="{$infos->address}【{$infos->hc_name}】{if condition="$infos->building"}{$infos->building}栋{/if}{if condition="$infos->unit"}{$infos->unit}单元{/if}{if condition="$infos->floor"}{$infos->floor}楼{/if}{if condition="$infos->number"}{$infos->number}号{/if}【{$infos->l_name}】【{$infos->area}】【{$infos->has_lift}/{$infos->total_floor}】" disabled>
+                </p>
+                <p>
+                    <span>选择排序：</span>
+                    <input type="number" name="sort" id="sort" value="{$infos->sort}" placeholder="输入选择安置优先顺序">
+                </p>
+                {if condition="isset($infos)"}
+                <p style="height: auto;line-height: inherit;">
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </p>
+                {/if}
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+
+</script>
+
+</body>
+</html>

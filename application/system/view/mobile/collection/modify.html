@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <p class="padLR12 btnp maT10">
+                <span class="on">基本信息</span>
+                <span>相关文件及图片</span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class=" add_menu maT20">
+                    <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                    <p class="padLR12">
+                        <span>类型：</span>
+                        <select name="type" id="type">
+                            {volist name="model->type" id="type"}
+                            <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->type eq $type)"}selected{/if}>{$type}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>土地性质：</span>
+                        <select name="land_prop" id="land_prop">
+                            {volist name="model->land_prop" id="land_prop"}
+                            <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->land_prop eq $land_prop)"}selected{/if}>{$land_prop}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>土地来源：</span>
+                        <select name="land_source" id="land_source">
+                            {volist name="model->land_source" id="land_source"}
+                            <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->land_source eq $land_source)"}selected{/if}>{$land_source}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>土地状况：</span>
+                        <select name="land_status" id="land_status">
+                            {volist name="model->land_status" id="land_status"}
+                            <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->land_status eq $land_status)"}selected{/if}>{$land_status}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    {if condition="isset($infos)"}
+                    <p class="padLR12">
+                        <span>项目：</span>
+                        <input type="text" value="{$infos->item->name}" disabled><input type="hidden" name="item_id" value="{$infos->item_id}">
+                    </p>
+                    <p class="padLR12">
+                        <span>片区：</span>
+                        <input type="text" value="{$infos->community->name}【{$infos->community->address}】" disabled>
+                    </p>
+                    {else/}
+                    <p class="padLR12">
+                        <span>项目：</span>
+                        <input type="text" value="{$item_info->name}" disabled><input type="hidden" name="item_id" value="{$item_info->id}">
+                    </p>
+                    <p class="padLR12">
+                        <span>片区：</span>
+                        <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                            <option value="">--请选择片区--</option>
+                            {volist name="collectioncommunitys" id="community"}
+                            <option value="{$community->id}" >{$community->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    {/if}
+
+                    <p class="padLR12">
+                        <span>几栋：</span>
+                        <input type="number" name="building" id="building" value="{:isset($infos)?$infos->building:''}" min="1">
+                    </p>
+                    <p class="padLR12">
+                        <span>几单元：</span>
+                        <input type="number" name="unit" id="unit" value="{:isset($infos)?$infos->unit:''}" min="1">
+                    </p>
+                    <p class="padLR12">
+                        <span>几楼：</span>
+                        <input type="number" name="floor" id="floor" value="{:isset($infos)?$infos->floor:''}">
+                    </p>
+                    <p class="padLR12">
+                        <span>几号：</span>
+                        <input type="number" name="number" id="number" value="{:isset($infos)?$infos->number:''}" min="1">
+                    </p>
+                    <p class="padLR12">
+                        <span>批准用途：</span>
+                        <select name="default_use" id="default_use">
+                            {volist name="buildinguses" id="buildinguse"}
+                            <option value="{$buildinguse->id}" {if condition="isset($infos) and $infos->default_use eq $buildinguse->id"}selected{/if}>{$buildinguse->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>实际用途：</span>
+                        <select name="real_use" id="real_use">
+                            {volist name="buildinguses" id="buildinguse"}
+                            <option value="{$buildinguse->id}" {if condition="isset($infos) and $infos->real_use eq $buildinguse->id"}selected{/if}>{$buildinguse->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>资产状况：</span>
+                        <select name="has_assets" id="has_assets">
+                            {volist name="model->has_assets" id="has_assets"}
+                            <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->has_assets eq $has_assets)"}selected{/if}>{$has_assets}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>拆迁意见：</span>
+                        <select name="is_agree" id="is_agree">
+                            {volist name="model->is_agree" id="is_agree"}
+                            <option value="{$key}" {if condition="(!isset($infos) and $key eq 1) or (isset($infos) and $infos->is_agree eq $is_agree)"}selected{/if}>{$is_agree}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>补偿方式：</span>
+                        <select name="compensate_way" id="compensate_way">
+                            {volist name="model->compensate_way" id="compensate_way"}
+                            <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->compensate_way eq $compensate_way)"}selected{/if}>{$compensate_way}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>补偿单价：</span>
+                        <input type="number" name="compensate_price" id="compensate_price" value="{:isset($infos)?$infos->compensate_price:''}" min="0" placeholder="输入期望补偿单价">
+                    </p>
+                    <p class="padLR12">
+                        <span>还建面积：</span>
+                        <input type="number" name="rebuild_area" id="rebuild_area" value="{:isset($infos)?$infos->rebuild_area:''}" min="0" placeholder="输入还建面积">
+                    </p>
+                    <p class="padLR12">
+                        <span>增面单价：</span>
+                        <input type="number" name="rebuild_price" id="rebuild_price" value="{:isset($infos)?$infos->rebuild_price:''}" min="0" placeholder="输入还建增加面积的单价">
+                    </p>
+                    <p class="padLR12">
+                        <span>还建户型：</span>
+                        <select name="rebuild_layout_id" id="rebuild_layout_id">
+                            <option value="">--选择还建户型--</option>
+                            {volist name="layouts" id="layout"}
+                            <option value="{$layout->id}" {if condition="isset($infos) and $infos->rebuild_layout_id eq $layout->id"}selected{/if}>{$layout->name}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>还建地址：</span>
+                        <input type="text" id="rebuild_addr" name="rebuild_addr" placeholder="输入还建地址" value="{:isset($infos)?$infos->rebuild_addr:''}" />
+                    </p>
+                    <div class="w_100 backCo_f2 add_menu_textarea">
+                        <p>其他意见：</p>
+                        <textarea class="flex" id="opinion" name="opinion">{$infos->opinion?:''}</textarea>
+                    </div>
+                    <p class="padLR12">
+                        <span>收件人：</span>
+                        <input type="text" id="receive_man" name="receive_man" placeholder="输入收件人" value="{:isset($infos)?$infos->receive_man:''}" />
+                    </p>
+                    <p class="padLR12">
+                        <span>收件电话：</span>
+                        <input type="text" id="receive_phone" name="receive_phone" placeholder="输入收件电话" value="{:isset($infos)?$infos->receive_phone:''}" />
+                    </p>
+                    <p class="padLR12">
+                        <span>收件地址：</span>
+                        <input type="text" id="receive_addr" name="receive_addr" placeholder="输入收件地址" value="{:isset($infos)?$infos->receive_addr:''}" />
+                    </p>
+                    <p class="padLR12">
+                        <span>状态：</span>
+                        <select name="status" id="status">
+                            {volist name="model->status" id="value"}
+                            <option value="{$key}" {if condition="isset($infos) and $infos->getData('status') eq $key"}selected{/if}>{$value}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    {if condition="isset($infos)"}
+                    <p style="height: auto;line-height: inherit;">
+                        创建于：{$infos->created_at}<br/>
+                        更新于：{$infos->updated_at}<br/>
+                        {if condition="isset($infos) and $infos->deleted_at"}
+                        删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                        {/if}
+                    </p>
+                    {/if}
+                </div>
+
+                <div class="padLR12 add_menu maT20" style="display: none;">
+                    <p class="add-cate-box">
+                        <span>分类：</span>
+                        <input type="text" placeholder="请输入分类名称" name="cate_name"/>
+                    </p>
+                    <div class="Btnform align_cen bor_none maT10 add-cate">
+                        <span class="submit button addrow">点击添加分类</span>
+                    </div>
+
+
+                    <table class="w_100  dong_table">
+                        <tbody id="picture-table">
+                        <tr>
+                            <td colspan="2" style="border: none;height: 15px;background: white;"></td>
+                        </tr>
+                        {if condition="isset($infos) and $infos->picture"}
+                        {volist name="$infos->picture" id="pics"}
+                        {php}$name=$key;{/php}
+                        <tr>
+                            <td style="border-bottom: 1px solid black">
+                                <p>{$name}</p>
+                                <span class="dele_row" onclick='picremove(this);'>删除</span>
+                            </td>
+                            <td style="border-bottom: 1px solid black">
+                                <ul class="hxt_ul add_tu">
+                                    {volist name="pics" id="pic" key="k"}
+                                    {if condition="$pic"}
+                                    <li>
+                                        <img src="{$pic}" class="w_100 h_100" onclick="bigerimg(this)">
+                                        <span><span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span></span>
+                                        <input type="hidden" name="picture[{$name}][]" value="{$pic}">
+                                    </li>
+                                    {/if}
+                                    {/volist}
+                                    <li class="btn-upload" data-type="multiimage" data-hidename="picture[{$name}][]">
+                                        <input type="file" multiple onchange="multiimageupl(this)">
+                                        <a>+</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        {/volist}
+                        {/if}
+
+                        </tbody>
+                    </table>
+                    <table style="display: none">
+                        <tbody >
+                        <tr id="img_tpl">
+                            <td style="border-bottom: 1px solid black">
+                                <p class="cate-name"></p>
+                                <span class="dele_row" onclick='picremove(this);'>删除</span>
+                            </td>
+                            <td style="border-bottom: 1px solid black">
+                                <ul class="hxt_ul add_tu">
+                                    <li class="btn-upload" data-type="multiimage" data-hidename="">
+                                        <input type="file" multiple  onchange="multiimageupl(this)">
+                                        <a>+</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+            <!--弹出层-->
+
+        </form>
+    </div>
+</div>
+<script>
+    $(function () {
+        /*----- 获取密钥 -----*/
+        $("#getkey").click(function () {
+            var obj=$(this).data('obj');
+            $.ajax({
+                url:"{:url('Tools/getguid')}",
+                dataType:'json',
+                type:'get',
+                success:function (resp) {
+                    if(resp.code){
+                        $(obj).val(resp.data);
+                    }else{
+                        layer.open({
+                            content:'获取失败'
+                            ,skin: 'msg'
+                            ,time:1.5
+                        });
+                    }
+                },
+                error:function () {
+                    layer.open({
+                        content:'获取失败'
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+            });
+        });
+        /*----- 添加分类 -----*/
+        $('.add-cate').on('click',function () {
+            var add_cate_box=$(this).siblings('.add-cate-box'),
+                cate_name=add_cate_box.find('input[name="cate_name"]:first').val().replace(/\s+/g, '');
+            if(cate_name.length){
+                add_cate_box.find('input[name="cate_name"]:first').val('');
+                var img_tpl=$('#img_tpl').clone(true).attr('id','');
+                img_tpl.find('.cate-name').text(cate_name);
+                img_tpl.find('.btn-upload').data('hidename','picture['+cate_name+'][]');
+                $('#picture-table').append(img_tpl);
+            }else{
+                layer.open({
+                    content:'请输入分类名称'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>

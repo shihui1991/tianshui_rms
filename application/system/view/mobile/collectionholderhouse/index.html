@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name|default=''}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    <style type="text/css">
+        .queryCon>:last-child {
+            height: 52px;
+        }
+
+        .queryCon {
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100">
+
+        {include file="mobile/public/breadnav"/}
+
+        <div class="w_100">
+            <!--按钮组合-->
+            <div class=" anniu backCo_w padLR12 ov maT10">
+                <a href="{:url('index',['collection_id'=>$collection_info->id])}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                <a href="{:url('add',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}" >删除</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}">恢复</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}" data-notice="确定要彻底删除吗？">销毁</a>
+                <span class="xiaMore"><em>更多</em><i class=" xiaMore iconfont icon-gongyongshuangjiantouxia"></i> </span>
+            </div>
+            <div class="w_100">
+                <form action="{:url('index')}" method="post" id="js-ajax-form">
+                    <table id="example-advanced" class="table treetable w_100" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
+                            <th>ID</th>
+                            <th>被征收人</th>
+                            <th>安置房</th>
+                            <th>操作</th>
+                        </tr>
+
+                        {volist name="collectionholderhouses" id="info"}
+                        <tr>
+                            <td class="more">
+                                <input type='checkbox' data-role="check"  name="ids[]" value="{$info->id}"/>
+                                &nbsp;
+                                <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                            </td>
+                            <td>{$info->id}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->name}</del>{else /}{$info->name}{/if}</td>
+                            <td>
+                                {if condition="$info->deleted_at"}
+                                <del>
+                                    {$info->hc_address}
+                                    {$info->hc_name}
+                                    {if condition="$info->building"}{$info->building}栋{/if}
+                                    {if condition="$info->unit"}{$info->unit}单元{/if}
+                                    {if condition="$info->floor"}{$info->floor}楼{/if}
+                                    {if condition="$info->number"}{$info->number}号{/if}
+                                </del>
+                                {else /}
+                                {$info->hc_address}
+                                {$info->hc_name}
+                                {if condition="$info->building"}{$info->building}栋{/if}
+                                {if condition="$info->unit"}{$info->unit}单元{/if}
+                                {if condition="$info->floor"}{$info->floor}楼{/if}
+                                {if condition="$info->number"}{$info->number}号{/if}
+                                {/if}
+                            </td>
+                            <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
+                                <div class="hide">
+                                    <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                    <a href="{:url('add',['item_id'=>$info->item_id,'collection_id'=>$info->collection_id])}"><i class="iconfont icon-iconjia"></i></a>
+                                    <a href="{:url('detail',['id'=>$info->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                    <a data-action="{:url('delete',['item_id'=>$info->item_id,'collection_id'=>$info->collection_id,'ids'=>$info->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hide_more hide">
+                            <td colspan="6" style="padding: 0 !important;">
+                                <div class="table_more w_100 backCo_f21">
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">电话：</div><div class="align_left">{$info->phone}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">面积：</div><div class="align_left">{$info->area}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">电梯/楼层：</div><div class="align_left">{$info->has_lift}/{$info->total_floor}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">状态：</div><div class="align_left">{$info->house_status}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+
+
+</script>
+
+</body>
+</html>

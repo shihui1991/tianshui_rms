@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name|default=''}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    <style type="text/css">
+        .queryCon>:last-child {
+            height: 52px;
+        }
+
+        .queryCon {
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100">
+
+        {include file="mobile/public/breadnav"/}
+
+        <div class="w_100">
+            <!--按钮组合-->
+            <div class=" anniu backCo_w padLR12 ov maT10">
+                <a href="{:url('index',['collection_id'=>$collection_info->id,'l'=>1])}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                <a id="showQuery"><i class="iconfont icon-search"></i>&nbsp;查询</a>
+                {if condition="$collection_info->item->getData('status') eq 1 and $collection_status neq 8"}
+                <a href="{:url('add',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}" >删除</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}">恢复</a>
+                <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id])}" data-notice="确定要彻底删除吗？">销毁</a>
+                <span class="xiaMore"><em>更多</em><i class=" xiaMore iconfont icon-gongyongshuangjiantouxia"></i> </span>
+                {/if}
+            </div>
+            <div class="w_100">
+                <form action="{:url('index',['collection_id'=>$collection_info->id,'l'=>1])}" method="post" id="js-ajax-form">
+                    <table id="example-advanced" class="table treetable w_100" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
+                            <th>ID</th>
+                            <th>片区(ID)</th>
+                            <th>权属(ID)</th>
+                            <th>操作</th>
+                        </tr>
+
+                        {volist name="collectionbuildings" id="info"}
+                        <tr>
+                            <td class="more">
+                                <input type='checkbox' data-role="check"  name="ids[]" value="{$info->id}"/>
+                                &nbsp;
+                                <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                            </td>
+                            <td>{$info->id}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->community->name}（{$info->community_id}）</del>{else /}{$info->community->name}（{$info->community_id}）{/if}</td>
+                            <td>{if condition="$info->deleted_at"} <del> {if condition="$info->collection_id"}
+                                {if condition="$info->collection->building"}{$info->collection->building}栋{/if}
+                                {if condition="$info->collection->unit"}{$info->collection->unit}单元{/if}
+                                {if condition="$info->collection->floor"}{$info->collection->floor}楼{/if}
+                                {if condition="$info->collection->number"}{$info->collection->number}号{/if}
+                                （{$info->collection_id}）
+                                {else/}
+                                -
+                                {/if}</del>{else /} {if condition="$info->collection_id"}
+                                {if condition="$info->collection->building"}{$info->collection->building}栋{/if}
+                                {if condition="$info->collection->unit"}{$info->collection->unit}单元{/if}
+                                {if condition="$info->collection->floor"}{$info->collection->floor}楼{/if}
+                                {if condition="$info->collection->number"}{$info->collection->number}号{/if}
+                                （{$info->collection_id}）
+                                {else/}
+                                -
+                                {/if}{/if}</td>
+                            <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
+                                <div class="hide">
+                                    <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                    <a href="{:url('detail',['id'=>$info->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                    {if condition="$collection_info->item->getData('status') eq 1 and $collection_status neq 8"}
+                                    <a href="{:url('status',['item_id'=>$collection_info->item_id,'collection_id'=>$collection_info->id,'id'=>$info->id])}"><i class="iconfont icon-question-9"></i></a>
+                                    <a data-action="{:url('delete',['ids'=>$info->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                                    {/if}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hide_more hide">
+                            <td colspan="6" style="padding: 0 !important;">
+                                <div class="table_more w_100 backCo_f21">
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">项目(ID)：</div><div class="align_left">{$info->item->name}（{$info->item_id}）</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">位置：</div><div class="align_left"> {if condition="$info->building"}{$info->building}栋{/if}
+                                        {if condition="$info->unit"}{$info->unit}单元{/if}
+                                        {if condition="$info->floor"}{$info->floor}楼{/if}
+                                        {if condition="$info->number"}{$info->number}号{/if}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">结构：</div><div class="align_left">{$info->buildingstruct->name?:''}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">性质：</div><div class="align_left">{$info->realuse->name?:''}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">数量：</div><div class="align_left">{$info->real_num} {$info->real_unit}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">建造年份：</div><div class="align_left">{$info->build_year}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">状况：</div><div class="align_left">  {if condition="$info->deleted_at"}
+                                        已删除
+                                        {else/}
+                                        {if condition="$info->status_id eq 0"}待定{else/}{$info->buildingstatus->name}{/if}
+                                        {/if}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">备注：</div><div class="align_left">{$info->remark}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+
+            <div class="pageCon">
+                {$collectionbuildings->render()}
+            </div>
+            <div class="showQuery hide" id="layerQuery">
+                <form action="{:url('index',['collection_id'=>$collection_info->id,'l'=>1])}" method="post" id="search-form">
+                    <input type="hidden" name="issearch" value="true">
+                    <div class=" backCo_w">
+                        <h3 class="queryTitle">查&nbsp;&nbsp;询</h3>
+                        <div class="queryCon pafBt_10">
+                            <p>
+                                <span>项目：</span>
+                                <input type="text" value="{$collection_info->item->name}" disabled>
+                            </p>
+                            <p>
+                                <span>片区：</span>
+                                <input type="text" value="{$collection_info->community->name}" disabled>
+                            </p>
+                            <p>
+                                <span>权属：</span>
+                                <input type="text" value="{if condition="$collection_info->building"}{$collection_info->building}栋{/if}
+                                {if condition="$collection_info->unit"}{$collection_info->unit}单元{/if}
+                                {if condition="$collection_info->floor"}{$collection_info->floor}楼{/if}
+                                {if condition="$collection_info->number"}{$collection_info->number}号{/if}" disabled>
+                            </p>
+                            <p>
+                                <span>实际用途：</span>
+                                <select name="use_id" id="use_id" class="chosen" data-placeholder="请选择用途" data-no_results_text="没有匹配数据">
+                                    <option value="">--全部--</option>
+                                    {volist name="buildinguses" id="buildinguse"}
+                                    <option value="{$buildinguse->id}" {if condition="isset($use_id) and $use_id eq $buildinguse->id"}selected{/if}>{$buildinguse->name}</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>建筑状况：</span>
+                                <select name="status_id" id="status_id" class="chosen" data-placeholder="请选择建筑状况" data-no_results_text="没有匹配数据">
+                                    <option value="">--全部--</option>
+                                    <option value="0" {if condition="isset($status_id) and $status_id eq 0"}selected{/if}>待定</option>
+                                    {volist name="buildingstatuss" id="buildingstatus"}
+                                    <option value="{$buildingstatus->id}" {if condition="isset($status_id) and $status_id eq $buildingstatus->id"}selected{/if}>{$buildingstatus->name}</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>是否删除：</span>
+                                <select name="deleted" id="deleted">
+                                    <option value="">--全部--</option>
+                                    <option value="1" {if condition="isset($deleted) and $deleted eq 1"}selected{/if}>--是--</option>
+                                    <option value="0" {if condition="isset($deleted) and $deleted eq 0"}selected{/if}>--否--</option>
+                                </select>
+                            </p>
+                            <p>
+                                <span>每页条数：</span>
+                                <select name="display_num" id="display_num">
+                                    {volist name="nums" id="num"}
+                                    <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>排序：</span>
+                                <select name="ordername" id="ordername">
+                                    <option value="id">--默认--</option>
+                                    <option value="level" {if condition="isset($ordername) and $ordername eq 'level'"}selected{/if}>--层级--</option>
+                                    <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                                    <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                                    <option value="deleted_at" {if condition="isset($ordername) and $ordername eq 'deleted_at'"}selected{/if}>--删除时间--</option>
+                                </select>
+                            </p>
+                            <p>
+                                <span>方式：</span>
+                                <select name="orderby" id="orderby">
+                                    <option value="asc">--升序--</option>
+                                    <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                                </select>
+                            </p>
+                        </div>
+                        <!--提交按钮-->
+                        <p class="Btnform align_cen bor_none maT20">
+                            <button class="submit button maR17" type="submit">查询</button>
+                            <span class="reset close button maL17">取消</span>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+    $('.pagination').find('a').on('click',function () {
+        $('#search-form').attr('action',$(this).attr('href')).submit();
+        return false;
+    });
+</script>
+
+</body>
+</html>

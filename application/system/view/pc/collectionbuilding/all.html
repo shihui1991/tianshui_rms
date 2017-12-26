@@ -79,8 +79,8 @@
                     {if condition="$collectionbuilding->number"}{$collectionbuilding->number}号{/if}
                     {/if}
                 </td>
-                <td>{$collectionbuilding->buildingstruct->name}</td>
-                <td>{$collectionbuilding->realuse->name}</td>
+                <td>{$collectionbuilding->buildingstruct->name?:''}</td>
+                <td>{$collectionbuilding->realuse->name?:''}</td>
                 <td>{$collectionbuilding->real_num} {$collectionbuilding->real_unit}</td>
                 <td>{$collectionbuilding->build_year}</td>
                 <td>

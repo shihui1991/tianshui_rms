@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name|default=''}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100">
+
+        {include file="mobile/public/breadnav"/}
+
+        <div class="w_100">
+            <div class="w_100">
+                <form action="{:url('index')}" method="post" id="js-ajax-form">
+                    <table id="example-advanced" class="table treetable w_100" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
+                            <th>ID</th>
+                            <th>片区</th>
+                            <th>投票人</th>
+                            <th>操作</th>
+                        </tr>
+
+                        {volist name="holders" id="holder"}
+                        <tr>
+                            <td class="more">
+                                <input type='checkbox' data-role="check"  name="ids[]" value="{$holder->id}"/>
+                                &nbsp;
+                                <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                            </td>
+                            <td>{$holder->id}</td>
+                            <td>{$holder->cc_name}[{$holder->cc_address}]</td>
+                            <td>{$holder->name}</td>
+                            <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
+                                <div class="hide">
+                                    <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                    <a data-action="{:url('delete',['item_id'=>$item_id,'ids'=>$holder->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hide_more hide">
+                            <td colspan="6" style="padding: 0 !important;">
+                                <div class="table_more w_100 backCo_f21">
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">位置：</div><div class="align_left">
+                                        {if condition="$holder->building"}{$holder->building}栋{/if}
+                                        {if condition="$holder->unit"}{$holder->unit}单元{/if}
+                                        {if condition="$holder->floor"}{$holder->floor}楼{/if}
+                                        {if condition="$holder->number"}{$holder->number}号{/if}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">类型：</div><div class="align_left">{$holder->type}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">地址：</div><div class="align_left">{$holder->address}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">电话：</div><div class="align_left">{$holder->phone}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">产权：</div><div class="align_left">{$holder->holder}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+
+            <div class="pageCon">
+                {$holders->render()}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

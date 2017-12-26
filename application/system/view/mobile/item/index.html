@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name|default=''}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    <style type="text/css">
+        .queryCon>:last-child {
+            height: 52px;
+        }
+
+        .queryCon {
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100">
+
+        {include file="mobile/public/breadnav"/}
+
+        <div class="w_100">
+            <!--按钮组合-->
+            <div class=" anniu backCo_w padLR12 ov maT10">
+                <a href="{:url('index')}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                <a id="showQuery"><i class="iconfont icon-search"></i>&nbsp;查询</a>
+                <a href="{:url('add')}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
+            </div>
+            <div class="w_100">
+                <form action="{:url('index')}" method="post" id="js-ajax-form">
+                    <table id="example-advanced" class="table treetable w_100" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
+                            <th>ID</th>
+                            <th>项目名称</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+
+                        {volist name="items" id="item"}
+                        <tr>
+                            <td class="more">
+                                <input type='checkbox' data-role="check"  name="ids[]" value="{$item->id}"/>
+                                &nbsp;
+                                <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                            </td>
+                            <td>{$item->id}</td>
+                            <td>{if condition="$item->getData('status') eq 3"} <del>{$item->name}</del>{else /}{$item->name}{/if}</td>
+                            <td>{$item->status}</td>
+                            <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
+                                <div class="hide">
+                                    <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                    <a href="{:url('detail',['id'=>$item->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                    <a class="ImportantDatas" onclick="itemconf({$item->id})"><i class="iconfont icon-zhongyaoxing"></i></a>
+                                    <a class="ImportantDatas" onclick="itemconfs({$item->id},1)"><i class="iconfont icon-question-9"></i></a>
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr class="hide_more hide">
+                            <td colspan="6" style="padding: 0 !important;">
+                                <div class="table_more w_100 backCo_f21">
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">档案编号：</div><div class="align_left"> {$item->record_num}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">预计户数：</div><div class="align_left">{$item->household|number_format}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">预算资金：</div><div class="align_left">{$item->funds|number_format}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">安置房：</div><div class="align_left">{$item->house|number_format}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">置顶：</div><div class="align_left">{$item->is_top}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+
+            <div class="pageCon">
+                {$items->render()}
+            </div>
+
+            <div class="showQuery hide" id="layerQuery">
+                <form action="{:url('index')}" method="post" id="search-form">
+                    <input type="hidden" name="issearch" value="true">
+                    <div class=" backCo_w">
+                        <h3 class="queryTitle">查&nbsp;&nbsp;询</h3>
+                        <div class="queryCon pafBt_10">
+                            <p>
+                                <span>名称：</span>
+                                <input type="text" name="name" id="name" value="{$name?:''}" placeholder="请输入项目管理名称"/>
+                            </p>
+                            <p>
+                                <span>档案编号：</span>
+                                <input type="text" name="record_num" id="record_num" value="{$record_num?:''}" placeholder="请输入项目档案编号"/>
+                            </p>
+                            <p>
+                                <span>征收范围：</span>
+                                <input type="text" name="area" id="area" value="{$area?:''}" placeholder="请输入项目征收范围"/>
+                            </p>
+                            <p>
+                                <span>置顶：</span>
+                                <select name="is_top" id="is_top">
+                                    <option value="">--全部--</option>
+                                    {volist name="model->is_top" id="value"}
+                                    <option value="{$key}" {if condition="isset($is_top) and $is_top eq $key"}selected{/if}>{$value}</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>状态：</span>
+                                <select name="status" id="status">
+                                    <option value="">--全部--</option>
+                                    {volist name="model->status" id="value"}
+                                    <option value="{$key}" {if condition="isset($status) and $status eq $key"}selected{/if}>{$value}</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                          
+                            <p>
+                                <span>每页条数：</span>
+                                <select name="display_num" id="display_num">
+                                    {volist name="nums" id="num"}
+                                    <option value="{$num}" {if condition="isset($display_num) and $display_num eq $num"}selected{/if}>--{$num}--</option>
+                                    {/volist}
+                                </select>
+                            </p>
+                            <p>
+                                <span>排序：</span>
+                                <select name="ordername" id="ordername">
+                                    <option value="id">--默认--</option>
+                                    <option value="created_at" {if condition="isset($ordername) and $ordername eq 'created_at'"}selected{/if}>--创建时间--</option>
+                                    <option value="updated_at" {if condition="isset($ordername) and $ordername eq 'updated_at'"}selected{/if}>--更新时间--</option>
+                                </select>
+                            </p>
+                            <p>
+                                <span>方式：</span>
+                                <select name="orderby" id="orderby">
+                                    <option value="asc">--升序--</option>
+                                    <option value="desc" {if condition="isset($orderby) and $orderby eq 'desc'"}selected{/if}>--降序--</option>
+                                </select>
+                            </p>
+                        </div>
+                        <!--提交按钮-->
+                        <p class="Btnform align_cen bor_none maT20">
+                            <button class="submit button maR17" type="submit">查询</button>
+                            <span class="reset close button maL17">取消</span>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--重要数据（设置）-->
+    <div class="ImportantData confg" style="display:none;">
+        <div class="dataBox">
+            <p>项目设置<i class="iconfont icon-guanbi"></i> </p>
+            <div class="dataWrap">
+                <a id="dongtai" href="">项目动态</a>
+                <a id="shezhis" href="">流程设置</a>
+                <a id="zhongyao" href="">重要时间</a>
+                <a id="buchang" href="">补偿科目</a>
+                <a id="shangfy" href="">房价上浮</a>
+                <a id="fengping" href="">风评话题</a>
+            </div>
+        </div>
+    </div>
+    <!--重要数据（流程）-->
+    <div class="ImportantData confgs" style="display:none;">
+        <div class="dataBox">
+            <p>项目设置<i class="iconfont icon-guanbi"></i> </p>
+            <div class="dataWrap">
+                <a id="modi" href="">入户摸底</a>
+                <a id="toupiao" href="">评估公司投票</a>
+                <a id="gongsi" href="">选定评估公司</a>
+                <a id="ruhu" href="">入户评估</a>
+                <a id="fxpg" href="">风险评估</a>
+                <a id="duifu" href="">兑付与协议</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function itemconf(a) {
+        $(".confg").find("#dongtai").attr('href','/system/item/status/id/'+a+'.html');
+        $(".confg").find("#shezhis").attr('href','{:url(\'Itemprocess/index\')}?item_id='+a);
+        $(".confg").find("#zhongyao").attr('href','{:url(\'itemtime\')}?item_id='+a);
+        $(".confg").find("#buchang").attr('href','{:url(\'Itemsubject/index\')}?item_id='+a);
+        $(".confg").find("#shangfy").attr('href','{:url(\'Itemhouseup/index\')}?item_id='+a);
+        $(".confg").find("#fengping").attr('href','{:url(\'itemtopic/index\')}?item_id='+a);
+        $(".confg").fadeIn(300);
+    }
+    $(".confg").find(".iconfont.icon-guanbi").click(function() {
+        $(".confg").fadeOut(300);
+    });
+
+    function itemconfs(a,b) {
+        $(".confgs").find("#modi").attr('href','{:url(\'Collection/index\')}?item_id='+a+'&l=1');
+        $(".confgs").find("#toupiao").attr('href','{:url(\'Itemcompanyvote/index\')}?item_id='+a+'&l=1');
+        $(".confgs").find("#gongsi").attr('href','{:url(\'Itemcompany/index\')}?item_id='+a+'&l=1');
+        $(".confgs").find("#ruhu").attr('href','{:url(\'Assess/index\')}?item_id='+a+'&l=1');
+        $(".confgs").find("#fxpg").attr('href','{:url(\'Risk/index\')}?item_id='+a+'&l=1');
+        $(".confgs").find("#duifu").attr('href','{:url(\'Pay/index\')}?item_id='+a+'&l=1');
+        $(".confgs").fadeIn(300);
+    }
+    $(".confgs").find(".iconfont.icon-guanbi").click(function() {
+        $(".confgs").fadeOut(300);
+    });
+
+
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+
+    $('.pagination').find('a').on('click',function () {
+        $('#search-form').attr('action',$(this).attr('href')).submit();
+        return false;
+    });
+
+</script>
+
+</body>
+</html>

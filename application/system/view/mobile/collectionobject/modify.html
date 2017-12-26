@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                <input type="hidden" name="item_id" value="{:isset($infos)?$infos->item_id : $collection_info->item_id}">
+                <input type="hidden" name="collection_id" value="{:isset($infos)?$infos->collection_id : $collection_info->id}">
+                <p>
+                    <span>补偿事项：<i>* </i></span>
+                    {if condition="isset($infos)"}
+                    <input type="text" value="{$infos->o_name}" disabled/>
+                    {else/}
+                    <select name="object_id" id="object_id" class="chosen" data-placeholder="请选择补偿事项" data-no_results_text="没有匹配数据">
+                        <option value="">--选择补偿事项--</option>
+                        {volist name="objects" id="object"}
+                        <option value="{$object->id}" >{$object->name}</option>
+                        {/volist}
+                    </select>
+                    {/if}
+                </p>
+                <p>
+                    <span>数量：</span>
+                    <input type="number" name="number" id="number" value="{:isset($infos)?$infos->number:''}" min="1" placeholder="请输入补偿数量，至少为1">
+                </p>
+                <p>
+                    <span>相关证书：</span>
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <ul class="hxt_ul add_tu">
+                        {if condition="isset($infos) and $infos->picture"}
+                        {volist name="infos->picture" id="pic"}
+                        <li>
+                            <img src="{$pic}" class="w_100 h_100" onclick="bigerimg(this)">
+                            <span><span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span></span>
+                            <input type="hidden" name="picture[]" value="{$pic}">
+                        </li>
+                        {/volist}
+                        {/if}
+                        <li class="btn-upload" data-type="multiimage" data-hidename="picture[]">
+                            <input type="file" multiple onchange="multiimageupl(this)">
+                            <a>+</a>
+                        </li>
+                    </ul>
+                </div>
+                </p>
+                {if condition="isset($infos)"}
+                <p style="height: auto;line-height: inherit;">
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </p>
+                {/if}
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+
+</script>
+
+</body>
+</html>

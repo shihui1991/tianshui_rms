@@ -231,6 +231,7 @@ class Collectionbuilding extends Auth
             ];
             $msg=[
                 'use_id.require'=>'请选择用途',
+                'struct_id.require'=>'请选择结构',
                 'real_num.require'=>'实际数量不能为空',
                 'real_num.min'=>'实际数量不能少于1',
                 'real_unit.require'=>'输入数量单位',

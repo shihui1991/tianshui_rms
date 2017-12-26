@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>入户摸底管理——审核</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {include file="mobile/public/head"/}
+</head>
+
+<body style="overflow: scroll;">
+<form action="{:url('status')}" method="post" class="page js-ajax-form" onsubmit="return false;">
+    <div class="header">
+				<span class="cd back" onclick="window.location.href='{:url('index')}'">
+					<i class="iconfont icon-iconfontjiantouzuo"></i>
+                </span>
+        <p class="f18">审核</p>
+    </div>
+    <div class="backCo_w w_100 tabDiv">
+        <table id="example-advanced" class="w_100" border="0" >
+            <tbody class="comTab">
+            <tr class="noSelect">
+                <th>更多</th>
+                <th>序号</th>
+                <th>姓名</th>
+                <th>用户</th>
+                <th>操作</th>
+            </tr>
+            {volist name="statuss" id="status"}
+            <tr>
+                <td class="more">
+                    <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                </td>
+                <td>{$i}</td>
+                <td>{$status->user->name}</td>
+                <td>{$status->user->username}</td>
+                <td>{$status->status}</td>
+            </tr>
+            <tr class="hide_more hide" style="height: 46px !important;">
+                <td colspan="6" style="padding: 0px !important;">
+                    <div class="table_more w_100 backCo_f21">
+                        <div class="flex w_100">
+                            <div class="w_30">角色</div><div>{$status->role->name}</div>
+                        </div>
+                        <div class="flex w_100">
+                            <div class="w_30">时间</div><div>{$status->created_at}</div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            {/volist}
+            </tbody>
+        </table>
+        <div class="pageCon">
+            {$statuss->render()}
+        </div>
+    </div>
+    <!--提交按钮-->
+    <p class="Btnform align_cen bor_none maT20 marB20">
+        <span class="submit button wAuto js-ajax-form-btn" data-action="{:url('check',['check'=>8])}" data-layer="true">审核通过</span>
+        <span class="reset  close button wAuto js-ajax-form-btn" data-action="{:url('check',['check'=>9])}" data-layer="true">审核驳回</span>
+        <span class="reset button wAuto js-ajax-form-btn" data-action="{:url('status',['status'=>0])}" data-layer="true">禁用</span>
+        <span class="reset close button wAuto js-ajax-form-btn" data-action="{:url('status',['status'=>1])}" data-layer="true">启用</span>
+    </p>
+
+</form>
+</body>
+
+<script>
+    for(var i=0 ; i<$("[type='text']").length ; i++){
+        $("[type='text']").eq(i).css("width",$("[type='text']").eq(i).parent().width()-$("[type='text']").eq(i).siblings().width());
+    };
+    for(var i=0 ; i<$("[type='number']").length ; i++){
+        $("[type='text']").eq(i).css("width",$("[type='text']").eq(i).parent().width()-$("[type='text']").eq(i).siblings().width());
+    };
+    for(var i=0 ; i<$("[type='date']").length ; i++){
+        $("[type='text']").eq(i).css("width",$("[type='text']").eq(i).parent().width()-$("[type='text']").eq(i).siblings().width());
+    };
+    for(var i=0 ; i<$("select").length ; i++){
+        $("select").eq(i).css("width",$("select").eq(i).parent().width()-$("select").eq(i).siblings().width());
+    };
+</script>
+</html>

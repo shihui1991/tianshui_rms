@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    <style type="text/css">
+        .queryCon>:last-child {
+            height: 52px;
+        }
+
+        .queryCon {
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                    <input type="hidden" name="item_id" value="{$item_info->id}">
+                    <p>
+                        <span>项目：</span>
+                        <input type="text" value="{$item_info->name}" disabled="disabled"/>
+                    </p>
+                    <p>
+                        <span>类型：</span>
+                        <select name="type" id="type">
+                            <option value="">--选择评估公司类型--</option>
+                            <option value="0">房产评估机构</option>
+                            <option value="1">资产评估机构</option>
+                        </select>
+                    </p>
+                    <p>
+                        <span>评估公司：</span>
+                        <select name="company_id" id="company_id">
+
+                        </select>
+                    </p>
+                    <div class="backCo_f2 add_menu_textarea">
+                        <p>评估说明：</p>
+                        <textarea class="flex" id="infos" name="infos">{$infos->infos?:''}</textarea>
+                    </div>
+                    <div class="backCo_w maT10">
+                        <p><span spanc id="showQuery">选择被征户</span></p>
+                    </div>
+                    <table id="example-advanced" class=" w_100 maT10" border="0">
+                        <tbody class="comTab4">
+                        <tr class="noSelect" id="thead-collectionlist">
+                            <th >
+                                <input type="checkbox" data-role="checkall"/>&nbsp;更多</th>
+                            <th>ID</th>
+                            <th>地址</th>
+                        </tr>
+                        </tbody>
+                    </table>
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+    <!--弹出层-->
+    <div class="showQuery hide padLR12" id="layerQuery">
+        <form action="{:url('Tools/collection')}" method="post" id="form-search" onsubmit="return false;">
+            <input type="hidden" name="item_id" id="item-id" value="">
+            <input type="hidden" name="type" id="company_type" value="">
+            <div class="backCo_w padding_b15" style="margin-top: 50%;">
+                <p class="queryTitle">查询被征用户</p>
+                <div class="queryCon">
+                    <p>
+                        <span>片区：</span>
+                        <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                            <option value="">--全部--</option>
+                            {volist name="collectioncommunitys" id="collectioncommunity"}
+                            <option value="{$collectioncommunity->id}" >{$collectioncommunity->name}</option>
+                            {/volist}
+                        </select></p>
+                    <p ><span>几栋：</span><input type="number" name="building" id="building" value="" min="1" placeholder="请输入栋数"> </p>
+                    <p ><span>几单元：</span><input type="number"  name="unit" id="unit" value="" min="1" placeholder="请输入单元" /></p>
+                    <p ><span>几楼：</span><input type="number" name="floor" id="floor" placeholder="请输入楼号" /></p>
+                    <p ><span>几号：</span><input type="number" name="number" id="number" placeholder="请输入层数" /></p>
+                </div>
+                <!--提交按钮-->
+                <p class="Btnform align_cen bor_none maT20">
+                    <span class="submit button maR17" id="btn-form-search">查询</span>
+                    <span class="reset close button maL17">取消</span>
+                </p>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    /* ===== 查询评估公司 =====*/
+    $('#type').mouseup(function () {
+        var _type=$(this).find('option:selected').val();
+
+        $('#company_id').html('');
+        if(_type == '0' || _type == '1'){
+            $.ajax({
+                url:"{:url('Tools/company')}",
+                data:{type:_type},
+                dataType:'json',
+                type:'get',
+                success:function (resp) {
+                    var options='';
+                    if(resp.code){
+                        $.each(resp.data,function (index,info) {
+                            options += '<option value="'+info.id+'">'+info.name+'（'+info.id+'）'+'</option>';
+                        });
+                    }else{
+                        layer.open({
+                            content:resp.msg
+                            ,skin: 'msg'
+                            ,time:1.5
+                        });
+                    }
+                    $('#company_id').html(options);
+                },
+                error:function () {
+                    layer.open({
+                        content:'网络错误，请重试'
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+            });
+        }else{
+            layer.open({
+                content:'请选择评估公司类型'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+        }
+    });
+
+    /* ===== 查询摸底被征户 =====*/
+    $('#btn-form-search').click(function () {
+        var _item_id={$item_info->id};
+        var _type=$('#type').find('option:selected').val();
+        var form=$('#form-search');
+        var thead=$('#thead-collectionlist');
+
+        thead.siblings().remove();
+        $('#item-id').val(_item_id);
+        $('#company_type').val(_type);
+        if(_type != '0' && _type != '1'){
+            layer.open({
+                content:'请先选择评估公司类型'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+            return false;
+        }
+
+        $.ajax({
+            url:form.attr('action'),
+            data:form.serialize(),
+            dataType:'json',
+            type:'post',
+            success:function (resp) {
+                var tr_obj='';
+                if(resp.code){
+                    $.each(resp.data,function (index,info) {
+                        var building = info.building?(info.building+'栋'):'';
+                        var unit = info.unit?(info.unit+'单元'):'';
+                        var floor = info.floor?(info.floor+'楼'):'';
+                        var number = info.number?(info.number+'号'):'';
+                        tr_obj +='<tr>';
+                        tr_obj +='<td class="more" style="text-align: left;"><input type="checkbox" data-role="check"  name="ids[]" value="'+info.id+'"/>&nbsp;<i class="iconfont icon-gongyongshuangjiantouxia"></i></td>';
+                        tr_obj +='<td>'+info.id+'</td>';
+                        tr_obj +='<td>'+info.address+'</td>';
+                        tr_obj += '</tr>';
+                        tr_obj += '<tr class="hide_more hide">';
+                        tr_obj += '<td colspan="6" style="padding:0 !important;">';
+                        tr_obj += '  <div class="table_more w_100 backCo_f21">';
+                        tr_obj +=   ' <div class="flex w_100">';
+                        tr_obj +=    '                                        <div class="w_30 align_right">片区</div><div  class="align_left">'+info.cc_name+'</div>';
+                        tr_obj +=    '                                    </div>';
+                        tr_obj +=     '                                    <div class="flex w_100">';
+                        tr_obj +=     '                                        <div class="w_30 align_right">位置</div><div  class="align_left">'+building+unit
+                        +floor+number+'</div>';
+                        tr_obj +=     '                                    </div>';
+                        tr_obj +=    '                                    <div class="flex w_100">';
+                        tr_obj +=     '                                        <div class="w_30 align_right">资产状况</div><div  class="align_left">'+info.has_assets+'</div>';
+                        tr_obj +=     '                                    </div>';
+                        tr_obj +=    '                                </div>';
+                        tr_obj +=    '                            </td>';
+                        tr_obj +=    '                        </tr>';
+                    });
+                }else{
+                    layer.open({
+                        content:resp.msg
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+                thead.after(tr_obj);
+            },
+            error:function () {
+                layer.open({
+                    content:'网络出错，稍候重试！'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    });
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+</script>
+
+</body>
+</html>

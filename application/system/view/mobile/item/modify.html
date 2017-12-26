@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <p class="padLR12 btnp maT10">
+                <span class="on">基本信息</span>
+                <span>审批文件</span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class=" add_menu maT20">
+                    <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                    <p class="padLR12">
+                        <span>名称：</span>
+                        <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入唯一名称"/>
+                    </p>
+                    <p class="padLR12">
+                        <span>档案编号：</span>
+                        <input id="record_num" class="must" type="text" name="record_num" value="{:isset($infos)?$infos->record_num:''}" required placeholder="输入档案编号"/>
+                    </p>
+                    <div class="w_100 backCo_f2 add_menu_textarea">
+                        <p>征收范围：</p>
+                        <textarea id="area" name="area" placeholder="输入项目征收范围">{:isset($infos)?$infos->area:''}</textarea>
+                    </div>
+
+                    <p class="padLR12">
+                        <span>预计户数：</span>
+                        <input id="household" type="number" name="household" value="{:isset($infos)?$infos->household:''}" placeholder="输入预计户数" min="1"/>
+                    </p>
+                    <p class="padLR12">
+                        <span>预备安置房：</span>
+                        <input id="house" type="number" name="house" value="{:isset($infos)?$infos->house:''}" placeholder="输入预计安置房套数" min="1"/>
+                    </p>
+                    <p class="padLR12">
+                        <span>预算资金：</span>
+                        <input id="funds" type="number" name="funds" value="{:isset($infos)?$infos->funds:''}" placeholder="输入预算资金" min="1"/>
+                    </p>
+                    <p class="padLR12">
+                        <span>置顶：</span>
+                        <select name="status" id="status">
+                            {volist name="model->is_top" id="is_top"}
+                            <option value="{$key}" {if condition="(!isset($infos) and $key eq 0) or (isset($infos) and $infos->is_top eq $is_top)"} selected{/if} >{$is_top}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>状态：</span>
+                        <input type="text" disabled value="{if condition="isset($infos)"}{$infos->status}{else/}待定{/if}"/>
+                    </p>
+                    <div class="w_100 backCo_f2 add_menu_textarea">
+                        <p>说明：</p>
+                        <textarea id="infos" name="infos" placeholder="输入项目说明">{:isset($infos)?$infos->infos:''}</textarea>
+                    </div>
+                    {if condition="isset($infos)"}
+                    <p style="height: auto;line-height: inherit;">
+                        创建于：{$infos->created_at}<br/>
+                        更新于：{$infos->updated_at}<br/>
+                        {if condition="isset($infos) and $infos->deleted_at"}
+                        删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                        {/if}
+                    </p>
+                    {/if}
+                </div>
+
+                <div class="padLR12 add_menu maT20" style="display: none;">
+                    <p class="add-cate-box">
+                        <span>其他分类：</span>
+                        <input type="text" placeholder="请输入类型名称" name="cate_name"/>
+                    </p>
+                    <div class="Btnform align_cen bor_none maT10 add-cate">
+                        <span class="submit button addrow">点击添加分类</span>
+                    </div>
+
+
+                    <table class="w_100  dong_table">
+                        <tbody id="picture-table">
+                        <tr>
+                            <td colspan="2" style="border: none;height: 15px;background: white;"></td>
+                        </tr>
+                        {if condition="isset($infos) and $infos->picture"}
+                        {volist name="$infos->picture" id="pics"}
+                        {php}$name=$key;{/php}
+                        <tr>
+                            <td style="border-bottom: 1px solid black">
+                                <p>{$name}</p>
+                                <span class="dele_row" onclick='picremove(this);'>删除</span>
+                            </td>
+                            <td style="border-bottom: 1px solid black">
+                                <ul class="hxt_ul add_tu">
+                                    {volist name="pics" id="pic" key="k"}
+                                    {if condition="$pic"}
+                                    <li>
+                                        <img src="{$pic}" class="w_100 h_100" onclick="bigerimg(this)">
+                                        <span><span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span></span>
+                                        <input type="hidden" name="picture[{$name}][]" value="{$pic}">
+                                    </li>
+                                    {/if}
+                                    {/volist}
+                                    <li class="btn-upload" data-type="multiimage" data-hidename="picture[{$name}][]">
+                                        <input type="file" multiple onchange="multiimageupl(this)">
+                                        <a>+</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        {/volist}
+                        {/if}
+
+                        </tbody>
+                    </table>
+                    <table style="display: none">
+                        <tbody >
+                        <tr id="img_tpl">
+                            <td style="border-bottom: 1px solid black">
+                                <p class="cate-name"></p>
+                                <span class="dele_row" onclick='picremove(this);'>删除</span>
+                            </td>
+                            <td style="border-bottom: 1px solid black">
+                                <ul class="hxt_ul add_tu">
+                                    <li class="btn-upload" data-type="multiimage" data-hidename="">
+                                        <input type="file" multiple  onchange="multiimageupl(this)">
+                                        <a>+</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+            <!--弹出层-->
+
+        </form>
+    </div>
+</div>
+<script>
+    $(function () {
+        /*----- 添加分类 -----*/
+        $('.add-cate').on('click',function () {
+            var add_cate_box=$(this).siblings('.add-cate-box'),
+                cate_name=add_cate_box.find('input[name="cate_name"]:first').val().replace(/\s+/g, '');
+            if(cate_name.length){
+                add_cate_box.find('input[name="cate_name"]:first').val('');
+                var img_tpl=$('#img_tpl').clone(true).attr('id','');
+                img_tpl.find('.cate-name').text(cate_name);
+                img_tpl.find('.btn-upload').data('hidename','picture['+cate_name+'][]');
+                $('#picture-table').append(img_tpl);
+            }else{
+                layer.open({
+                    content:'请输入分类名称'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
