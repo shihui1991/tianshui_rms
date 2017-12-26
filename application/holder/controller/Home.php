@@ -56,8 +56,28 @@ class Home extends Base
             return $this->error('非法访问');
         }
 
-        $this->assign(['infos'=>$infos]);
+        $this->assign([
+            'infos'=>$infos,
+            'url'=>url('Home/index')
+        ]);
 
         return view($this->theme.'/home/newsdetail');
+    }
+
+    /* ========== 更换摸底 ========== */
+    public function changecollection(){
+        if(request()->isMobile()){
+            $item_id=input('item_id') or session('collectioninfo.item_id');
+            $collection_id=input('collection_id') or session('collectioninfo.collection_id');
+
+            session('collectioninfo',[
+                'item_id'=>$item_id,
+                'collection_id'=>$collection_id,
+            ]);
+
+            return $this->success('选择成功','');
+        }else{
+            return $this->error('非法访问');
+        }
     }
 }

@@ -12,7 +12,7 @@
         <div class="homeTit bg_f5">
             <div class="fl"><img src="__STATIC__/system/img/outlook_new_meeting.png"/>房屋及附属物</div>
             <ul class="homeTab">
-                <li class=""><a href="{:url('Collection/detail',['id'=>$collection_id])}">房产基本信息</a></li>
+                <li class=""><a href="{:url('Collection/detail',['id'=>$collection_id,'item_id'=>$item_id,'collection_id'=>$collection_id])}">房产基本信息</a></li>
                 <li class=""><a href="{:url('Collectionholder/index',['item_id'=>$item_id,'collection_id'=>$collection_id])}">产权人及家庭成员</a></li>
                 <li class=""><a href="{:url('Collectionbuilding/index',['item_id'=>$item_id,'collection_id'=>$collection_id])}">房屋及附属物</a></li>
                 <li class="on"><a href="javascript:location.reload();">其他</a></li>

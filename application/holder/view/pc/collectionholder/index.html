@@ -12,7 +12,7 @@
         <div class="homeTit bg_f5">
             <div class="fl"><img src="__STATIC__/system/img/outlook_new_meeting.png"/>产权人及家庭成员</div>
             <ul class="homeTab">
-                <li class=""><a href="{:url('Collection/detail',['id'=>$collection_id])}">房产基本信息</a></li>
+                <li class=""><a href="{:url('Collection/detail',['collection_id'=>$collection_id,'item_id'=>$item_id])}">房产基本信息</a></li>
                 <li class="on"><a href="javascript:location.reload();">产权人及家庭成员</a></li>
                 <li class=""><a href="{:url('Collectionbuilding/index',['item_id'=>$item_id,'collection_id'=>$collection_id])}">房屋及附属物</a></li>
                 <li class=""><a href="{:url('Collectionobject/index',['item_id'=>$item_id,'collection_id'=>$collection_id])}">其他</a></li>
@@ -46,7 +46,7 @@
                             <td>{$collectionholder->relation}</td>
                             <td>{$collectionholder->live_addr}</td>
                             <td>
-                                <button type="button" class="btn" onclick="layerIfWindow('入户摸底-产权人及家庭成员信息',	'{:url('detail',['id'=>$collectionholder->id])}','800','630',true)" >详细信息</button>
+                                <button type="button" class="btn" onclick="layerIfWindow('入户摸底-产权人及家庭成员信息',	'{:url('detail',['id'=>$collectionholder->id,'item_id'=>$item_id,'collection_id'=>$collection_id])}','800','630',true)" >详细信息</button>
                             </td>
                         </tr>
                         {/volist}

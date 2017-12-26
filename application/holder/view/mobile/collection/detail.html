@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+    <div class="header">
+        <p class="head_tit">
+            <span class="spanTab"><i class="spanon spanTabTitle" id="pgjg">评估结果</i></span>
+            <span class="spanTab"><i class="spanTabTitle" id="ysbc">预算补偿</i></span>
+        </p>
+        <!--<p class="head_tit">产权信息</p>-->
+    </div>
+
+    <div class="cq_con">
+        <div class="cq_dizhi">项目：{$item->name}</div>
+        <div class="cq_info">
+            <table>
+                <tr>
+                    <th>地址：</th>
+                    <td>{$collection->address}</td>
+                </tr>
+                <tr>
+                    <th>房屋：</th>
+                    <td>
+                        {$collection->name}
+                        {if condition="$collection->building"}{$collection->building}栋{/if}
+                        {if condition="$collection->unit"}{$collection->unit}单元{/if}
+                        {if condition="$collection->floor"}{$collection->floor}楼{/if}
+                        {if condition="$collection->number"}{$collection->number}号{/if}
+                    </td>
+                </tr>
+                <tr>
+                    <th>类型：</th>
+                    <td>{$collection->type}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="hui"></div>
+    <!--tab_title-->
+    <div class="find_nav">
+        <div class="tab_nav find_nav_left">
+            <div class="tab_title find_nav_list" id="pagenavi1">
+                <ul>
+                    <li class="tab_on"><a class="">土地状况</a></li>
+                    <li class=""><a class="">产权人及家庭成员</a></li>
+                    <li><a>房屋及附属物</a></li>
+                    <li><a>其它补偿</a></li>
+                    <li><a>征收意见</a></li>
+                    <li class="sideline"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="hui"></div>
+    <!--tab内容-->
+    <div class="w1_tab_content" id="slider1">
+        <ul class="tab_content_list box01_list">
+            <!--土地状况-->
+            <li class="li_list jia tabC1">
+                <div class="per">
+                    <div class="cq_info">
+                        <table>
+                            <tr>
+                                <th>土地性质：</th>
+                                <td>{$collection->land_prop}</td>
+                            </tr>
+                            <tr>
+                                <th>土地来源：</th>
+                                <td>{$collection->land_source}</td>
+                            </tr>
+                            <tr>
+                                <th>土地状况：</th>
+                                <td>{$collection->land_status}</td>
+                            </tr>
+                            <tr>
+                                <th>批准用途：</th>
+                                <td>{$collection->du_name}</td>
+                            </tr>
+                            <tr>
+                                <th>实际用途：</th>
+                                <td>{$collection->ru_name}</td>
+                            </tr>
+                            <tr>
+                                <th>资产状况：</th>
+                                <td>{$collection->has_assets}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    {if condition="$collection->picture"}
+                    <div class="w1">
+                        <p class="pname bcyjname pgsxq">证件</p>
+                        <div class="coon pad5 ov ovScoll">
+                            <div class="content gszs">
+                                {volist name="collection->picture" id="pictures"}
+                                {php}$name=$key;{/php}
+                                {volist name="pictures" id="pic"}
+                                <div class="zz"><img src="{$pic}" title="{$name}" onclick="bigerimg(this)"></div>
+                                {/volist}
+                                {/volist}
+                            </div>
+                        </div>
+                    </div>
+                    {/if}
+                </div>
+            </li>
+            <!--产权人及家庭成员-->
+            <li class="li_list jia tabC1">
+                <div class="per">
+                    <div class="perlist" style="width:auto;white-space: nowrap;margin-top: 18px;">
+                        {volist name="collectionholders" id="holder"}
+                        <div onclick="layerDom(this)" data-id="holders-{$holder->id}" data-title="{$holder->name} | {$holder->holder}">
+                            <p>{$holder->name}</p>
+                            <p>{$holder->holder}</p>
+                        </div>
+                        <div id="holders-{$holder->id}" style="display: none;">
+                            <div class="cq_info">
+                                <table>
+                                    <tr>
+                                        <th>地址：</th>
+                                        <td>{$holder->address}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>联系电话：</th>
+                                        <td>{$holder->phone}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>补偿份额：</th>
+                                        <td>{$holder->portion} %</td>
+                                    </tr>
+                                    {if condition="$holder->cardnum"}
+                                    <tr>
+                                        <th>身份证：</th>
+                                        <td>{$holder->cardnum}</td>
+                                    </tr>
+                                    {/if}
+                                    {if condition="$holder->getData('relation')"}
+                                    <tr>
+                                        <th>户主关系：</th>
+                                        <td>{$holder->relation}</td>
+                                    </tr>
+                                    {/if}
+                                    {if condition="$holder->getData('gender')"}
+                                    <tr>
+                                        <th>性别：</th>
+                                        <td>{$holder->gender}</td>
+                                    </tr>
+                                    {/if}
+                                    {if condition="$holder->getData('birth')"}
+                                    <tr>
+                                        <th>生日：</th>
+                                        <td>{$holder->birth}</td>
+                                    </tr>
+                                    {/if}
+                                    {if condition="$holder->getData('nation')"}
+                                    <tr>
+                                        <th>民族：</th>
+                                        <td>{$holder->nation}</td>
+                                    </tr>
+                                    {/if}
+                                    {if condition="$holder->job"}
+                                    <tr>
+                                        <th>职业：</th>
+                                        <td>{$holder->job}</td>
+                                    </tr>
+                                    {/if}
+                                    {if condition="$holder->getData('married')"}
+                                    <tr>
+                                        <th>婚姻状况：</th>
+                                        <td>{$holder->married}</td>
+                                    </tr>
+                                    {/if}
+                                    {if condition="$holder->live_addr"}
+                                    <tr>
+                                        <th>现住址：</th>
+                                        <td>{$holder->live_addr}</td>
+                                    </tr>
+                                    {/if}
+                                    {if condition="$holder->holdercrowd"}
+                                    <tr>
+                                        <th colspan="2">特殊人群</th>
+                                    </tr>
+                                    {volist name="holder->holdercrowd" id="holdercrowd"}
+                                    <tr>
+                                        <th>{$holdercrowd->crowd->name}：</th>
+                                        <td>
+                                            {if condition="$holdercrowd->picture"}
+                                            <div class="coon pad5 ov ovScoll">
+                                                <div class="content gszs">
+                                                    {volist name="holdercrowd->picture" id="pic"}
+                                                    <div class="zz"><img src="{$pic}" title="{$holdercrowd->crowd->name}" onclick="bigerimg(this)"></div>
+                                                    {/volist}
+                                                </div>
+                                            </div>
+                                            {/if}
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                    {/if}
+                                </table>
+                            </div>
+                        </div>
+                        {/volist}
+                    </div>
+                </div>
+            </li>
+            <!--房屋及附属物-->
+            <li class="li_list jia tabC1">
+                <div class="per">
+                    <div class="perlist" style="width:auto;white-space: nowrap;margin-top: 18px;">
+                        {volist name="collectionbuildings" id="building"}
+                        <div onclick="layerDom(this)" data-id="buildings-{$building->id}" data-title="{$building->ru_name} | {$building->real_num} {$building->real_unit}">
+                            <p>{$building->ru_name}</p>
+                            <p>{$building->real_num} {$building->real_unit}</p>
+                        </div>
+                        <div id="buildings-{$building->id}" style="display: none;">
+                            <div class="cq_info" style="overflow: scroll;">
+                                <table>
+                                    <tr>
+                                        <th style="min-width: 90px;">备注：</th>
+                                        <td>{$building->remark}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>位置：</th>
+                                        <td>
+                                            {if condition="$building->building"}{$building->building}栋{/if}
+                                            {if condition="$building->unit"}{$building->unit}单元{/if}
+                                            {if condition="$building->floor"}{$building->floor}楼{/if}
+                                            {if condition="$building->number"}{$building->number}号{/if}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>总楼层：</th>
+                                        <td>{$building->total_floor}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>朝向：</th>
+                                        <td>{$building->direction}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>登记号：</th>
+                                        <td>{$building->register}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>登记数量：</th>
+                                        <td>{$building->register_num} {$building->real_unit}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>测绘数量：</th>
+                                        <td>{$building->real_num} {$building->real_unit}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>批准用途：</th>
+                                        <td>{$building->du_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>实际用途：</th>
+                                        <td>{$building->ru_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>结构：</th>
+                                        <td>{$building->struct_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>状况：</th>
+                                        <td>{$building->status_name?:'待定'}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>使用状态：</th>
+                                        <td>{$building->status}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>经营项目：</th>
+                                        <td>{$building->business}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>建造年份：</th>
+                                        <td>{$building->build_year}</td>
+                                    </tr>
+                                    {if condition="$building->picture"}
+                                    <tr>
+                                        <th colspan="2">相关图片</th>
+                                    </tr>
+                                    {volist name="building->picture" id="pictures"}
+                                    {php}$name=$key;{/php}
+                                    <tr>
+                                        <th>{$name}：</th>
+                                        <td>
+                                            <div class="coon pad5 ov ovScoll">
+                                                <div class="content gszs">
+                                                    {volist name="pictures" id="pic"}
+                                                    <div class="zz"><img src="{$pic}" title="{$name}" onclick="bigerimg(this)"></div>
+                                                    {/volist}
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                    {/if}
+                                </table>
+                            </div>
+                        </div>
+                        {/volist}
+                    </div>
+                </div>
+            </li>
+            <!--其他补偿-->
+            <li class="li_list jia tabC1">
+                <div class="per">
+                    <div class="cq_info">
+                        <table>
+                            <tr>
+                                <th>名称</th>
+                                <th>数量</th>
+                                <th>图片</th>
+                            </tr>
+                            {volist name="collectionobjects" id="object"}
+                            <tr>
+                                <td style="text-align: center;">{$object->name}</td>
+                                <td style="text-align: center;">{$object->number}</td>
+                                <td style="text-align: center;">
+                                    {if condition="$object->picture"}
+                                    <a onclick="layerDom(this)" data-id="object-{$object->id}" data-title="{$object->name}">
+                                        <img src="__STATIC__/holdermobile/img/zhen_on.png" alt="点击查看" style="height:20px; ">
+                                    </a>
+                                    <div id="object-{$object->id}" style="display: none;">
+                                        {volist name="object->picture" id="pic"}
+                                        <img src="{$pic}" alt="{$object->name}" style="width: 99%;">
+                                        <div class="hui"></div>
+                                        {/volist}
+                                    </div>
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/volist}
+                        </table>
+                    </div>
+                </div>
+            </li>
+            <!--征收意见-->
+            <li class="li_list jia tabC1">
+                <div class="per">
+                    <div class="cq_info">
+                        <table>
+                            <tr>
+                                <th>征收意见：</th>
+                                <td>{$collection->is_agree}</td>
+                            </tr>
+                            <tr>
+                                <th>补偿方式：</th>
+                                <td>{$collection->compensate_way}</td>
+                            </tr>
+                            <tr>
+                                <th>补偿单价：</th>
+                                <td>{$collection->compensate_price|number_format=2} 元</td>
+                            </tr>
+                            {if condition="$collection->rebuild_addr"}
+                            <tr>
+                                <th>还建地址：</th>
+                                <td>{$collection->rebuild_addr}</td>
+                            </tr>
+                            {/if}
+                            {if condition="$collection->rebuild_layout_id"}
+                            <tr>
+                                <th>还建户型：</th>
+                                <td>{$collection->l_name}</td>
+                            </tr>
+                            {/if}
+                            {if condition="$collection->rebuild_area"}
+                            <tr>
+                                <th>还建面积：</th>
+                                <td>{$collection->rebuild_area|number_format=2} 平方米</td>
+                            </tr>
+                            {/if}
+                            {if condition="$collection->rebuild_price"}
+                            <tr>
+                                <th>还建增面单价：</th>
+                                <td>{$collection->rebuild_price|number_format=2} 元</td>
+                            </tr>
+                            {/if}
+                            {if condition="$collection->opinion"}
+                            <tr>
+                                <th>其他意见：</th>
+                                <td>{$collection->opinion}</td>
+                            </tr>
+                            {/if}
+                            {if condition="$collection->receive_addr"}
+                            <tr>
+                                <th>收件地址：</th>
+                                <td>{$collection->receive_addr}</td>
+                            </tr>
+                            {/if}
+                            {if condition="$collection->receive_man"}
+                            <tr>
+                                <th>收件人：</th>
+                                <td>{$collection->receive_man}</td>
+                            </tr>
+                            {/if}
+                            {if condition="$collection->receive_phone"}
+                            <tr>
+                                <th>收件电话：</th>
+                                <td>{$collection->receive_phone}</td>
+                            </tr>
+                            {/if}
+                        </table>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

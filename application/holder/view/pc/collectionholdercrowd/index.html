@@ -13,7 +13,7 @@
         <div class="homeTit bg_f5">
             <div class="fl"><img src="__STATIC__/system/img/account_balances.png"/>入户摸底-产权人及家庭成员</div>
             <ul class="homeTab">
-                <li class=""><a href="{:url('Collectionholder/detail',['id'=>$holder_info->id])}">基本信息</a></li>
+                <li class=""><a href="{:url('Collectionholder/detail',['id'=>$holder_info->id,'item_id'=>$item_id,'collection_id'=>$collection_id])}">基本信息</a></li>
                 <li class="on"><a href="javascript:location.reload();">特殊人群</a></li>
             </ul>
 
@@ -38,7 +38,7 @@
                             <td>{$collectionholdercrowd->crowdgroup->name}</td>
                             <td>{$collectionholdercrowd->crowd->name}</td>
                             <td>
-                                <button type="button" class="btn" onclick="layerIfWindow('入户摸底-特殊人群信息',	'{:url('detail',['id'=>$collectionholdercrowd->id])}','800','600')" >详细信息</button>
+                                <button type="button" class="btn" onclick="layerIfWindow('入户摸底-特殊人群信息',	'{:url('detail',['id'=>$collectionholdercrowd->id,'item_id'=>$item_id,'collection_id'=>$collection_id])}','800','600')" >详细信息</button>
                             </td>
                         </tr>
                         {/volist}

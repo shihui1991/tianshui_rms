@@ -21,6 +21,9 @@ class Base extends Controller
     public $url;
     public $process_status;
     public $items;
+    public $item_id;
+    public $collectons;
+    public $collecton_id;
 
     /* ========== 初始化 ========== */
     public function _initialize()
@@ -49,9 +52,13 @@ class Base extends Controller
         }
         $url=$url=='/'?'/':'/'.$url;
         $this->url=$url;
+        $this->assign(['url'=>request()->url()]);
 
         if(strtolower(request()->controller()) != 'home'){
             if(request()->isMobile()){
+                $item_id=session('collectioninfo.item_id');
+                $collection_id=session('collectioninfo.collection_id');
+
                 $items=Items::whereIn('id',session('holderinfo.item_ids'))
                     ->whereIn('status',[1,2])
                     ->field(['id','name','area','is_top','status'])
@@ -62,14 +69,49 @@ class Base extends Controller
                     return $this->error('没有数据！',url('Home/index'));
                 }
                 $this->items=$items;
+
+                if(!$item_id){
+                    $item=$items[0];
+                    $item_id=$item->id;
+                }else{
+                    $item=Items::whereIn('status',[1,2])->field(['id','name','area','is_top','status'])->find($item_id);
+                }
+                $this->item_id=$item_id;
+
+                $collection_holders=session('holderinfo.collection_holders');
+                $collection_ids=array_keys($collection_holders);
+                $collections=Collections::field(['id','item_id','community_id','building','unit','floor','number','type','status','has_assets'])
+                    ->with('community')
+                    ->where([
+                        'item_id'=>$item_id,
+                        'id'=>['in',$collection_ids],
+                        'status'=>1
+                    ])->select();
+
+                if(!count($collections)){
+                    return $this->error('没有数据！',url('Home/index'));
+                }
+                $this->collectons=$collections;
+                if(!$collection_id){
+                    $collection=$collections[0];
+                    $collection_id=$collection->id;
+                }
+                $this->collecton_id=$collection_id;
+
+                $this->assign([
+                    'item'=>$item,
+                    'items'=>$items,
+                    'collections'=>$collections,
+                ]);
+            }else{
+                $item_id=input('item_id');
+                $collection_id=input('collection_id');
             }
 
-
-
-            if(input('item_id') && in_array(input('item_id'),session('holderinfo.item_ids'))){
+            if($item_id && in_array($item_id,session('holderinfo.item_ids'))){
                 $process_id=Processurls::where('url',$url)->value('process_id');
                 if($process_id){
-                    $itemprocess=Itemprocesss::where(['item_id'=>input('item_id'),'process_id'=>$process_id])->find();
+                    $itemprocess=Itemprocesss::where(['item_id'=>$item_id,'process_id'=>$process_id])->find();
                     if($itemprocess){
                         $this->process_status=$itemprocess->getData('status');
                     }else{
@@ -77,9 +119,17 @@ class Base extends Controller
                     }
                 }
             }else{
-                return $this->error('非法访问');
+                return $this->error('没有数据');
             }
+
+            $this->assign([
+                'item_id'=>$item_id,
+                'collection_id'=>$collection_id,
+            ]);
+            session('collectioninfo',[
+                'item_id'=>$item_id,
+                'collection_id'=>$collection_id,
+            ]);
         }
     }
-
 }
