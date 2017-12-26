@@ -7,7 +7,7 @@
 
 </head>
 <body>
-<form action="{:url('add')}" method="get" id="js-ajax-form">
+<form action="{:url('add',['item_id'=>$item_id,'collection_id'=>$collection_id])}" method="get" id="js-ajax-form">
     <input type="hidden" name="item_id" value="{$item_id}">
     <input type="hidden" name="collection_id" value="{$collection_id}">
     <input type="hidden" name="holder_id" value="{$holder_id}">

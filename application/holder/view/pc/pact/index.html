@@ -14,10 +14,10 @@
             <div class="fl"><img src="__STATIC__/system/img/server_database.png"/>兑付与协议管理</div>
             <ul class="homeTab">
                 <li><a href="{:url('Pay/detail',['item_id'=>$item_id,'collection_id'=>$collection_id])}">兑付汇总</a></li>
-                <li><a href="{:url('Payholder/index',['item_id'=>$item_id,'pay_id'=>$pay_id])}">分权兑付</a></li>
-                <li><a href="{:url('Paysubject/index',['item_id'=>$item_id,'pay_id'=>$pay_id])}">补偿科目</a></li>
-                <li><a href="{:url('Payobject/index',['item_id'=>$item_id,'pay_id'=>$pay_id])}">补偿事项</a></li>
-                <li><a href="{:url('Payholderhouse/index',['item_id'=>$item_id,'pay_id'=>$pay_id])}">安置房</a></li>
+                <li><a href="{:url('Payholder/index',['pay_id'=>$pay_id,'item_id'=>$item_id,'collection_id'=>$collection_id])}">分权兑付</a></li>
+                <li><a href="{:url('Paysubject/index',['pay_id'=>$pay_id,'item_id'=>$item_id,'collection_id'=>$collection_id])}">补偿科目</a></li>
+                <li><a href="{:url('Payobject/index',['pay_id'=>$pay_id,'item_id'=>$item_id,'collection_id'=>$collection_id])}">补偿事项</a></li>
+                <li><a href="{:url('Payholderhouse/index',['pay_id'=>$pay_id,'item_id'=>$item_id,'collection_id'=>$collection_id])}">安置房</a></li>
                 <li class="on"><a href="javascript:location.reload();">补偿协议</a></li>
             </ul>
         </div>
@@ -45,7 +45,7 @@
                             <td>{$pact->phone}</td>
                             <td>{$pact->status}</td>
                             <td>
-                                <button type="button" class="btn" onclick="layerIfWindow('补偿协议信息',	'{:url('detail',['id'=>$pact->id])}','800','600')" >详细信息</button>
+                                <button type="button" class="btn" onclick="layerIfWindow('补偿协议信息',	'{:url('detail',['id'=>$pact->id,'item_id'=>$item_id,'collection_id'=>$collection_id])}','800','600')" >详细信息</button>
                             </td>
                         </tr>
                         {/volist}

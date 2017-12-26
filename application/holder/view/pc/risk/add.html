@@ -7,7 +7,7 @@
 
 </head>
 <body>
-<form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+<form action="{:url('add',['item_id'=>$item_id])}" method="post" class="js-ajax-form" onsubmit="return false;">
     <div class="layerCon bg_f">
         <input type="hidden" name="item_id" value="{$item_id}">
         <input type="hidden" name="collection_id" value="{$collection_id}">

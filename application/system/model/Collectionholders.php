@@ -71,4 +71,8 @@ class Collectionholders extends Model
     public function collection(){
         return $this->belongsTo('Collections','collection_id','id','collection')->field('id,building,unit,floor,number,type');
     }
+
+    public function holdercrowd(){
+        return $this->hasMany('Collectionholdercrowds','holder_id','id');
+    }
 }
