@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name|default=''}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+    {include file="mobile/public/head"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+        <div class="backCo_w w_100 tabDiv" style="overflow: scroll;">
+            <div class="padLR12 add_menu">
+                <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                <p><span><i>* </i>名称：</span>
+                    <input id="name" class="must" type="text" name="name" value="{:isset($infos)?$infos->name:''}" required placeholder="输入唯一名称"/>
+                </p>
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <p>说明：</p>
+                    <textarea class="flex" id="infos" name="infos">{$infos->infos?:''}</textarea>
+                </div>
+                <p>
+                    <span class="float_l">流程地址:</span>
+                    <img src="__STATIC__/system/img/add.png" class=" btn-add" style="left: 70px; position: relative;top: 4px;"/>
+                </p>
+                <div class="addCtrlAdss">
+                    <div class="ctrlList">
+                        <div class="ctrlL">
+                            <span><a class="btn-remove">删除</a></span>
+                        </div>
+                        <div class="ctrlR">
+                            <input type="text" name="url[]" value="" placeholder="输入流程链接地址">
+                        </div>
+                    </div>
+                    {if condition="isset($infos)"}
+                    {volist name="processurls" id="url"}
+                    <div class="ctrlList">
+                        <div class="ctrlL">
+                            <span><a class="btn btn-remove">删除</a></span>
+                        </div>
+                        <div class="ctrlR">
+                            <input type="text" name="url[]" value="{$url.url}" placeholder="输入流程链接地址">
+                        </div>
+                    </div>
+                    {/volist}
+                    <p style="height: auto;line-height: inherit;">
+                        创建于：{$infos->created_at}<br/>
+                        更新于：{$infos->updated_at}<br/>
+                        {if condition="isset($infos) and $infos->deleted_at"}
+                        删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                        {/if}
+                    </p>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        <!--提交按钮-->
+        <p class="Btnform align_cen bor_none maT20 marB20">
+            <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+            <span class="reset maL17 close button"  onclick="window.history.back(-1);">返回</span>
+        </p>
+        </form>
+        <div class="hide">
+            <div class="ctrlList" id="tpl">
+                <div class="ctrlL">
+                    <span><a class="btn btn-remove">删除</a></span>
+                </div>
+                <div class="ctrlR">
+                    <input type="text" name="url[]" value="" placeholder="输入流程链接地址">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('.btn-add').click(function () {
+        var tpl=$('#tpl').clone(true).attr('id','');
+        tpl.find('.btn-remove').click(function () {
+            $(this).parents('.ctrlList:first').remove();
+        });
+        $('.addCtrlAdss').prepend(tpl);
+    });
+
+    $('.btn-remove').click(function () {
+        $(this).parents('.ctrlList:first').remove();
+    });
+
+</script>
+</body>
+</html>
