@@ -198,7 +198,7 @@
 
 <script>
     function itemconf(a) {
-        $(".confg").find("#dongtai").attr('href','{:url(\'status\')}?id='+a);
+        $(".confg").find("#dongtai").attr('href','/system/item/status/id/'+a+'.html');
         $(".confg").find("#shezhis").attr('href','{:url(\'Itemprocess/index\')}?item_id='+a);
         $(".confg").find("#zhongyao").attr('href','{:url(\'itemtime\')}?item_id='+a);
         $(".confg").find("#buchang").attr('href','{:url(\'Itemsubject/index\')}?item_id='+a);
