@@ -131,7 +131,7 @@ class Assessassets extends Auth
             ->join('collection c', 'c.id=ass.collection_id', 'left')
             ->join('assess ess', 'ess.id=ass.assess_id', 'left')
             ->join('item_company ic', 'ic.id=ass.company_id', 'left')
-            ->join('company cy', 'cy.id=ic.company_id', 'left')
+            ->join('company cy', 'cy.id=ass.company_id', 'left')
             ->where($where)
             ->order(['i.is_top' => 'desc', 'ass.' . $ordername => $orderby])
             ->paginate($display_num);

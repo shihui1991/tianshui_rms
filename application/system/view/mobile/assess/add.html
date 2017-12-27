@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="item_id" id="item_id" value="{:isset($infos)?$infos->item_id:$item_info->id}">
+                <p>
+                    <span>项目：</span>
+                    <input type="text" value="{$item_info->name}" disabled>
+                </p>
+                <p>
+                    <span>片区：</span>
+                    <select name="community_id" id="community_id" class="chosen sear_collection_id" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--请选择片区--</option>
+                        {volist name="collectioncommunitys" id="community"}
+                        <option value="{$community->id}">{$community->name}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <p>
+                    <span>权属：</span>
+                    <select name="collection_id" id="collection_id" class="chosen" data-placeholder="请选择权属" data-no_results_text="没有匹配数据">
+                        <option value="">--请先选择片区--</option>
+                    </select>
+                </p>
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    /* ===== 查询权属 =====*/
+    $('.sear_collection_id').change(function () {
+        var _item_id=$("#item_id").val();
+        var _community_id=$("#community_id").find('option:selected').val();
+        var data = {
+            'item_id':_item_id,
+            'community_id':_community_id
+        };
+        if(_community_id){
+            $.ajax({
+                url:"{:url('Tools/collections')}",
+                data:data,
+                dataType:'json',
+                type:'post',
+                success:function (resp) {
+                    $('#collection_id').html('');
+                    var options = '';
+                    if(resp.code){
+                       options += ' <option value="">--请选择权属--</option>';
+                        $.each(resp.data,function (index,info) {
+                            var building = info.building?info.building+"栋":'';
+                            var unit = info.unit?info.unit+"单元":'';
+                            var floor = info.floor?info.floor+"楼":'';
+                            var number = info.number?info.number+"号":'';
+                            options += '<option value="'+info.id+'">'+building+unit+floor+number+'（'+info.id+'）'+'</option>';
+                        });
+                    }else{
+                        options += ' <option value="">--暂无数据--</option>';
+                        layer.open({
+                            content:resp.msg
+                            ,skin: 'msg'
+                            ,time:1.5
+                        });
+                    }
+                    $('#collection_id').html(options);
+                },
+                error:function () {
+                    layer.open({
+                        content:'网络错误，请重试'
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+            });
+        }else{
+            var options = ' <option value="">--请先选择片区--</option>';
+
+            $('#collection_id').html(options);
+            layer.open({
+                content:'请选择片区'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+        }
+    });
+
+</script>
+
+</body>
+</html>

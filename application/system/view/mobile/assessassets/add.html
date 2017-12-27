@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('add')}" method="post" onsubmit="return false;">
+            <p class="padLR12 btnp maT10">
+                <span class="on">基本信息</span>
+                <span>相关图片</span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class=" add_menu maT20">
+                    <input type="hidden" name="id" value="{:isset($infos)?$infos->id:''}">
+                    <p class="padLR12">
+                        <span>项目：</span>
+                        <input type="hidden" name="item_id" id="item_id" value="{:isset($item_info)?$item_info->id:''}">
+                        <input type="text" value="{$item_info->name}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>片区(地址)：</span>
+                        <input type="hidden" name="community_id" id="community_id" value="{:isset($collectioncommunity_info)?$collectioncommunity_info->id:''}">
+                        <input type="text" value="{$collectioncommunity_info->name}({$collectioncommunity_info->address})" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>权属(ID)：</span>
+                        <input type="hidden" name="collection_id" id="collection_id" value="{:isset($collection_info)?$collection_info->id:''}">
+                        <input type="text" value="{if condition="$collection_info->building"}{$collection_info->building}栋{/if}
+                        {if condition="$collection_info->unit"}{$collection_info->unit}单元{/if}
+                        {if condition="$collection_info->floor"}{$collection_info->floor}楼{/if}
+                        {if condition="$collection_info->number"}{$collection_info->number}号{/if} ({$collection_info->id})" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>评估公司：</span>
+                        <select name="company_id" id="company_id">
+                            <option value="">--请先选择项目--</option>
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>评估师：</span>
+                        <input type="hidden" name="valuer_id" id="valuer_id" value="">
+                        <input class="btn valuerid_list" id="showQuerys"  value="选择评估师"/>
+                    </p>
+                    <p class="padLR12">
+                        <table class="w_100 maT10 tableCons" border="0" id="valuer_id_lists">
+                            <tbody>
+                            <tr class="noSelect">
+                                <th style="text-align: center;">ID</th>
+                                <th style="text-align: center;">姓名</th>
+                                <th style="text-align: center;">注册号</th>
+                                <th style="text-align: center;">有效期</th>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </p>
+                    <p  class="padLR12">
+                        <span>资产总额:</span>
+                        <input type="text" name="total" id="total" value="" placeholder="请输入资产总额">
+                    </p>
+                    <p  class="padLR12">
+                        <span>报告时间:</span>
+                        <input type="text" class="laydate-icon" name="report_at" id="report_at" value="" placeholder="请输入报告时间">
+                    </p>
+                    <p  class="padLR12">
+                        <span>价值时点:</span>
+                        <input type="text" class="laydate-icon" name="valued_at" id="valued_at" value="" placeholder="请输入价值时点">
+                    </p>
+                    <p class="padLR12">
+                        <span>评估方法:</span>
+                        <input type="text" name="method" id="method" value="" placeholder="请输入评估方法">
+                    </p>
+                </div>
+
+                <div class="padLR12 add_menu maT20" style="display: none;">
+                    <p>
+                        <span>评估报告：</span>
+                    <div class="w_100 backCo_f2 add_menu_textarea">
+                        <ul class="hxt_ul add_tu">
+                            {if condition="isset($infos) and $infos->picture"}
+                            {volist name="infos->picture" id="pic"}
+                            <li>
+                                <img src="{$pic}" class="w_100 h_100" onclick="bigerimg(this)">
+                                <span><span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span></span>
+                                <input type="hidden" name="picture[]" value="{$pic}">
+                            </li>
+                            {/volist}
+                            {/if}
+                            <li class="btn-upload" data-type="multiimage" data-hidename="picture[]">
+                                <input type="file" multiple onchange="multiimageupl(this)">
+                                <a>+</a>
+                            </li>
+                        </ul>
+                    </div>
+                    </p>
+                </div>
+
+            </div>
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+            <!--弹出层-->
+            <div class="showQuery hide padLR12 search" id="layerQuery">
+                    <div class="backCo_w padding_b15" style="margin-top: 50%;">
+                        <p class="queryTitle">查询被征用户</p>
+                        <div class="queryCon">
+                            <table class="table" border="0" style="width: 100% !important;" id="valuer_id_infos">
+                                <input type="hidden" name="pinggu_ids" id="pinggu_id" value="">
+                                <tbody>
+                                <tr class="noSelect">
+                                    <th class="tc" width="35px">
+                                        <input  type="checkbox" value="" data-role="checkall"/>
+                                    </th>
+                                    <th style="text-align: center;">ID</th>
+                                    <th style="text-align: center;">姓名</th>
+                                    <th style="text-align: center;">注册号</th>
+                                    <th style="text-align: center;">有效期</th>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--提交按钮-->
+                        <p class="Btnform align_cen bor_none maT20">
+                            <span class="submit button maR17" id="btn-form-search">选择</span>
+                            <span class="reset close button maL17">取消</span>
+                        </p>
+
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+<script>
+    $("#showQuerys").click(function() {
+        var _company_id=$("#company_id").find('option:selected').val();
+        if(!_company_id){
+            layer.open({
+                content:'请选择评估公司'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+            return false;
+        }
+        $(".showQuery").slideDown(300);
+    });
+    /* ===== 评估公司 =====*/
+    var _item_id=$("#item_id").val();
+    $.ajax({
+        url:"{:url('Tools/item_company')}",
+        data:{ 'item_id':_item_id,'type':0},
+        dataType:'json',
+        type:'post',
+        success:function (resp) {
+            $('#company_id').html('');
+            var options = '';
+            if(resp.code){
+                options += '<option value="">--请选择评估公司--</option>';
+                $.each(resp.data,function (index,info) {
+                    options += '<option value="'+info.company_id+'">'+info.company_name+'</option>';
+                });
+            }else{
+                options='<option value="">--暂无数据--</option>';
+                layer.open({
+                    content:resp.msg
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+            $('#company_id').html(options);
+        },
+        error:function () {
+            layer.open({
+                content:'网络错误，请重试'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+        }
+    });
+
+    /* ===== 查询评估师 =====*/
+    var valuers=null;
+    var valuer_ids=[];
+    $("#company_id").change(function () {
+        var _company_id=$("#company_id").find('option:selected').val();
+        $.ajax({
+            url:"{:url('Tools/item_company_valuer')}",
+            data:{ 'company_id':_company_id},
+            dataType:'json',
+            type:'get',
+            success:function (resp) {
+                $('#valuer_id_infos').find('tr:first').siblings().remove();
+                var options = '';
+
+                if(resp.code){
+                    valuers=resp.data;
+                    $.each(resp.data,function (index,info) {
+                        var _checked='';
+                        var res=$.inArray(info.id,valuer_ids);
+                        if(res>-1){
+                            _checked='checked';
+                        }
+
+                        options += '<tr class="h50">';
+                        options += ' <td style="text-align: center;"><input class="va_m" type="checkbox" name="ids[]" value="'+info.id+'"  data-role="check" id="check-'+info.id+'" '+_checked+'/></td>';
+                        options += '<td style="text-align: center;">'+info.id+'</td>';
+                        options += '<td style="text-align: center;">'+info.name+'</td>';
+                        options += '<td style="text-align: center;">'+info.register_num+'</td>';
+                        options += '<td style="text-align: center;">'+info.valid_at+'</td>';
+                        options += '</tr>';
+                    });
+                    $('#valuer_id_infos').find('tbody').append(options);
+                }else{
+                    valuers=null;
+                    layer.open({
+                        content:'暂无评估师'
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+            },
+            error:function () {
+                valuers=null;
+                layer.open({
+                    content:layer.msg
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    });
+
+    /* ===== 选择评估师 =====*/
+    $("#btn-form-search").click(function () {
+        if(!valuers){
+            layer.open({
+                content:'数据异常，请关闭后重试'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+            return false;
+        }
+        valuer_ids=[];
+        $('#valuer_id_lists').find('tr:first').siblings().remove();
+
+        var name_ids= $("input[name='ids[]']:checked");
+        if(!name_ids.length){
+            layer.open({
+                content:'请选择评估师'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+            return false;
+        }
+        for(var i = 0;i<name_ids.length;i++){
+            valuer_ids[i]=parseInt($(name_ids[i]).val());
+        }
+
+        $(".showQuery").slideUp(300);
+
+        var options='';
+        $.each(valuers,function (index,info) {
+            if($.inArray(info.id,valuer_ids)>-1){
+                options += '<tr class="h50">';
+                options += '<td>'+info.id+'<input type="hidden" name="ids[]" value="'+info.id+'"></td>';
+                options += '<td>'+info.name+'</td>';
+                options += '<td>'+info.register_num+'</td>';
+                options += '<td>'+info.valid_at+'</td>';
+                options += '</tr>';
+            }
+
+        });
+        $('#valuer_id_lists').find('tbody').append(options);
+    });
+
+
+    $(function () {
+        /*----- 添加分类 -----*/
+        $('.add-cate').on('click',function () {
+            var add_cate_box=$(this).siblings('.add-cate-box'),
+                cate_name=add_cate_box.find('input[name="cate_name"]:first').val().replace(/\s+/g, '');
+            if(cate_name.length){
+                add_cate_box.find('input[name="cate_name"]:first').val('');
+                var img_tpl=$('#img_tpl').clone(true).attr('id','');
+                img_tpl.find('.cate-name').text(cate_name);
+                img_tpl.find('.btn-upload').data('hidename','picture['+cate_name+'][]');
+                $('#picture-table').append(img_tpl);
+            }else{
+                layer.open({
+                    content:'请输入分类名称'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -348,7 +348,7 @@ class Assessestate extends Auth
         }
         $assessestate_model = new Assessestates();
         $where = [];
-        $field = ['ass.id','ass.created_at','ass.updated_at','ass.deleted_at', 'ass.assess_id', 'ass.collection_id', 'ass.company_id', 'i.name as item_name', 'cc.name as pq_name', 'c.building as c_building',
+        $field = ['ass.id','ass.created_at','ass.updated_at','ass.deleted_at', 'ass.assess_id', 'ass.collection_id', 'ass.company_id', 'i.name as item_name', 'cc.name as pq_name', 'cc.address as pq_address', 'c.building as c_building',
             'c.unit as c_unit', 'c.floor as c_floor', 'c.number as c_number', 'c.id as c_id', 'cy.name as cy_name', 'ass.method', 'ass.valued_at', 'ass.status', 'ass.report_at', 'ass.picture'];
 
         $assessestate_info = $assessestate_model
@@ -364,7 +364,12 @@ class Assessestate extends Auth
             ->where('ass.id',$id)
             ->find();
 
-        $building_price = model('Assessestatebuildings')->field(['id,building_id,price,amount'])->where('estate_id', $id)->where('assess_id', $assessestate_info->assess_id)->select();
+        /*----- 入户评估-评估建筑物查询 -----*/
+        $building_price = model('Assessestatebuildings')
+            ->field(['id,building_id,price,amount'])
+            ->where('estate_id', $id)
+            ->where('assess_id', $assessestate_info->assess_id)
+            ->select();
         /*----- 评估建筑物查询 -----*/
         $where['collection_id'] = $assessestate_info->collection_id;
         $field = ['cb.id', 'cb.item_id', 'cb.community_id', 'cb.collection_id', 'cb.building', 'cb.unit', 'cb.floor', 'cb.number',
@@ -385,8 +390,13 @@ class Assessestate extends Auth
             ->where('status_id','not in','0,5')
             ->order(['cb.register' => 'desc', 'cb.use_id' => 'asc'])
             ->select();
+        $deff = count($collectionbuildings)-count($building_price);
+        if($deff){
+            return $this->error('有新的建筑被添加，请销毁本条数据重新添加');
+        }
         /*----- 建筑物表格 -----*/
         $options = '';
+        $optionss = '';
         if($collectionbuildings){
             foreach ($collectionbuildings as $k => $v) {
                 $options .= '<tr class="h50">';
@@ -401,6 +411,36 @@ class Assessestate extends Auth
                 $options .= '<td style="text-align: left;background: none;">' . $v['remark'] . '</td>';
                 $options .= '<td style="text-align: left;background: none;"><input type="text" name="amount[' . $building_price[$k]->id . ']" id="total-' . $v['id'] . '"  value="' . $building_price[$k]->amount . '" readonly></td>';
                 $options .= '</tr>';
+                $optionss .= '<tr class="h50">'; 
+                $optionss .= '<td  class="more"><i class="iconfont icon-gongyongshuangjiantouxia"></i></td>'; 
+                $optionss .= '<td><input type="hidden" name="ids[' . $building_price[$k]->id . ']" value="' . $v['id'] . '">' . $v['id'] .'</td>';
+                $optionss .= '<td  class="nowrap" >' . $v['address'] .'</td>'; 
+                $optionss .= '<td>' . $v['bu_name'] .'</td>'; 
+                $optionss .= '</tr>'; 
+                $optionss .= '<tr class="hide_more hide">'; 
+                $optionss .= '<td colspan="6" style="padding:0 !important;">'; 
+                $optionss .= ' <div class="table_more w_100 backCo_f21">'; 
+                $optionss .= '<div class="flex w_100">'; 
+                $optionss .= '<div class="w_30 align_right">结构</div><div  class="align_left">'. $v['bs_name'] .'</div>'; 
+                $optionss .= '</div>'; 
+                $optionss .= '<div class="flex w_100">'; 
+                $optionss .= '<div class="w_30 align_right">状况</div><div  class="align_left">' . $v['s_name'] . '</div>'; 
+                $optionss .= '</div>';
+                $optionss .=    '<div class="flex w_100">';
+                $optionss .=     '<div class="w_30 align_right">数量</div><div  class="align_left">' . $v['real_num'] . '</div>';
+                $optionss .=     '</div>';
+                $optionss .=    '<div class="flex w_100">';
+                $optionss .=     '<div class="w_30 align_right">计量单位</div><div  class="align_left">' . $v['real_unit'] . '</div>';
+                $optionss .=     '</div>';
+                $optionss .=    '<div class="flex w_100">';
+                $optionss .=     '<div class="w_30 align_right">单价</div><div  class="align_left"><input type="text" name="price[' . $v['id'] . ']" class="price" value="' . $building_price[$k]->price . '" data-real_num="' . $v['real_num'] . '" data-id="' . $v['id'] . '" onkeyup="price_num(this)"  onchange="price_num(this)"></div>';
+                $optionss .=     '             </div>';
+                $optionss .=    '             <div class="flex w_100">';
+                $optionss .=     '                 <div class="w_30 align_right">总价</div><div  class="align_left"><input type="text" name="amount[' . $v['id'] . ']" id="total-' . $v['id'] . '"  value="' . $building_price[$k]->amount . '" readonly></div>';
+                $optionss .=     '             </div>';
+                $optionss .=    '         </div>';
+                $optionss .=    '     </td>';
+                $optionss .=    ' </tr>';
             }
         }
 
@@ -426,6 +466,7 @@ class Assessestate extends Auth
                 'company_valuer_info' => $company_valuer,
                 'valuer_ids' => $valuer_ids,
                 'options' => $options,
+                'optionss' => $optionss,
                 'item_id'=>$item_id
             ]);
     }
@@ -473,6 +514,10 @@ class Assessestate extends Auth
         }
 
         $building_info = $datas['price'];
+        $values=array_filter(array_values($datas['price']));
+        if(empty($values)){
+            return $this->error('请输入评估单价','');
+        }
         $ids = $datas['ids'];
         Db::startTrans();
         try {
@@ -480,16 +525,49 @@ class Assessestate extends Auth
             /*----- 修改房产评估--建筑评估 -----*/
             $building_data = [];
             $amount_nums = 0;
-            foreach ($building_info as $k => $v) {
-                $real_num = model('Collectionbuildings')->where('id', $ids[$k])->value('real_num');
-                $building_data[] = [
-                    'id' => $k,
-                    'price' => $v,
-                    'amount' => $real_num * $v
-                ];
-                $amount_nums .= $real_num * $v;
+            if(request()->isMobile()){
+                $building_datass = [];
+                foreach ($building_info as $k => $v) {
+                    $real_num = model('Collectionbuildings')->where('id', $k)->value('real_num');
+                    $building_data[] = [
+                        'id' => array_search($k, $ids),
+                        'price' => $v,
+                        'amount' => $real_num * $v
+                    ];
+                    if(count($building_info)=='1') {
+                        $building_datass[] = [
+                            'id' => array_search($k, $ids),
+                            'price' => $v,
+                            'amount' => $real_num * $v
+                        ];
+                    }
+                    $amount_nums += $real_num * $v;
+
+                }
+                if(count($building_info)=='1'){
+                    model('Assessestatebuildings')->saveAll($building_datass);
+                }else{
+                    model('Assessestatebuildings')->isUpdate(true)->saveAll($building_data);
+                }
+            }else{
+                foreach ($building_info as $k => $v) {
+                    $real_num = model('Collectionbuildings')->where('id', $ids[$k])->value('real_num');
+                    $building_data[] = [
+                        'id' => $k,
+                        'price' => $v,
+                        'amount' => $real_num * $v
+                    ];
+                    $amount_nums += $real_num * $v;
+                }
+
+                if(count($building_info)=='1'){
+                    model('Assessestatebuildings')->saveAll($building_data);
+                }else{
+                    model('Assessestatebuildings')->isUpdate(true)->saveAll($building_data);
+                }
             }
-            model('Assessestatebuildings')->isUpdate(true)->saveAll($building_data);
+
+
             /*----- 房产评估信息修改 -----*/
             model('Assessestates')->save(
                 ['report_at' => $datas['report_at'],
@@ -532,6 +610,7 @@ class Assessestate extends Auth
             $res = true;
             Db::commit();
         } catch (\Exception $e) {
+            dump($e);
             $res = false;
             Db::rollback();
         }
