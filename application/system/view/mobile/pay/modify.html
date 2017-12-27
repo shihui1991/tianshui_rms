@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <p class="padLR12 btnp maT10">
+                <span class="on"><a href="javascript:location.reload();">兑付汇总</a></span>
+                <span><a href="{:url('Payholder/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">分权兑付</a></span>
+                <span><a href="{:url('Paysubject/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">补偿科目</a></span>
+                <span><a href="{:url('Payobject/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">补偿事项</a></span>
+                <span><a href="{:url('Payholderhouse/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">安置房</a></span>
+                <span><a href="{:url('Pact/index',['item_id'=>$infos->item_id,'pay_id'=>$infos->id])}">补偿协议</a></span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class=" add_menu maT20">
+                    <input type="hidden" name="id" value="{$infos->id}">
+                    <input type="hidden" name="item_id" value="{$infos->item_id}">
+                    <p class="padLR12">
+                        <span>项目：</span>
+                        <input type="text" value="{$infos->i_name}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>地址：</span>
+                        <input type="text" value="{$infos->cc_address}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>片区：</span>
+                        <input type="text" value="{$infos->cc_name}" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>位置：</span>
+                        <input type="text" value=" {if condition="$infos->building"}{$infos->building}栋{/if}
+                        {if condition="$infos->unit"}{$infos->unit}单元{/if}
+                        {if condition="$infos->floor"}{$infos->floor}楼{/if}
+                        {if condition="$infos->number"}{$infos->number}号{/if}" disabled>
+                    </p>
+                    <div class="w_100 backCo_f2 add_menu_textarea">
+                        <p>兑付汇总：</p>
+                        <p class="flex">房产补偿：{$infos->estate_amount|number_format=2} 元<br/>
+                                    资产补偿：{$infos->assets_amount|number_format=2} 元<br/>
+                                    公共附属物总计：{$infos->public_amount|number_format=2} 元<br/>
+                                    平分户数：{$infos->public_num|number_format} 户<br/>
+                                    公共附属物平均：{$infos->public_avg|number_format=2} 元<br/>
+                                    重要补偿科目小计：{$infos->subject_amount|number_format=2} 元<br/>
+                                    其他补偿事项小计：{$infos->object_amount|number_format=2} 元<br/>
+                                    补偿总计：{$infos->total|number_format=2} 元<br/></p>
+                    </div>
+                    <p class="padLR12">
+                        <span>补偿方式：</span>
+                        <select name="compensate_way" id="compensate_way">
+                            {volist name="model->compensate_way" id="value"}
+                            <option value="{$key}" {eq name="infos->getData('compensate_way')" value="$key"}selected{/eq}>{$value}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>兑付方式：</span>
+                        {if condition="$infos->getData('type')"}
+                            <input type="text" value="{$infos->pay_way}" disabled>
+                        {else/}
+                            <select name="pay_way" id="pay_way">
+                                {volist name="model->pay_way" id="value"}
+                                <option value="{$key}" {eq name="infos->getData('pay_way')" value="$key"}selected{/eq}>{$value}</option>
+                                {/volist}
+                            </select>
+                        {/if}
+                    </p>
+                    <p class="padLR12">
+                        <span>过渡方式：</span>
+                        <select name="transit_way" id="transit_way">
+                            {volist name="model->transit_way" id="value"}
+                            <option value="{$key}" {eq name="infos->getData('transit_way')" value="$key"}selected{/eq}>{$value}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>搬迁方式：</span>
+                        <select name="move_way" id="move_way">
+                            {volist name="model->move_way" id="value"}
+                            <option value="{$key}" {eq name="infos->getData('move_way')" value="$key"}selected{/eq}>{$value}</option>
+                            {/volist}
+                        </select>
+                    </p>
+
+                    <p class="padLR12">
+                        <span>兑付图片：</span>
+                        <div class="w_100 backCo_f2 add_menu_textarea">
+                            <ul class="hxt_ul add_tu">
+                                {if condition="isset($infos) and $infos->picture"}
+                                {volist name="infos->picture" id="pic"}
+                                <li>
+                                    <img src="{$pic}" class="w_100 h_100" onclick="bigerimg(this)">
+                                    <span><span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span></span>
+                                    <input type="hidden" name="picture[]" value="{$pic}">
+                                </li>
+                                {/volist}
+                                {/if}
+                                <li class="btn-upload" data-type="multiimage" data-hidename="picture[]">
+                                    <input type="file" multiple onchange="multiimageupl(this)">
+                                    <a>+</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </p>
+
+                    {if condition="isset($infos)"}
+                    <p style="height: auto;line-height: inherit;">
+                        创建于：{$infos->created_at}<br/>
+                        更新于：{$infos->updated_at}<br/>
+                        {if condition="isset($infos) and $infos->deleted_at"}
+                        删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                        {/if}
+                    </p>
+                    {/if}
+                </div>
+
+            </div>
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+            <!--弹出层-->
+
+        </form>
+    </div>
+</div>
+<script>
+
+</script>
+
+</body>
+</html>

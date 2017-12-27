@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:isset($infos)?url('edit'):url('add')}" method="post" onsubmit="return false;">
+            <p class="padLR12 btnp maT10">
+                <span><a href="{:url('Pay/detail',['id'=>$pay_id])}">兑付汇总</a></span>
+                <span><a href="{:url('Payholder/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">分权兑付</a></span>
+                <span class="on"><a href="javascript:location.reload();">补偿科目</a></span>
+                <span><a href="{:url('Payobject/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿事项</a></span>
+                <span><a href="{:url('Payholderhouse/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">安置房</a></span>
+                <span><a href="{:url('Pact/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿协议</a></span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class="maT20">
+                    <!--按钮组合-->
+                    <div class=" anniu backCo_w padLR12 ov maT10">
+                        <a href="{:url('index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                        {if condition="$item_info->getData('status') eq 1"}
+                        <a href="{:url('add',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
+                        <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$item_info->id])}" >删除</a>
+                        <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$item_info->id])}">恢复</a>
+                        <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$item_info->id])}" data-notice="确定要彻底删除吗？">销毁</a>
+                        <span class="xiaMore"><em>更多</em><i class=" xiaMore iconfont icon-gongyongshuangjiantouxia"></i> </span>
+                        {/if}
+                    </div>
+                    <form action="{:url('index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}" method="post" id="js-ajax-form">
+                    <table id="example-advanced" class="table treetable w_100" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>总额</th>
+                            <th>操作</th>
+                        </tr>
+
+                        {volist name="paysubjects" id="paysubject"}
+                        <tr>
+                            <td class="more">
+                                <input type='checkbox' data-role="check"  name="ids[]" value="{$paysubject->id}"/>
+                                &nbsp;
+                                <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                            </td>
+                            <td>{$paysubject->id}</td>
+                            <td>{if condition="$paysubject->deleted_at"}<del>{$paysubject->name}</del>{else/}{$paysubject->name}{/if}</td>
+                            <td>{if condition="$paysubject->deleted_at"}<del>{$paysubject->amount|number_format=2}</del>{else/}{$paysubject->amount|number_format=2}{/if}</td>
+                            <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
+                                <div class="hide">
+                                    <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                    <a href="{:url('detail',['id'=>$paysubject->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                    {if condition="$item_info->getData('status') eq 1"}
+                                    {if condition="$paysubject->deleted_at"}
+                                    <a  data-action="{:url('restore',['item_id'=>$item_info->id,'ids'=>$paysubject->id])}" class="js-ajax-form-btn"><i class="iconfont icon-huifu"></i></a>
+                                    <a  data-action="{:url('destroy',['item_id'=>$item_info->id,'ids'=>$paysubject->id])}" class="js-ajax-form-btn"><i class="iconfont icon-xiaohui"></i></a>
+                                    {else/}
+                                    <a  data-action="{:url('delete',['item_id'=>$item_info->id,'ids'=>$paysubject->id])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                                    {/if}
+                                    {/if}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hide_more hide">
+                            <td colspan="6" style="padding: 0 !important;">
+                                <div class="table_more w_100 backCo_f21">
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">数量来源：</div><div class="align_left">{$paysubject->num_from}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">数量：</div><div class="align_left">{$paysubject->number|number_format=2}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">单位：</div><div class="align_left">{$paysubject->unit}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">单价：</div><div class="align_left">{$paysubject->price|number_format=2}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">次数：</div><div class="align_left">{$paysubject->times}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </form>
+                </div>
+            </div>
+
+            <!--弹出层-->
+
+        </form>
+    </div>
+</div>
+<script>
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('edit')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{$infos->id}">
+                <input type="hidden" name="item_id" value="{$infos->item_id}">
+                <p>
+                    <span>名称：</span>
+                    <input type="text" value="{$infos->name}" disabled>
+                </p>
+                <p>
+                    <span>地址：</span>
+                    <input type="text" value="{$infos->address}" disabled>
+                </p>
+                <p>
+                    <span>电话：</span>
+                    <input type="text" value="{$infos->phone}" disabled>
+                </p>
+                <p>
+                    <span>产权：</span>
+                    <input type="text" value="{$infos->holder}" disabled>
+                </p>
+                <p>
+                    <span>份额：</span>
+                    <input type="number" name="portion" id="portion" value="{$infos->portion}" placeholder="输入产权补偿分配份额（%）">
+                </p>
+                <p>
+                    <span>类型：</span>
+                    <input type="text" value="{$infos->type}" disabled>
+                </p>
+                <div class="w_100 backCo_f2 add_menu_textarea">
+                    <p>兑付汇总：</p>
+                    <p class="flex">
+                    <p>房产补偿：<span id="estate_amount">{$infos->estate_amount|number_format=2}</span> 元</p>
+                    <p>资产补偿：<span id="assets_amount">{$infos->assets_amount|number_format=2}</span> 元</p>
+                    <p>公共附属物总计：<span id="public_amount">{$infos->public_amount|number_format=2}</span> 元</p>
+                    <p>平分户数：<span id="public_num">{$infos->public_num|number_format}</span> 户</p>
+                    <p>公共附属物平均：<span id="public_avg">{$infos->public_avg|number_format=2}</span> 元</p>
+                    <p>重要补偿科目小计：<span id="subject_amount">{$infos->subject_amount|number_format=2}</span> 元</p>
+                    <p>其他补偿事项小计：<span id="object_amount">{$infos->object_amount|number_format=2}</span> 元</p>
+                    <p>补偿总计：<span id="total_amount">{$infos->total_amount|number_format=2}</span> 元</p>
+                    </p>
+                </div>
+                {if condition="isset($infos)"}
+                <p style="height: auto;line-height: inherit;">
+                    创建于：{$infos->created_at}<br/>
+                    更新于：{$infos->updated_at}<br/>
+                    {if condition="isset($infos) and $infos->deleted_at"}
+                    删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                    {/if}
+                </p>
+                {/if}
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    var estate_total={$infos->estate_total};
+    var assets_total={$infos->assets_total};
+    var subject_total={$infos->subject_total};
+    var object_total={$infos->object_total};
+    var public_amount={$infos->public_amount};
+    var public_num={$infos->public_num};
+    var type={$infos->getData('type')};
+    var holder={$infos->getData('holder')};
+
+    $('#portion').on('keyup change blur',function () {
+        var portion=parseFloat($(this).val());
+        var estate_amount,
+            assets_amount,
+            public_avg,
+            subject_amount,
+            object_amount,
+            total_amount;
+
+        if(portion>100 || portion<0){
+            layer.open({
+                content:'补偿份额在0-100之间'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+            return false;
+        }
+
+        estate_amount=portion/100*estate_total;
+        if(type){
+            if(holder==1){
+                assets_amount=0;
+                public_avg=0;
+                subject_amount=0;
+                object_amount=0;
+            }else{
+                assets_amount=assets_total;
+                public_avg=public_amount/public_num;
+                subject_amount=subject_total;
+                object_amount=object_total;
+            }
+        }else{
+            assets_amount=portion/100*assets_total;
+            public_avg=portion/100*public_amount/public_num;
+            subject_amount=portion/100*subject_total;
+            object_amount=portion/100*object_total;
+        }
+        total_amount=(estate_amount+assets_amount+public_avg+subject_amount+object_amount);
+
+        $('#estate_amount').text($.number_format(estate_amount));
+        $('#assets_amount').text($.number_format(assets_amount));
+        $('#public_avg').text($.number_format(public_avg));
+        $('#subject_amount').text($.number_format(subject_amount));
+        $('#object_amount').text($.number_format(object_amount));
+        $('#total_amount').text($.number_format(total_amount));
+    });
+
+
+</script>
+
+</body>
+</html>

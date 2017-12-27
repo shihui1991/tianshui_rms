@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="item_id" value="{$item_info->id}">
+                <p>
+                    <span>项目：</span>
+                    <input type="text" value="{$item_info->name}" disabled>
+                </p>
+                <p>
+                    <span>片区：</span>
+                    <select name="community_id" id="community_id" class="chosen" data-placeholder="请选择片区" data-no_results_text="没有匹配数据">
+                        <option value="">--全部--</option>
+                        {volist name="collectioncommunitys" id="collectioncommunity"}
+                        <option value="{$collectioncommunity->id}" >{$collectioncommunity->name}</option>
+                        {/volist}
+                    </select>
+                </p>
+                <p>
+                    <span style="width: 100px !important;">选择添加方式：</span>
+                    <select name="select" id="select" style="padding-left: 100px !important;">
+                        <option value="1">--全部--</option>
+                        <option value="0">--自定义--</option>
+                    </select>
+                </p>
+
+                <table class="w_100 maT10 tableCons padLR12" border="0" id="valuer_id_lists">
+                    <tbody>
+                    <tr class="noSelect"  id="thead-collectionlist">
+                        <th style="text-align: left;"><input type="checkbox" data-role="checkall"/></th>
+                        <th style="text-align: center;">ID</th>
+                        <th style="text-align: center;">地址</th>
+                        <th style="text-align: center;">片区</th>
+                        <th style="text-align: center;">位置</th>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+    /* ===== 项目改变->清空摸底->查询摸底 =====*/
+    $('#item_id,#community_id,#select').change(function () {
+        var _select=$('#select').find('option:selected').val();
+        var _community_id=$('#community_id').find('option:selected').val();
+        var thead=$('#thead-collectionlist');
+
+        thead.siblings().remove();
+
+        _community_id=_community_id?_community_id:'';
+
+        if(_select=='1'){
+            return false;
+        }
+
+        $.ajax({
+            url:"{:url('Tools/collection')}",
+            data:{item_id:{$item_info->id},community_id:_community_id,pay:1},
+            dataType:'json',
+            type:'get',
+            success:function (resp) {
+                var tr_obj='';
+                if(resp.code){
+                    $.each(resp.data,function (index,info) {
+                        tr_obj +='<tr>';
+                        tr_obj +='<td style="text-align: center;background: none;"><input class="va_m ids" type="checkbox" name="ids[]"  value="'+info.id+'" data-role="check"> </td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.id+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.address+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">'+info.cc_name+'</td>';
+                        tr_obj +='<td style="text-align: left;background: none;">';
+                        tr_obj +=info.building?(info.building+'栋'):'';
+                        tr_obj +=info.unit?(info.unit+'单元'):'';
+                        tr_obj +=info.floor?(info.floor+'楼'):'';
+                        tr_obj +=info.number?(info.number+'号'):'';
+                        tr_obj +='</td>';
+                        tr_obj +='</tr>';
+                    });
+                }else{
+                    layer.open({
+                        content:resp.msg
+                        ,skin: 'msg'
+                        ,time:1.5
+                    });
+                }
+                thead.after(tr_obj);
+            },
+            error:function () {
+                layer.open({
+                    content:'网络出错，稍候重试！'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    });
+
+    $('#btn-form-submit').click(function () {
+        var _this=$(this);
+        var _form=_this.parents('form:first');
+        var _url=_form.attr('action');
+        var _data=_form.serialize();
+
+        if($('#select').find('option:selected').val()=='0'){
+            if(!$('input.ids:checked').length){
+                layer.open({
+                    content:'请选择被征户'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+                return false;
+            }
+        }
+
+        if(_this.prop('disabled')){
+            return false;
+        }
+        _this.prop('disabled',true);
+
+        $('body').html('<p>正在处理数据，<span style="color: red;">请勿其他操作！！！</span></p><p>请稍候……</p>');
+        $.ajax({
+            url:_url,
+            data:_data,
+            dataType:'json',
+            type:'post',
+            success:function (resp) {
+                layer.open({
+                    content:resp.msg
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+                if(resp.code){
+                    window.parent.location.reload();
+                }
+            },
+            error:function () {
+                layer.open({
+                    content:'网络错误，请重试'
+                    ,skin: 'msg'
+                    ,time:1.5
+                });
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>

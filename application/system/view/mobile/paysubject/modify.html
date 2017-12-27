@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('edit')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="id" value="{$infos->id}">
+                <input type="hidden" name="item_id" value="{$infos->item_id}">
+                <p>
+                    <span>补偿科目：</span>
+                    <input type="text" value="({$infos->subject_id}){$infos->name}【{$infos->infos}】" disabled>
+                </p>
+                <p>
+                    <span>数量来源：</span>
+                    <input type="text" value="{$infos->num_from}" disabled>
+                </p>
+                <p>
+                    <span>数量单位：</span>
+                    <input type="text" value="{$infos->unit}" disabled>
+                </p>
+                <p>
+                    <span>数量：</span>
+                    <input type="number" name="number" id="number" min="0" value="{$infos->number}" placeholder="请输入数量">
+                </p>
+                <p>
+                    <span>补偿单价：</span>
+                    <input type="number" name="price" id="price" min="0" value="{$infos->price}" placeholder="请输入补偿单价">
+                </p>
+                <p>
+                    <span>补偿次数：</span>
+                    <input type="number" name="times" id="times" min="0" value="{$infos->times}" placeholder="请输入补偿次数">
+                </p>
+                <p>
+                    <span>补偿总计：</span>
+                    <a><a id="amount"  style="padding-left: 100px !important;">{$infos->amount|number_format=2}</a>元</a>
+                </p>
+            </div>
+            {if condition="isset($infos)"}
+            <p style="height: auto;line-height: inherit;">
+                创建于：{$infos->created_at}<br/>
+                更新于：{$infos->updated_at}<br/>
+                {if condition="isset($infos) and $infos->deleted_at"}
+                删除于：{$infos->deleted_at|date='Y-m-d H:i:s',###}
+                {/if}
+            </p>
+            {/if}
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    $('#number,#price,#times').on('keyup blur change',function () {
+        var number=parseFloat($('#number').val());
+        var price=parseFloat($('#price').val());
+        var times=parseFloat($('#times').val());
+        var amount=0;
+        if(number<0){
+            layer.open({
+                content:'数量不能小于0'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+        }else if(price <0){
+            layer.open({
+                content:'价格不能小于0'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+        }else if(times <0){
+            layer.open({
+                content:'次数不能小于0'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+        }else{
+            amount=number*price*times;
+            $('#amount').html($.number_format(amount));
+        }
+    });
+</script>
+
+</body>
+</html>

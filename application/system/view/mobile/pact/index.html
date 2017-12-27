@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+            <p class="padLR12 btnp maT10">
+                <span><a href="{:url('Pay/detail',['id'=>$pay_id])}">兑付汇总</a></span>
+                <span><a href="{:url('Payholder/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">分权兑付</a></span>
+                <span><a href="{:url('Paysubject/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿科目</a></span>
+                <span><a href="{:url('Payobject/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿事项</a></span>
+                <span><a href="{:url('Payholderhouse/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">安置房</a></span>
+                <span class="on"><a href="javascript:location.reload();">补偿协议</a></span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class="maT20">
+                    <!--按钮组合-->
+                    <div class=" anniu backCo_w padLR12 ov maT10">
+                        <a href="{:url('index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                        {if condition="$item_info->getData('status') eq 1"}
+                        <a href="{:url('add',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
+                        {/if}
+                    </div>
+                    <form action="{:url('edit',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}" method="post" id="js-ajax-form">
+                        <table id="example-advanced" class="table treetable w_100" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>签约人</th>
+                            <th>状态</th>
+                        </tr>
+
+                        {volist name="pacts" id="pact"}
+                        <tr>
+                            <td class="more">
+                                <input type='checkbox' data-role="check"  name="ids[]" value="{$pact->id}"/>
+                                &nbsp;
+                                <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                            </td>
+                            <td>{$pact->id}</td>
+                            <td>{if condition="$pact->getData('status')"}{$pact->name}{else/}<del>{$pact->name}</del>{/if}</td>
+                            <td>{if condition="$pact->getData('status')"}{$pact->ch_name}{else/}<del>{$pact->ch_name}</del>{/if}</td>
+                            <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
+                                <div class="hide">
+                                    <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                    <a href="{:url('detail',['id'=>$pact->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hide_more hide">
+                            <td colspan="6" style="padding: 0 !important;">
+                                <div class="table_more w_100 backCo_f21">
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">签约人地址：</div><div class="align_left">{$pact->address}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">签约人电话：</div><div class="align_left">{$pact->phone}</div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">状态：</div><div class="align_left">{$pact->status}</div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                        <!--提交按钮-->
+                        <p class="Btnform align_cen bor_none maT20">
+                            <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                            <a href="{:url('pay/index')}"><span class="maL17 button">返回</span></a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+    </div>
+</div>
+<script>
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+    $('.number,.price').on('keyup blur change',function () {
+        var _tr=$(this).parents('tr:first');
+        var number=_tr.find('input.number').val();
+        var price=_tr.find('input.price').val();
+
+        var amount=0;
+        if(number<0){
+            layer.open({
+                content:'数量不能小于0'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+        }else if(price <0){
+            layer.open({
+                content:'价格不能小于0'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+        }else{
+            amount=number*price;
+            _tr.prev('tr').find('.amount').text($.number_format(amount)+' 元');
+
+        }
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('edit')}" method="post" onsubmit="return false;">
+            <p class="padLR12 btnp maT10">
+                <span class="on">基本信息</span>
+                <span>内容</span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class=" add_menu maT20">
+                    <input type="hidden" name="id" value="{$infos->id}">
+                    <input type="hidden" name="pay_id" value="{$infos->pay_id}">
+                    <input type="hidden" name="item_id" value="{$infos->item_id}">
+                    <input type="hidden" name="pay_holder_id" value="{$infos->pay_holder_id}">
+                    <p class="padLR12">
+                        <span>签约人：</span>
+                        <input type="text" value="({$infos->id}){$infos->ch_name}【{$infos->address}】" disabled>
+                    </p>
+                    <p class="padLR12">
+                        <span>协议名称：</span>
+                        <input type="text" name="name" id="name" value="{$infos->name}" placeholder="输入协议的名称">
+                    </p>
+                    <p class="padLR12">
+                        <span>状态：</span>
+                        <select name="status" id="status">
+                            {volist name="model->status" id="value"}
+                            <option value="{$key}"  {if condition="$infos->status eq $value"}selected{/if}>{$value}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>相关图片：</span>
+                        <div class="w_100 backCo_f2 add_menu_textarea">
+                            <ul class="hxt_ul add_tu">
+                                {if condition="isset($infos) and $infos->picture"}
+                                {volist name="infos->picture" id="pic"}
+                                <li>
+                                    <img src="{$pic}" class="w_100 h_100" onclick="bigerimg(this)">
+                                    <span><span onclick="picremove(this);"><i class="iconfont icon-guanbi"></i></span></span>
+                                    <input type="hidden" name="picture[]" value="{$pic}">
+                                </li>
+                                {/volist}
+                                {/if}
+                                <li class="btn-upload" data-type="multiimage" data-hidename="picture[]">
+                                    <input type="file" multiple onchange="multiimageupl(this)">
+                                    <a>+</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </p>
+                    {if condition="isset($infos)"}
+                    <p  class="padLR12" style="height: auto;line-height: inherit;">
+                        创建于：{$infos->created_at}<br/>
+                        更新于：{$infos->updated_at}<br/>
+                    </p>
+                    {/if}
+                </div>
+                <div class="padLR12 add_menu maT20" style="display: none;overflow: scroll;">
+                    <div id="textBox">
+                        <textarea name="content" id="content" class="kindeditor">{:isset($infos)?$infos->content:''}</textarea>
+                    </div>
+                </div>
+            </div>
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+            <!--弹出层-->
+
+        </form>
+    </div>
+</div>
+<script>
+
+    /*----- 富文本编辑器 -----*/
+    KindEditor.ready(function(K) {
+        window.editor = K.create('.kindeditor',{
+            width : '100%',
+            minHeight:'300',
+            uploadJson : upload_url,
+            fileManagerJson : filemanager_url,
+            allowFileManager : true,
+            items:['source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '/',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink', '|', 'about'],
+            afterBlur:function () {
+                editor.sync();
+            },
+            autoHeightMode : true,
+            afterCreate : function() {
+                this.loadPlugin('autoheight');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

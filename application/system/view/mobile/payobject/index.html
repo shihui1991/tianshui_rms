@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+            <p class="padLR12 btnp maT10">
+                <span><a href="{:url('Pay/detail',['id'=>$pay_id])}">兑付汇总</a></span>
+                <span><a href="{:url('Payholder/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">分权兑付</a></span>
+                <span><a href="{:url('Paysubject/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿科目</a></span>
+                <span class="on"><a href="javascript:location.reload();">补偿事项</a></span>
+                <span><a href="{:url('Payholderhouse/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">安置房</a></span>
+                <span><a href="{:url('Pact/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿协议</a></span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class="maT20">
+                    <!--按钮组合-->
+                    <div class=" anniu backCo_w padLR12 ov maT10">
+                        <a href="{:url('index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
+                        {if condition="$item_info->getData('status') eq 1"}
+                        <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('delete',['item_id'=>$item_info->id])}" >删除</a>
+                        <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('restore',['item_id'=>$item_info->id])}">恢复</a>
+                        <a class="js-ajax-form-btn" data-form="js-ajax-form" data-action="{:url('destroy',['item_id'=>$item_info->id])}" data-notice="确定要彻底删除吗？">销毁</a>
+                        <span class="xiaMore"><em>更多</em><i class=" xiaMore iconfont icon-gongyongshuangjiantouxia"></i> </span>
+                        {/if}
+                    </div>
+                    <form action="{:url('edit',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}" method="post" id="js-ajax-form">
+                        <table id="example-advanced" class="table treetable w_100" border="0" >
+                        <tbody>
+                        <tr class="noSelect">
+                            <th style="text-align: left;"><input type="checkbox" data-role="checkall"/> 更多</th>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>小计</th>
+                            <th>状态</th>
+                        </tr>
+
+                        {volist name="payobjects" id="payobject"}
+                        <tr>
+                            <td class="more">
+                                <input type='checkbox' data-role="check"  name="ids[]" value="{$payobject->id}"/>
+                                &nbsp;
+                                <i class="iconfont icon-gongyongshuangjiantouxia"></i>
+                            </td>
+                            <td>{$payobject->id}</td>
+                            <td>{if condition="$payobject->deleted_at"}<del>{$payobject->name}</del>{else/}{$payobject->name}{/if}</td>
+                            <td>{if condition="$payobject->deleted_at"}<del class="amount">{$payobject->amount|number_format=2} 元</del>{else/}<span class="amount">{$payobject->amount|number_format=2} 元</span>{/if}</td>
+                            <td>{if condition="$payobject->deleted_at"}已删除{else/}√{/if}</td>
+                        </tr>
+                        <tr class="hide_more hide">
+                            <td colspan="6" style="padding: 0 !important;">
+                                <div class="table_more w_100 backCo_f21">
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">数量：</div><div class="align_left"><input type="number" name="datas[{$payobject->id}][number]" class="number" value="{$payobject->number}" min="0"></div>
+                                    </div>
+                                    <div class="flex w_100">
+                                        <div class="w_30 align_right">单价：</div><div class="align_left"><input type="number" name="datas[{$payobject->id}][price]" class="price" value="{$payobject->price}" min="0"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                        <!--提交按钮-->
+                        <p class="Btnform align_cen bor_none maT20">
+                            <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                            <a href="{:url('pay/index')}"><span class="maL17 button">返回</span></a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+    </div>
+</div>
+<script>
+    $('table').on('change ','input[data-role="checkall"]',function () {
+        if($(this).prop('checked')){
+            $('table').find('input[type=checkbox]').prop('checked',true);
+        }else{
+            $('table').find('input[type=checkbox]').prop('checked',false);
+        }
+    }).on('change','input[data-role="check"]',function () {
+        var checkbox_obj=$('table').find('input[data-role="check"]');
+        var checkbox_num=checkbox_obj.length;
+        var checked_num=$('table').find('input[data-role="check"]:checked').length;
+        if(checked_num == checkbox_num ){
+            $('table').find('input[data-role="checkall"]').prop('checked',true);
+        }else{
+            $('table').find('input[data-role="checkall"]').prop('checked',false);
+        }
+    });
+    $('.number,.price').on('keyup blur change',function () {
+        var _tr=$(this).parents('tr:first');
+        var number=_tr.find('input.number').val();
+        var price=_tr.find('input.price').val();
+
+        var amount=0;
+        if(number<0){
+            layer.open({
+                content:'数量不能小于0'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+        }else if(price <0){
+            layer.open({
+                content:'价格不能小于0'
+                ,skin: 'msg'
+                ,time:1.5
+            });
+        }else{
+            amount=number*price;
+            _tr.prev('tr').find('.amount').text($.number_format(amount)+' 元');
+
+        }
+
+    });
+</script>
+
+</body>
+</html>

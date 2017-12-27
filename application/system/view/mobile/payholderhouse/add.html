@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('add')}" method="post" onsubmit="return false;">
+            <div class="backCo_w add_menu padLR12">
+                <input type="hidden" name="pay_id" value="{$pay_id}">
+                <input type="hidden" name="item_id" value="{$pay_info->item_id}">
+                <p>
+                    <span>被征收人：</span>
+                    <select name="pay_holder_id" id="pay_holder_id">
+                        <option value="">--选择被征收人--</option>
+                        {volist name="payholders" id="payholder"}
+                        {if condition="($pay_info->getData('type') and $payholder->getData('holder') eq 2) or (!$pay_info->getData('type') and $payholder->getData('holder') eq 1)"}
+                        <option value="{$payholder->id}" >{$payholder->name} 【{$payholder->holder}】</option>
+                        {/if}
+                        {/volist}
+                    </select>
+                </p>
+                <p>
+                    <span>安置房：</span>
+                    <select name="house_id" id="house_id" class="chosen" data-placeholder="请选择安置房" data-no_results_text="没有匹配数据">
+                        <option value="">--选择安置房--</option>
+                        {volist name="houses" id="house"}
+                        <option value="{$house->house_id}">
+                            {$house->address}
+                            {$house->hc_name}
+                            {if condition="$house->building"}{$house->building}栋{/if}
+                            {if condition="$house->unit"}{$house->unit}单元{/if}
+                            {if condition="$house->floor"}{$house->floor}楼{/if}
+                            {if condition="$house->number"}{$house->number}号{/if}
+                            【{$house->l_name}】
+                            【{$house->area} ㎡】
+                        </option>
+                        {/volist}
+                    </select>
+                </p>
+                <p>
+                    <span>选择排序：</span>
+                    <input type="number" name="sort" id="sort" value="" placeholder="输入选择安置优先顺序" min="0">
+                </p>
+            </div>
+
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+        </form>
+    </div>
+</div>
+
+
+<script>
+
+
+</script>
+
+</body>
+</html>

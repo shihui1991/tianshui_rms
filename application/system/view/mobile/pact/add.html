@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{$cur_menu->name}|房屋征收安置管理系统</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,initial-scale=1,user-scalable=no" />
+
+    {include file="mobile/public/head"/}
+    {include file="mobile/public/kindeditor"/}
+</head>
+<body>
+<div class="page">
+
+    {include file="mobile/public/header"/}
+
+    <div class="w_100 backCo_w">
+
+        {include file="mobile/public/breadnav"/}
+
+        <form class="js-ajax-form" action="{:url('add')}" method="post" onsubmit="return false;">
+            <p class="padLR12 btnp maT10">
+                <span class="on">基本信息</span>
+                <span>内容</span>
+            </p>
+            <div class="backCo_w w_100 tabDiv">
+                <div class=" add_menu maT20">
+                    <input type="hidden" name="pay_id" value="{$pay_id}">
+                    <input type="hidden" name="item_id" value="{$item_info->id}">
+                    <p class="padLR12">
+                        <span>签约人：</span>
+                        <select name="pay_holder_id" id="pay_holder_id">
+                            <option value="">--选择签约人--</option>
+                            {volist name="payholders" id="payholder"}
+                            <option value="{$payholder->id}">({$payholder->id}){$payholder->ch_name}【{$payholder->address}】</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>协议名称：</span>
+                        <input type="text" name="name" id="name" value="" placeholder="输入协议的名称">
+                    </p>
+                    <p class="padLR12">
+                        <span>状态：</span>
+                        <select name="status" id="status">
+                            {volist name="model->status" id="value"}
+                            <option value="{$key}"  {if condition="$key eq 1"}selected{/if}>{$value}</option>
+                            {/volist}
+                        </select>
+                    </p>
+                    <p class="padLR12">
+                        <span>相关图片：</span>
+                        <div class="w_100 backCo_f2 add_menu_textarea">
+                            <ul class="hxt_ul add_tu">
+                                <li class="btn-upload" data-type="multiimage" data-hidename="picture[]">
+                                    <input type="file" multiple onchange="multiimageupl(this)">
+                                    <a>+</a>
+                                </li>
+                            </ul>
+                    </div>
+                    </p>
+                </div>
+                <div class="padLR12 add_menu maT20" style="display: none;overflow: scroll;">
+                    <div id="textBox">
+                        <textarea name="content" id="content" class="kindeditor"></textarea>
+                    </div>
+                </div>
+            </div>
+            <!--提交按钮-->
+            <p class="Btnform align_cen bor_none maT20">
+                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+            </p>
+            <!--弹出层-->
+
+        </form>
+    </div>
+</div>
+<script>
+    /*----- 富文本编辑器 -----*/
+    KindEditor.ready(function(K) {
+        window.editor = K.create('.kindeditor',{
+            width : '100%',
+            minHeight:'300',
+            uploadJson : upload_url,
+            fileManagerJson : filemanager_url,
+            allowFileManager : true,
+            items:['source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                'superscript', 'clearhtml', 'quickformat', 'selectall', '/',
+                'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image',
+                'flash', 'media', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                'anchor', 'link', 'unlink', '|', 'about'],
+            afterBlur:function () {
+                editor.sync();
+            },
+            autoHeightMode : true,
+            afterCreate : function() {
+                this.loadPlugin('autoheight');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
