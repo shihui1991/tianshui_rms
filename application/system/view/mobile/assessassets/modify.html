@@ -31,7 +31,7 @@
                     </p>
                     <p class="padLR12">
                         <span>片区：</span>
-                        <input type="text" value="{$infos->pq_name}({$infos->pq_address})" disabled>
+                        <input type="text" value="{$infos->pq_name}" disabled>
                     </p>
                     <p class="padLR12">
                         <span>权属(ID)：</span>
@@ -41,20 +41,6 @@
                         {if condition="$infos->c_floor"}{$infos->c_floor}楼{/if}
                         {if condition="$infos->c_number"}{$infos->c_number}号{/if}
                         {if condition="$infos->c_id"}({$infos->c_id}){/if}" disabled>
-                    </p>
-                    <p class="padLR12">
-                        <span>所有建筑：</span>
-                        <table id="example-advanced" class=" w_100 maT10 tableCons tableCons1" border="0">
-                            <tbody class="comTab4">
-                            <tr class="noSelect" id="thead-collectionlist">
-                                <th >更多</th>
-                                <th>ID</th>
-                                <th>位置</th>
-                                <th>性质</th>
-                            </tr>
-                            {$optionss}
-                            </tbody>
-                        </table>
                     </p>
                     <p class="padLR12">
                         <span>评估公司：</span>
@@ -85,6 +71,10 @@
                             {/volist}
                             </tbody>
                         </table>
+                    </p>
+                    <p  class="padLR12">
+                        <span>资产总额:</span>
+                        <input type="text" name="total" id="total" value="{$infos->total}" placeholder="请输入资产总额">
                     </p>
                     <p  class="padLR12">
                         <span>报告时间:</span>
@@ -183,19 +173,6 @@
         $(".showQuery").slideDown(300);
     });
 
-    /* ===== 评估建筑物（单价变化获取总价） =====*/
-    function  price_num(obj) {
-        var _this = $(obj);
-        var price=parseFloat(_this.val());
-        var number=parseFloat(_this.data('real_num'));
-        var id=_this.data('id');
-        var total=price*number;
-        if(isNaN(total)){
-            $('#total-'+id).val('');
-            return false;
-        }
-        $('#total-'+id).val(total);
-    }
     /* ===== 查询评估师 =====*/
     var valuers=null;
     var valuer_ids=[];
