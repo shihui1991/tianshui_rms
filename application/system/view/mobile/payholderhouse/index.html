@@ -17,7 +17,6 @@
 
         {include file="mobile/public/breadnav"/}
 
-        <form class="js-ajax-form" action="{:url('sort',['item_id'=>$item_info->id])}" method="post" onsubmit="return false;">
             <p class="padLR12 btnp maT10">
                 <span><a href="{:url('Pay/detail',['id'=>$pay_id])}">兑付汇总</a></span>
                 <span><a href="javascript:location.reload();">分权兑付</a></span>
@@ -26,6 +25,7 @@
                 <span class="on"><a href="{:url('Payholderhouse/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">安置房</a></span>
                 <span><a href="{:url('Pact/index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}">补偿协议</a></span>
             </p>
+
             <div class="backCo_w w_100 tabDiv">
                 <div class="maT20">
                     <!--按钮组合-->
@@ -33,127 +33,130 @@
                         <a href="{:url('index',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}" class="refresh"><i class="iconfont icon-shuaxin1"></i>&nbsp;刷新</a>
                         <a href="{:url('add',['item_id'=>$item_info->id,'pay_id'=>$pay_id])}"><i class="iconfont icon-tianjia"></i>&nbsp;添加</a>
                     </div>
-                    <!--安置房-->
-                    <div class=" add_menu ">
-                        <div class="w_100">
-                            {if condition="$pay_info->getData('compensate_way') eq 0"}<p style="color: red;">当前选择【货币补偿】方式，安置房数据无效！</p>{/if}
-                            <table class="w_100" border="0">
-                                {php}
-                                $total=$house=$last=0;
-                                {/php}
-                                {volist name="payholders" id="payholder"}
-                                {php}
-                                if($pay_info->getData('type')){
-                                if($payholder->getData('holder')==2){
-                                $total=$payholder->total_amount;
-                                $house=$payholder->house_amount;
-                                }
-                                }else{
-                                if($pay_info->getData('pay_way')){
-                                $total +=$payholder->total_amount;
-                                $house +=$payholder->house_amount;
-                                }else{
-                                $total=$payholder->total_amount;
-                                $house=$payholder->house_amount;
-                                }
-                                }
-                                {/php}
-                                {if condition="$payholder->house_amount"}
-                                {php}
-                                $payholderhouses=model('Payholderhouses')->alias('phh')
-                                ->field(['phh.*','h.community_id as house_community_id','h.building','h.unit','h.floor','h.number','h.layout_id','h.area','h.status as house_status','hc.address','hc.name as hc_name','l.name as l_name'])
-                                ->join('house h','h.id=phh.house_id','left')
-                                ->join('house_community hc','hc.id=h.community_id','left')
-                                ->join('layout l','l.id=h.layout_id','left')
-                                ->where('phh.pay_holder_id',$payholder->id)
-                                ->order('phh.sort asc')
-                                ->select();
-                                {/php}
-                                <tr>
-                                    <td style="background: #A3BCE4;">排序</td>
-                                    <td style="background: #A3BCE4;">{$payholder->name} 【{$payholder->holder}】</td>
-                                </tr>
-                                {volist name="payholderhouses" id="payholderhouse"}
-                                <tr>
-                                    <td><input type="number" name="sort[{$payholderhouse->id}]" value="{$payholderhouse->sort}"  style="width: 60px;" min="0" placeholder="输入选择安置优先顺序"></td>
-                                    <td>
-                                        安置房：{$payholderhouse->address}{$payholderhouse->hc_name}
-                                        {if condition="$payholderhouse->building"}{$payholderhouse->building}栋{/if}
-                                        {if condition="$payholderhouse->unit"}{$payholderhouse->unit}单元{/if}
-                                        {if condition="$payholderhouse->floor"}{$payholderhouse->floor}楼{/if}
-                                        {if condition="$payholderhouse->number"}{$payholderhouse->number}号{/if}
-                                        <br>
-                                        状态：{$payholderhouse->house_status}<br>
-                                        户型：{$payholderhouse->l_name}<br>
-                                        面积：{$payholderhouse->area|number_format=2} ㎡<br>
-                                        单价：{$payholderhouse->price|number_format=2} 元/㎡<br>
-                                        优惠总价：{$payholderhouse->amount|number_format=2} 元<br>
-                                        {if condition="$payholderhouse->amount_up"}
-                                        {php}
-                                        $payholderhouseups=$payholderhouse->payholderhouseups;
-                                        $num=count($payholderhouseups);
-                                        {/php}
-                                        {if condition="$num"}
-                                        <table class="layerTable" border="0" style="width: inherit !important;">
-                                            <tr class="h50">
-                                                <td style="background: #f7f7f7;text-align: center;padding:0 10px;" rowspan="{$num+1}">上浮</td>
-                                                <td style="background: #f7f7f7;text-align: center;padding:0 10px;">面积(㎡)</td>
-                                                <td style="background: #f7f7f7;text-align: center;padding:0 10px;">单价</td>
-                                                <td style="background: #f7f7f7;text-align: center;padding:0 10px;">上浮比例(%)</td>
-                                                <td style="background: #f7f7f7;text-align: center;padding:0 10px;">上浮小计(元)</td>
-                                            </tr>
-                                            {volist name="payholderhouseups" id="up"}
-                                            <tr>
-                                                <td>{$up->up_area}</td>
-                                                <td>{$up->price}</td>
-                                                <td>{$up->up_rate?$up->up_rate:'-'}</td>
-                                                <td>{$up->amount}</td>
-                                            </tr>
-                                            {/volist}
-                                        </table>
-                                        {/if}
-                                        {/if}
-                                        上浮总额：{$payholderhouse->amount_up|number_format=2} 元<br>
-                                        安置房价：{$payholderhouse->total|number_format=2} 元<br>
+                    <form class="js-ajax-form" action="{:url('sort',['item_id'=>$item_info->id])}" method="post" onsubmit="return false;">
+                        <!--安置房-->
+                        <div class=" add_menu ">
+                            <div class="w_100">
+                                <input type="hidden" name="pay_id" value="{$pay_info->id}">
+                                {if condition="$pay_info->getData('compensate_way') eq 0"}<p style="color: red;">当前选择【货币补偿】方式，安置房数据无效！</p>{/if}
+                                <table class="w_100" border="0">
+                                    {php}
+                                    $total=$house=$last=0;
+                                    {/php}
+                                    {volist name="payholders" id="payholder"}
+                                    {php}
+                                    if($pay_info->getData('type')){
+                                    if($payholder->getData('holder')==2){
+                                    $total=$payholder->total_amount;
+                                    $house=$payholder->house_amount;
+                                    }
+                                    }else{
+                                    if($pay_info->getData('pay_way')){
+                                    $total +=$payholder->total_amount;
+                                    $house +=$payholder->house_amount;
+                                    }else{
+                                    $total=$payholder->total_amount;
+                                    $house=$payholder->house_amount;
+                                    }
+                                    }
+                                    {/php}
+                                    {if condition="$payholder->house_amount"}
+                                    {php}
+                                    $payholderhouses=model('Payholderhouses')->alias('phh')
+                                    ->field(['phh.*','h.community_id as house_community_id','h.building','h.unit','h.floor','h.number','h.layout_id','h.area','h.status as house_status','hc.address','hc.name as hc_name','l.name as l_name'])
+                                    ->join('house h','h.id=phh.house_id','left')
+                                    ->join('house_community hc','hc.id=h.community_id','left')
+                                    ->join('layout l','l.id=h.layout_id','left')
+                                    ->where('phh.pay_holder_id',$payholder->id)
+                                    ->order('phh.sort asc')
+                                    ->select();
+                                    {/php}
+                                    <tr>
+                                        <td style="background: #A3BCE4;">排序</td>
+                                        <td style="background: #A3BCE4;">{$payholder->name} 【{$payholder->holder}】</td>
+                                    </tr>
+                                    {volist name="payholderhouses" id="payholderhouse"}
+                                    <tr>
+                                        <td><input type="number" name="sort[{$payholderhouse->id}]" value="{$payholderhouse->sort}"  style="width: 60px;" min="0" placeholder="输入选择安置优先顺序"></td>
+                                        <td>
+                                            安置房：{$payholderhouse->address}{$payholderhouse->hc_name}
+                                            {if condition="$payholderhouse->building"}{$payholderhouse->building}栋{/if}
+                                            {if condition="$payholderhouse->unit"}{$payholderhouse->unit}单元{/if}
+                                            {if condition="$payholderhouse->floor"}{$payholderhouse->floor}楼{/if}
+                                            {if condition="$payholderhouse->number"}{$payholderhouse->number}号{/if}
+                                            <br>
+                                            状态：{$payholderhouse->house_status}<br>
+                                            户型：{$payholderhouse->l_name}<br>
+                                            面积：{$payholderhouse->area|number_format=2} ㎡<br>
+                                            单价：{$payholderhouse->price|number_format=2} 元/㎡<br>
+                                            优惠总价：{$payholderhouse->amount|number_format=2} 元<br>
+                                            {if condition="$payholderhouse->amount_up"}
+                                            {php}
+                                            $payholderhouseups=$payholderhouse->payholderhouseups;
+                                            $num=count($payholderhouseups);
+                                            {/php}
+                                            {if condition="$num"}
+                                            <table class="layerTable" border="0" style="width: inherit !important;">
+                                                <tr class="h50">
+                                                    <td style="background: #f7f7f7;text-align: center;padding:0 10px;" rowspan="{$num+1}">上浮</td>
+                                                    <td style="background: #f7f7f7;text-align: center;padding:0 10px;">面积(㎡)</td>
+                                                    <td style="background: #f7f7f7;text-align: center;padding:0 10px;">单价</td>
+                                                    <td style="background: #f7f7f7;text-align: center;padding:0 10px;">上浮比例(%)</td>
+                                                    <td style="background: #f7f7f7;text-align: center;padding:0 10px;">上浮小计(元)</td>
+                                                </tr>
+                                                {volist name="payholderhouseups" id="up"}
+                                                <tr>
+                                                    <td>{$up->up_area}</td>
+                                                    <td>{$up->price}</td>
+                                                    <td>{$up->up_rate?$up->up_rate:'-'}</td>
+                                                    <td>{$up->amount}</td>
+                                                </tr>
+                                                {/volist}
+                                            </table>
+                                            {/if}
+                                            {/if}
+                                            上浮总额：{$payholderhouse->amount_up|number_format=2} 元<br>
+                                            安置房价：{$payholderhouse->total|number_format=2} 元<br>
 
-                                        <button type="button" data-action="{:url('delete',['item_id'=>$item_info->id,'ids'=>$payholderhouse->id])}" class="btn js-ajax-form-btn">删除</button>
-                                    </td>
-                                </tr>
-                                {if condition="$pay_info->getData('type') eq 0 and $pay_info->getData('pay_way') eq 0"}
-                                <tr>
-                                    <td>合计</td>
-                                    <td>
-                                        补偿总额：{$total|number_format=2} 元 <br>
-                                        安置房价值：{$house|number_format=2} 元 <br>
-                                        安置后结余：{:number_format($total-$house,2)} 元 <br>
-                                    </td>
-                                </tr>
-                                {/if}
-                                {/volist}
-                                {/if}
-                                {/volist}
-                                {if condition="$pay_info->getData('type') eq 1 or $pay_info->getData('pay_way') eq 1"}
-                                <tr>
-                                    <td>合计</td>
-                                    <td>
-                                        补偿总额：{$total|number_format=2} 元 <br>
-                                        安置房价值：{$house|number_format=2} 元 <br>
-                                        安置后结余：{:number_format($total-$house,2)} 元 <br>
-                                    </td>
-                                </tr>
-                                {/if}
-                            </table>
+                                            <button type="button" data-action="{:url('delete',['item_id'=>$item_info->id,'ids'=>$payholderhouse->id])}" class="btn js-ajax-form-btn">删除</button>
+                                        </td>
+                                    </tr>
+                                    {if condition="$pay_info->getData('type') eq 0 and $pay_info->getData('pay_way') eq 0"}
+                                    <tr>
+                                        <td>合计</td>
+                                        <td>
+                                            补偿总额：{$total|number_format=2} 元 <br>
+                                            安置房价值：{$house|number_format=2} 元 <br>
+                                            安置后结余：{:number_format($total-$house,2)} 元 <br>
+                                        </td>
+                                    </tr>
+                                    {/if}
+                                    {/volist}
+                                    {/if}
+                                    {/volist}
+                                    {if condition="$pay_info->getData('type') eq 1 or $pay_info->getData('pay_way') eq 1"}
+                                    <tr>
+                                        <td>合计</td>
+                                        <td>
+                                            补偿总额：{$total|number_format=2} 元 <br>
+                                            安置房价值：{$house|number_format=2} 元 <br>
+                                            安置后结余：{:number_format($total-$house,2)} 元 <br>
+                                        </td>
+                                    </tr>
+                                    {/if}
+                                </table>
+                            </div>
                         </div>
-                    </div>
+                        <!--弹出层-->
+                        <p class="Btnform align_cen bor_none maT20">
+                            <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
+                            <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
+                        </p>
+                    </form>
                 </div>
             </div>
 
-            <!--弹出层-->
-            <p class="Btnform align_cen bor_none maT20">
-                <span class="submit button maR17 js-ajax-form-btn">立即提交</span>
-                <span class="maL17 button" onclick="window.history.back(-1);">返回</span>
-            </p>
-        </form>
+
     </div>
 </div>
 <script>
