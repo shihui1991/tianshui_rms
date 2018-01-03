@@ -51,7 +51,7 @@
                                 <i class="iconfont icon-gongyongshuangjiantouxia"></i>
                             </td>
                             <td>{$info->id}</td>
-                            <td>{if condition="$info->deleted_at"} <del>{$info->community->name}（{$info->community_id}）</del>{else /}{$info->community->name}（{$info->community_id}）{/if}</td>
+                            <td>{if condition="$info->deleted_at"} <del>{$info->community->name?:''}（{$info->community_id}）</del>{else /}{$info->community->name?:''}（{$info->community_id}）{/if}</td>
                             <td>{if condition="$info->deleted_at"} <del> {if condition="$info->collection_id"}
                                 {if condition="$info->collection->building"}{$info->collection->building}栋{/if}
                                 {if condition="$info->collection->unit"}{$info->collection->unit}单元{/if}
@@ -80,7 +80,7 @@
                             <td colspan="6" style="padding: 0 !important;">
                                 <div class="table_more w_100 backCo_f21">
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">项目(ID)：</div><div class="align_left">{$info->item->name}（{$info->item_id}）</div>
+                                        <div class="w_30 align_right">项目(ID)：</div><div class="align_left">{$info->item->name?:''}（{$info->item_id}）</div>
                                     </div>
                                     <div class="flex w_100">
                                         <div class="w_30 align_right">位置：</div><div class="align_left"> {if condition="$info->building"}{$info->building}栋{/if}
@@ -104,7 +104,7 @@
                                         <div class="w_30 align_right">状况：</div><div class="align_left">  {if condition="$info->deleted_at"}
                                         已删除
                                         {else/}
-                                        {if condition="$info->status_id eq 0"}待定{else/}{$info->buildingstatus->name}{/if}
+                                        {if condition="$info->status_id eq 0"}待定{else/}{$info->buildingstatus->name?:''}{/if}
                                         {/if}</div>
                                     </div>
                                     <div class="flex w_100">

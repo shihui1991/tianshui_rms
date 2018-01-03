@@ -25,9 +25,9 @@
             {volist name="statuss" id="status"}
             <tr>
                 <td>{$i}</td>
-                <td>{$status->user->name}</td>
-                <td>{$status->user->username}</td>
-                <td>{$status->role->name}</td>
+                <td>{$status->user->name?:''}</td>
+                <td>{$status->user->username?:''}</td>
+                <td>{$status->role->name?:''}</td>
                 <td>{$status->status}</td>
                 <td>{$status->created_at}</td>
             </tr>

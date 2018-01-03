@@ -59,8 +59,8 @@
                 </td>
                 <td>{$housefee->id}</td>
                 <td>{$housefee->date_at}</td>
-                <td>{$housefee->house->community->address}</td>
-                <td>{$housefee->house->community->name}</td>
+                <td>{$housefee->house->community->address?:''}</td>
+                <td>{$housefee->house->community->name?:''}</td>
                 <td>
                     {if condition="$housefee->house->building"}{$housefee->house->building}栋{/if}
                     {if condition="$housefee->house->unit"}{$housefee->house->unit}单元{/if}

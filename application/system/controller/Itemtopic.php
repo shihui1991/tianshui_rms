@@ -160,7 +160,7 @@ class Itemtopic extends Auth
             }else{
                 $topic_ids = $ids;
             }
-            $risktopics_info = model('Risktopics')->where('topic_id',$topic_ids)->where('item_id',$item_id)->count();
+            $risktopics_info = model('Risktopics')->withTrashed()->where('topic_id',$topic_ids)->where('item_id',$item_id)->count();
             if($risktopics_info){
                 return $this->error('当前话题正在被使用，删除失败');
             }
@@ -175,7 +175,7 @@ class Itemtopic extends Auth
             $num = 0;
             $del_num = 0;
             foreach ($ids as $k=>$v){
-                $risktopics_info = model('Risktopics')->where('topic_id',$v)->where('item_id',$item_id)->count();
+                $risktopics_info = model('Risktopics')->withTrashed()->where('topic_id',$v)->where('item_id',$item_id)->count();
                 if(!$risktopics_info){
                     model('Itemtopics')->where('topic_id',$v)->where('item_id',$item_id)->delete();
                     $del_num += 1;

@@ -137,8 +137,8 @@ class Topic extends Auth
             }else{
                 $topic_ids = $ids;
             }
-            $itemtopic_count = model('Itemtopics')->where('topic_id',$topic_ids)->count();
-            $risktopics_count = model('Risktopics')->where('topic_id',$topic_ids)->count();
+            $itemtopic_count = model('Itemtopics')->withTrashed()->where('topic_id',$topic_ids)->count();
+            $risktopics_count = model('Risktopics')->withTrashed()->where('topic_id',$topic_ids)->count();
             if($itemtopic_count||$risktopics_count){
                 return $this->error('当前话题正在被使用，删除失败');
             }
@@ -153,8 +153,8 @@ class Topic extends Auth
             $num = 0;
             $del_num = 0;
             foreach ($ids as $k=>$v){
-                $itemtopic_counts = model('Itemtopics')->where('topic_id',$v)->count();
-                $risktopics_counts = model('Risktopics')->where('topic_id',$v)->count();
+                $itemtopic_counts = model('Itemtopics')->withTrashed()->where('topic_id',$v)->count();
+                $risktopics_counts = model('Risktopics')->withTrashed()->where('topic_id',$v)->count();
                 if(!$itemtopic_counts&&!$risktopics_counts){
                     model('Topics')->destroy(['id'=>$v]);
                     $del_num += 1;

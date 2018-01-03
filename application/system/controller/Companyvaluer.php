@@ -232,11 +232,46 @@ class Companyvaluer extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Companyvaluers::destroy(['id'=>['in',$ids]]);
-        if($res){
-            return $this->success('删除成功','');
+        /*----- 当删除条数为1条时 -----*/
+        if(count($ids)==1){
+            if(is_array($ids)){
+                $valuer_ids = $ids[0];
+            }else{
+                $valuer_ids = $ids;
+            }
+            $assessestate_count = model('Assessestatevaluers')->withTrashed()->where('valuer_id',$valuer_ids)->count();
+            $assessassets_count = model('Assessassetsvaluers')->withTrashed()->where('valuer_id',$valuer_ids)->count();
+            if($assessestate_count||$assessassets_count){
+                return $this->error('当前评估师正在被使用，删除失败');
+            }
+            $rs =  model('Companyvaluers')->destroy(['id'=>$valuer_ids]);
+            if($rs){
+                return $this->success('删除成功','');
+            }else{
+                return $this->error('删除失败');
+            }
         }else{
-            return $this->error('删除失败');
+            /*----- 当删除条数为多条时 -----*/
+            $num = 0;
+            $del_num = 0;
+            foreach ($ids as $k=>$v){
+                $assessestate_count = model('Assessestatevaluers')->withTrashed()->where('valuer_id',$v)->count();
+                $assessassets_count = model('Assessassetsvaluers')->withTrashed()->where('valuer_id',$v)->count();
+                if(!$assessestate_count&&!$assessassets_count){
+                    model('Companyvaluers')->destroy(['id'=>$v]);
+                    $del_num += 1;
+                }else{
+                    $num += 1;
+                }
+            }
+            if($num==count($ids)){
+                return $this->error('选中评估师正在被使用，删除失败');
+            }
+            if($del_num==count($ids)){
+                return $this->success('删除成功','');
+            }else{
+                return $this->success('删除成功'.$del_num.'条,其他评估师正在被使用','');
+            }
         }
     }
 

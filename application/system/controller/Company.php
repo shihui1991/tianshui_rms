@@ -255,11 +255,48 @@ class Company extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Companys::destroy(['id'=>['in',$ids]]);
-        if($res){
-            return $this->success('删除成功','');
+        /*----- 当删除条数为1条时 -----*/
+        if(count($ids)==1){
+            if(is_array($ids)){
+                $company_ids = $ids[0];
+            }else{
+                $company_ids = $ids;
+            }
+            $company_count = model('Companyvaluers')->withTrashed()->where('company_id',$company_ids)->count();
+            $assessestate_count = model('Assessestates')->withTrashed()->where('company_id',$company_ids)->count();
+            $assessassets_count = model('Assessassetss')->withTrashed()->where('company_id',$company_ids)->count();
+            if($company_count||$assessestate_count||$assessassets_count){
+                return $this->error('当前评估公司正在被使用，删除失败');
+            }
+            $rs =  model('Companys')->destroy(['id'=>$company_ids]);
+            if($rs){
+                return $this->success('删除成功','');
+            }else{
+                return $this->error('删除失败');
+            }
         }else{
-            return $this->error('删除失败');
+            /*----- 当删除条数为多条时 -----*/
+            $num = 0;
+            $del_num = 0;
+            foreach ($ids as $k=>$v){
+                $company_count = model('Companyvaluers')->withTrashed()->where('company_id',$v)->count();
+                $assessestate_count = model('Assessestates')->withTrashed()->where('company_id',$v)->count();
+                $assessassets_count = model('Assessassetss')->withTrashed()->where('company_id',$v)->count();
+                if(!$company_count&&!$assessestate_count&&!$assessassets_count){
+                    model('Companys')->destroy(['id'=>$v]);
+                    $del_num += 1;
+                }else{
+                    $num += 1;
+                }
+            }
+            if($num==count($ids)){
+                return $this->error('选中评估公司正在被使用，删除失败');
+            }
+            if($del_num==count($ids)){
+                return $this->success('删除成功','');
+            }else{
+                return $this->success('删除成功'.$del_num.'条,其他评估公司正在被使用','');
+            }
         }
     }
 

@@ -47,8 +47,8 @@
                         <tr>
                             <td class="more" style="text-align: left;"><input type='checkbox' data-role="check"  name="ids[]" value="{$itemcompany->id}"/>&nbsp;<i class="iconfont icon-gongyongshuangjiantouxia"></i></td>
                             <td>{$itemcompany->id}</td>
-                            <td>{$itemcompany->company->type}</td>
-                            <td>{$itemcompany->company->name}</td>
+                            <td>{$itemcompany->company->type?:''}</td>
+                            <td>{$itemcompany->company->name?:''}</td>
                             <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
                                 <div class="hide">
                                     <img src="__STATIC__/sysmobile/img/sanjiao.png" />
@@ -60,7 +60,7 @@
                             <td colspan="6" style="padding: 0 !important;">
                                 <div class="table_more w_100 backCo_f21">
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">项目：</div><div class="align_left">{$itemcompany->item->name}（{$itemcompany->item_id}）</div>
+                                        <div class="w_30 align_right">项目：</div><div class="align_left">{$itemcompany->item->name?:''}（{$itemcompany->item_id}）</div>
                                     </div>
                                 </div>
                             </td>
