@@ -265,7 +265,8 @@ class Company extends Auth
             $company_count = model('Companyvaluers')->withTrashed()->where('company_id',$company_ids)->count();
             $assessestate_count = model('Assessestates')->withTrashed()->where('company_id',$company_ids)->count();
             $assessassets_count = model('Assessassetss')->withTrashed()->where('company_id',$company_ids)->count();
-            if($company_count||$assessestate_count||$assessassets_count){
+            $itemcompany_count = model('Itemcompanys')->withTrashed()->where('company_id',$company_ids)->count();
+            if($company_count||$assessestate_count||$assessassets_count||$itemcompany_count){
                 return $this->error('当前评估公司正在被使用，删除失败');
             }
             $rs =  model('Companys')->destroy(['id'=>$company_ids]);
@@ -282,7 +283,8 @@ class Company extends Auth
                 $company_count = model('Companyvaluers')->withTrashed()->where('company_id',$v)->count();
                 $assessestate_count = model('Assessestates')->withTrashed()->where('company_id',$v)->count();
                 $assessassets_count = model('Assessassetss')->withTrashed()->where('company_id',$v)->count();
-                if(!$company_count&&!$assessestate_count&&!$assessassets_count){
+                $itemcompany_count = model('Itemcompanys')->withTrashed()->where('company_id',$v)->count();
+                if(!$company_count&&!$assessestate_count&&!$assessassets_count&&!$itemcompany_count){
                     model('Companys')->destroy(['id'=>$v]);
                     $del_num += 1;
                 }else{
