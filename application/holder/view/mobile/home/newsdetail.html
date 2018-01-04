@@ -24,6 +24,19 @@
             {$infos->content}
         </div>
     </div>
+    {if condition="$infos->url"}
+    <div class="w1">
+        <p class="pname bcyjname bordi">相关链接</p>
+        <div class="coon pgs">
+            <a href="{$infos->url}">
+            <div class="pgs_list pad bordi">
+                <p><span>{$infos->url_name}</span></p>
+            </div>
+            </a>
+        </div>
+    </div>
+    {/if}
+    <div class="hui2"></div>
     <!--footer-->
     {include file="mobile/public/footer" /}
 

@@ -17,13 +17,15 @@
 <div class="warp">
     <div class="header">
         <p class="head_tit">
-            <span class="spanTab"><i class="spanon spanTabTitle" id="pgjg">评估结果</i></span>
-            <span class="spanTab"><i class="spanTabTitle" id="ysbc">预算补偿</i></span>
+            <span class="spanTab"><a class="spanon spanTabTitle" onclick="location.reload();">产权信息</a></span>
+            {if condition="$itemprocess_status eq 2"}
+            <span class="spanTab"><a class="spanTabTitle" href="{:url('Assess/index')}">评估结果</a></span>
+            {/if}
         </p>
-        <!--<p class="head_tit">产权信息</p>-->
     </div>
 
     <div class="cq_con">
+        <div class="cq_name">产权信息</div>
         <div class="cq_dizhi">项目：{$item->name}</div>
         <div class="cq_info">
             <table>

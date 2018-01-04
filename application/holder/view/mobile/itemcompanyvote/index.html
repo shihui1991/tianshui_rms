@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+
+    <div class="header">
+        <p class="head_tit">
+            <span class="spanTab"><a class="spanon spanTabTitle"  onclick="location.reload();">评估公司</a></span>
+            {if condition="$risk_status"}
+            <span class="spanTab"><a class=" spanTabTitle" href="{:url('Risk/detail')}">社会调查</a></span>
+            {/if}
+        </p>
+    </div>
+
+    <div class="w1 ">
+        <div class="cq_name" style="padding: 0 10px;">评估公司投票</div>
+        <div class="hui"></div>
+        <ul class="votlist">
+            {volist name="companys" id="company"}
+            <li>
+                <a href="{:url('detail',['company_id'=>$company->id])}">
+                    <div class="voleft">
+                        <img src="{$company->logo}" />
+                    </div>
+                </a>
+                <div class="voright">
+                    <a href="{:url('detail',['company_id'=>$company->id])}">
+                        <p class="voname">{$company->name}</p>
+                        <p class="votime">{$company->address}</p>
+                    </a>
+                    {if condition="!$company_id and $itemprocess_status eq 1"}
+                    <p class="vonum" onclick="vote(this);" data-company="{$company->id}" data-title="您确定要投【{$company->name}】吗？" data-url="{:url('Itemcompanyvote/add')}">
+                        <span>{$company->vote|number_format}</span>票
+                        <i class="iconfont icon-toupiao2"></i>
+                    </p>
+                    {else/}
+                    {if condition="$company->id eq $company_id"}
+                    <p class="vonum vonum_on">
+                    <span>{$company->vote|number_format}</span>票
+                    <i class="iconfont icon-toupiao2"></i>
+                    </p>
+                    {else/}
+                    <p class="vonum">
+                        <span>{$company->vote|number_format}</span>票
+                    </p>
+                    {/if}
+                    {/if}
+                </div>
+            </li>
+            {/volist}
+
+        </ul>
+    </div>
+    <div class="hui2"></div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

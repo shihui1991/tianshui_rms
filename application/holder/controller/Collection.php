@@ -11,6 +11,7 @@ use app\system\model\Collectionbuildings;
 use app\system\model\Collectionholders;
 use app\system\model\Collectionobjects;
 use app\system\model\Collections;
+use app\system\model\Itemprocesss;
 use app\system\model\Items;
 
 class Collection extends Base
@@ -59,7 +60,7 @@ class Collection extends Base
                 ->join('building_use du','du.id=c.default_use','left')
                 ->join('building_use ru','ru.id=c.real_use','left')
                 ->join('layout l','l.id=c.rebuild_layout_id','left')
-                ->where('c.id',$this->collecton_id)
+                ->where('c.id',$this->collection_id)
                 ->find();
 
             $collectionbuildings=Collectionbuildings::alias('cb')
@@ -68,26 +69,29 @@ class Collection extends Base
                 ->join('building_use ru','ru.id=cb.use_id','left')
                 ->join('building_struct bst','bst.id=cb.struct_id','left')
                 ->join('building_status bss','bss.id=cb.status_id','left')
-                ->where('cb.collection_id',$this->collecton_id)
+                ->where('cb.collection_id',$this->collection_id)
                 ->order(['register'=>'desc'])
                 ->select();
 
             $collectionholders=Collectionholders::with(['holdercrowd'=>['crowd']])
-                ->where('collection_id',$this->collecton_id)
+                ->where('collection_id',$this->collection_id)
                 ->order(['portion'=>'desc'])
                 ->select();
 
             $collectionobjects=Collectionobjects::alias('co')
                 ->field(['co.*','o.name','o.infos'])
                 ->join('object o','o.id=co.object_id','left')
-                ->where('co.collection_id',$this->collecton_id)
+                ->where('co.collection_id',$this->collection_id)
                 ->select();
+
+            $itemprocess_status=Itemprocesss::where(['item_id'=>$this->item_id,'process_id'=>5])->value('status');
 
             $this->assign([
                 'collection'=>$collection,
                 'collectionbuildings'=>$collectionbuildings,
                 'collectionholders'=>$collectionholders,
                 'collectionobjects'=>$collectionobjects,
+                'itemprocess_status'=>$itemprocess_status,
             ]);
 
         }else{
