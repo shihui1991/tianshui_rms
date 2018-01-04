@@ -9,6 +9,7 @@ namespace app\holder\controller;
 use app\system\model\Assessassetss;
 use app\system\model\Assessassetsvaluers;
 use app\system\model\Collections;
+use app\system\model\Itemprocesss;
 use app\system\model\Items;
 
 class Assessassets extends Base
@@ -16,6 +17,10 @@ class Assessassets extends Base
     /* ========== 初始化 ========== */
     public function _initialize(){
         parent::_initialize();
+        $itemprocess_status=Itemprocesss::where(['item_id'=>$this->item_id,'process_id'=>5])->value('status');
+        if($itemprocess_status != 2){
+            return $this->error('数据采集中……');
+        }
     }
 
     /* ========== 列表 ========== */

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+    <div class="header">
+        <p class="head_tit">
+            <span class="spanTab"><a class=" spanTabTitle"  href="{:url('Collection/detail')}">产权信息</a></span>
+            <span class="spanTab"><a class="spanon spanTabTitle" onclick="location.reload();">评估结果</a></span>
+        </p>
+    </div>
+
+    <!--评估结果  -->
+    <div class="w1 pgjgcon">
+        <div class="cq_name">评估结果</div>
+        <div class="coon pgjg">
+            <p>房产综合评估总价：<span>{$assess->estate|number_format=2}</span> 元</p>
+            <p>资产综合评估总价：<span>{$assess->assets|number_format=2}</span>元</p>
+            <p>评估总价 ：<span>{:number_format($assess->estate+$assess->assets,2)}</span>元</p>
+        </div>
+        <!--评估结果按钮1-->
+        <div class="w1 fe2 pad">
+            <div class="btnName">
+                <div class="tabBtn">
+                    <span class="tabBtnOn" id="fcpg">房产评估</span>
+                    <span id="zcpg">资产评估</span>
+                </div>
+            </div>
+        </div>
+        <!--房产评估-->
+        <div class="w1 fcpgcon">
+            <!--房屋评估-->
+            <div class="w1 fwpg">
+                <!--房产评估中的第一部分包括查看更多-->
+                <div class="w1">
+                    {volist name="assessestatebuildings" id="building"}
+                    <div class="fcpgtab bordi">
+                        <div class="coon fc_con">
+                            <p>
+                                <i>{$i}.</i>
+                                <span class="font14">{$building->bu_name}</span>
+                                <span class="font14">{$building->bs_name}</span>
+                                <span class="font14">{$building->bss_name}</span>
+                                <span>{$building->real_num|number_format=2} <sup>{$building->real_unit}</sup></span>
+                            </p>
+                            <div class="fc_hide" style="display: none;">
+                                <p>位置:
+                                    <span>
+                                        {if condition="$building->building"}{$building->building}栋{/if}
+                                        {if condition="$building->unit"}{$building->unit}单元{/if}
+                                        {if condition="$building->floor"}{$building->floor}楼{/if}
+                                        {if condition="$building->number"}{$building->number}号{/if}
+                                    </span>
+                                </p>
+                                <p>估计单价:<span>{$building->price|number_format=2} 元/{$building->real_unit}</span></p>
+                                <p>估计总价:<span>{$building->amount|number_format=2} 元</span></p>
+                                <p>备注:<span>{$building->remark}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    {/volist}
+
+                    <div class="hui"></div>
+                </div>
+                <div class="w1 ">
+                    <!--评估机构-->
+                    <div class="w1 bordi">
+                        <div class="coon pad pgjg jigou">
+                            <p><span>评估机构：</span><span>{$assessestate->name}</span></p>
+                            <p><span>报告时间：</span><span>{$assessestate->report_at}</span></p>
+                            <p><span>价值时点：</span><span>{$assessestate->valued_at}</span></p>
+                            <p><span>估计方法：</span><span>{$assessestate->method}</span></p>
+                        </div>
+                    </div>
+                    <!--评估师-->
+                    <div class="hui"></div>
+                    <div class="w1">
+                        <p class="pname bcyjname bordi">评估师</p>
+                        <div class="coon pgs">
+                            {volist name="assessestatevaluers" id="valuer"}
+                            <div class="pgs_list pad bordi">
+                                <p><span>姓名：<i>{$valuer->name}</i></span><span>有效时间：<i>{$valuer->valid_at|date='Y-m-d',###}</i></span></p>
+                                <p><span>注册号：<i>{$valuer->register_num}</i></span></p>
+                            </div>
+                            {/volist}
+                        </div>
+                    </div>
+
+                    <!--公司资质-->
+                    <div class="hui"></div>
+                    <div class="w1">
+                        <p class="pname bcyjname pgsxq">房产评估报告</p>
+                        <div class="coon pad5 ov ovScoll">
+                            <div class="content gszs">
+                                {if condition="$assessestate->picture"}
+                                {volist name="assessestate->picture" id="pic"}
+                                <div class="zz"><img src="{$pic}" onclick="bigerimg(this)" title="房产评估报告"/> </div>
+                                {/volist}
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hui"></div>
+                    <div class="hui2"></div>
+                </div>
+            </div>
+        </div>
+        <!--资产评估-->
+        <div class="w1 zcpgcon" style="display: none;">
+            <!--资产评估==评估机构-->
+            <div class="w1">
+                <div class="coon pad pgjg jigou">
+                    <p><span>评估机构：</span><span>{$assessassets->name}</span></p>
+                    <p><span>报告时间：</span><span>{$assessassets->report_at}</span></p>
+                    <p><span>价值时点：</span><span>{$assessassets->valued_at}</span></p>
+                    <p><span>估计方法：</span><span>{$assessassets->method}</span></p>
+
+                </div>
+
+            </div>
+            <!--资产评估——评估师-->
+            <div class="hui"></div>
+            <div class="w1">
+                <p class="pname bcyjname bordi">评估师</p>
+                <div class="coon pgs">
+                    {volist name="assessassetsvaluers" id="valuer"}
+                    <div class="pgs_list pad bordi">
+                        <p><span>姓名：<i>{$valuer->name}</i></span><span>有效时间：<i>{$valuer->valid_at|date='Y-m-d',###}</i></span></p>
+                        <p><span>注册号：<i>{$valuer->register_num}</i></span></p>
+                    </div>
+                    {/volist}
+
+                </div>
+            </div>
+
+            <!--公司资质-->
+            <div class="hui"></div>
+            <div class="w1">
+                <p class="pname bcyjname pgsxq">资产评估报告</p>
+                <div class="coon pad5 ov ovScoll">
+                    <div class="content gszs">
+                        {if condition="$assessassets->picture"}
+                        {volist name="assessassets->picture" id="pic"}
+                        <div class="zz"><img src="{$pic}" onclick="bigerimg(this)" title="资产评估报告"/> </div>
+                        {/volist}
+                        {/if}
+                    </div>
+                </div>
+            </div>
+            <div class="hui"></div>
+        </div>
+
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

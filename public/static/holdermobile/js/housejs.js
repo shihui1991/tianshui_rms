@@ -28,31 +28,13 @@ $(function(){
 		$(".fcpgcon").css("display","none");
 		$(".zcpgcon").css("display","block");
 	});
-	$("#pgjg").click(function(){
-		$(this).addClass("spanon").parent().siblings().children().removeClass("spanon");
-		$(".pgjgcon").css("display","block");
-		$(".ysbccon").css("display","none");
-	});
-	$("#ysbc").click(function(){
-		$(this).addClass("spanon").parent().siblings().children().removeClass("spanon");
-		$(".pgjgcon").css("display","none");
-		$(".ysbccon").css("display","block");
-	});
+
 	
 	$(".ysbc_list .ysbc_tit").click(function(){
 		$(this).siblings(".ysbc_listcon").slideToggle("show");
 	});
 	$(".fcpgtab>div>p").click(function(){
 		$(this).siblings(".fc_hide").slideToggle("show");
-	});
-	//toupiao
-	$(".vonum").click(function(){
-		if($(this).hasClass("vonum_on")){
-			$(this).removeClass("vonum_on");
-		}
-		else{
-			$(this).addClass("vonum_on");
-		}
 	});
     
     //查看更多
@@ -98,7 +80,7 @@ $(function(){
     	$(this).addClass("span_on").siblings("span").removeClass("span_on");
     })
     
-//  $(".xl_xq").css("height",document.body.clientHeight+"px");
+
 });
 
 function layerDom(obj) {
@@ -130,6 +112,65 @@ function bigerimg(obj){
             layer.close(index);
         }
     });
+}
+
+//评估公司投票
+function vote(obj) {
+	var _btn=$(obj);
+	var btns=$('p.vonum');
+	var company=_btn.data('company');
+	var title=_btn.data('title');
+	var url=_btn.data('url');
+
+	if(btns.data('loading') || btns.hasClass('disabled')){
+		return false;
+	}
+	layer.open({
+        content: title
+        ,btn: ['是的', '考虑一下']
+        ,yes: function(index){
+            btns.data('loading',true).addClass('disabled');
+            $.ajax({
+				url:url
+				,data:{"company_id":company}
+				,type:"get"
+				,dataType:'json'
+				,success:function (resp) {
+                    layer.open({
+                        content: resp.msg
+                        ,skin: 'msg'
+                        ,time: 1.5
+                        ,end:function (index) {
+                            layer.closeAll();
+                        }
+                    });
+					if(resp.code){
+                        _btn.addClass('vonum_on').find('span').text(parseInt(_btn.find('span').text())+1);
+                        $('p.vonum').off('click').removeAttr('onclick data-title data-url data-company');
+                        setTimeout(function () {
+                            location.reload();
+                        },1500);
+					}else{
+                        btns.data('loading',true).addClass('disabled');
+                    }
+                }
+                ,error:function () {
+                    layer.open({
+                        content: '网络错误，请稍候重试'
+                        ,skin: 'msg'
+                        ,time: 1.5
+						,end:function (index) {
+							layer.closeAll();
+                        }
+                    });
+                    btns.data('loading',true).addClass('disabled');
+                }
+			});
+        }
+        ,btn1:function (index) {
+            layer.close(index);
+        }
+	});
 }
 
 

@@ -11,6 +11,7 @@ use app\system\model\Assessestatebuildings;
 use app\system\model\Assessestates;
 use app\system\model\Assessestatevaluers;
 use app\system\model\Collections;
+use app\system\model\Itemprocesss;
 use app\system\model\Items;
 
 class Assessestate extends Base
@@ -18,6 +19,10 @@ class Assessestate extends Base
     /* ========== 初始化 ========== */
     public function _initialize(){
         parent::_initialize();
+        $itemprocess_status=Itemprocesss::where(['item_id'=>$this->item_id,'process_id'=>5])->value('status');
+        if($itemprocess_status != 2){
+            return $this->error('数据采集中……');
+        }
     }
 
     /* ========== 列表 ========== */

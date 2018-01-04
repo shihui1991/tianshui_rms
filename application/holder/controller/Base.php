@@ -22,8 +22,8 @@ class Base extends Controller
     public $process_status;
     public $items;
     public $item_id;
-    public $collectons;
-    public $collecton_id;
+    public $collections;
+    public $collection_id;
 
     /* ========== 初始化 ========== */
     public function _initialize()
@@ -76,7 +76,6 @@ class Base extends Controller
                 }else{
                     $item=Items::whereIn('status',[1,2])->field(['id','name','area','is_top','status'])->find($item_id);
                 }
-                $this->item_id=$item_id;
 
                 $collection_holders=session('holderinfo.collection_holders');
                 $collection_ids=array_keys($collection_holders);
@@ -91,12 +90,11 @@ class Base extends Controller
                 if(!count($collections)){
                     return $this->error('没有数据！',url('Home/index'));
                 }
-                $this->collectons=$collections;
+                $this->collections=$collections;
                 if(!$collection_id){
                     $collection=$collections[0];
                     $collection_id=$collection->id;
                 }
-                $this->collecton_id=$collection_id;
 
                 $this->assign([
                     'item'=>$item,
@@ -121,6 +119,8 @@ class Base extends Controller
             }else{
                 return $this->error('没有数据');
             }
+            $this->item_id=$item_id;
+            $this->collection_id=$collection_id;
 
             $this->assign([
                 'item_id'=>$item_id,

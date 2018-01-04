@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+    <div class="header">
+        <span class="back"></span>
+        <p class="head_tit">评估公司</p>
+    </div>
+
+    <div class="w1">
+        <div class="loginbar">
+            <img src="{$infos->logo}">
+        </div>
+        <!--简介部分-->
+        <div class="jian1">
+            <p class="gsname">{$infos->name}</p>
+            <p class="gstext">{$infos->infos}</p>
+        </div>
+        <div class="hui"></div>
+        <div class="xq_text">
+            {$infos->content}
+        </div>
+        <!--资质部分-->
+        <div class="w1">
+            <p class="pname bcyjname pgsxq">相关资料</p>
+            <div class="coon ov pad5 ovScoll">
+                <div class="content gszs">
+                    {volist name="infos->picture" id="pictures"}
+                    {php}$name=$key;{/php}
+                    {volist name="pictures" id="pic"}
+                    <div class="zz"><img src="{$pic}" title="{$name}" onclick="bigerimg(this)"></div>
+                    {/volist}
+                    {/volist}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hui2"></div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

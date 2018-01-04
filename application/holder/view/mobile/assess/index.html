@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+    <div class="header">
+        <p class="head_tit">
+            <span class="spanTab"><a class=" spanTabTitle"  href="{:url('Collection/detail')}">产权信息</a></span>
+            <span class="spanTab"><a class="spanon spanTabTitle" onclick="location.reload();">评估结果</a></span>
+        </p>
+    </div>
+
+    <!--评估结果  -->
+    <div class="w1 pgjgcon">
+        <div class="cq_name">评估结果</div>
+        <div class="coon pgjg">
+            <p>房产综合评估总价：<span>{$assess->estate|number_format=2}</span> 元</p>
+            <p>评估总价 ：<span>{$assess->estate|number_format=2}</span> 元</p>
+        </div>
+        <!--房产评估-->
+        <div class="w1 fcpgcon">
+            <!--title-->
+            <div class="fcpgtab bordi">
+                <span class="fc1 fwpg_on" id="fwpg"><i class="iconfont icon-fangwupinggu"></i>房屋评估</span>
+                <span class="fc2" id="fsw"><i class="iconfont icon-fujian"></i>附属物</span>
+            </div>
+            <!--房屋评估-->
+            <div class="w1 fwpg">
+                <!--房产评估中的第一部分包括查看更多-->
+                <div class="w1">
+                    <div class="fcpgtab bordi">
+                        <div class="coon fc_con">
+                            <p><i>1.</i><span class="font14">平方</span><span class="font14">混合</span><span>20.85<sup>2</sup></span></p>
+                            <div class="fc_hide" style="display: none;">
+                                <p>单价(元/m<sup>2</sup>):<span>￥2085.00</span></p>
+                                <p>估计总价(元/m<sup>2</sup>):<span>￥208556.00</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fcpgtab bordi">
+                        <div class="coon fc_con">
+                            <p><i>1.</i><span class="font14">平方</span><span class="font14">混合</span><span>20.85<sup>2</sup></span></p>
+                            <div class="fc_hide" style="display: none;">
+                                <p>单价(元/m<sup>2</sup>):<span>￥2085.00</span></p>
+                                <p>估计总价(元/m<sup>2</sup>):<span>￥208556.00</span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="fcpgtab bordi">
+                        <div class="coon fc_con">
+                            <p><i>1.</i><span class="font14">平方</span><span class="font14">混合</span><span>20.85<sup>2</sup></span></p>
+                            <div class="fc_hide" style="display: none;">
+                                <p>单价(元/m<sup>2</sup>):<span>￥2085.00</span></p>
+                                <p>估计总价(元/m<sup>2</sup>):<span>￥208556.00</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="w1 formore_fw">
+                    <!--评估机构-->
+                    <div class="w1 bordi">
+                        <div class="coon pad pgjg jigou">
+                            <p><span>评估机构：</span><span>天水启动房产有限责任公司</span></p>
+                            <p><span>报告时间：</span><span>2016-07-26</span></p>
+                            <p><span>价值时点：</span><span>2016-09-26</span></p>
+                            <p><span>估计方法：</span><span>比较法，成本法</span></p>
+                        </div>
+                    </div>
+                    <!--评估师-->
+                    <div class="hui"></div>
+                    <div class="w1">
+                        <p class="pname bcyjname bordi">评估师</p>
+                        <div class="coon pgs">
+                            <div class="pgs_list pad bordi">
+                                <p><span>姓名：<i>廊坊</i></span><span>有效时间：<i>2016-12-23</i></span></p>
+                                <p><span>注册号：<i>123123123121312</i></span></p>
+                            </div>
+                            <div class="pgs_list pad bordi">
+                                <p><span>姓名：<i>廊坊</i></span><span>有效时间：<i>2016-12-23</i></span></p>
+                                <p><span>注册号：<i>123123123121312</i></span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--公司资质-->
+                    <div class="hui"></div>
+                    <div class="w1">
+                        <p class="pname bcyjname pgsxq">公司资质</p>
+                        <div class="coon pad5 ov ovScoll">
+                            <div class="content gszs">
+                                <div class="zz"><img src="img/xq2_05.png" /> </div>
+                                <div class="zz"><img src="img/xq2_05.png" /> </div>
+                                <div class="zz"><img src="img/xq2_05.png" /> </div>
+                                <div class="zz"><img src="img/xq2_05.png" /> </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hui"></div>
+                    <div class="hui2"></div>
+                </div>
+            </div>
+        </div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>
