@@ -45,9 +45,9 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$itemcompany->id}" onclick="checkBoxOp(this)" id="check-{$itemcompany->id}"/>
                 </td>
                 <td>{$itemcompany->id}</td>
-                <td>{$itemcompany->item->name}（{$itemcompany->item_id}）</td>
-                <td>{$itemcompany->company->type}</td>
-                <td>{$itemcompany->company->name}</td>
+                <td>{$itemcompany->item->name?:''}（{$itemcompany->item_id}）</td>
+                <td>{$itemcompany->company->type?:''}</td>
+                <td>{$itemcompany->company->name?:''}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('项目评估公司信息',	'{:url('detail',['id'=>$itemcompany->id])}','800','600',true)" >详细信息</button>
                 </td>

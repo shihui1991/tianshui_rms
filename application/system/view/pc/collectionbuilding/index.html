@@ -89,7 +89,7 @@
                     {if condition="$collectionbuilding->deleted_at"}
                     已删除
                     {else/}
-                    {if condition="$collectionbuilding->status_id eq 0"}待定{else/}{$collectionbuilding->buildingstatus->name}{/if}
+                    {if condition="$collectionbuilding->status_id eq 0"}待定{else/}{$collectionbuilding->buildingstatus->name?:''}{/if}
                     {/if}
                 </td>
                 <td>{$collectionbuilding->remark}</td>

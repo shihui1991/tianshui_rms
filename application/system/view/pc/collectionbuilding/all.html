@@ -51,14 +51,14 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$collectionbuilding->id}" onclick="checkBoxOp(this)" id="check-{$collectionbuilding->id}"/>
                 </td>
                 <td>{$collectionbuilding->id}</td>
-                <td>{$collectionbuilding->item->name}（{$collectionbuilding->item_id}）</td>
+                <td>{$collectionbuilding->item->name?:''}（{$collectionbuilding->item_id}）</td>
                 <td title="{$collectionbuilding->community->address}">{$collectionbuilding->community->name}（{$collectionbuilding->community_id}）</td>
                 <td>
                     {if condition="$collectionbuilding->collection_id"}
-                    {if condition="$collectionbuilding->collection->building"}{$collectionbuilding->collection->building}栋{/if}
-                    {if condition="$collectionbuilding->collection->unit"}{$collectionbuilding->collection->unit}单元{/if}
-                    {if condition="$collectionbuilding->collection->floor"}{$collectionbuilding->collection->floor}楼{/if}
-                    {if condition="$collectionbuilding->collection->number"}{$collectionbuilding->collection->number}号{/if}
+                    {if condition="$collectionbuilding->collection->building"}{$collectionbuilding->collection->building?:''}栋{/if}
+                    {if condition="$collectionbuilding->collection->unit"}{$collectionbuilding->collection->unit?:''}单元{/if}
+                    {if condition="$collectionbuilding->collection->floor"}{$collectionbuilding->collection->floor?:''}楼{/if}
+                    {if condition="$collectionbuilding->collection->number"}{$collectionbuilding->collection->number?:''}号{/if}
                     （{$collectionbuilding->collection_id}）
                     {else/}
                     -
@@ -87,7 +87,7 @@
                     {if condition="$collectionbuilding->deleted_at"}
                     已删除
                     {else/}
-                    {if condition="$collectionbuilding->status_id eq 0"}待定{else/}{$collectionbuilding->buildingstatus->name}{/if}
+                    {if condition="$collectionbuilding->status_id eq 0"}待定{else/}{$collectionbuilding->buildingstatus->name?:''}{/if}
                     {/if}
                 </td>
                 <td>{$collectionbuilding->remark}</td>

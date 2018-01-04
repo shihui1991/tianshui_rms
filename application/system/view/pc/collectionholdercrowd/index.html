@@ -77,8 +77,8 @@
                                     </td>
                                     <td>{$collectionholdercrowd->id}</td>
                                     <td>{$holder_info->name}</td>
-                                    <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->crowdgroup->name}</del>{else /}{$collectionholdercrowd->crowdgroup->name}{/if}</td>
-                                    <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->crowd->name}</del>{else /}{$collectionholdercrowd->crowd->name}{/if}</td>
+                                    <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->crowdgroup->name?:''}</del>{else /}{$collectionholdercrowd->crowdgroup->name?:''}{/if}</td>
+                                    <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->crowd->name?:''}</del>{else /}{$collectionholdercrowd->crowd->name?:''}{/if}</td>
                                     <td>
                                         <button type="button" class="btn" onclick="layerIfWindow('入户摸底-特殊人群信息',	'{:url('detail',['id'=>$collectionholdercrowd->id])}','800','600')" >详细信息</button>
                                         <button type="button" data-action="{:url('delete',['item_id'=>$collectionholdercrowd->item_id,'holder_id'=>$collectionholdercrowd->holder_id,'ids'=>$collectionholdercrowd->id])}" class="btn js-ajax-form-btn">删除</button>

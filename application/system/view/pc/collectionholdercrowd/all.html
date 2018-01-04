@@ -49,7 +49,7 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$collectionholdercrowd->id}" onclick="checkBoxOp(this)" id="check-{$collectionholdercrowd->id}"/>
                 </td>
                 <td>{$collectionholdercrowd->id}</td>
-                <td>{$collectionholdercrowd->item->name}（{$collectionholdercrowd->item_id}）</td>
+                <td>{$collectionholdercrowd->item->name?:''}（{$collectionholdercrowd->item_id}）</td>
                 <td title="{$collectionholdercrowd->community->address}">{$collectionholdercrowd->community->name}（{$collectionholdercrowd->community_id}）</td>
                 <td>
                     {if condition="$collectionholdercrowd->collection->building"}{$collectionholdercrowd->collection->building}栋{/if}
@@ -58,9 +58,9 @@
                     {if condition="$collectionholdercrowd->collection->number"}{$collectionholdercrowd->collection->number}号{/if}
                     （{$collectionholdercrowd->collection_id}）
                 </td>
-                <td title="{$collectionholdercrowd->holder->address}">{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->holder->name}</del>{else /}{$collectionholdercrowd->holder->name}{/if}</td>
-                <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->crowdgroup->name}</del>{else /}{$collectionholdercrowd->crowdgroup->name}{/if}</td>
-                <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->crowd->name}</del>{else /}{$collectionholdercrowd->crowd->name}{/if}</td>
+                <td title="{$collectionholdercrowd->holder->address}">{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->holder->name?:''}</del>{else /}{$collectionholdercrowd->holder->name?:''}{/if}</td>
+                <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->crowdgroup->name}</del>{else /}{$collectionholdercrowd->crowdgroup->name?:''}{/if}</td>
+                <td>{if condition="$collectionholdercrowd->deleted_at"}<del>{$collectionholdercrowd->crowd->name}</del>{else /}{$collectionholdercrowd->crowd->name?:''}{/if}</td>
                 <td>
                     <button type="button" class="btn" onclick="layerIfWindow('入户摸底-特殊人群信息',	'{:url('detail',['id'=>$collectionholdercrowd->id])}','800','600')" >详细信息</button>
                 </td>

@@ -47,13 +47,13 @@
             {volist name="itemtopic_list" id="info"}
             <tr>
                 <td>
-                    <input class="va_m" type="checkbox" name="ids[]" value="{$info->id}" onclick="checkBoxOp(this)" id="check-{$info->id}"/>
+                    <input class="va_m" type="checkbox" name="ids[]" value="{$info->topic_id}" onclick="checkBoxOp(this)" id="check-{$info->id}"/>
                 </td>
                 <td>{$info->id}</td>
                 <td>{$info->topic_name}</td>
                 <td>
                     {if condition="$item_info->getData('status') eq 1"}
-                    <button type="button" data-action="{:url('delete',['item_id'=>$item_info->id,'ids'=>$info->id])}" class="btn js-ajax-form-btn" data-notice="确定要彻底删除吗？">删除</button>
+                    <button type="button" data-action="{:url('delete',['item_id'=>$item_info->id,'ids'=>$info->topic_id])}" class="btn js-ajax-form-btn" data-notice="确定要彻底删除吗？">删除</button>
                     {/if}
                 </td>
             </tr>

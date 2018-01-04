@@ -61,10 +61,10 @@
                             <td>{if condition="$info->deleted_at"} <del>{$info->item->name}({$info->item_id})</del>{else /}{$info->item->name}({$info->item_id}){/if}</td>
                             <td>{if condition="$info->deleted_at"}
                                 <del>
-                                    {if condition="$info->getData('status') eq 0 or $info->deleted_at"} <del>{$info->community->name}</del>{else /}{$info->community->name}{/if}({$info->community_id})
+                                    {if condition="$info->getData('status') eq 0 or $info->deleted_at"} <del>{$info->community->name?:''}</del>{else /}{$info->community->name?:''}{/if}({$info->community_id})
                                 </del>
                                 {else /}
-                                    {if condition="$info->getData('status') eq 0 or $info->deleted_at"} <del>{$info->community->name}</del>{else /}{$info->community->name}{/if}({$info->community_id})
+                                    {if condition="$info->getData('status') eq 0 or $info->deleted_at"} <del>{$info->community->name?:''}</del>{else /}{$info->community->name?:''}{/if}({$info->community_id})
                                 {/if}
                             </td>
                             <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
@@ -82,7 +82,7 @@
                             <td colspan="6" style="padding: 0 !important;">
                                 <div class="table_more w_100 backCo_f21">
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">小区地址：</div><div class="align_left"> {$info->community->address}</div>
+                                        <div class="w_30 align_right">小区地址：</div><div class="align_left"> {$info->community->address?:''}</div>
                                     </div>
                                     <div class="flex w_100">
                                         <div class="w_30 align_right">房号：</div><div class="align_left">
@@ -95,7 +95,7 @@
                                         <div class="w_30 align_right">类型：</div><div class="align_left">{$info->type}</div>
                                     </div>
                                     <div class="flex w_100">
-                                        <div class="w_30 align_right">用途：</div><div class="align_left">{$info->realuse->name}</div>
+                                        <div class="w_30 align_right">用途：</div><div class="align_left">{$info->realuse->name?:''}</div>
                                     </div>
                                     <div class="flex w_100">
                                         <div class="w_30 align_right">意见：</div><div class="align_left">{$info->is_agree}</div>

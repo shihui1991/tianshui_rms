@@ -133,15 +133,15 @@
 
             if(resp.code){
                 $.each(resp.data,function (index,info) {
-                    console.log(info);
+                    var nums = index+1;
                     options += ' <tr class="h50">\n' +
-                        '    <td ><label>话题'+info.id+'：</label></td>\n' +
+                        '    <td ><label>话题'+nums+'：</label></td>\n' +
                         '    <td colspan="3">\n' +info.topic_name+
                         '        <input type="hidden" name="topic_id[]" class="topic_id" value="'+info.topic_name_id+'">\n' +
                         '    </td>\n' +
                         '</tr>\n' +
                         '<tr class="h70">\n' +
-                        '    <td><label>话题'+info.id+'回答：</label></td>\n' +
+                        '    <td><label>话题'+nums+'回答：</label></td>\n' +
                         '    <td colspan="3">\n' +
                         '        <textarea name="answer[]" id="answer" cols="10" rows="3"></textarea>\n' +
                         '    </td>\n' +

@@ -72,7 +72,7 @@
                     <input class="va_m" type="checkbox" name="ids[]" value="{$collection->id}" onclick="checkBoxOp(this)" id="check-{$collection->id}"/>
                 </td>
                 <td>{$collection->id}</td>
-                <td>{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->community->address}</del>{else /}{$collection->community->address}{/if}</td>
+                <td>{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->community->address?:''}</del>{else /}{$collection->community->address}{/if}</td>
                 <td>{if condition="$collection->getData('status') eq 0 or $collection->deleted_at"} <del>{$collection->community->name}</del>{else /}{$collection->community->name}{/if}（{$collection->community_id}）</td>
                 <td>
                     {if condition="$collection->deleted_at or $collection->getData('status') eq 0"}
