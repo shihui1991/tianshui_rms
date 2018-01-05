@@ -189,6 +189,53 @@ class Fundsname extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
+
+        /*----- 当删除条数为1条时 -----*/
+        if(count($ids)==1){
+            if(is_array($ids)){
+                $funds_ids = $ids[0];
+            }else{
+                $funds_ids = $ids;
+            }
+            $fundsin_count = model('Fundsins')->withTrashed()->where('name_id',$funds_ids)->count();
+            $fundsout_count = model('Fundsouts')->withTrashed()->where('name_id',$funds_ids)->count();
+            if($fundsin_count||$fundsout_count){
+                return $this->error('当前资金款项正在被使用，删除失败');
+            }
+            $rs =  model('Fundsnames')->destroy(['id'=>$funds_ids]);
+            if($rs){
+                return $this->success('删除成功','');
+            }else{
+                return $this->error('删除失败');
+            }
+        }else{
+            /*----- 当删除条数为多条时 -----*/
+            $num = 0;
+            $del_num = 0;
+            $del_ids = [];
+            foreach ($ids as $k=>$v){
+                $fundsin_count = model('Fundsins')->withTrashed()->where('name_id',$v)->count();
+                $fundsout_count = model('Fundsouts')->withTrashed()->where('name_id',$v)->count();
+                if(!$fundsin_count&&!$fundsout_count){
+                    $del_ids[] = $v;
+                    $del_num += 1;
+                }else{
+                    $num += 1;
+                }
+            }
+            if($del_ids){
+                model('Fundsnames')->destroy(['id'=>['in',$del_ids]]);
+            }
+            if($num==count($ids)){
+                return $this->error('选中资金款项正在被使用，删除失败');
+            }
+            if($del_num==count($ids)){
+                return $this->success('删除成功','');
+            }else{
+                return $this->success('删除成功'.$del_num.'条,其他资金款项正在被使用','');
+            }
+        }
+
         $res=Fundsnames::destroy(['id'=>['in',$ids]]);
         if($res){
             return $this->success('删除成功','');
