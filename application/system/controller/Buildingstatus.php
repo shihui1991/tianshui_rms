@@ -198,7 +198,7 @@ class Buildingstatus extends Auth
             }
             $collection_building_count = model('Collectionbuildings')->withTrashed()->where('status_id',$collection_building_ids)->count();
             if($collection_building_count){
-                return $this->error('当前建筑使用性质正在被使用，删除失败');
+                return $this->error('当前建筑状况正在被使用，删除失败');
             }
             $rs =  model('Buildingstatuss')->destroy(['id'=>$collection_building_ids]);
             if($rs){
@@ -224,12 +224,12 @@ class Buildingstatus extends Auth
                 model('Buildingstatuss')->destroy(['id'=>['in',$del_ids]]);
             }
             if($num==count($ids)){
-                return $this->error('选中建筑使用性质正在被使用，删除失败');
+                return $this->error('选中建筑状况正在被使用，删除失败');
             }
             if($del_num==count($ids)){
                 return $this->success('删除成功','');
             }else{
-                return $this->success('删除成功'.$del_num.'条,其他建筑使用性质正在被使用','');
+                return $this->success('删除成功'.$del_num.'条,其他建筑状况正在被使用','');
             }
         }
     }
