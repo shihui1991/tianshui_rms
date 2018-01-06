@@ -189,11 +189,48 @@ class Buildingstatus extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Buildingstatuss::destroy(['id'=>['in',$ids]]);
-        if($res){
-            return $this->success('删除成功','');
+        /*----- 当删除条数为1条时 -----*/
+        if(count($ids)==1){
+            if(is_array($ids)){
+                $collection_building_ids = $ids[0];
+            }else{
+                $collection_building_ids = $ids;
+            }
+            $collection_building_count = model('Collectionbuildings')->withTrashed()->where('status_id',$collection_building_ids)->count();
+            if($collection_building_count){
+                return $this->error('当前建筑使用性质正在被使用，删除失败');
+            }
+            $rs =  model('Buildingstatuss')->destroy(['id'=>$collection_building_ids]);
+            if($rs){
+                return $this->success('删除成功','');
+            }else{
+                return $this->error('删除失败');
+            }
         }else{
-            return $this->error('删除失败');
+            /*----- 当删除条数为多条时 -----*/
+            $num = 0;
+            $del_num = 0;
+            $del_ids = [];
+            foreach ($ids as $k=>$v){
+                $collection_building_count = model('Collectionbuildings')->withTrashed()->where('status_id',$v)->count();
+                if(!$collection_building_count){
+                    $del_ids[] = $v;
+                    $del_num += 1;
+                }else{
+                    $num += 1;
+                }
+            }
+            if($del_ids){
+                model('Buildingstatuss')->destroy(['id'=>['in',$del_ids]]);
+            }
+            if($num==count($ids)){
+                return $this->error('选中建筑使用性质正在被使用，删除失败');
+            }
+            if($del_num==count($ids)){
+                return $this->success('删除成功','');
+            }else{
+                return $this->success('删除成功'.$del_num.'条,其他建筑使用性质正在被使用','');
+            }
         }
     }
 
