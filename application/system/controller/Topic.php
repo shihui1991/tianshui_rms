@@ -152,15 +152,19 @@ class Topic extends Auth
             /*----- 当删除条数为多条时 -----*/
             $num = 0;
             $del_num = 0;
+            $del_ids = [];
             foreach ($ids as $k=>$v){
                 $itemtopic_counts = model('Itemtopics')->withTrashed()->where('topic_id',$v)->count();
                 $risktopics_counts = model('Risktopics')->withTrashed()->where('topic_id',$v)->count();
                 if(!$itemtopic_counts&&!$risktopics_counts){
-                    model('Topics')->destroy(['id'=>$v]);
+                    $del_ids[] = $v;
                     $del_num += 1;
                 }else{
                     $num += 1;
                 }
+            }
+            if($del_ids){
+                model('Topics')->destroy(['id'=>['in',$del_ids]]);
             }
             if($num==count($ids)){
                 return $this->error('选中话题正在被使用，删除失败');

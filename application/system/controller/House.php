@@ -476,7 +476,7 @@ class House extends Auth
                 }
                 $rs = model('Houses')->saveAll($add_data_array);
                 if($rs){
-                  return view('excel_info',[
+                  return view($this->theme.'/house/excel_info',[
                       'data_count'=>$excel_datas['data_count'],
                       'success_count'=>$excel_datas['success_count'],
                       'error_count'=>$excel_datas['error_count'],
@@ -485,7 +485,7 @@ class House extends Auth
                       'add_count'=>count($add_data_array)
                   ]);
                 }else{
-                    return view('excel_info',[
+                    return view($this->theme.'/house/excel_info',[
                         'data_count'=>$excel_datas['data_count'],
                         'success_count'=>$excel_datas['success_count'],
                         'error_count'=>$excel_datas['error_count'],
@@ -496,7 +496,7 @@ class House extends Auth
                 }
 
             }else{
-                return $this->error('文件导入失败','index');
+                return $this->error('文件导入失败',$this->theme.'/house/index');
             }
         }
     }

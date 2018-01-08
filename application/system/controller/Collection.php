@@ -537,8 +537,12 @@ class Collection extends Auth
         }
         Db::startTrans();
         try{
+            $del_ids = Collections::onlyTrashed()->whereIn('id',$ids)->column('id');
+            if(!$del_ids){
+                throw new Exception('请选择已删除数据！');
+            }
             $status_data=[];
-            foreach ($ids as $id){
+            foreach ($del_ids as $id){
                 $status_data[]=[
                     'keyname'=>'collection_id',
                     'keyvalue'=>$id,
@@ -551,11 +555,17 @@ class Collection extends Auth
             $status_model=new Itemstatuss();
             $status_model->saveAll($status_data);
 
-            Db::table('collection')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+          $rs = Collections::onlyTrashed()->whereIn('id',$del_ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
 
-            $res=true;
-            $msg='恢复成功';
-            Db::commit();
+            if($rs){
+                $res=true;
+                $msg = '恢复成功';
+                Db::commit();
+            }else{
+                $res=false;
+                $msg = '请选择已删除数据';
+                Db::rollback();
+            }
         }catch (\Exception $exception){
             $res=false;
             $msg=$exception->getMessage();
@@ -651,6 +661,9 @@ class Collection extends Auth
         Db::startTrans();
         try{
             $last_status=Itemstatuss::where(['keyname'=>'collection_id','keyvalue'=>$id])->order('created_at desc')->find();
+            if(!$last_status){
+                throw new Exception('数据异常！');
+            }
             if($last_status->role_parent_id!=session('userinfo.role_id') && $last_status->role_parent_id!=session('userinfo.role_parent_id')){
                 throw new Exception('审核流程已超出权限！');
             }

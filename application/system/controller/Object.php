@@ -164,11 +164,48 @@ class Object extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Objects::destroy(['id'=>['in',$ids]]);
-        if($res){
-            return $this->success('删除成功','');
+        /*----- 当删除条数为1条时 -----*/
+        if(count($ids)==1){
+            if(is_array($ids)){
+                $collection_object_ids = $ids[0];
+            }else{
+                $collection_object_ids = $ids;
+            }
+            $collection_object_count = model('Collectionobjects')->withTrashed()->where('object_id',$collection_object_ids)->count();
+            if($collection_object_count){
+                return $this->error('当前其他补偿事项正在被使用，删除失败');
+            }
+            $rs =  model('Objects')->destroy(['id'=>$collection_object_ids]);
+            if($rs){
+                return $this->success('删除成功','');
+            }else{
+                return $this->error('删除失败');
+            }
         }else{
-            return $this->error('删除失败');
+            /*----- 当删除条数为多条时 -----*/
+            $num = 0;
+            $del_num = 0;
+            $del_ids = [];
+            foreach ($ids as $k=>$v){
+                $collection_object_count = model('Collectionobjects')->withTrashed()->where('object_id',$v)->count();
+                if(!$collection_object_count){
+                    $del_ids[] = $v;
+                    $del_num += 1;
+                }else{
+                    $num += 1;
+                }
+            }
+            if($del_ids){
+                model('Objects')->destroy(['id'=>['in',$del_ids]]);
+            }
+            if($num==count($ids)){
+                return $this->error('选中其他补偿事项正在被使用，删除失败');
+            }
+            if($del_num==count($ids)){
+                return $this->success('删除成功','');
+            }else{
+                return $this->success('删除成功'.$del_num.'条,其他其他补偿事项正在被使用','');
+            }
         }
     }
 

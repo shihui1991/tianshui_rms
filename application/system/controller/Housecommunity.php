@@ -197,11 +197,51 @@ class Housecommunity extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
-        $res=Housecommunitys::destroy(['id'=>['in',$ids]]);
-        if($res){
-            return $this->success('删除成功','');
+
+        /*----- 当删除条数为1条时 -----*/
+        if(count($ids)==1){
+            if(is_array($ids)){
+                $housecommunity_ids = $ids[0];
+            }else{
+                $housecommunity_ids = $ids;
+            }
+            $house_count = model('Houses')->withTrashed()->where('community_id',$housecommunity_ids)->count();
+            $houselayoutpic_count = model('Houselayoutpics')->withTrashed()->where('community_id',$housecommunity_ids)->count();
+            if($house_count||$houselayoutpic_count){
+                return $this->error('当前房源小区正在被使用，删除失败');
+            }
+            $rs =  model('Housecommunitys')->destroy(['id'=>$housecommunity_ids]);
+            if($rs){
+                return $this->success('删除成功','');
+            }else{
+                return $this->error('删除失败');
+            }
         }else{
-            return $this->error('删除失败');
+            /*----- 当删除条数为多条时 -----*/
+            $num = 0;
+            $del_num = 0;
+            $del_ids = [];
+            foreach ($ids as $k=>$v){
+                $house_count = model('Houses')->withTrashed()->where('community_id',$v)->count();
+                $houselayoutpic_count = model('Houselayoutpics')->withTrashed()->where('community_id',$v)->count();
+                if(!$house_count&&!$houselayoutpic_count){
+                    $del_ids[] = $v;
+                    $del_num += 1;
+                }else{
+                    $num += 1;
+                }
+            }
+            if($del_ids){
+                model('Housecommunitys')->destroy(['id'=>['in',$del_ids]]);
+            }
+            if($num==count($ids)){
+                return $this->error('选中房源小区正在被使用，删除失败');
+            }
+            if($del_num==count($ids)){
+                return $this->success('删除成功','');
+            }else{
+                return $this->success('删除成功'.$del_num.'条,其他房源小区正在被使用','');
+            }
         }
     }
 

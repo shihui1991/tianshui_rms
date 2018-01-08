@@ -12,6 +12,7 @@
 namespace app\system\controller;
 use app\system\model\Assessassetss;
 use app\system\model\Items;
+use app\system\model\Itemstatuss;
 use think\Db;
 
 class Assessassets extends Auth
@@ -48,6 +49,10 @@ class Assessassets extends Auth
             $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
             $datas['item_info']=$item_info;
             $where['ass.item_id']=$item_id;
+
+            /* ++++++++++ 入户评估状态 ++++++++++ */
+            $assess_status=Itemstatuss::where(['keyname'=>'assess_id','keyvalue'=>$assess_id])->order('created_at desc')->value('status');
+            $datas['assess_status']=$assess_status;
         }else{
             if($item_id){
                 $where['ass.item_id']=$item_id;
@@ -179,7 +184,16 @@ class Assessassets extends Auth
                 return $msg;
             }
         }
-
+        /* ++++++++++ 入户评估状态 ++++++++++ */
+        $assess_status=Itemstatuss::where(['keyname'=>'assess_id','keyvalue'=>input('assess_id')])->order('created_at desc')->value('status');
+        if($assess_status == 8){
+            $msg='入户评估数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
         if (request()->isPost()) {
             $model = new Assessassetss();
             $datas = input();
@@ -385,7 +399,16 @@ class Assessassets extends Auth
                 return $msg;
             }
         }
-
+        /* ++++++++++ 入户评估状态 ++++++++++ */
+        $assess_status=Itemstatuss::where(['keyname'=>'assess_id','keyvalue'=>input('assess_id')])->order('created_at desc')->value('status');
+        if($assess_status == 8){
+            $msg='入户评估数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
         $datas = input();
         $rule = [
             ['report_at', 'require', '报告时间不能为空'],
@@ -482,7 +505,16 @@ class Assessassets extends Auth
                 return $msg;
             }
         }
-
+        /* ++++++++++ 入户评估状态 ++++++++++ */
+        $assess_status=Itemstatuss::where(['keyname'=>'assess_id','keyvalue'=>input('assess_id')])->order('created_at desc')->value('status');
+        if($assess_status == 8){
+            $msg='入户评估数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
         $inputs = input();
         $id = isset($inputs['id']) ? $inputs['id'] : '';
         if (empty($id)) {
@@ -546,7 +578,16 @@ class Assessassets extends Auth
                 return $msg;
             }
         }
-
+        /* ++++++++++ 入户评估状态 ++++++++++ */
+        $assess_status=Itemstatuss::where(['keyname'=>'assess_id','keyvalue'=>input('assess_id')])->order('created_at desc')->value('status');
+        if($assess_status == 8){
+            $msg='入户评估数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
         if(empty($ids)){
@@ -602,7 +643,16 @@ class Assessassets extends Auth
                 return $msg;
             }
         }
-
+        /* ++++++++++ 入户评估状态 ++++++++++ */
+        $assess_status=Itemstatuss::where(['keyname'=>'assess_id','keyvalue'=>input('assess_id')])->order('created_at desc')->value('status');
+        if($assess_status == 8){
+            $msg='入户评估数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
@@ -659,7 +709,16 @@ class Assessassets extends Auth
                 return $msg;
             }
         }
-
+        /* ++++++++++ 入户评估状态 ++++++++++ */
+        $assess_status=Itemstatuss::where(['keyname'=>'assess_id','keyvalue'=>input('assess_id')])->order('created_at desc')->value('status');
+        if($assess_status == 8){
+            $msg='入户评估数据已审核通过，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
         $inputs=input();
         $ids=isset($inputs['ids'])?$inputs['ids']:'';
 
