@@ -14,6 +14,7 @@ use app\system\model\Assesss;
 use app\system\model\Items;
 use app\system\model\Itemstatuss;
 use think\Db;
+use think\Exception;
 
 class Assess extends Auth
 {
@@ -345,8 +346,12 @@ class Assess extends Auth
         }
         Db::startTrans();
         try{
+            $del_ids = Assesss::onlyTrashed()->whereIn('id',$ids)->column('id');
+            if(!$del_ids){
+                throw new Exception('请选择已删除数据！');
+            }
             $status_data=[];
-            foreach ($ids as $id){
+            foreach ($del_ids as $id){
                 $status_data[]=[
                     'keyname'=>'assess_id',
                     'keyvalue'=>$id,
@@ -358,28 +363,30 @@ class Assess extends Auth
             }
             $status_model=new Itemstatuss();
             $status_model->saveAll($status_data);
-
-           $rs = db('assess')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-            db('assess_estate')->whereIn('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-            db('assess_estate_building')->whereIn('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-            db('assess_estate_valuer')->whereIn('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-            db('assess_assets')->whereIn('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
-            db('assess_assets_valuer')->whereIn('assess_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            $rs =  Assesss::onlyTrashed()->whereIn('id',$del_ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_estate')->whereIn('assess_id',$del_ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_estate_building')->whereIn('assess_id',$del_ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_estate_valuer')->whereIn('assess_id',$del_ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_assets')->whereIn('assess_id',$del_ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            db('assess_assets_valuer')->whereIn('assess_id',$del_ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
             if($rs){
                 $res=true;
+                $msg = '恢复成功';
                 Db::commit();
             }else{
                 $res=false;
+                $msg = '请选择已删除数据';
                 Db::rollback();
             }
         }catch (\Exception $e){
             $res=false;
+            $msg=$e->getMessage();
             Db::rollback();
         }
         if($res){
-            return $this->success('恢复成功','');
+            return $this->success($msg,'');
         }else{
-            return $this->error('恢复失败');
+            return $this->error($msg);
         }
     }
 
@@ -462,6 +469,91 @@ class Assess extends Auth
             return $this->success($msg,'');
         }else{
             return $this->error($msg);
+        }
+    }
+    /* ========== 状态 ========== */
+    public function status(){
+        $id=input('id');
+        if(!$id){
+            return $this->error('至少选择一项');
+        }
+
+        $datas['id']=$id;
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        $datas['item_info']=$item_info;
+
+        $model=new Itemstatuss();
+        $datas['model']=$model;
+
+        $statuss=$model->with('user,role')->where(['keyname'=>'assess_id','keyvalue'=>$id])->order('created_at asc')->paginate();
+        $datas['statuss']=$statuss;
+
+        $this->assign($datas);
+
+        return view($this->theme.'/assess/status');
+    }
+    /* ========== 审核 ========== */
+    public function check(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') ==2){
+            $msg='项目已完成，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+        $id=input('id');
+        if(!$id){
+            return $this->error('错误操作','');
+        }
+        $check=input('check');
+        if(!in_array($check,[8,9])){
+            return $this->error('错误操作','');
+        }
+        Db::startTrans();
+        try{
+            $last_status=Itemstatuss::where(['keyname'=>'assess_id','keyvalue'=>$id])->order('created_at desc')->find();
+            if(!$last_status){
+                throw new Exception('数据异常！');
+            }
+            if($last_status->role_parent_id!=session('userinfo.role_id') && $last_status->role_parent_id!=session('userinfo.role_parent_id')){
+                throw new Exception('审核流程已超出权限！');
+            }
+            $status_model=new Itemstatuss();
+            $status_data=[
+                'keyname'=>'assess_id',
+                'keyvalue'=>$id,
+                'user_id'=>session('userinfo.user_id'),
+                'role_id'=>session('userinfo.role_id'),
+                'role_parent_id'=>session('userinfo.role_parent_id'),
+                'status'=>$check
+            ];
+            $status_model->save($status_data);
+
+            $res=true;
+            $msg='操作成功';
+            Db::commit();
+        }catch (\Exception $exception){
+            $msg=$exception->getMessage();
+            $res=false;
+            Db::rollback();
+        }
+
+        if($res){
+            return $this->success($msg,'');
+        }else{
+            return $this->error($msg,'');
         }
     }
 
