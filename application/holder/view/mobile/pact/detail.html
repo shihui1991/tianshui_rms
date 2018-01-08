@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+    {include file="mobile/public/kindeditor" /}
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+    <div class="header">
+        <span class="back"></span>
+        <p class="head_tit">补偿协议</p>
+    </div>
+
+    <div class="w1 pgjgcon">
+        <div class="w1 fe2 pad">
+            <div class="btnName">
+                <div class="tabBtn">
+                    <span class="tabBtnOn" id="fcpg">信息</span>
+                    <span id="zcpg">内容</span>
+                </div>
+            </div>
+        </div>
+        <!--信息-->
+        <div class="w1 fcpgcon">
+            <div class="w1 fwpg">
+                <div class="w1 ">
+                    <div class="w1 bordi">
+                        <div class="coon pad pgjg jigou">
+                            <p><span>名称：</span><span>{$infos->name}</span></p>
+                            <p><span>签约人：</span><span>{$infos->ch_name}</span></p>
+                            <p><span>签约人地址：</span><span>{$infos->address}</span></p>
+                            <p><span>状态：</span><span>{$infos->status}</span></p>
+                            <p><span>创建时间：</span><span>{$infos->created_at}</span></p>
+                            <p><span>更新时间：</span><span>{$infos->updated_at}</span></p>
+                        </div>
+                    </div>
+                    <div class="hui"></div>
+                    {if condition="$infos->picture"}
+                    <div class="w1">
+                        <p class="pname bcyjname pgsxq">图片</p>
+                        <div class="coon pad5 ov ovScoll">
+                            <div class="content gszs">
+                                {volist name="infos->picture" id="pic"}
+                                <div class="zz"><img src="{$pic}" onclick="bigerimg(this)" title="补偿协议"/> </div>
+                                {/volist}
+                            </div>
+                        </div>
+                    </div>
+                    {/if}
+                    <div class="hui"></div>
+                    <div class="hui2"></div>
+                </div>
+            </div>
+        </div>
+        <!--内容-->
+        <div class="w1 zcpgcon" style="display: none;">
+            <div class="xq_text">
+                <textarea name="" id="" class="kindeditor">{$infos->content}</textarea>
+            </div>
+            <div class="hui"></div>
+            <div class="hui2"></div>
+        </div>
+    </div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    /*----- 富文本编辑器 -----*/
+    KindEditor.ready(function(K) {
+        window.editor = K.create('.kindeditor',{
+            width : '100%',
+            minHeight:'300',
+            uploadJson : '',
+            fileManagerJson : '',
+            allowFileManager : false,
+            readonlyMode : true,
+            items:[]
+        });
+    });
+</script>
+</body>
+</html>

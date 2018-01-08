@@ -583,12 +583,12 @@ class Collection extends Auth
         }
         Db::startTrans();
         try{
-            $ids=Collections::onlyTrashed()->whereIn('id',$ids)->value('id');
-            if(!$ids){
+            $collection_ids=Collections::onlyTrashed()->whereIn('id',$ids)->column('id');
+            if(!$collection_ids){
                 throw new Exception('只能销毁已删除的数据！');
             }
             $status_data=[];
-            foreach ($ids as $id){
+            foreach ($collection_ids as $id){
                 $status_data[]=[
                     'keyname'=>'collection_id',
                     'keyvalue'=>$id,
@@ -600,8 +600,6 @@ class Collection extends Auth
             }
             $status_model=new Itemstatuss();
             $status_model->saveAll($status_data);
-
-            $collection_ids=Collections::onlyTrashed()->whereIn('id',$ids)->column('id');
 
             Collectionobjects::withTrashed()->whereIn('collection_id',$collection_ids)->delete(true);
             Collectionholderhouses::withTrashed()->whereIn('collection_id',$collection_ids)->delete(true);

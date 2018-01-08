@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+
+    <style>
+        .coon.pad.pgjg.jigou p{
+            line-height: 40px;
+        }
+        .coon.pad.pgjg.jigou p select,.coon.pad.pgjg.jigou p input{
+            width: 60%;
+            height: 30px;
+            border: 1px solid #CCCCCC;
+            padding: 0 2px;
+        }
+        .coon.pad.pgjg.jigou p textarea{
+            line-height: 40px;
+            width: 60%;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+
+    <div class="header">
+        <p class="head_tit">
+            <span class="spanTab"><a class=" spanTabTitle" href="{:url('Itemcompanyvote/index')}">评估公司</a></span>
+            <span class="spanTab"><a class="spanon spanTabTitle">社会调查</a></span>
+        </p>
+    </div>
+
+    <div class="w1 ">
+        <div class="cq_name" style="padding: 0 10px;width: 150px;">征求意见稿的社会调查</div>
+        <div class="hui"></div>
+        <form action="{:url('add')}" method="post" class="js-ajax-form" onsubmit="return false;">
+            <div class="w1 bordi">
+                <div class="coon pad pgjg jigou">
+                    <p>
+                        <span>征收意见：</span>
+                        <span>
+                        <select name="is_agree" id="is_agree">
+                            {volist name="model->is_agree" id="value"}
+                            <option value="{$key}" {eq name="key" value="1"} selected {/eq}>{$value}</option>
+                            {/volist}
+                        </select>
+                        </span>
+                    </p>
+                    <p>
+                        <span>补偿方式：</span>
+                        <span>
+                            <select name="compensate_way" id="compensate_way">
+                                {volist name="model->compensate_way" id="value"}
+                                <option value="{$key}">{$value}</option>
+                                {/volist}
+                            </select>
+                        </span>
+                    </p>
+                    <p>
+                        <span>过渡方式：</span>
+                        <span>
+                            <select name="transit_way" id="transit_way">
+                                {volist name="model->transit_way" id="value"}
+                                <option value="{$key}">{$value}</option>
+                                {/volist}
+                            </select>
+                        </span>
+                    </p>
+                    <p>
+                        <span>搬迁方式：</span>
+                        <span>
+                            <select name="move_way" id="move_way">
+                                {volist name="model->move_way" id="value"}
+                                <option value="{$key}">{$value}</option>
+                                {/volist}
+                            </select>
+                        </span>
+                    </p>
+                    <p>
+                        <span>补偿单价：</span>
+                        <span>
+                            <input type="number" name="compensate_price" id="compensate_price" value="" min="0" placeholder="输入期望房屋平均补偿单价">
+                        </span>
+                    </p>
+                    <p>
+                        <span>群众代表：</span>
+                        <span>
+                            <select name="deputy" id="deputy">
+                                {volist name="model->deputy" id="value"}
+                                <option value="{$key}">{$value}</option>
+                                {/volist}
+                            </select>
+                        </span>
+                    </p>
+                    <p>
+                        <span>推荐代表：</span>
+                        <span>
+                            <select name="recommemd_holder_id" id="recommemd_holder_id">
+                                {volist name="holders" id="holder"}
+                                <option value="{$holder->id}">{$holder->name} 【{$holder->address}，{$holder->phone}】</option>
+                                {/volist}
+                            </select>
+                        </span>
+                    </p>
+                    <p>
+                        <span>其他意见：</span>
+                        <span>
+                            <textarea name="opinion" id="opinion" placeholder="输入其他意见"></textarea>
+                        </span>
+                    </p>
+
+                    {volist name="itemtopics" id="itemtopic"}
+                    <p>
+                        <span>{$itemtopic->topic->name}：</span>
+                        <span><input type="text" name="topics[{$itemtopic->topic_id}]" value=""></span>
+                    </p>
+                    {/volist}
+
+                </div>
+                <div class="w1 pad">
+                    <div class="coon">
+                        <span class="sure" onclick="riskadd(this)">立即提交</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="hui2"></div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    function riskadd(obj) {
+        var btn=$(obj);
+        var form=btn.parents('form:first');
+        if(btn.data('loading')){
+            return false;
+        }
+        btn.data('loading',true);
+        $.ajax({
+            url:form.attr('action')
+            ,data:form.serialize()
+            ,type:'post'
+            ,dataType:'json'
+            ,success:function (resp) {
+                layer.open({
+                    content: resp.msg
+                    ,skin: 'msg'
+                    ,time: 1.5
+                    ,end:function (index) {
+                        layer.closeAll();
+                    }
+                });
+                if(resp.code){
+                    location.href="{:url('Risk/detail')}"
+                }else{
+                    btn.data('loading',false);
+                }
+            }
+            ,error:function () {
+                layer.open({
+                    content: '网络错误，请稍候重试'
+                    ,skin: 'msg'
+                    ,time: 1.5
+                    ,end:function (index) {
+                        layer.closeAll();
+                    }
+                });
+                btn.data('loading',false);
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+    <style>
+        #payinfo th{
+            text-align: right !important;
+            width: 50%;
+        }
+    </style>
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+    <div class="header">
+        <p class="head_tit">
+            <span class="spanTab"><a class="spanon spanTabTitle" >补偿结果</a></span>
+            <span class="spanTab"><a class="spanTabTitle" href="{:url('Pact/index')}">补偿协议</a></span>
+        </p>
+    </div>
+
+    <div class="cq_con">
+        <div class="cq_name">补偿结果</div>
+        <div class="cq_dizhi">项目：{$item->name}</div>
+        <div class="cq_info">
+            <table>
+                <tr>
+                    <th>地址：</th>
+                    <td>{$infos->address}</td>
+                </tr>
+                <tr>
+                    <th>房屋：</th>
+                    <td>
+                        {$infos->name}
+                        {if condition="$infos->building"}{$infos->building}栋{/if}
+                        {if condition="$infos->unit"}{$infos->unit}单元{/if}
+                        {if condition="$infos->floor"}{$infos->floor}楼{/if}
+                        {if condition="$infos->number"}{$infos->number}号{/if}
+                    </td>
+                </tr>
+                <tr>
+                    <th>类型：</th>
+                    <td>{$infos->type}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="hui"></div>
+    <!--tab_title-->
+    <div class="find_nav">
+        <div class="tab_nav find_nav_left">
+            <div class="tab_title find_nav_list" id="pagenavi1">
+                <ul>
+                    <li class="tab_on"><a>汇总</a></li>
+                    <li class=""><a>分权兑付</a></li>
+                    <li><a>补偿科目</a></li>
+                    <li><a>补偿事项</a></li>
+                    <li><a>安置房</a></li>
+                    <li class="sideline"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="hui"></div>
+    <!--tab内容-->
+    <div class="w1_tab_content" id="slider1">
+        <ul class="tab_content_list box01_list">
+            <!--汇总-->
+            <li class="li_list jia tabC1">
+                <div class="per">
+                    <div class="cq_info">
+                        <table id="payinfo">
+                            <tr>
+                                <th>性质：</th>
+                                <td>{$infos->bu_name}</td>
+                            </tr>
+                            <tr>
+                                <th>房产补偿：</th>
+                                <td>{$infos->estate_amount|number_format=2} 元</td>
+                            </tr>
+                            <tr>
+                                <th>资产补偿：</th>
+                                <td>{$infos->assets_amount|number_format=2} 元</td>
+                            </tr>
+                            <tr>
+                                <th>公共附属物小计：</th>
+                                <td>{$infos->public_amount|number_format=2} 元</td>
+                            </tr>
+                            <tr>
+                                <th>平分户数：</th>
+                                <td>{$infos->public_num|number_format} 户</td>
+                            </tr>
+                            <tr>
+                                <th>公共附属物平均：</th>
+                                <td>{$infos->public_avg|number_format=2} 元</td>
+                            </tr>
+                            <tr>
+                                <th>重要补偿科目小计：</th>
+                                <td>{$infos->subject_amount|number_format=2} 元</td>
+                            </tr>
+                            <tr>
+                                <th>其他补偿事项小计：</th>
+                                <td>{$infos->object_amount|number_format=2} 元</td>
+                            </tr>
+                            <tr>
+                                <th>合计：</th>
+                                <td>{$infos->total|number_format=2} 元</td>
+                            </tr>
+                            <tr>
+                                <th>补偿方式：</th>
+                                <td>{$infos->compensate_way}</td>
+                            </tr>
+                            <tr>
+                                <th>兑付方式：</th>
+                                <td>{$infos->pay_way}</td>
+                            </tr>
+
+                            <tr>
+                                <th>过渡方式：</th>
+                                <td>{$infos->transit_way}</td>
+                            </tr>
+
+                            <tr>
+                                <th>搬迁方式：</th>
+                                <td>{$infos->move_way}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    {if condition="$infos->picture"}
+                    <div class="w1">
+                        <p class="pname bcyjname pgsxq">相关图片</p>
+                        <div class="coon pad5 ov ovScoll">
+                            <div class="content gszs">
+                                {volist name="infos->picture" id="pictures"}
+                                {volist name="pictures" id="pic"}
+                                <div class="zz"><img src="{$pic}" title="兑付图片" onclick="bigerimg(this)"></div>
+                                {/volist}
+                                {/volist}
+                            </div>
+                        </div>
+                    </div>
+                    {/if}
+                    <div class="hui2"></div>
+                </div>
+            </li>
+            <!--分权兑付-->
+            <li class="li_list jia tabC1">
+                <div class="per">
+                    <div class="w1">
+                        {volist name="payholders" id="payholder"}
+                        <div class="fcpgtab bordi">
+                            <div class="coon fc_con">
+                                <p>
+                                    <i>{$i}.</i>
+                                    <span class="font14">{$payholder->name}</span>
+                                    <span class="font14">{$payholder->holder}</span>
+                                    <span class="font14">{$payholder->portion}%</span>
+                                </p>
+                                <div class="fc_hide" style="display: none;">
+                                    <p>地址:<span>{$payholder->address}</span></p>
+                                    <p>电话:<span>{$payholder->phone}</span></p>
+                                    <p>房产补偿:<span>{$payholder->estate_amount|number_format=2} 元</span></p>
+                                    <p>资产补偿:<span>{$payholder->assets_amount|number_format=2} 元</span></p>
+                                    <p>公共附属物平均:<span>{$payholder->public_avg|number_format=2} 元</span></p>
+                                    <p>重要补偿小计:<span>{$payholder->subject_amount|number_format=2} 元</span></p>
+                                    <p>其他事项小计:<span>{$payholder->object_amount|number_format=2} 元</span></p>
+                                    <p>合计:<span>{$payholder->total_amount|number_format=2} 元</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        {/volist}
+
+                        <div class="hui2"></div>
+                    </div>
+                </div>
+            </li>
+            <!--补偿科目-->
+            <li class="li_list jia tabC1">
+                <div class="per">
+                    <div class="w1">
+                        {volist name="paysubjects" id="paysubject"}
+                        <div class="fcpgtab bordi">
+                            <div class="coon fc_con">
+                                <p>
+                                    <i>{$i}.</i>
+                                    <span class="font14">{$paysubject->name}</span>
+                                    <span class="font14">{$paysubject->number|number_format=2}×{$paysubject->price|number_format=2}×{$paysubject->times}</span>
+                                    <span>={$paysubject->amount|number_format=2}</span>
+                                </p>
+                                <div class="fc_hide" style="display: none;">
+                                    <p>来源:<span>{$paysubject->num_from}</span></p>
+                                    <p>数量:<span>{$paysubject->number|number_format=2} {$paysubject->unit}</span></p>
+                                    <p>单价:<span>{$paysubject->price|number_format=2}</span></p>
+                                    <p>次数:<span>{$paysubject->times}</span></p>
+                                    <p>总额:<span>{$paysubject->amount|number_format=2} 元</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        {/volist}
+
+                        <div class="hui2"></div>
+                    </div>
+                </div>
+            </li>
+            <!--补偿事项-->
+            <li class="li_list jia tabC1">
+                <div class="per">
+                    <div class="cq_info">
+                        <table>
+                            <tr>
+                                <th>序号</th>
+                                <th>名称</th>
+                                <th>数量</th>
+                                <th>单价</th>
+                                <th>小计</th>
+                            </tr>
+                            {volist name="payobjects" id="payobject"}
+                            <tr>
+                                <td style="text-align: center;">{$i}</td>
+                                <td style="text-align: center;">{$payobject->name}</td>
+                                <td style="text-align: center;">{$payobject->number}</td>
+                                <td style="text-align: center;">{$payobject->price|number_format=2}</td>
+                                <td style="text-align: center;">{$payobject->amount|number_format=2}</td>
+                            </tr>
+                            {/volist}
+                        </table>
+                    </div>
+                    <div class="hui2"></div>
+                </div>
+            </li>
+            <!--安置房-->
+            <li class="li_list jia tabC1">
+                <div class="per">
+                    <div class="cq_info">
+                        {if condition="$infos->getData('compensate_way') eq 0"}<p style="color: red;">当前选择【货币补偿】方式，安置房数据无效！</p>{/if}
+                        <table class="layerTable" border="0">
+                            {php}
+                            $total=$house=$last=0;
+                            {/php}
+                            {volist name="payholders" id="payholder"}
+                            {php}
+                            if($infos->getData('type')){
+                            if($payholder->getData('holder')==2){
+                            $total=$payholder->total_amount;
+                            $house=$payholder->house_amount;
+                            }
+                            }else{
+                            if($infos->getData('pay_way')){
+                            $total +=$payholder->total_amount;
+                            $house +=$payholder->house_amount;
+                            }else{
+                            $total=$payholder->total_amount;
+                            $house=$payholder->house_amount;
+                            }
+                            }
+                            {/php}
+                            {if condition="$payholder->house_amount"}
+                            {php}
+                            $payholderhouses=$payholderhouse_model->alias('phh')
+                            ->field(['phh.*','h.community_id as house_community_id','h.building','h.unit','h.floor','h.number','h.layout_id','h.area','h.status as house_status','hc.address','hc.name as hc_name','l.name as l_name'])
+                            ->join('house h','h.id=phh.house_id','left')
+                            ->join('house_community hc','hc.id=h.community_id','left')
+                            ->join('layout l','l.id=h.layout_id','left')
+                            ->where('phh.pay_holder_id',$payholder->id)
+                            ->order('phh.sort asc')
+                            ->select();
+                            {/php}
+                            <tr class="h50">
+                                <td></td>
+                                <td>{$payholder->name} 【{$payholder->holder}】</td>
+                            </tr>
+                            {volist name="payholderhouses" id="payholderhouse"}
+                            <tr class="h50">
+                                <td>{$payholderhouse->sort}、</td>
+                                <td>
+                                    安置房：{$payholderhouse->address}{$payholderhouse->hc_name}
+                                    {if condition="$payholderhouse->building"}{$payholderhouse->building}栋{/if}
+                                    {if condition="$payholderhouse->unit"}{$payholderhouse->unit}单元{/if}
+                                    {if condition="$payholderhouse->floor"}{$payholderhouse->floor}楼{/if}
+                                    {if condition="$payholderhouse->number"}{$payholderhouse->number}号{/if}
+                                    <br>
+                                    状态：{$payholderhouse->house_status}<br>
+                                    户型：{$payholderhouse->l_name}<br>
+                                    面积：{$payholderhouse->area|number_format=2} ㎡<br>
+                                    单价：{$payholderhouse->price|number_format=2} 元/㎡<br>
+                                    优惠总价：{$payholderhouse->amount|number_format=2} 元<br>
+                                    {if condition="$payholderhouse->amount_up"}
+                                    {php}
+                                    $payholderhouseups=$payholderhouse->payholderhouseups;
+                                    $num=count($payholderhouseups);
+                                    {/php}
+                                    {if condition="$num"}
+                                    <table class="layerTable" border="0" style="width: inherit !important;">
+                                        <tr class="h50">
+                                            <td style="background: #f7f7f7;text-align: center;padding:0 10px;" rowspan="{$num+1}">上浮</td>
+                                            <td style="background: #f7f7f7;text-align: center;padding:0 10px;">面积(㎡)</td>
+                                            <td style="background: #f7f7f7;text-align: center;padding:0 10px;">单价</td>
+                                            <td style="background: #f7f7f7;text-align: center;padding:0 10px;">上浮比例(%)</td>
+                                            <td style="background: #f7f7f7;text-align: center;padding:0 10px;">上浮小计(元)</td>
+                                        </tr>
+                                        {volist name="payholderhouseups" id="up"}
+                                        <tr class="h50">
+                                            <td style="background: none;text-align: center;">{$up->up_area}</td>
+                                            <td style="background: none;text-align: center;">{$up->price}</td>
+                                            <td style="background: none;text-align: center;">{$up->up_rate?$up->up_rate:'-'}</td>
+                                            <td style="background: none;text-align: center;">{$up->amount}</td>
+                                        </tr>
+                                        {/volist}
+                                    </table>
+                                    {/if}
+                                    {/if}
+                                    上浮总额：{$payholderhouse->amount_up|number_format=2} 元<br>
+                                    安置房价：{$payholderhouse->total|number_format=2} 元<br>
+
+                                </td>
+                            </tr>
+                            {if condition="$infos->getData('type') eq 0 and $infos->getData('pay_way') eq 0"}
+                            <tr class="h50">
+                                <td><span style="color: #ff0000;">合计</span></td>
+                                <td>
+                                    补偿总额：{$total|number_format=2} 元 <br>
+                                    安置房价值：{$house|number_format=2} 元 <br>
+                                    安置后结余：{:number_format($total-$house,2)} 元 <br>
+                                </td>
+                            </tr>
+                            {/if}
+                            {/volist}
+                            {/if}
+                            {/volist}
+                            {if condition="$infos->getData('type') eq 1 or $infos->getData('pay_way') eq 1"}
+                            <tr class="h50">
+                                <td><span style="color: #ff0000;">合计</span></td>
+                                <td>
+                                    补偿总额：{$total|number_format=2} 元 <br>
+                                    安置房价值：{$house|number_format=2} 元 <br>
+                                    安置后结余：{:number_format($total-$house,2)} 元 <br>
+                                </td>
+                            </tr>
+                            {/if}
+                        </table>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

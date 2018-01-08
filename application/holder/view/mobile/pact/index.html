@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+    <style>
+        #payinfo th{
+            text-align: right !important;
+            width: 50%;
+        }
+    </style>
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+    <div class="header">
+        <p class="head_tit">
+            <span class="spanTab"><a class="spanTabTitle" href="{:url('Pay/index')}">补偿结果</a></span>
+            <span class="spanTab"><a class="spanon spanTabTitle">补偿协议</a></span>
+        </p>
+    </div>
+
+    <div class="w1 ">
+        <div class="cq_name" style="padding: 0 10px;">补偿协议</div>
+        <div class="hui"></div>
+        <ul class="votlist">
+            {volist name="pacts" id="pact"}
+            <li>
+                <div class="voright">
+                    <a href="{:url('detail',['id'=>$pact->id])}">
+                        <p class="voname">{$pact->name}</p>
+                        <p class="votime">{$pact->ch_name}</p>
+                        <p class="votime">{$pact->status}</p>
+                    </a>
+                </div>
+                <div style="width: 32%;text-align: right;">
+                    <a href="{:url('detail',['id'=>$pact->id])}" style="display: inline-block;width: 100%;">
+                    <img src="__STATIC__/holdermobile/img/go.png" alt="">
+                    </a>
+                </div>
+            </li>
+            {/volist}
+
+        </ul>
+    </div>
+    <div class="hui2"></div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

@@ -151,7 +151,7 @@ function vote(obj) {
                             location.reload();
                         },1500);
 					}else{
-                        btns.data('loading',true).addClass('disabled');
+                        btns.data('loading',false).addClass('disabled');
                     }
                 }
                 ,error:function () {
@@ -163,7 +163,7 @@ function vote(obj) {
 							layer.closeAll();
                         }
                     });
-                    btns.data('loading',true).addClass('disabled');
+                    btns.data('loading',false).addClass('disabled');
                 }
 			});
         }

@@ -183,17 +183,20 @@ class Risk extends Auth
                 $rs = model('Risks')->save($datas);
                 $risk_id = model('Risks')->getLastInsID();
                 $topic_count = model('Itemtopics')->where('item_id',$datas['item_id'])->count();
-              $risktopic_datas = [];
-               for ($i=0;$i<$topic_count;$i++){
-                   $risktopic_datas[$i]['item_id'] = $datas['item_id'];
-                   $risktopic_datas[$i]['community_id'] = $datas['community_id'];
-                   $risktopic_datas[$i]['collection_id'] = $datas['collection_id'];
-                   $risktopic_datas[$i]['holder_id'] = $datas['holder_id'];
-                   $risktopic_datas[$i]['risk_id'] = $risk_id;
-                   $risktopic_datas[$i]['topic_id'] = $datas['topic_id'][$i];
-                   $risktopic_datas[$i]['answer'] = $datas['answer'][$i];
-               }
-                model('Risktopics')->saveAll($risktopic_datas);
+                if($topic_count){
+                    $risktopic_datas = [];
+                    for ($i=0;$i<$topic_count;$i++){
+                        $risktopic_datas[$i]['item_id'] = $datas['item_id'];
+                        $risktopic_datas[$i]['community_id'] = $datas['community_id'];
+                        $risktopic_datas[$i]['collection_id'] = $datas['collection_id'];
+                        $risktopic_datas[$i]['holder_id'] = $datas['holder_id'];
+                        $risktopic_datas[$i]['risk_id'] = $risk_id;
+                        $risktopic_datas[$i]['topic_id'] = $datas['topic_id'][$i];
+                        $risktopic_datas[$i]['answer'] = $datas['answer'][$i];
+                    }
+                    model('Risktopics')->saveAll($risktopic_datas);
+                }
+
                 if(!$rs){
                     $res = false;
                     Db::rollback();
