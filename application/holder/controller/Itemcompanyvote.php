@@ -14,11 +14,15 @@ use think\Db;
 
 class Itemcompanyvote extends Base
 {
+    public $itemprocess_status;
     /* ========== 初始化 ========== */
     public function _initialize()
     {
         parent::_initialize();
-
+        $this->itemprocess_status=Itemprocesss::where(['item_id'=>$this->item_id,'process_id'=>2])->value('status');
+        if(!$this->itemprocess_status){
+            return $this->error('投票还未开始……');
+        }
 
     }
 
@@ -31,10 +35,7 @@ class Itemcompanyvote extends Base
         if(!$this->collection_id){
             return $this->error('非法访问','');
         }
-        $itemprocess_status=Itemprocesss::where(['item_id'=>$this->item_id,'process_id'=>2])->value('status');
-        if(!$itemprocess_status){
-            return $this->error('投票还未开始……');
-        }
+
         $risk_status=Itemprocesss::where(['item_id'=>$this->item_id,'process_id'=>7])->value('status');
 
         $holders=session('holderinfo.collection_holders');
@@ -57,7 +58,7 @@ class Itemcompanyvote extends Base
             ->select();
 
         $this->assign([
-            'itemprocess_status'=>$itemprocess_status,
+            'itemprocess_status'=>$this->itemprocess_status,
             'risk_status'=>$risk_status,
             'holder_id'=>$holder_id,
             'company_id'=>$company_id,

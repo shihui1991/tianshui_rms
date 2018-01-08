@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+
+
+    <style>
+        .coon.pad.pgjg.jigou p{
+            line-height: 40px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="warp">
+
+    <div class="header">
+        <p class="head_tit">
+            <span class="spanTab"><a class=" spanTabTitle" href="{:url('Itemcompanyvote/index')}">评估公司</a></span>
+            <span class="spanTab"><a class="spanon spanTabTitle">社会调查</a></span>
+        </p>
+    </div>
+
+    <div class="w1 ">
+        <div class="cq_name" style="padding: 0 10px;width: 150px;">征求意见稿的社会调查</div>
+        <div class="hui"></div>
+        <div class="w1 bordi">
+            <div class="coon pad pgjg jigou">
+                <p><span>征收意见：</span><span>{$infos->is_agree}</span></p>
+                <p><span>补偿方式：</span><span>{$infos->compensate_way}</span></p>
+                <p><span>过渡方式：</span><span>{$infos->transit_way}</span></p>
+                <p><span>搬迁方式：</span><span>{$infos->move_way}</span></p>
+                <p><span>补偿单价：</span><span>{if condition="$infos->compensate_price"}{$infos->compensate_price|number_format} 元{/if}</span></p>
+                <p><span>群众代表：</span><span>{$infos->deputy}</span></p>
+                <p><span>推荐代表：</span><span> {if condition="$infos->recommendholder"}{$infos->recommendholder->name} 【{$infos->recommendholder->address}，{$infos->recommendholder->phone}】{/if}</span></p>
+                <p><span>其他意见：</span><span>{$infos->opinion}</span></p>
+
+                {volist name="infos->risktopic" id="itemtopic"}
+                <p><span>{$itemtopic->topic->name}：</span><span>{$itemtopic->answer}</span></p>
+                {/volist}
+            </div>
+        </div>
+    </div>
+    <div class="hui2"></div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

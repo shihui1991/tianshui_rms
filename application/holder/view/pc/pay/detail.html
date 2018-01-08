@@ -46,12 +46,12 @@
                             <td colspan="3">
                                 <p>房产补偿：{$infos->estate_amount|number_format=2} 元</p>
                                 <p>资产补偿：{$infos->assets_amount|number_format=2} 元</p>
-                                <p>公共附属物总计：{$infos->public_amount|number_format=2} 元</p>
+                                <p>公共附属物小计：{$infos->public_amount|number_format=2} 元</p>
                                 <p>平分户数：{$infos->public_num|number_format} 户</p>
                                 <p>公共附属物平均：{$infos->public_avg|number_format=2} 元</p>
                                 <p>重要补偿科目小计：{$infos->subject_amount|number_format=2} 元</p>
                                 <p>其他补偿事项小计：{$infos->object_amount|number_format=2} 元</p>
-                                <p>补偿总计：{$infos->total|number_format=2} 元</p>
+                                <p>合计：{$infos->total|number_format=2} 元</p>
                             </td>
                         </tr>
                         <tr class="h50">
@@ -72,7 +72,7 @@
                                 {if condition="$infos->picture"}
                                 {volist name="infos->picture" id="pic"}
                                 <div class="img">
-                                    <img src="{$pic}" class="w_100 h_100" onclick="bigimg(this)">
+                                    <img src="{$pic}" class="w_100 h_100" onclick="bigerimg(this)">
                                 </div>
                                 {/volist}
                                 {/if}

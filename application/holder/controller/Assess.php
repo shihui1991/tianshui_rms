@@ -55,6 +55,11 @@ class Assess extends Base
                     ->select();
 
                 $view='hasassets';
+
+                $this->assign([
+                    'assessassets'=>$assessassets,
+                    'assessassetsvaluers'=>$assessassetsvaluers,
+                ]);
             }
 
 
@@ -90,8 +95,6 @@ class Assess extends Base
             $this->assign([
                 'assess'=>$assess,
                 'hasassets'=>$hasassets,
-                'assessassets'=>$assessassets,
-                'assessassetsvaluers'=>$assessassetsvaluers,
                 'assessestate'=>$assessestate,
                 'assessestatebuildings'=>$assessestatebuildings,
                 'assessestatevaluers'=>$assessestatevaluers,

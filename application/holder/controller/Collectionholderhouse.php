@@ -28,18 +28,16 @@ class Collectionholderhouse extends Base
     /* ========== 列表 ========== */
     public function index()
     {
-        $item_id=input('item_id');
-        if(!$item_id){
+        if(!$this->item_id){
             return $this->error('非法访问','');
         }
-        $collection_id=input('collection_id');
-        if(!$collection_id){
+        if(!$this->collection_id){
             return $this->error('非法访问','');
         }
 
-        $item_time=Items::where('id',$item_id)->value('created_at');
-        $where['chh.item_id']=$item_id;
-        $where['chh.collection_id']=$collection_id;
+        $item_time=Items::where('id',$this->item_id)->value('created_at');
+        $where['chh.item_id']=$this->item_id;
+        $where['chh.collection_id']=$this->collection_id;
 
         /* ********** 查询条件 ********** */
 
@@ -62,8 +60,8 @@ class Collectionholderhouse extends Base
 
 
         $datas=[
-            'item_id'=>$item_id,
-            'collection_id'=>$collection_id,
+            'item_id'=>$this->item_id,
+            'collection_id'=>$this->collection_id,
             'collectionholderhouses'=>$collectionholderhouses
         ];
 
@@ -74,12 +72,10 @@ class Collectionholderhouse extends Base
 
     /* ========== 添加 ========== */
     public function add(){
-        $item_id=input('item_id');
-        if(!$item_id){
+        if(!$this->item_id){
             return $this->error('非法访问','');
         }
-        $collection_id=input('collection_id');
-        if(!$collection_id){
+        if(!$this->collection_id){
             return $this->error('非法访问','');
         }
 
@@ -89,14 +85,14 @@ class Collectionholderhouse extends Base
             if(!$ids){
                 return $this->error('请选择安置房','');
             }
-            $community_id=Collections::where(['item_id'=>$item_id,'id'=>$collection_id])->value('community_id');
+            $community_id=Collections::where(['item_id'=>$this->item_id,'id'=>$this->collection_id])->value('community_id');
 
             $holders=session('holderinfo.collection_holders');
-            $holder_id=$holders[$collection_id];
+            $holder_id=$holders[$this->collection_id];
 
             $cur_house_ids=Collectionholderhouses::where([
-                'item_id'=>$item_id,
-                'collection_id'=>$collection_id
+                'item_id'=>$this->item_id,
+                'collection_id'=>$this->collection_id
             ])
                 ->column('house_id','id');
 
@@ -104,9 +100,9 @@ class Collectionholderhouse extends Base
             foreach($ids as $house_id){
                 $chh_data[]=[
                     'id'=>(($cur_house_ids && in_array($house_id,$cur_house_ids))?array_search($house_id,$cur_house_ids):null),
-                    'item_id'=>$item_id,
+                    'item_id'=>$this->item_id,
                     'community_id'=>$community_id,
-                    'collection_id'=>$collection_id,
+                    'collection_id'=>$this->collection_id,
                     'collection_holder_id'=>$holder_id,
                     'house_id'=>$house_id,
                     'sort'=>0,
@@ -140,13 +136,13 @@ class Collectionholderhouse extends Base
             }
 
         }else{
-            $itemhouses=Itemhouses::where('item_id',$item_id)->column('house_id');
-            $item_time=Items::where('id',$item_id)->value('created_at');
+            $itemhouses=Itemhouses::where('item_id',$this->item_id)->column('house_id');
+            $item_time=Items::where('id',$this->item_id)->value('created_at');
 
             /* ********** 查询条件 ********** */
             $datas=[
-                'item_id'=>$item_id,
-                'collection_id'=>$collection_id,
+                'item_id'=>$this->item_id,
+                'collection_id'=>$this->collection_id,
             ];
             $where['h.id']=['in',$itemhouses];
             $where['h.status']=0;
