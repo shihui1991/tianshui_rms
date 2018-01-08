@@ -13,6 +13,7 @@
  * */
 namespace app\system\controller;
 use app\system\model\Items;
+use app\system\model\Itemstatuss;
 use app\system\model\Risks;
 use think\Db;
 use think\Exception;
@@ -182,6 +183,19 @@ class Risk extends Auth
             try{
                 $rs = model('Risks')->save($datas);
                 $risk_id = model('Risks')->getLastInsID();
+
+                $status_data=[
+                    'keyname'=>'risk_id',
+                    'keyvalue'=>$risk_id,
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>0
+                ];
+
+                $status_model=new Itemstatuss();
+                $status_model->save($status_data);
+
                 $topic_count = model('Itemtopics')->where('item_id',$datas['item_id'])->count();
               $risktopic_datas = [];
                for ($i=0;$i<$topic_count;$i++){
@@ -299,7 +313,12 @@ class Risk extends Auth
             }
         }
 
+
         $datas = input();
+        $status=Itemstatuss::where(['keyname'=>'risk_id','keyvalue'=>$datas['id']])->order('created_at desc')->value('status');
+        if($status==8){
+            return $this->error('已通过审核，禁止修改！');
+        }
         $rule = [
             ['deputy', 'require', '请选择群众代表意见'],
             ['is_agree', 'require', '请选择方案意见'],
@@ -345,6 +364,17 @@ class Risk extends Auth
             foreach ($datas['risktopic_id'] as $k=>$v){
                 model('Risktopics')->isUpdate(true)->save(['answer'=>$datas['answer'][$k]],['id'=>$v]);
             }
+
+            $status_data=[
+                'keyname'=>'risk_id',
+                'keyvalue'=>$datas['id'],
+                'user_id'=>session('userinfo.user_id'),
+                'role_id'=>session('userinfo.role_id'),
+                'role_parent_id'=>session('userinfo.role_parent_id'),
+                'status'=>1
+            ];
+            $status_model=new Itemstatuss();
+            $status_model->save($status_data);
             if(!$rs){
                 throw new \think\Exception('数据异常，请刷新重试', 100006);
             }else{
@@ -402,8 +432,31 @@ class Risk extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
+
+        if(is_array($ids)){
+            $ids=implode(',',$ids);
+        }
         Db::startTrans();
         try{
+            $lists=db()->query('SELECT * FROM (SELECT * FROM `item_status` WHERE `keyname`=\'risk_id\' AND `keyvalue` IN ('.$ids.') ORDER BY `created_at` DESC) cs GROUP BY `keyvalue`');
+            $status_data=[];
+            foreach ($lists as $list){
+                if($list['status']==8){
+                    throw new Exception('勾选存在审核通过项，删除失败！');
+                    break;
+                }
+                $status_data[]=[
+                    'keyname'=>'risk_id',
+                    'keyvalue'=>$list['keyvalue'],
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>2
+                ];
+            }
+            $status_model=new Itemstatuss();
+            $status_model->saveAll($status_data);
+
             $rs = model('Risks')->destroy(['id'=>['in',$ids]]);
             model('Risktopics')->destroy(['risk_id'=>['in',$ids]]);
             if(!$rs){
@@ -461,7 +514,25 @@ class Risk extends Auth
         }
         Db::startTrans();
         try{
-            $rs = db('risk')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            $del_ids = Risks::onlyTrashed()->whereIn('id',$ids)->column('id');
+            if(!$del_ids){
+                throw new Exception('请选择已删除数据！');
+            }
+            $status_data=[];
+            foreach ($del_ids as $id){
+                $status_data[]=[
+                    'keyname'=>'risk_id',
+                    'keyvalue'=>$id,
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>3
+                ];
+            }
+            $status_model=new Itemstatuss();
+            $status_model->saveAll($status_data);
+
+            $rs =  Risks::onlyTrashed()->whereIn('id',$del_ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
             db('risk_topic')->whereIn('risk_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
             if(!$rs){
                 $res = false;
@@ -519,6 +590,24 @@ class Risk extends Auth
         }
         Db::startTrans();
         try{
+            $ids=Risks::onlyTrashed()->whereIn('id',$ids)->column('id');
+            if(!$ids){
+                throw new Exception('只能销毁已删除的数据！');
+            }
+            $status_data=[];
+            foreach ($ids as $id){
+                $status_data[]=[
+                    'keyname'=>'risk_id',
+                    'keyvalue'=>$id,
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>4
+                ];
+            }
+            $status_model=new Itemstatuss();
+            $status_model->saveAll($status_data);
+
             $rs = model('Risks')->onlyTrashed()->whereIn('id',$ids)->delete(true);
             model('Risktopics')->withTrashed()->whereIn('risk_id',$ids)->delete(true);
 
