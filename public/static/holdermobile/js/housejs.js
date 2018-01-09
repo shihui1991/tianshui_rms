@@ -173,5 +173,97 @@ function vote(obj) {
 	});
 }
 
+// 安置房排序
+function housesort(obj) {
+    var btn=$(obj);
+    var form=btn.parents('form:first');
+    var number=form.find('input[type=number]:first').val();
 
+    if( btn.data('loading')){
+        return false;
+    }
+    btn.data('loading',true);
+    if(!number){
+        layer.open({
+            content: '请输入排序'
+            ,skin: 'msg'
+            ,time: 1
+        });
+        return false;
+    }
+    if(number<0){
+        layer.open({
+            content: '请输入正整数'
+            ,skin: 'msg'
+            ,time: 1
+        });
+        return false;
+    }
+    $.ajax({
+        url:form.attr('action')
+        ,data:form.serialize()
+        ,dataType:'json'
+        ,type:'post'
+        ,success:function (resp) {
+            layer.open({
+                content: resp.msg
+                ,skin: 'msg'
+                ,time: 1.5
+                ,end:function (index) {
+                    if(resp.code){
+                        location.reload();
+                    }else{
+                        btn.data('loading',false);
+                    }
+                }
+            });
+        }
+        ,error:function () {
+            layer.open({
+                content: '网络错误，请稍候重试'
+                ,skin: 'msg'
+                ,time: 1
+            });
+            btn.data('loading',false);
+        }
+    });
+}
 
+// 选择安置房
+function choosehouse(obj) {
+    var btn=$(obj);
+    var house=btn.data('house');
+    if(btn.data('loading')){
+        return false;
+    }
+    btn.data('loading',true);
+    $.ajax({
+        url:btn.data('url')
+        ,data:{"ids[]":house}
+        ,type:'post'
+        ,dataType:'json'
+        ,success:function (resp) {
+            layer.open({
+                content: resp.msg
+                ,skin: 'msg'
+                ,time: 1
+                ,end:function (index) {
+                    if(resp.code){
+                        btn.remove();
+                        $('#check-'+house).append(' <span class="vonum vonum_on"><i class="iconfont icon-toupiao2"></i></span>');
+                    }else{
+                        btn.data('loading',false);
+                    }
+                }
+            });
+
+        }
+        ,error:function () {
+            layer.open({
+                content: '网络错误，请稍候重试'
+                ,skin: 'msg'
+                ,time: 1
+            });
+        }
+    });
+}

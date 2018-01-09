@@ -19,7 +19,7 @@ class Pact extends Base
         if(!$itemprocess_status){
             return $this->error('数据采集中……');
         }
-
+        $this->assign(['url'=>url('Pay/index')]);
     }
 
     /* ========== 列表 ========== */
@@ -86,7 +86,6 @@ class Pact extends Base
 
         $this->assign([
             'infos'=>$infos,
-            'url'=>url('Pact/index'),
         ]);
 
         return view($this->theme.'/pact/detail');

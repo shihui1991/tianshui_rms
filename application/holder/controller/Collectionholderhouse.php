@@ -21,8 +21,7 @@ class Collectionholderhouse extends Base
     public function _initialize()
     {
         parent::_initialize();
-
-
+        $this->assign(['url'=>url('Collectionholderhouse/index')]);
     }
 
     /* ========== 列表 ========== */
@@ -205,7 +204,7 @@ class Collectionholderhouse extends Base
                 ->join('house_price hp','hp.house_id=h.id and start_at<='.$item_time.' and end_at>='.$item_time,'left')
                 ->where($where)
                 ->order(['h.'.$ordername=>$orderby])
-                ->paginate();
+                ->paginate(1);
 
             $datas['houses']=$houses;
 

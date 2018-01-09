@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+    <style>
+
+    </style>
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+    <div class="header">
+        <p class="head_tit">
+            <span class="spanTab"><a class="spanon spanTabTitle">当前选择</a></span>
+            <span class="spanTab"><a class="spanTabTitle" href="{:url('Collectionholderhouse/add')}">所有房源</a></span>
+        </p>
+    </div>
+
+    <div class="w1 tu_img ov">
+        <div class="coon1">
+            <ul class="fy_tu_list">
+                {volist name="collectionholderhouses" id="collectionholderhouse"}
+                <li>
+                    <a>
+                        <img src="{$collectionholderhouse->l_pic}" title="{$collectionholderhouse->l_name}" onclick="bigerimg(this)"/>
+                        <a onclick="layerDom(this)" data-id="houses-{$collectionholderhouse->id}" data-title="{$collectionholderhouse->area}㎡【{$collectionholderhouse->l_name}】">
+                        <div class="fy_ms">
+                            <p class="fy_ms1">{$collectionholderhouse->area}㎡【{$collectionholderhouse->l_name}】</p>
+                            <p class="fy_ms2">{$collectionholderhouse->hc_name}</p>
+                        </div>
+                        </a>
+                    </a>
+                    <div id="houses-{$collectionholderhouse->id}" style="display: none;">
+                        <div class="cq_info">
+                            <table>
+                                <tr>
+                                    <th>被征收人：</th>
+                                    <td>{$collectionholderhouse->name}</td>
+                                </tr>
+                                <tr>
+                                    <th>地址：</th>
+                                    <td>{$collectionholderhouse->hc_address}</td>
+                                </tr>
+                                <tr>
+                                    <th>房屋：</th>
+                                    <td>
+                                        {$collectionholderhouse->hc_name}
+                                        {if condition="$collectionholderhouse->building"}{$collectionholderhouse->building}栋{/if}
+                                        {if condition="$collectionholderhouse->unit"}{$collectionholderhouse->unit}单元{/if}
+                                        {if condition="$collectionholderhouse->floor"}{$collectionholderhouse->floor}楼{/if}
+                                        {if condition="$collectionholderhouse->number"}{$collectionholderhouse->number}号{/if}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>面积：</th>
+                                    <td>{$collectionholderhouse->area}</td>
+                                </tr>
+                                <tr>
+                                    <th>户型：</th>
+                                    <td>{$collectionholderhouse->l_name}</td>
+                                </tr>
+                                <tr>
+                                    <th>市场评估价：</th>
+                                    <td>{$collectionholderhouse->market_price|number_format}</td>
+                                </tr>
+                                <tr>
+                                    <th>安置优惠价：</th>
+                                    <td>{$collectionholderhouse->price|number_format}</td>
+                                </tr>
+                                <tr>
+                                    <th>总楼层：</th>
+                                    <td>{$collectionholderhouse->total_floor}</td>
+                                </tr>
+                                <tr>
+                                    <th>有无电梯：</th>
+                                    <td>{$collectionholderhouse->has_lift}</td>
+                                </tr>
+
+                                <tr>
+                                    <th colspan="2">房屋图片</th>
+                                </tr>
+                                <tr>
+                                    <th>户型图：</th>
+                                    <td>
+                                        <div class="coon pad5 ov ovScoll">
+                                            <div class="content gszs">
+                                                <div class="zz"><img src="{$collectionholderhouse->l_pic}" title="户型图" onclick="bigerimg(this)"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {if condition="$collectionholderhouse->picture"}
+                                {php}$house_pictures=json_decode($collectionholderhouse->picture,true);{/php}
+                                {volist name="house_pictures" id="pictures"}
+                                {php}$name=$key;{/php}
+                                <tr>
+                                    <th>{$name}：</th>
+                                    <td>
+                                        <div class="coon pad5 ov ovScoll">
+                                            <div class="content gszs">
+                                                {volist name="pictures" id="pic"}
+                                                <div class="zz"><img src="{$pic}" title="{$name}" onclick="bigerimg(this)"></div>
+                                                {/volist}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/volist}
+                                {/if}
+
+                                <tr>
+                                    <td colspan="2">
+                                        <span>排序：</span>
+                                        <form action="{:url('sort',['item_id'=>$item_id,'collection_id'=>$collection_id])}" method="post" id="js-ajax-form" onsubmit="return false;">
+                                            <input type="number" name='sorts[{$collectionholderhouse->id}]' value='{$collectionholderhouse->sort}' min="0" placeholder="请输入排序" style="border: 1px solid #CCCCCC;width:100px;height: 30px;padding: 0 5px;">
+                                            <input name="ids[]" value="{$collectionholderhouse->id}" type="hidden">
+                                            <input type="button" value="重新排序" onclick="housesort(this)" style="border: 1px solid #CCCCCC;padding: 5px 10px;">
+                                        </form>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+                {/volist}
+            </ul>
+        </div>
+    </div>
+    <div class="hui2"></div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+</body>
+</html>

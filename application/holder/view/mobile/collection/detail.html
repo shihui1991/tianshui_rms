@@ -26,7 +26,42 @@
 
     <div class="cq_con">
         <div class="cq_name">产权信息</div>
-        <div class="cq_dizhi">项目：{$item->name}</div>
+        <div class="cq_dizhi" data-id="items" data-title="" onclick="layerDiv(this)">项目：{$item->name}
+            <img src="__STATIC__/holdermobile/img/xiala.png" style="width: 20px;height:18px;border: 1px solid;" >
+            <div id="items" style="display: none;">
+                <div class="w1 bordi">
+                    <div class="coon pad pgjg jigou">
+                        <p style="line-height: 40px;">
+                            <span style="width: 80px;display: inline-block">项目：</span>
+                            <span>
+                                <select name="item_id" id="item_id" style="height: 30px;">
+                                    {volist name="items" id="iteminfo"}
+                                    <option value="{$iteminfo->id}" {if condition="$item_id eq $iteminfo->id"}selected{/if}>{$iteminfo->name}</option>
+                                    {/volist}
+                                </select>
+                            </span>
+                        </p>
+                        <p style="line-height: 40px;">
+                            <span style="width: 80px;display: inline-block">被征房屋：</span>
+                            <span>
+                                <select name="collection_id" id="collection_id" style="height: 30px;">
+                                    {volist name="collections" id="cinfo"}
+                                    <option value="{$cinfo->id}" {if condition="$collection_id eq $cinfo->id"}selected{/if}>
+                                    {$cinfo->community->name}
+                                    {if condition="$cinfo->building"}{$cinfo->building}栋{/if}
+                                    {if condition="$cinfo->unit"}{$cinfo->unit}单元{/if}
+                                    {if condition="$cinfo->floor"}{$cinfo->floor}楼{/if}
+                                    {if condition="$cinfo->number"}{$cinfo->number}号{/if}
+                                    </option>
+                                    {/volist}
+                                </select>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
         <div class="cq_info">
             <table>
                 <tr>
@@ -429,5 +464,50 @@
 
 <script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
 <script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    function layerDiv(obj) {
+        var btn=$(obj);
+        layer.open({
+            title:false
+            ,type:1
+            ,content:document.getElementById(btn.data('id')).innerHTML
+            ,style:'width:100%;'
+            ,anim:'up'
+            ,btn:'选择'
+            ,yes:function (index) {
+                 var item=$('#item_id').find('option:selected').val();
+                 var collection=$('#collection_id').find('option:selected').val();
+                 $.ajax({
+                     url:"{:url('Home/changecollection')}"
+                     ,type:'get'
+                     ,data:{"item_id":item,"collection_id":collection}
+                     ,dataType:'json'
+                     ,success:function (resp) {
+                         layer.open({
+                             content: resp.msg
+                             ,skin: 'msg'
+                             ,time: 1
+                             ,end:function (index) {
+                                 if(resp.code){
+                                     location.reload();
+                                 }
+                             }
+                         });
+                     }
+                     ,error:function () {
+                         layer.open({
+                             content: '网络错误，请稍候重试'
+                             ,skin: 'msg'
+                             ,time: 1
+                         });
+                     }
+                 });
+                layer.close(index);
+            }
+        });
+    }
+</script>
+
 </body>
 </html>
