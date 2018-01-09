@@ -476,7 +476,7 @@ class Collection extends Auth
             $status_data=[];
             foreach ($lists as $list){
                 if($list['status']==8){
-                    throw new Exception('存在审核通过项，修改失败！');
+                    throw new Exception('勾选存在审核通过项，删除失败！');
                     break;
                 }
                 $status_data[]=[

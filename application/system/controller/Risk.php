@@ -13,6 +13,7 @@
  * */
 namespace app\system\controller;
 use app\system\model\Items;
+use app\system\model\Itemstatuss;
 use app\system\model\Risks;
 use think\Db;
 use think\Exception;
@@ -182,6 +183,19 @@ class Risk extends Auth
             try{
                 $rs = model('Risks')->save($datas);
                 $risk_id = model('Risks')->getLastInsID();
+
+                $status_data=[
+                    'keyname'=>'risk_id',
+                    'keyvalue'=>$risk_id,
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>0
+                ];
+
+                $status_model=new Itemstatuss();
+                $status_model->save($status_data);
+
                 $topic_count = model('Itemtopics')->where('item_id',$datas['item_id'])->count();
                 if($topic_count){
                     $risktopic_datas = [];
@@ -302,7 +316,12 @@ class Risk extends Auth
             }
         }
 
+
         $datas = input();
+        $status=Itemstatuss::where(['keyname'=>'risk_id','keyvalue'=>$datas['id']])->order('created_at desc')->value('status');
+        if($status==8){
+            return $this->error('已通过审核，禁止修改！');
+        }
         $rule = [
             ['deputy', 'require', '请选择群众代表意见'],
             ['is_agree', 'require', '请选择方案意见'],
@@ -348,6 +367,17 @@ class Risk extends Auth
             foreach ($datas['risktopic_id'] as $k=>$v){
                 model('Risktopics')->isUpdate(true)->save(['answer'=>$datas['answer'][$k]],['id'=>$v]);
             }
+
+            $status_data=[
+                'keyname'=>'risk_id',
+                'keyvalue'=>$datas['id'],
+                'user_id'=>session('userinfo.user_id'),
+                'role_id'=>session('userinfo.role_id'),
+                'role_parent_id'=>session('userinfo.role_parent_id'),
+                'status'=>1
+            ];
+            $status_model=new Itemstatuss();
+            $status_model->save($status_data);
             if(!$rs){
                 throw new \think\Exception('数据异常，请刷新重试', 100006);
             }else{
@@ -405,25 +435,51 @@ class Risk extends Auth
         if(empty($ids)){
             return $this->error('至少选择一项');
         }
+
+        if(is_array($ids)){
+            $ids=implode(',',$ids);
+        }
         Db::startTrans();
         try{
+            $lists=db()->query('SELECT * FROM (SELECT * FROM `item_status` WHERE `keyname`=\'risk_id\' AND `keyvalue` IN ('.$ids.') ORDER BY `created_at` DESC) cs GROUP BY `keyvalue`');
+            $status_data=[];
+            foreach ($lists as $list){
+                if($list['status']==8){
+                    throw new Exception('勾选存在审核通过项，删除失败！');
+                    break;
+                }
+                $status_data[]=[
+                    'keyname'=>'risk_id',
+                    'keyvalue'=>$list['keyvalue'],
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>2
+                ];
+            }
+            $status_model=new Itemstatuss();
+            $status_model->saveAll($status_data);
+
             $rs = model('Risks')->destroy(['id'=>['in',$ids]]);
             model('Risktopics')->destroy(['risk_id'=>['in',$ids]]);
             if(!$rs){
                 $res = false;
+                $msg = '删除失败';
                 Db::rollback();
             }else{
                 $res = true;
+                $msg = '删除成功';
                 Db::commit();
             }
         }catch (\Exception $e){
             $res = false;
+            $msg = $e->getMessage();
             Db::rollback();
         }
         if($res){
-            return $this->success('删除成功','');
+            return $this->success($msg,'');
         }else{
-            return $this->error('删除失败');
+            return $this->error($msg);
         }
     }
 
@@ -464,24 +520,45 @@ class Risk extends Auth
         }
         Db::startTrans();
         try{
-            $rs = db('risk')->whereIn('id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
+            $del_ids = Risks::onlyTrashed()->whereIn('id',$ids)->column('id');
+            if(!$del_ids){
+                throw new Exception('请选择已删除数据！');
+            }
+            $status_data=[];
+            foreach ($del_ids as $id){
+                $status_data[]=[
+                    'keyname'=>'risk_id',
+                    'keyvalue'=>$id,
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>3
+                ];
+            }
+            $status_model=new Itemstatuss();
+            $status_model->saveAll($status_data);
+
+            $rs =  Risks::onlyTrashed()->whereIn('id',$del_ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
             db('risk_topic')->whereIn('risk_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
             if(!$rs){
                 $res = false;
+                $msg = '恢复失败';
                 Db::rollback();
             }else{
                 $res = true;
+                $msg = '恢复成功';
                 Db::commit();
             }
         }catch (\Exception $e){
             $res = false;
+            $msg = $e->getMessage();
             Db::rollback();
         }
 
         if($res){
-            return $this->success('恢复成功','');
+            return $this->success($msg,'');
         }else{
-            return $this->error('恢复失败');
+            return $this->error($msg);
         }
     }
 
@@ -522,24 +599,131 @@ class Risk extends Auth
         }
         Db::startTrans();
         try{
+            $ids=Risks::onlyTrashed()->whereIn('id',$ids)->column('id');
+            if(!$ids){
+                throw new Exception('只能销毁已删除的数据！');
+            }
+            $status_data=[];
+            foreach ($ids as $id){
+                $status_data[]=[
+                    'keyname'=>'risk_id',
+                    'keyvalue'=>$id,
+                    'user_id'=>session('userinfo.user_id'),
+                    'role_id'=>session('userinfo.role_id'),
+                    'role_parent_id'=>session('userinfo.role_parent_id'),
+                    'status'=>4
+                ];
+            }
+            $status_model=new Itemstatuss();
+            $status_model->saveAll($status_data);
+
             $rs = model('Risks')->onlyTrashed()->whereIn('id',$ids)->delete(true);
             model('Risktopics')->withTrashed()->whereIn('risk_id',$ids)->delete(true);
 
             if(!$rs){
                 $res = false;
+                $msg = '销毁失败，请先删除！';
                 Db::rollback();
             }else{
                 $res = true;
+                $msg = '销毁成功';
                 Db::commit();
             }
         }catch (\Exception $e){
             $res = false;
+            $msg = $e->getMessage();
             Db::rollback();
         }
         if($res){
-            return $this->success('销毁成功','');
+            return $this->success($msg,'');
         }else{
-            return $this->error('销毁失败，请先删除！');
+            return $this->error($msg);
+        }
+    }
+
+    /* ========== 状态 ========== */
+    public function status(){
+        $id=input('id');
+        if(!$id){
+            return $this->error('至少选择一项');
+        }
+
+        $datas['id']=$id;
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        $datas['item_info']=$item_info;
+
+        $model=new Itemstatuss();
+        $datas['model']=$model;
+
+        $statuss=$model->with('user,role')->where(['keyname'=>'risk_id','keyvalue'=>$id])->order('created_at asc')->paginate();
+        $datas['statuss']=$statuss;
+
+        $this->assign($datas);
+
+        return view($this->theme.'/risk/status');
+    }
+    /* ========== 审核 ========== */
+    public function check(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') ==2){
+            $msg='项目已完成，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+        $id=input('id');
+        if(!$id){
+            return $this->error('错误操作','');
+        }
+        $check=input('check');
+        if(!in_array($check,[8,9])){
+            return $this->error('错误操作','');
+        }
+        Db::startTrans();
+        try{
+            $last_status=Itemstatuss::where(['keyname'=>'risk_id','keyvalue'=>$id])->order('created_at desc')->find();
+            if(!$last_status){
+                throw new Exception('数据异常！');
+            }
+            if($last_status->role_parent_id!=session('userinfo.role_id') && $last_status->role_parent_id!=session('userinfo.role_parent_id')){
+                throw new Exception('审核流程已超出权限！');
+            }
+            $status_model=new Itemstatuss();
+            $status_data=[
+                'keyname'=>'risk_id',
+                'keyvalue'=>$id,
+                'user_id'=>session('userinfo.user_id'),
+                'role_id'=>session('userinfo.role_id'),
+                'role_parent_id'=>session('userinfo.role_parent_id'),
+                'status'=>$check
+            ];
+            $status_model->save($status_data);
+
+            $res=true;
+            $msg='操作成功';
+            Db::commit();
+        }catch (\Exception $exception){
+            $msg=$exception->getMessage();
+            $res=false;
+            Db::rollback();
+        }
+
+        if($res){
+            return $this->success($msg,'');
+        }else{
+            return $this->error($msg,'');
         }
     }
 }

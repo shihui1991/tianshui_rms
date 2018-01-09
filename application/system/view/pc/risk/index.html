@@ -94,6 +94,7 @@
                 <td>{if condition="$info->deleted_at"}<del>{$info->transit_way}</del>{else/}{$info->transit_way}{/if}</td>
                 <td>{if condition="$info->deleted_at"}<del>{$info->move_way}</del>{else/}{$info->move_way}{/if}</td>
                 <td>
+                    <button type="button" class="btn" onclick="layerIfWindow('风险评估动态与审核',	'{:url('status',['id'=>$info->id,'item_id'=>$info->item_id])}','800','600')">审核</button>
                     <button type="button" class="btn" onclick="layerIfWindow('风险评估信息','{:url('detail',['id'=>$info->id,'item_id'=>$item_info->id])}','1000','650')" >详细信息</button>
                     {if condition="$item_info->getData('status') eq 1"}
                     <button type="button" data-action="{:url('delete',['ids'=>$info->id,'item_id'=>$item_info->id,'l'=>1])}" class="btn js-ajax-form-btn">删除</button>

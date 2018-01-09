@@ -66,8 +66,9 @@
                 <td>{if condition="$info->deleted_at"}<del>{$info->estate}</del>{else/}{$info->estate}{/if}</td>
                 <td>{if condition="$info->deleted_at"}<del>{$info->assets}</del>{else/}{$info->assets}{/if}</td>
                 <td>
-                    <button type="button" class="btn" onclick="layerIfWindow('入户评估-房产评估列表',	'{:url('assessestate/index',['assess_id'=>$info->id])}','1000','650',true)" >房产评估</button>
-                    <button type="button" class="btn" onclick="layerIfWindow('入户评估-资产评估列表',	'{:url('assessassets/index',['assess_id'=>$info->id])}','1000','650',true)" >资产评估</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户评估动态与审核',	'{:url('status',['id'=>$info->id,'item_id'=>$info->item_id])}','800','600')">审核</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户评估-房产评估列表',	'{:url('assessestate/index',['assess_id'=>$info->id,\'community_id\'=>$info->community_id,\'collection_id\'=>$info->collection_id,\'item_id\'=>$info->item_id,\'l\'=>1])}','1000','650',true)" >房产评估</button>
+                    <button type="button" class="btn" onclick="layerIfWindow('入户评估-资产评估列表',	'{:url('assessassets/index',['assess_id'=>$info->id,\'community_id\'=>$info->community_id,\'collection_id\'=>$info->collection_id,\'item_id\'=>$info->item_id,\'l\'=>1])}','1000','650',true)" >资产评估</button>
                 </td>
             </tr>
             {/volist}

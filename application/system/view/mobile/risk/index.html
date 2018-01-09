@@ -78,8 +78,11 @@
                             <td class="shezhi"><i class="iconfont icon-shezhi2"></i>
                                 <div class="hide">
                                     <img src="__STATIC__/sysmobile/img/sanjiao.png" />
+                                    <a href="{:url('status',['id'=>$info->id,'item_id'=>$info->item_id])}"><i class="iconfont icon-question-9"></i></a>
                                     <a href="{:url('detail',['id'=>$info->id,'item_id'=>$item_info->id])}"><i class="iconfont icon-xiugai"></i></a>
+                                    {if condition="$item_info->getData('status') eq 1"}
                                     <a data-action="{:url('delete',['ids'=>$info->id,'item_id'=>$item_info->id,'l'=>1])}" class="js-ajax-form-btn"><i class="iconfont icon-lajitong"></i></a>
+                                    {/if}
                                 </div>
                             </td>
                         </tr>

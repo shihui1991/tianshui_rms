@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>入户摸底管理——审核</title>
+    <title>入户评估管理——审核</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {include file="mobile/public/head"/}
 </head>
@@ -60,8 +60,6 @@
     <p class="Btnform align_cen bor_none maT20 marB20">
         <span class="submit button wAuto js-ajax-form-btn" data-action="{:url('check',['check'=>8])}" data-layer="true">审核通过</span>
         <span class="reset  close button wAuto js-ajax-form-btn" data-action="{:url('check',['check'=>9])}" data-layer="true">审核驳回</span>
-        <span class="reset button wAuto js-ajax-form-btn" data-action="{:url('status',['status'=>0])}" data-layer="true">禁用</span>
-        <span class="reset close button wAuto js-ajax-form-btn" data-action="{:url('status',['status'=>1])}" data-layer="true">启用</span>
     </p>
 
 </form>
