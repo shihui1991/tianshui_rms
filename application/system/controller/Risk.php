@@ -464,19 +464,22 @@ class Risk extends Auth
             model('Risktopics')->destroy(['risk_id'=>['in',$ids]]);
             if(!$rs){
                 $res = false;
+                $msg = '删除失败';
                 Db::rollback();
             }else{
                 $res = true;
+                $msg = '删除成功';
                 Db::commit();
             }
         }catch (\Exception $e){
             $res = false;
+            $msg = $e->getMessage();
             Db::rollback();
         }
         if($res){
-            return $this->success('删除成功','');
+            return $this->success($msg,'');
         }else{
-            return $this->error('删除失败');
+            return $this->error($msg);
         }
     }
 
@@ -539,20 +542,23 @@ class Risk extends Auth
             db('risk_topic')->whereIn('risk_id',$ids)->update(['deleted_at'=>null,'updated_at'=>time()]);
             if(!$rs){
                 $res = false;
+                $msg = '恢复失败';
                 Db::rollback();
             }else{
                 $res = true;
+                $msg = '恢复成功';
                 Db::commit();
             }
         }catch (\Exception $e){
             $res = false;
+            $msg = $e->getMessage();
             Db::rollback();
         }
 
         if($res){
-            return $this->success('恢复成功','');
+            return $this->success($msg,'');
         }else{
-            return $this->error('恢复失败');
+            return $this->error($msg);
         }
     }
 
@@ -616,19 +622,108 @@ class Risk extends Auth
 
             if(!$rs){
                 $res = false;
+                $msg = '销毁失败，请先删除！';
                 Db::rollback();
             }else{
                 $res = true;
+                $msg = '销毁成功';
                 Db::commit();
             }
         }catch (\Exception $e){
             $res = false;
+            $msg = $e->getMessage();
             Db::rollback();
         }
         if($res){
-            return $this->success('销毁成功','');
+            return $this->success($msg,'');
         }else{
-            return $this->error('销毁失败，请先删除！');
+            return $this->error($msg);
+        }
+    }
+
+    /* ========== 状态 ========== */
+    public function status(){
+        $id=input('id');
+        if(!$id){
+            return $this->error('至少选择一项');
+        }
+
+        $datas['id']=$id;
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        $datas['item_info']=$item_info;
+
+        $model=new Itemstatuss();
+        $datas['model']=$model;
+
+        $statuss=$model->with('user,role')->where(['keyname'=>'risk_id','keyvalue'=>$id])->order('created_at asc')->paginate();
+        $datas['statuss']=$statuss;
+
+        $this->assign($datas);
+
+        return view($this->theme.'/risk/status');
+    }
+    /* ========== 审核 ========== */
+    public function check(){
+        $item_id=input('item_id');
+        if(!$item_id){
+            return $this->error('错误操作','');
+        }
+        /* ++++++++++ 项目 ++++++++++ */
+        $item_info=Items::field(['id','name','status'])->where('id',$item_id)->find();
+        if($item_info->getData('status') ==2){
+            $msg='项目已完成，禁止操作！';
+            if(request()->isAjax()){
+                return $this->error($msg,'');
+            }else{
+                return $msg;
+            }
+        }
+        $id=input('id');
+        if(!$id){
+            return $this->error('错误操作','');
+        }
+        $check=input('check');
+        if(!in_array($check,[8,9])){
+            return $this->error('错误操作','');
+        }
+        Db::startTrans();
+        try{
+            $last_status=Itemstatuss::where(['keyname'=>'risk_id','keyvalue'=>$id])->order('created_at desc')->find();
+            if(!$last_status){
+                throw new Exception('数据异常！');
+            }
+            if($last_status->role_parent_id!=session('userinfo.role_id') && $last_status->role_parent_id!=session('userinfo.role_parent_id')){
+                throw new Exception('审核流程已超出权限！');
+            }
+            $status_model=new Itemstatuss();
+            $status_data=[
+                'keyname'=>'risk_id',
+                'keyvalue'=>$id,
+                'user_id'=>session('userinfo.user_id'),
+                'role_id'=>session('userinfo.role_id'),
+                'role_parent_id'=>session('userinfo.role_parent_id'),
+                'status'=>$check
+            ];
+            $status_model->save($status_data);
+
+            $res=true;
+            $msg='操作成功';
+            Db::commit();
+        }catch (\Exception $exception){
+            $msg=$exception->getMessage();
+            $res=false;
+            Db::rollback();
+        }
+
+        if($res){
+            return $this->success($msg,'');
+        }else{
+            return $this->error($msg,'');
         }
     }
 }
