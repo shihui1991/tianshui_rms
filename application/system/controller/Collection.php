@@ -694,21 +694,21 @@ class Collection extends Auth
         }
     }
 
-    /* ========== 房屋征收摸底汇总----Excel导出 ========== */
-    public function statis(){
-        $item_id = input('item_id');
-        if(!$item_id){
-            return $this->error('请先选择项目');
-        }
-
-       $collections =  model('Collections')
-           ->alias('c')
-           ->field(['ch.name as holder_name','count(ch.id) as holder_count','ch.cardnum','ch.gender','ch.nation'])
-           ->join('collection_holder ch','ch.collection_id = c.id','left')
-           ->join('collection_holder_crowd chc','chc.holder_id = chc.id','left')
-            ->where('c.item_id',$item_id)
-           ->group('c.id')
-           ->select();
-        dump($collections);
-    }
+//    /* ========== 房屋征收摸底汇总----Excel导出 ========== */
+//    public function statis(){
+//        $item_id = input('item_id');
+//        if(!$item_id){
+//            return $this->error('请先选择项目');
+//        }
+//
+//       $collections =  model('Collections')
+//           ->alias('c')
+//           ->field(['ch.name as holder_name','count(ch.id) as holder_count','ch.cardnum','ch.gender','ch.nation'])
+//           ->join('collection_holder ch','ch.collection_id = c.id','left')
+//           ->join('collection_holder_crowd chc','chc.holder_id = chc.id','left')
+//            ->where('c.item_id',$item_id)
+//           ->group('c.id')
+//           ->select();
+//        dump($collections);
+//    }
 }

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <title>房屋征收安置管理系统</title>
+
+    {include file="mobile/public/head" /}
+    <style>
+       .fy_list_xz select{
+           width: 90%;
+           height: 100%;
+           line-height: 40px;
+           border: none;
+       }
+    </style>
+</head>
+<style>
+
+</style>
+<body>
+<div class="warp">
+    <div class="header">
+        <p class="head_tit">
+            <span class="spanTab"><a class=" spanTabTitle" href="{:url('Collectionholderhouse/index')}">当前选择</a></span>
+            <span class="spanTab"><a class="spanon spanTabTitle" >所有房源</a></span>
+        </p>
+    </div>
+    <div class="w1">
+        <form class="fy_xz white" action="{:url('add',['item_id'=>$item_id,'collection_id'=>$collection_id])}" method="get" id="search-form">
+            <div class="fy_list_xz weizhi">
+                <p class="fy_xz_tit">
+                    <select name="community_id" id="community_id">
+                        <option value="">位置</option>
+                        {volist name="communitys" id="community"}
+                        <option value="{$community->id}" {if condition="isset($community_id) and $community_id eq $community->id"}selected{/if}>{$community->name}</option>
+                        {/volist}
+                    </select>
+                </p>
+            </div>
+            <div class="fy_list_xz huxing" >
+                <p class="fy_xz_tit">
+                    <select name="layout_id" id="layout_id">
+                        <option value="">户型</option>
+                        {volist name="layouts" id="layout"}
+                        <option value="{$layout->id}" {if condition="isset($layout_id) and $layout->id eq $layout_id"}selected{/if}>{$layout->name}</option>
+                        {/volist}
+                    </select>
+                </p>
+            </div>
+            <div class="fy_list_xz jiage">
+                <p class="fy_xz_tit">
+                    <select name="is_real" id="is_real">
+                        <option value="">类型</option>
+                        {volist name="model->is_real" id="value"}
+                        <option value="{$key}" {if condition="isset($is_real) and $is_real eq $key"}selected{/if}>{$value}</option>
+                        {/volist}
+                    </select>
+                </p>
+            </div>
+        </form>
+    </div>
+    <div class="w1 tu_img ov">
+        <div class="coon1">
+            <ul class="fy_tu_list">
+                {volist name="houses" id="house"}
+                <li>
+                    <a>
+                        <img src="{$house->l_pic}" title="{$house->l_name}" onclick="bigerimg(this)"/>
+                        <a onclick="layerDom(this)" data-id="houses-{$house->id}" data-title="{$house->area}㎡【{$house->l_name}】">
+                        <div class="fy_ms">
+                            <p class="fy_ms1">{$house->area}㎡【{$house->l_name}】</p>
+                            <p class="fy_ms2" id="check-{$house->id}">{$house->c_name}</p>
+                        </div>
+                        </a>
+                    </a>
+                    <div id="houses-{$house->id}" style="display: none;">
+                        <div class="cq_info">
+                            <table>
+                                <tr>
+                                    <th>地址：</th>
+                                    <td>{$house->address}</td>
+                                </tr>
+                                <tr>
+                                    <th>房屋：</th>
+                                    <td>
+                                        {$house->c_name}
+                                        {if condition="$house->building"}{$house->building}栋{/if}
+                                        {if condition="$house->unit"}{$house->unit}单元{/if}
+                                        {if condition="$house->floor"}{$house->floor}楼{/if}
+                                        {if condition="$house->number"}{$house->number}号{/if}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>面积：</th>
+                                    <td>{$house->area}</td>
+                                </tr>
+                                <tr>
+                                    <th>户型：</th>
+                                    <td>{$house->l_name}</td>
+                                </tr>
+                                <tr>
+                                    <th>市场评估价：</th>
+                                    <td>{$house->market_price|number_format}</td>
+                                </tr>
+                                <tr>
+                                    <th>安置优惠价：</th>
+                                    <td>{$house->price|number_format}</td>
+                                </tr>
+                                <tr>
+                                    <th>总楼层：</th>
+                                    <td>{$house->total_floor}</td>
+                                </tr>
+                                <tr>
+                                    <th>有无电梯：</th>
+                                    <td>{$house->has_lift}</td>
+                                </tr>
+
+                                <tr>
+                                    <th colspan="2">房屋图片</th>
+                                </tr>
+                                <tr>
+                                    <th>户型图：</th>
+                                    <td>
+                                        <div class="coon pad5 ov ovScoll">
+                                            <div class="content gszs">
+                                                <div class="zz"><img src="{$house->l_pic}" title="户型图" onclick="bigerimg(this)"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {if condition="$house->picture"}
+                                {php}$house_pictures=json_decode($house->picture,true);{/php}
+                                {volist name="house_pictures" id="pictures"}
+                                {php}$name=$key;{/php}
+                                <tr>
+                                    <th>{$name}：</th>
+                                    <td>
+                                        <div class="coon pad5 ov ovScoll">
+                                            <div class="content gszs">
+                                                {volist name="pictures" id="pic"}
+                                                <div class="zz"><img src="{$pic}" title="{$name}" onclick="bigerimg(this)"></div>
+                                                {/volist}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/volist}
+                                {/if}
+
+                            </table>
+                            <div class="w1 pad" data-house="{$house->id}" onclick="choosehouse(this)" data-url="{:url('add',['item_id'=>$item_id,'collection_id'=>$collection_id])}">
+                                <div class="coon">
+                                    <span class="sure">选择它</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {/volist}
+            </ul>
+        </div>
+    </div>
+    <div class="w1 pageCon">
+        {$houses->render()}
+    </div>
+    <div class="hui2"></div>
+    <!--footer-->
+    {include file="mobile/public/footer" /}
+
+</div>
+
+<script src="__STATIC__/holdermobile/js/tabslider.js" type="text/javascript" charset="utf-8"></script>
+<script src="__STATIC__/holdermobile/js/touchslider.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    $('#search-form').on('change',function () {
+        $(this).submit();
+        return false;
+    });
+
+    $('.pageCon').find('a').on('click',function () {
+        location.href=$(this).attr('href')+'&'+$('#search-form').serialize();
+        return false;
+    });
+
+</script>
+</body>
+</html>
