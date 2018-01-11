@@ -539,6 +539,7 @@ class Collectionbuilding extends Auth
         }
     }
 
+    /* ========== 合法性认定 ========== */
     public function status(){
         $collection_id=input('collection_id');
         if(!$collection_id){
@@ -562,17 +563,6 @@ class Collectionbuilding extends Auth
                 default:
                     $msg='项目未进行，禁止操作！';
             }
-            if(request()->isAjax()){
-                return $this->error($msg,'');
-            }else{
-                return $msg;
-            }
-        }
-
-        /* ++++++++++ 入户摸底状态 ++++++++++ */
-        $collection_status=Itemstatuss::where(['keyname'=>'collection_id','keyvalue'=>$collection_id])->order('created_at desc')->value('status');
-        if($collection_status == 8){
-            $msg='入户摸底数据已审核通过，禁止操作！';
             if(request()->isAjax()){
                 return $this->error($msg,'');
             }else{
