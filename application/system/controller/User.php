@@ -451,4 +451,8 @@ class User extends Auth
             ]);
         }
     }
+
+    public function gaopaiyi(){
+        return view($this->theme.'/user/gaopaiyi');
+    }
 }

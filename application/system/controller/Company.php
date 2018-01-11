@@ -338,4 +338,10 @@ class Company extends Auth
             return $this->error('销毁失败，请先删除！');
         }
     }
+
+
+
+    public function gaopaiyi(){
+        return view($this->theme.'/company/gaopaiyi');
+    }
 }
