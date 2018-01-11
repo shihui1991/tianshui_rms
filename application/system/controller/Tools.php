@@ -38,6 +38,23 @@ class Tools extends Base
         }
         return $this->error('请选择上传文件！');
     }
+    /* ========== 高拍仪上传 ========== */
+    public function upl2(){
+        $files=request()->file();
+        $key=array_keys($files);
+        $file = $files[$key[0]];
+        if($file){
+            $info = $file->move( './uploads/gaopaiyi','');
+            if($info){
+                $file_name=str_replace('\\','/',$info->getSaveName());
+                $datas = '/uploads/gaopaiyi/'.$file_name;
+                return 'fieldname='.$datas;
+            }else{
+                return false;
+            }
+        }
+        return false;
+    }
 
     /* ========== kindeditor 上传 ========== */
     public function uploads(){
