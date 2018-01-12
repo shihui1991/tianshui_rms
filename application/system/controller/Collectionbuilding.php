@@ -601,4 +601,9 @@ class Collectionbuilding extends Auth
             return view($this->theme.'/collectionbuilding/status');
         }
     }
+
+    /* ========== 高拍仪页面 ========== */
+    public function gaopaiyi(){
+        return view($this->theme.'/collectionbuilding/gaopaiyi');
+    }
 }

@@ -241,4 +241,9 @@ class Pact extends Auth
             return $this->error('修改失败');
         }
     }
+
+    /* ========== 高拍仪页面 ========== */
+    public function gaopaiyi(){
+        return view($this->theme.'/pact/gaopaiyi');
+    }
 }

@@ -694,6 +694,10 @@ class Collection extends Auth
         }
     }
 
+    /* ========== 高拍仪页面 ========== */
+    public function gaopaiyi(){
+        return view($this->theme.'/collection/gaopaiyi');
+    }
 //    /* ========== 房屋征收摸底汇总----Excel导出 ========== */
 //    public function statis(){
 //        $item_id = input('item_id');

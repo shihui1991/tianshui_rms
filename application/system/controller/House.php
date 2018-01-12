@@ -528,4 +528,9 @@ class House extends Auth
 //           unlink($datas);
         create_houses_xls($new_data,'错误格式数据'.date('Ymd'));
     }
+
+    /* ========== 高拍仪页面 ========== */
+    public function gaopaiyi(){
+        return view($this->theme.'/house/gaopaiyi');
+    }
 }

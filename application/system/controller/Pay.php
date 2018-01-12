@@ -565,4 +565,9 @@ class Pay extends Auth
             return $this->error('销毁失败，请先删除！');
         }
     }
+
+    /* ========== 高拍仪页面 ========== */
+    public function gaopaiyi(){
+        return view($this->theme.'/pay/gaopaiyi');
+    }
 }

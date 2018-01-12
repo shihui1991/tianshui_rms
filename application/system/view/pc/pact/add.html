@@ -51,7 +51,7 @@
                             </tr>
 
                             <tr class="h70">
-                                <td>相关图片：</td>
+                                <td>相关图片：<br/><a onclick="open_gpy(this,2,'picture')" class="btn saomiao_id" id="sm_gpy" >扫描文件</a></td>
                                 <td class="imgCon">
                                     <div class="img btn-upload" data-type="multiimage" data-hidename="picture[]"><a>+</a></div>
                                 </td>
@@ -103,6 +103,44 @@
             }
         });
     });
+
+    /*===== 打开高拍仪=====*/
+    function open_gpy(obj,type,name) {
+        var gpyid = $(obj).attr('id');
+        layerIfWindow('高拍仪管理','{:url('gaopaiyi')}?smid='+gpyid+'&type='+type+'&name='+name,'800','500',true);
+    }
+    /*===== 高拍仪返回图片地址=====*/
+    function saomiao_img(smid,img_url,name,type,img_type) {
+        if(type==1){
+            /*===== 单图 =====*/
+            $("#"+smid).parent("td:first").next('td').html(
+                " <div class=\"img\"><img src=\""+img_url+"\" class=\"w_100 h_100\" onclick=\"bigerimg(this)\"><p>" +
+                "<span onclick=\"picremove(this);\">删除</span></p>" +
+                "<input type=\"hidden\" name=\""+name+"\" value=\""+img_url+"\"/></div>" +
+                "<div class=\"img btn-upload\" data-type=\"image\" data-hidename=\""+name+"\"><a>+</a></div>");
+        }else{
+            /*===== 多图 =====*/
+            if(img_type==2){
+                /*---- 多图 扫描缩略图 --*/
+                if (img_url.length > 0) img_url = img_url.substr(0, img_url.length - 2);
+                var img_arr = img_url.split('##');
+                $.each(img_arr,function (index,info) {
+                    var img = info.replace('fieldname=','');
+                    $("#"+smid).parent("td:first").next('td').find('.btn-upload').before(
+                        " <div class=\"img\"><img src=\""+img+"\" class=\"w_100 h_100\" onclick=\"bigerimg(this)\"><p>" +
+                        "<span onclick=\"picremove(this);\">删除</span></p>" +
+                        "<input type=\"hidden\" name=\""+name+"[]\" value=\""+img+"\"/></div>");
+                })
+            }else{
+                /*---- 多图 扫描上传 --*/
+                $("#"+smid).parent("td:first").next('td').find('.btn-upload').before(
+                    " <div class=\"img\"><img src=\""+img_url+"\" class=\"w_100 h_100\" onclick=\"bigerimg(this)\"><p>" +
+                    "<span onclick=\"picremove(this);\">删除</span></p>" +
+                    "<input type=\"hidden\" name=\""+name+"[]\" value=\""+img_url+"\"/></div>" );
+            }
+        }
+        layer.closeAll();
+    }
 </script>
 </body>
 </html>

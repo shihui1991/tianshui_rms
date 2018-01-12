@@ -452,6 +452,7 @@ class User extends Auth
         }
     }
 
+    /* ========== 高拍仪页面 ========== */
     public function gaopaiyi(){
         return view($this->theme.'/user/gaopaiyi');
     }
