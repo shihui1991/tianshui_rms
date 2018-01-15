@@ -420,4 +420,9 @@ class Item extends Auth
             return view($this->theme.'/item/itemtime');
         }
     }
+
+    /* ========== 高拍仪页面 ========== */
+    public function gaopaiyi(){
+        return view($this->theme.'/item/gaopaiyi');
+    }
 }
