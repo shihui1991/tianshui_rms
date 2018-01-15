@@ -37,6 +37,11 @@ class Auth extends Base
         if(in_array($controller,['home','tools'])){
             return true;
         }
+        $action=strtolower(request()->action());
+        if($action=='gaopaiyi'){
+            return true;
+        }
+
         if(!$role_id){
             return false;
         }
